@@ -12,10 +12,10 @@ JARVIS_DIR="${HOME}/jarvis-swarm"
 GITHUB_RAW="https://raw.githubusercontent.com/lippytm/jarvis-nexus-core/main"
 
 echo ""
-echo "╔═════════════════════════════════════════════════════╗"
-echo "║     JARVIS SWARM — AI Builds AI Install               ║"
-echo "║     Flow + Hub + Nexus + Blast                        ║"
-echo "║     Intergalactic Corporate Services LLC              ║"
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║     JARVIS SWARM — AI Builds AI Install              ║"
+echo "║     Flow + Hub + Nexus + Blast                       ║"
+echo "║     Intergalactic Corporate Services LLC             ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
@@ -93,6 +93,18 @@ TELEGRAM_BOT_TOKEN=your_telegram_token
 TELEGRAM_DEFAULT_CHAT=your_chat_id
 SLACK_BOT_TOKEN=your_slack_token
 SLACK_DEFAULT_CHANNEL=#general
+FACEBOOK_ACCESS_TOKEN=your_facebook_page_access_token
+FACEBOOK_PAGE_ID=your_facebook_page_id
+THREADS_ACCESS_TOKEN=your_threads_access_token
+THREADS_USER_ID=your_threads_user_id
+SUBSTACK_URL=https://yourblog.substack.com
+SUBSTACK_TOKEN=your_substack_session_token
+SUBSTACK_ZAPIER_WEBHOOK=your_zapier_webhook_for_substack
+
+# ── ChatGPT Business / OpenAI Enterprise ─────────────────────
+CHATGPT_BUSINESS_API_KEY=your_chatgpt_business_api_key
+OPENAI_ORG_ID=your_openai_org_id
+ZAPIER_WEBHOOK_URL=your_zapier_catch_hook_url
 
 # ── Blockchain / NFT ─────────────────────────────────────────
 OPENSEA_API_KEY=your_opensea_key
@@ -182,7 +194,7 @@ done
 
 # ── Done ─────────────────────────────────────────────────────
 echo ""
-echo "╔═════════════════════════════════════════════════════╗"
+echo "╔══════════════════════════════════════════════════════╗"
 echo "║  JARVIS SWARM INSTALLED                              ║"
 echo "║                                                      ║"
 echo "║  Jarvis-Flow  → http://localhost:3002/flow/health    ║"
