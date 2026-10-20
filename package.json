@@ -1,0 +1,28 @@
+{
+  "name": "jarvis-swarm",
+  "version": "1.0.0",
+  "description": "AI Jarvis Assistants Swarms Systems — Intergalactic Corporate Services LLC",
+  "author": "Lippy Killjoy (lippytm) — AI Builds AI",
+  "private": true,
+  "scripts": {
+    "start:flow":  "node jarvis-flow-server.js",
+    "start:hub":   "node jarvis-hub-server.js",
+    "start:nexus": "node jarvis-nexus-core.js",
+    "start:blast": "node jarvis-blast-server.js",
+    "start:all":   "pm2 start ecosystem.config.js",
+    "stop:all":    "pm2 stop all",
+    "logs":        "pm2 logs",
+    "status":      "pm2 list"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "@octokit/rest": "^21.0.2",
+    "express": "^4.18.2",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
