@@ -1,0 +1,20 @@
+name: Control Tower Sandbox Tests
+on:
+  pull_request:
+  push:
+    branches: [feature/control-tower-foundation-20261021]
+permissions:
+  contents: read
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run offline deterministic tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -v
