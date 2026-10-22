@@ -6,10 +6,29 @@ This development branch contains a Python Control Tower prototype for bounded
 builder proposals, explicit connector observations, and synthetic membership and
 funding-referral workflows. The current review target is [draft PR #5](https://github.com/lippytm/jarvis-nexus-core/pull/5).
 
-The network milestone adds a reusable spelling composer, five assistant roles
-for each of seven work areas, twelve draft destinations, and a durable local
-handoff ledger. The 35 example assistant specifications are inactive. They do not
-start external agents, connect accounts, send posts, or execute generated code.
+The portfolio expansion adds a portable workbench with twelve initiatives across
+seven work areas, a five-role mission compiler, seven-channel editorial briefs,
+and a real read-only Hostinger transport. It builds on the spelling composer and
+durable local handoff ledger. Assistant specifications and compiled missions are
+inactive planning artifacts; they do not start external agents or publish content.
+
+## Choose a useful portfolio mission
+
+Open [Jarvis Portfolio Workbench](web/jarvis-workbench.html) locally. Search or
+filter the catalog, select an initiative, write one objective and choose a 15-,
+30-, 60- or 90-minute planning window. Copy a planning brief or download a strict
+mission request. Save a download before closing: draft memory lasts for the visit.
+
+From the repository root, compile a supplied example:
+
+```bash
+python scripts/jarvis_portfolio.py plan --request examples/portfolio/jarvis-tools.request.json --mission first-tool-cycle --source-revision a67e743e8b32e552ccddd9e16a2108fe2f816274 --out reports/first-tool-cycle.mission.json
+```
+
+The source revision above is the example's previous-milestone context. Use the
+actual source context for a new task. The compiler produces five role drafts,
+acceptance checks, planned dependencies and a resume bookmark. It makes no model
+calls. [Full usage, twelve initiatives and next priorities](docs/PORTFOLIO_EXPANSION_2026_10_22.md).
 
 ## Write and review a Jarvis draft
 
@@ -22,6 +41,15 @@ See the [composer guide and verification limits](docs/JARVIS_COMPOSER.md).
 Browser rendering and native clipboard/spellcheck behavior still require a
 target-browser check; the retained automated checks cover the authored logic
 and HTML structure.
+
+## Check the Hostinger read connection
+
+The [Hostinger runbook](docs/HOSTINGER_CONNECTION_RUNBOOK.md) documents the fixed
+read-only inventory endpoint, secure runtime configuration and explicit CLI. The
+actual presence check for this milestone found no configured `HOSTINGER_API_TOKEN`;
+no authenticated read was attempted. The site's product, account access and API
+compatibility remain unverified. The secure output CLI currently requires POSIX;
+the workbench and composer are separate browser files.
 
 ## Build portable assistant specifications
 
@@ -47,14 +75,19 @@ The command checks source syntax, runs the offline unit tests and demonstration,
 and saves a JSON evidence record plus a test log under `reports/`. It uses the
 Python standard library and makes no model, payment, or deployment calls.
 
-Test the actual spelling/export helper with Node 18 or later (CI uses Node 24):
+Test both authored web helpers with Node 18 or later (CI uses Node 24):
 
 ```bash
-node --test tests/test_composer.mjs
+node --test --test-reporter=tap tests/*.mjs
 ```
 
 ## Review the implementation
 
+- [Portfolio expansion and next three engineering priorities](docs/PORTFOLIO_EXPANSION_2026_10_22.md)
+- [Workbench usage and browser verification limits](docs/JARVIS_WORKBENCH.md)
+- [Portfolio verification: 163 Python tests and 43 syntax checks](docs/evidence/portfolio_expansion_2026_10_22.json)
+- [Twelve synthetic planning missions](examples/portfolio/mission_index.json)
+- [Hostinger read-only connection runbook](docs/HOSTINGER_CONNECTION_RUNBOOK.md)
 - [Network milestone and next three engineering priorities](docs/NETWORK_MILESTONE_2026_10_22.md)
 - [Provider routes, account requirements and Hostinger probe](docs/PROVIDER_CONNECTIONS_2026_10_22.md)
 - [Network milestone verification](docs/evidence/network_milestone_2026_10_22.json)

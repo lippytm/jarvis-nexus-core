@@ -16,11 +16,12 @@ class ProviderCatalogTests(unittest.TestCase):
         self.assertNotEqual(PROVIDERS["chatgpt"]["category"], PROVIDERS["openai"]["category"])
 
     def test_export_availability_never_means_live_permission(self):
-        for record in provider_catalog().values():
+        for provider_id, record in provider_catalog().items():
             self.assertEqual(record["handoff_modes"]["manual_draft_export"], "available")
             self.assertEqual(record["handoff_delivery"], "human_transfer_required")
             self.assertEqual(record["connection_status"], "unverified")
-            self.assertEqual(record["live_api_adapter"], "not_implemented")
+            expected_adapter = "implemented_read_only_horizons_inventory" if provider_id == "hostinger" else "not_implemented"
+            self.assertEqual(record["live_api_adapter"], expected_adapter)
             self.assertEqual(record["write_operations"], "not_implemented")
 
     def test_nested_copy_mutation_cannot_change_future_catalog_or_constants(self):
@@ -66,6 +67,15 @@ class ProviderCatalogTests(unittest.TestCase):
         self.assertEqual(row["api_documentation_status"], "read_only_mcp_documented")
         self.assertEqual(row["write_operations"], "not_implemented")
         self.assertTrue(any("cannot publish" in text for text in row["boundaries"]))
+
+    def test_hostinger_read_transport_does_not_enable_live_draft_delivery(self):
+        row = provider_details("hostinger")
+        self.assertEqual(row["read_only_probe"], "implemented_with_stdlib_https_transport")
+        self.assertEqual(row["live_validation"], "not_performed")
+        self.assertEqual(row["credential_environment_variable"], "HOSTINGER_API_TOKEN")
+        self.assertEqual(row["handoff_modes"]["live_api"], "not_implemented")
+        self.assertEqual(row["write_operations"], "not_implemented")
+        self.assertEqual(row["connection_status"], "unverified")
 
 
 if __name__ == "__main__":

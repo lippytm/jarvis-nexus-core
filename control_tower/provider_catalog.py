@@ -68,7 +68,7 @@ _DATA = {
          "Authorized hPanel API token for applicable API operations",
          "Confirm supported embed or server integration and publication destination"),
         ("Horizons inventory does not prove that a manual-mode Website Builder site is API-editable.",
-         "The included transport-injected inventory probe is read-only and has only offline test evidence.",
+         "The included inventory probe has a fixed stdlib HTTPS transport and explicit live CLI; evidence remains offline-only until an authorized real read.",
          "No builder editing, publication, affiliate-account connection or production checkout is implemented."),
         ("https://docs.hostinger.com/ai-builder/integrations", "https://docs.hostinger.com/api-reference/overview",
          "https://docs.hostinger.com/api-reference/endpoints/horizons/websites/get-website-list",
@@ -142,7 +142,10 @@ _DATA = {
         ("https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api",
          "https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens")),
 }
-_DATA["hostinger"]["read_only_probe"] = "implemented_with_injected_transport_offline_tests_only"
+_DATA["hostinger"]["read_only_probe"] = "implemented_with_stdlib_https_transport"
+_DATA["hostinger"]["live_api_adapter"] = "implemented_read_only_horizons_inventory"
+_DATA["hostinger"]["live_validation"] = "not_performed"
+_DATA["hostinger"]["credential_environment_variable"] = "HOSTINGER_API_TOKEN"
 
 
 def _freeze(value):

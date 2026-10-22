@@ -1,5 +1,26 @@
 # Jarvis provider connections: documented routes and implementation boundaries
 
+## Later portfolio-expansion addendum
+
+The original research and injected-probe milestone below used starting revision
+`575ebc777fae0165c93247e8c6da44c440539c4d`. The later portfolio expansion, developed
+from `a67e743e8b32e552ccddd9e16a2108fe2f816274`, adds
+`control_tower/hostinger_live.py` and `scripts/jarvis_hostinger.py`: a real, fixed
+GET-only HTTPS transport and an explicit runtime-credential command. Statements
+below that the original probe had no default sender describe that earlier scope;
+the injected probe itself remains independent of environment access.
+
+The Hostinger catalog now records the implemented read-only Horizons inventory
+transport. Live model dispatchers and every provider's API write operation remain
+unimplemented. The actual presence-only check found no `HOSTINGER_API_TOKEN`, so
+no authenticated Hostinger request was made and all account statuses remain
+unverified. See the [current runbook](HOSTINGER_CONNECTION_RUNBOOK.md),
+[configuration receipt](evidence/hostinger_config_2026_10_22.json) and
+[portfolio expansion](PORTFOLIO_EXPANSION_2026_10_22.md). The catalog test suite is
+now seven tests; the six-test result below is retained as historical evidence.
+
+## Original network-milestone record
+
 **Reviewed:** October 22, 2026.  
 **Starting source revision:** `575ebc777fae0165c93247e8c6da44c440539c4d`.  
 **Result:** portable draft-handoff catalog and a bounded, transport-injected Hostinger inventory probe. No account connection, credential discovery, live model call, website mutation, payment action or social publication was performed.

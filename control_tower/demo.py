@@ -8,6 +8,7 @@ from control_tower.dashboard import build_dashboard
 from control_tower.connections import connector_report
 from control_tower.journeys import reconcile_journeys
 from control_tower.network_demo import demonstrate_network
+from control_tower.portfolio_demo import demonstrate_portfolio
 
 def demonstrate():
     leads = [
@@ -43,6 +44,7 @@ def demonstrate():
         "mode": "synthetic_only", "routes": routes, "roundtrip": report,
         "membership_journey": journey,
         "assistant_network": demonstrate_network(),
+        "portfolio_planning": demonstrate_portfolio(),
         "builder_candidate": {"filename":candidate["filename"], "sha256":candidate["sha256"]},
         "static_evaluation": evaluation, "dashboard": dashboard,
         "connectors": connector_report(), "external_actions": 0,
