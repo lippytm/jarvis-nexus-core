@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Jarvis — The Research Questbook</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1021;--panel:#141d34;--ink:#edf3ff;--muted:#b1bfd8;--line:#3b4967;--cyan:#9ce6df;--gold:#f4ce92;--purple:#c8b6ff;--error:#ffb7c2;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#2d2847 0%,transparent 48%),radial-gradient(ellipse at 5% 36%,#17333f 0%,transparent 40%),var(--bg);color:var(--ink);line-height:1.55}a{color:var(--cyan);text-underline-offset:3px}button,input,select,textarea{font:inherit}button,input,select,textarea{max-width:100%}button{min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:9px;background:#24324f;color:var(--ink);font-weight:700;cursor:pointer;transition:background .16s,border-color .16s}button:hover:not(:disabled){background:#324367;border-color:var(--cyan)}button:disabled{opacity:.55;cursor:not-allowed}.primary{color:#102c31;background:var(--cyan);border-color:var(--cyan)}.primary:hover:not(:disabled){background:#c7fff3}input,select,textarea{color:var(--ink);background:#0d172a;border:1px solid var(--line);border-radius:8px;padding:11px 12px}textarea{resize:vertical;line-height:1.6;min-height:110px;width:100%}select,input:not([type="checkbox"]){width:100%;min-width:0}input[type="checkbox"]{width:20px;height:20px;accent-color:var(--cyan)}[aria-invalid="true"]{border-color:var(--error)}[hidden]{display:none!important}:focus-visible{outline:3px solid var(--gold);outline-offset:4px}h1,h2,h3,p{margin:0}h1,h2,h3{line-height:1.17}p+p{margin-top:10px}.shell{max-width:1400px;margin:auto;padding:24px 32px 34px}.skip{position:absolute;left:16px;top:-100px;padding:12px;background:var(--panel);z-index:5;border:2px solid var(--gold);border-radius:8px}.skip:focus{top:16px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center}.sigil{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--gold);border-radius:13px 3px;background:linear-gradient(135deg,#48405a,#162b40);color:var(--gold);font:28px Georgia,serif;transform:rotate(-7deg)}.brand strong{display:block;font-size:.88rem;letter-spacing:.18em}.brand small{font-size:.65rem;color:var(--muted);letter-spacing:.13em}.top-actions{display:flex;gap:18px;align-items:center;font-size:.8rem}.calm{display:flex;align-items:center;gap:7px;color:var(--muted);cursor:pointer}.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:35px;padding:37px 0 25px;align-items:center}.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-weight:750;font-size:.7rem;color:var(--cyan)}h1{font-size:clamp(2.5rem,5.3vw,4.2rem);letter-spacing:-.05em;max-width:770px;margin:10px 0 17px}.hero-copy{color:var(--muted);max-width:670px;font-size:1rem}.hero-note{font-size:.75rem;color:var(--muted);margin-top:14px;max-width:660px}.constellation{position:relative;overflow:hidden;min-height:265px;aspect-ratio:1.65;border:1px solid #536080;border-radius:24px;background:radial-gradient(ellipse at 50% 48%,#5b507467,transparent 60%),linear-gradient(145deg,#172a3d,#20223c 65%,#273345)}.constellation:after{content:"";position:absolute;inset:50% 0 0;background:linear-gradient(transparent,#0b1529d9);pointer-events:none}.constellation img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.orbit{position:absolute;border:1px solid #9ce6df40;border-radius:50%;width:67%;height:80%;left:16.5%;top:10%;transform:rotate(-23deg)}.orbit.second{width:87%;height:48%;left:6.5%;top:26%;transform:rotate(22deg);border-color:#c8b6ff55}.core-star{position:absolute;top:32%;left:43%;font:70px Georgia,serif;color:var(--gold);text-shadow:0 0 44px #f4ce9277}.star{position:absolute;width:8px;height:8px;background:var(--cyan);transform:rotate(45deg);box-shadow:0 0 15px #9ce6df66}.star.a{left:22%;top:20%}.star.b{left:73%;top:44%;background:var(--gold)}.star.c{left:29%;top:73%;background:var(--purple)}.art-caption{position:absolute;bottom:21px;left:22px;right:22px;z-index:1;font-size:.73rem;color:#dde6f6}.art-caption strong{display:block;font-size:1.05rem;letter-spacing:.02em;color:var(--gold);margin-bottom:3px}.edition{border:1px solid #7d694b;border-left:4px solid var(--gold);background:#322c30;padding:13px 17px;border-radius:10px;margin-bottom:22px}.edition[data-public="true"]{border-color:#49756b;border-left-color:var(--cyan);background:#173437}.edition strong{display:block;font-size:.83rem;letter-spacing:.08em;color:var(--gold)}.edition p{font-size:.77rem;color:#d7e0ed;margin-top:5px}.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:22px;align-items:start}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(150deg,#1b2840f5,#111b30fa);overflow:hidden}.pad{padding:23px}.section-title{font-size:1.18rem;margin:6px 0 14px}.field{margin-top:16px}.field label,.field-label{display:block;font-size:.81rem;font-weight:700;margin-bottom:7px}.hint{font-size:.74rem;color:var(--muted);margin-top:8px}.context-description{font-size:.8rem;color:var(--muted);margin-top:15px}.context-title{font-size:.95rem;margin:22px 0 8px}.context-detail{border-top:1px solid var(--line);padding-top:15px;margin-top:16px;font-size:.77rem}.context-detail summary{cursor:pointer;color:var(--cyan);font-weight:700}.context-detail p{margin-top:10px;color:var(--muted)}.context-detail ul{padding-left:18px;color:var(--muted)}.destination{overflow-wrap:anywhere}.campaign-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}.campaign-top h2{font-size:clamp(1.4rem,3vw,1.95rem);letter-spacing:-.025em;margin-top:7px}.local-tag{font-size:.62rem;letter-spacing:.07em;border:1px solid #696445;border-radius:25px;color:var(--gold);padding:4px 9px;white-space:nowrap}.campaign-summary{font-size:.86rem;color:var(--muted);max-width:770px}.quest-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.quest-button{text-align:left;background:#14223a;padding:14px;min-width:0}.quest-button[aria-pressed="true"]{border-color:var(--cyan);background:#244148;box-shadow:inset 0 -3px var(--cyan)}.quest-button .number{display:block;font-family:Georgia,serif;font-size:1.55rem;font-weight:400;color:var(--gold)}.quest-button strong{display:block;font-size:.85rem;margin:5px 0}.quest-button small{display:block;font-size:.66rem;color:var(--muted);font-weight:400}.progress-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:23px;color:var(--muted);font-size:.73rem}.progress-wrap{max-width:320px;flex:1}.progress-top{display:flex;justify-content:space-between;margin-bottom:6px}progress{width:100%;height:6px;display:block;border:0;border-radius:6px;overflow:hidden;background:#30405d;accent-color:var(--cyan)}progress::-webkit-progress-bar{background:#30405d}progress::-webkit-progress-value{background:var(--cyan)}progress::-moz-progress-bar{background:var(--cyan)}.quest-detail{border-top:1px solid var(--line);padding-top:23px}.quest-detail h3{font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.035em;margin:8px 0 13px}.quest-prompt{font-size:.94rem;color:#dce5f4}.goal{border-left:2px solid var(--gold);padding:2px 0 2px 12px;font-size:.8rem;color:var(--muted);margin:17px 0}.goal strong{color:var(--gold);display:block;margin-bottom:4px}.quest-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:17px}.quest-actions p{font-size:.72rem;color:var(--muted);max-width:380px}#toggle-explored[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan);background:#1c3b43}.objective-meta{display:flex;justify-content:space-between;gap:12px;font-size:.71rem;color:var(--muted);margin-top:5px}.wide{grid-column:1/-1}.evidence-heading{display:flex;justify-content:space-between;gap:22px;align-items:center}.evidence-heading p{max-width:850px;font-size:.83rem;color:var(--muted)}.empty-notes{padding:22px;border:1px dashed #52617d;border-radius:10px;font-size:.84rem;color:var(--muted);margin-top:20px}.notes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}.note-card{border:1px solid #455473;border-radius:12px;background:#101c31;padding:18px;min-width:0}.note-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}.note-head h3{font-size:.9rem}.remove-note{font-size:.72rem;padding:7px 10px;min-height:38px;background:#252c42}.note-card label{display:block;font-size:.76rem;font-weight:650;margin-bottom:6px}.note-card select{font-size:.8rem}.note-card textarea{min-height:118px;margin-top:0}.note-card .field{margin-top:14px}.note-card input{font-size:.76rem}.note-help{font-size:.72rem;color:var(--muted);margin:8px 0}.note-error{font-size:.73rem;color:var(--error);margin-top:9px;min-height:1.1em}.lower{display:grid;grid-template-columns:1fr 1fr;gap:22px}.classification-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.classification-grid .field{margin-top:0}.export-copy{font-size:.83rem;color:var(--muted);margin-bottom:17px}.export-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.status{font-size:.78rem;color:var(--cyan);min-height:1.4em;margin-top:12px;overflow-wrap:anywhere}.status[data-error="true"]{color:var(--error)}.validation-note{font-size:.75rem;color:var(--muted);margin-top:12px}.import-label{display:block;font-size:.8rem;font-weight:700;margin:18px 0 7px}input[type="file"]{font-size:.73rem;padding:7px}input[type="file"]::file-selector-button{background:#2d3b59;color:var(--ink);border:0;padding:8px 9px;margin-right:8px;border-radius:4px;font:inherit;cursor:pointer}.copy-preview{margin-top:18px}.copy-preview summary{font-size:.79rem;cursor:pointer;color:var(--cyan)}#copy-preview{font-size:.74rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;min-height:180px;margin-top:10px}.footer{font-size:.74rem;color:var(--muted);border-top:1px solid var(--line);margin-top:27px;padding-top:18px}.error{padding:18px;background:#432938;border:1px solid var(--error);border-radius:10px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}body[data-calm="true"] *,body[data-calm="true"] *::before,body[data-calm="true"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}@media(max-width:1100px){.shell{padding:22px}.layout{grid-template-columns:270px minmax(0,1fr);gap:17px}.pad{padding:19px}.hero{gap:24px}.constellation{min-height:240px}.top-actions{gap:12px}.notes{gap:13px}}@media(max-width:850px){.hero{grid-template-columns:1fr}.constellation{display:none}.layout{grid-template-columns:1fr}.context-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.context-fields .field{margin-top:0}.context-title{margin-top:18px}.context-detail{margin-top:12px}.lower{grid-template-columns:1fr}.wide{grid-column:auto}.hero{padding:27px 0 23px}.quest-nav{margin-top:17px}}@media(max-width:560px){.shell{padding:16px 12px 25px}.topbar{align-items:flex-start;gap:10px}.top-actions{gap:7px;justify-content:flex-end;flex-wrap:wrap;max-width:160px;font-size:.7rem}.brand small{font-size:.55rem}.brand{gap:9px}.sigil{width:37px;height:40px}h1{font-size:2.6rem}.pad{padding:18px}.context-fields,.notes,.classification-grid{grid-template-columns:1fr}.context-fields{gap:16px}.quest-nav{gap:7px}.quest-button{padding:11px 8px}.quest-button strong{font-size:.74rem}.quest-button small{font-size:.59rem}.quest-button .number{font-size:1.25rem}.campaign-top{display:block}.local-tag{display:inline-block;margin-top:10px}.progress-row{display:block}.progress-wrap{max-width:none;margin-bottom:9px}.evidence-heading{display:block}.evidence-heading button{margin-top:17px;width:100%}.quest-actions button,.export-actions button{width:100%}.objective-meta{flex-direction:column;gap:3px}.note-head{gap:8px}.quest-actions p{max-width:none}}
+  </style>
+</head>
+<body data-calm="true">
+  <a class="skip" href="#quest-detail">Skip to your research quest</a>
+  <div class="shell">
+    <header class="topbar"><div class="brand"><div class="sigil" aria-hidden="true">J</div><div><strong>JARVIS</strong><small>THE RESEARCH QUESTBOOK</small></div></div><div class="top-actions"><a href="jarvis-diary.html" target="_blank" rel="noopener">Diary<span class="sr-only"> (new tab)</span></a><a href="jarvis-rpg.html" target="_blank" rel="noopener">Story pilot<span class="sr-only"> (new tab)</span></a><label class="calm" for="calm-mode"><input id="calm-mode" type="checkbox" checked>Calm mode</label></div></header>
+    <main>
+      <section class="hero" aria-labelledby="page-title"><div><div class="eyebrow">12 initiatives · 3 research paths · your judgment</div><h1 id="page-title">Turn curiosity into<br>a clear next quest.</h1><p class="hero-copy">A quiet place to ask a better question, collect labelled evidence and shape your next creative build. Explore at your pace. Keep room to change your mind.</p><p class="hero-note">This is an offline R&amp;D planning questbook, not a 3D game. Current facts and live research belong in the accompanying report; this page supplies research prompts.</p></div><div class="constellation" aria-hidden="true"><div id="art-fallback"><div class="orbit"></div><div class="orbit second"></div><div class="core-star">✧</div><span class="star a"></span><span class="star b"></span><span class="star c"></span></div><img id="questbook-art" data-jarvis-inline-art="" alt="" hidden><div class="art-caption"><strong>The observatory is open.</strong>Inquiry → evidence → thoughtful review</div></div></section>
+      <noscript><p class="error">This local questbook needs JavaScript for editing and exports. No information is submitted to a server.</p></noscript>
+      <p class="error" id="startup-error" role="alert" hidden></p>
+      <div id="questbook" hidden>
+        <section class="edition" id="edition-banner" aria-labelledby="edition-label"><strong id="edition-label">OWNER EDITION / PRIVATE WORKSPACE</strong><p id="edition-explanation">Private is a classification, not encryption. Keep the downloaded file with people you intend to trust.</p></section>
+        <div class="layout">
+          <aside class="panel pad" aria-labelledby="context-heading"><div class="eyebrow">Set your compass</div><h2 class="section-title" id="context-heading">Choose a focus</h2><div class="context-fields"><div class="field"><label for="initiative">Jarvis initiative</label><select id="initiative" aria-describedby="context-change"></select></div><div class="field"><label for="campaign">Research path</label><select id="campaign" aria-describedby="context-change"></select></div></div><p class="hint" id="context-change">Changing either selector keeps your objective and notes, and resets exploration markers. Review the notes' context before exporting.</p><h3 class="context-title" id="initiative-title"></h3><p class="context-description" id="initiative-summary"></p><details class="context-detail"><summary>Intended outcome &amp; boundaries</summary><p id="initiative-outcome"></p><ul id="initiative-boundaries"></ul><p class="destination" id="initiative-destination"></p><p>Catalog destinations are owner references or unassigned plans, not verified account connections.</p></details></aside>
+          <section class="panel pad" aria-labelledby="campaign-title"><div class="campaign-top"><div><div class="eyebrow" id="campaign-eyebrow">Human-led research</div><h2 id="campaign-title"></h2></div><span class="local-tag">LOCAL PLANNING ONLY</span></div><p class="campaign-summary" id="campaign-summary"></p><nav class="quest-nav" id="quest-nav" aria-label="Select a research quest"></nav><div class="progress-row"><div class="progress-wrap"><div class="progress-top"><label for="exploration-progress">Quests explored</label><span id="exploration-count">0 / 3</span></div><progress id="exploration-progress" max="3" value="0"></progress></div><span id="visited-count">1 of 3 quest prompts opened</span></div><div class="quest-detail" id="quest-detail" tabindex="-1" aria-labelledby="quest-title"><div class="eyebrow">A prompt, not a completed result</div><h3 id="quest-title"></h3><p class="quest-prompt" id="quest-prompt"></p><div class="goal"><strong>Useful next artifact</strong><span id="quest-output"></span></div><div class="quest-actions"><button type="button" id="toggle-explored" aria-pressed="false">Mark prompt explored</button><p>Markers record exploration of this questbook. They never certify evidence, project completion or agreement with a claim.</p></div></div><div class="field"><label for="objective">Your question or next objective</label><textarea id="objective" spellcheck="true" lang="en" autocomplete="off" aria-describedby="objective-limit objective-hint" placeholder="What do you want to understand, test or create? What evidence would change your decision?"></textarea><div class="objective-meta"><span id="objective-hint">One shared objective for this saved questbook. Unfinished text is welcome.</span><span id="objective-limit">0 / 2,000 UTF-8 bytes</span></div></div></section>
+          <section class="panel pad wide" aria-labelledby="evidence-heading"><div class="evidence-heading"><div><div class="eyebrow">Keep the labels attached</div><h2 class="section-title" id="evidence-heading">Your evidence notebook</h2><p>Separate what someone claims, what you checked, what remains unknown and what you invented. These labels are your assessment; the app does not verify sources or fetch links.</p></div><button type="button" id="add-note">Add evidence note</button></div><p class="empty-notes" id="empty-notes">Start with one question or source. A blank notebook is a valid draft; there is no reward for collecting a particular conclusion.</p><div class="notes" id="evidence-notes"></div><p class="hint" id="notes-limit">Up to 8 notes. Each note allows 1,500 UTF-8 bytes plus an optional HTTPS reference of up to 1,000 bytes.</p></section>
+          <div class="lower wide"><section class="panel pad" aria-labelledby="classification-heading"><div class="eyebrow">Decide who this draft is for</div><h2 class="section-title" id="classification-heading">Owner-first by default</h2><div class="classification-grid"><div class="field"><label for="audience">Intended audience</label><select id="audience" aria-describedby="classification-note"><option value="owner">Owner edition</option><option value="public">Public candidate edition</option></select></div><div class="field"><label for="source-visibility">Source visibility</label><select id="source-visibility" aria-describedby="classification-note"><option value="private">Private</option><option value="internal">Internal</option><option value="public_candidate">Public candidate</option></select></div></div><p class="hint" id="classification-note">A public audience requires public candidate source visibility. Review every note and link before choosing it. Classification does not detect secrets, encrypt the file or grant publication permission.</p><p class="validation-note" id="validation-note" role="status" aria-live="polite" aria-atomic="true"></p></section><section class="panel pad" aria-labelledby="save-heading"><div class="eyebrow">Leave yourself a way back</div><h2 class="section-title" id="save-heading">Save or resume your questbook</h2><p class="export-copy">Download a local JSON draft, or copy a plain-text research brief. Reopen this page and import the JSON to resume. There is no autosave or background sync.</p><div class="export-actions"><button type="button" class="primary" id="export-book">Download questbook .json</button><button type="button" id="copy-brief">Copy research brief</button></div><label class="import-label" for="import-book">Resume from local JSON</label><input type="file" id="import-book" accept=".json,application/json" aria-describedby="import-note"><p class="hint" id="import-note">Maximum 64 KiB, this questbook format only. A valid import replaces the current draft. Invalid files or intervening edits leave it untouched.</p><p class="status" id="file-status" role="status" aria-live="polite" aria-atomic="true"></p><details class="copy-preview" id="copy-preview-details"><summary>Plain-text copy preview</summary><label class="sr-only" for="copy-preview">Latest research brief, read only</label><textarea id="copy-preview" readonly spellcheck="false"></textarea></details></section></div>
+        </div>
+      </div>
+    </main>
+    <footer class="footer"><p>Original celestial interface for research and creative planning. No model calls, purchases, account actions, external assets, analytics or persistent app storage. Source URLs remain text.</p><p>Native spellcheck depends on your browser's dictionary and settings and may use its own service. Download what you want to keep before closing or reloading. A saved file carries labels, not encryption or verified provenance.</p></footer>
+  </div>
+  <script type="application/json" id="portfolio-data">
+{
+  "schema_version": 1,
+  "kind": "jarvis.portfolio_catalog",
+  "catalog_version": "2026-10-22.1",
+  "scope": "authored planning defaults; not a live account, product or revenue inventory",
+  "initiatives": [
+    {
+      "audience": "Charles and future Jarvis collaborators",
+      "boundaries": [
+        "Generated proposals are inactive.",
+        "The owner retains release and account authority."
+      ],
+      "destination": {
+        "label": "Jarvis Nexus development repository",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://github.com/lippytm/jarvis-nexus-core"
+        ]
+      },
+      "evidence_gaps": [
+        "A real task selected for the next cycle",
+        "Independent release review",
+        "Observed benefit in actual use"
+      ],
+      "formats": [
+        "Tool proposal",
+        "Tested change",
+        "Teaching note"
+      ],
+      "id": "jarvis-tools",
+      "journey_kind": "none",
+      "outcome": "One useful change with reproducible checks and a clear recovery path.",
+      "plan_steps": [
+        "Choose one repeated task and a reproducible example.",
+        "Draft a minimal change with explicit inputs and outputs.",
+        "Review the change and retain its actual test evidence."
+      ],
+      "project_id": "ai-jarvis",
+      "project_label": "AI Jarvis engineering and coordination",
+      "summary": "Turn a recurring work problem into a small reusable tool and a reviewed assistant mission.",
+      "title": "Jarvis tools and assistant building"
+    },
+    {
+      "audience": "Learners exploring practical technology",
+      "boundaries": [
+        "Keep this education destination separate from the proposed affiliate platform.",
+        "An inquiry is not paid access or proof of learning."
+      ],
+      "destination": {
+        "label": "AI Evolutionary Evolutions",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://aievolutionaryevolutions.com"
+        ]
+      },
+      "evidence_gaps": [
+        "Hostinger product and site identity",
+        "Supported form delivery",
+        "Actual consented inquiry evidence"
+      ],
+      "formats": [
+        "Lesson page",
+        "Inquiry page",
+        "Learning checklist"
+      ],
+      "id": "website-learning",
+      "journey_kind": "member",
+      "outcome": "A reviewed lesson and a working, measured inquiry path when account access is available.",
+      "plan_steps": [
+        "Select one learner question and one lesson outcome.",
+        "Prepare the lesson and one optional inquiry action.",
+        "Verify the actual page, form receipt and source attribution."
+      ],
+      "project_id": "ai-evolutionary-evolutions",
+      "project_label": "Hostinger education and membership inquiries",
+      "summary": "Develop programming, Linux and AI learning material with a clear inquiry journey on AI Evolutionary Evolutions.",
+      "title": "Education website and membership inquiries"
+    },
+    {
+      "audience": "Prospective creators and affiliate partners",
+      "boundaries": [
+        "Do not route this platform to the education site by default.",
+        "Prices, demand and income remain unvalidated."
+      ],
+      "destination": {
+        "label": "Separate affiliate platform — destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Separate website assignment",
+        "Validated customer interest",
+        "Actual fulfillment and support capacity"
+      ],
+      "formats": [
+        "Offer brief",
+        "Site specification",
+        "Member workflow"
+      ],
+      "id": "affiliate-builder",
+      "journey_kind": "none",
+      "outcome": "One reviewable offer with a named delivery method and a clearly assigned destination.",
+      "plan_steps": [
+        "Choose one audience and one useful member outcome.",
+        "Describe the smallest offer and its delivery workflow.",
+        "Assign a separate destination and test demand before expanding."
+      ],
+      "project_id": "funding-affiliates",
+      "project_label": "Separate funding-customer and referral-partner journeys",
+      "summary": "Design the separate platform for affiliate products, member tools and reusable website-building services.",
+      "title": "Affiliate website and membership platform"
+    },
+    {
+      "audience": "Business owners seeking financing information",
+      "boundaries": [
+        "Keep customer financing distinct from recruiting referral partners.",
+        "No approval, amount, rate or earnings guarantee."
+      ],
+      "destination": {
+        "label": "Owner-provided financing destinations",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://lippytmai.getbizfunds.com",
+          "https://www.7figurescredit.com?a_aid=lippytm"
+        ]
+      },
+      "evidence_gaps": [
+        "Current provider terms and link behavior",
+        "Authorized attribution data",
+        "Confirmed commission records if any"
+      ],
+      "formats": [
+        "Educational explanation",
+        "Referral page brief",
+        "Attribution review"
+      ],
+      "id": "funding-customers",
+      "journey_kind": "funding_customer",
+      "outcome": "A clearly disclosed customer referral path with no invented financing outcome.",
+      "plan_steps": [
+        "Choose one customer question and confirm current provider information.",
+        "Draft an accurate explanation and visible affiliate disclosure.",
+        "Review the customer destination and measure a permitted referral event."
+      ],
+      "project_id": "funding-affiliates",
+      "project_label": "Separate funding-customer and referral-partner journeys",
+      "summary": "Help prospective business-financing customers understand the referral route and reach the selected provider.",
+      "title": "Business financing customer journey"
+    },
+    {
+      "audience": "Prospective referral partners",
+      "boundaries": [
+        "Do not replace a financing-customer link with a partner application.",
+        "No invented earnings or automatic outreach."
+      ],
+      "destination": {
+        "label": "Owner-provided partner destinations",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://lendtrack.ai/join/lippytmai",
+          "https://join.7figurespartners.com/?a_aid=lippytm"
+        ]
+      },
+      "evidence_gaps": [
+        "Current partner terms",
+        "Verified application destination",
+        "Actual application and commission evidence"
+      ],
+      "formats": [
+        "Partner overview",
+        "Application guide",
+        "Follow-up checklist"
+      ],
+      "id": "referral-partners",
+      "journey_kind": "funding_partner",
+      "outcome": "A partner-specific application path with clear expectations and documented terms.",
+      "plan_steps": [
+        "Confirm the current partner program and audience.",
+        "Explain responsibilities and compensation only from verified terms.",
+        "Review the partner application route and retain consented outcomes."
+      ],
+      "project_id": "funding-affiliates",
+      "project_label": "Separate funding-customer and referral-partner journeys",
+      "summary": "Explain the partner opportunity and route interested people to the correct partner application.",
+      "title": "Referral partner recruitment"
+    },
+    {
+      "audience": "Readers and learners",
+      "boundaries": [
+        "The paused Studio Work Cycle remains paused.",
+        "A planning pack is not a finished book, audiobook or sale."
+      ],
+      "destination": {
+        "label": "Publishing destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Current manuscript and rights inventory",
+        "Reader feedback",
+        "Human accessibility review before Studio restart"
+      ],
+      "formats": [
+        "Book chapter",
+        "Audio script",
+        "Newsletter outline"
+      ],
+      "id": "publishing-library",
+      "journey_kind": "none",
+      "outcome": "One reviewed chapter or script with a reusable source and edition record.",
+      "plan_steps": [
+        "Select one title, reader need and chapter-sized deliverable.",
+        "Separate sourced factual claims from fiction and speculation.",
+        "Review references, rights, accessibility and edition changes."
+      ],
+      "project_id": "publishing-studio",
+      "project_label": "Source-backed books, audio, video and social drafts",
+      "summary": "Develop sourced educational titles and clearly labelled fiction, including the Encyclopedia of Everything Applied and original creative worlds.",
+      "title": "Publishing library and creative worlds"
+    },
+    {
+      "audience": "Video learners and prospective creator customers",
+      "boundaries": [
+        "An outline is not a rendered video or working interactive player.",
+        "Commercial platform hosting needs its own assignment."
+      ],
+      "destination": {
+        "label": "Video platform destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Actual source assets and permissions",
+        "Target player capability",
+        "Viewer and accessibility testing"
+      ],
+      "formats": [
+        "Storyboard",
+        "Narration script",
+        "Interaction map"
+      ],
+      "id": "interactive-video",
+      "journey_kind": "none",
+      "outcome": "A reviewable short-video production brief with captions and an interaction purpose.",
+      "plan_steps": [
+        "Choose one learning or entertainment outcome.",
+        "Map scenes, narration, captions and interaction choices.",
+        "Review asset rights and test the intended viewer experience."
+      ],
+      "project_id": "publishing-studio",
+      "project_label": "Source-backed books, audio, video and social drafts",
+      "summary": "Adapt one reviewed lesson or chapter into a storyboard, narration and meaningful interaction plan.",
+      "title": "Interactive video and teaching studio"
+    },
+    {
+      "audience": "Charles and future programming learners",
+      "boundaries": [
+        "Do not infer an installed or compatible merged Linux system.",
+        "This pack does not run installers or system commands."
+      ],
+      "destination": {
+        "label": "Local learning workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Verified operating system and device setup",
+        "Current compatibility documentation",
+        "Observed learner transfer beyond answer matching"
+      ],
+      "formats": [
+        "Lesson",
+        "Practice worksheet",
+        "Environment checklist"
+      ],
+      "id": "linux-learning",
+      "journey_kind": "none",
+      "outcome": "An instructor-reviewed exercise with explicit environment assumptions.",
+      "plan_steps": [
+        "Choose one concept and identify the actual learner environment.",
+        "Prepare a small exercise with expected observations.",
+        "Review compatibility and use a disposable environment for any later execution."
+      ],
+      "project_id": "linux-education",
+      "project_label": "Programming and Linux learning materials",
+      "summary": "Create practical lessons for the proposed Arch, Bedrock and Omarchy learning path.",
+      "title": "Linux and programming learning"
+    },
+    {
+      "audience": "Robotics learners and researchers",
+      "boundaries": [
+        "No physical robot control is included.",
+        "A source check does not establish real-world safety or readiness."
+      ],
+      "destination": {
+        "label": "Local simulation workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Selected simulator and compatible environment",
+        "Actual simulation results",
+        "Separate physical-system review if ever applicable"
+      ],
+      "formats": [
+        "Simulation specification",
+        "Evaluation plan",
+        "Teaching explanation"
+      ],
+      "id": "robotics-simulation",
+      "journey_kind": "none",
+      "outcome": "A bounded simulation brief with measurable conditions and documented limits.",
+      "plan_steps": [
+        "Define a simulated task and environment assumptions.",
+        "Choose observable success and failure conditions.",
+        "Review simulation results separately from physical robot readiness."
+      ],
+      "project_id": "robotics-research",
+      "project_label": "Simulation-first robotics research and education",
+      "summary": "Explore a single simulated robotics task before considering hardware execution.",
+      "title": "Robotics simulation and education"
+    },
+    {
+      "audience": "Potential wearable users",
+      "boundaries": [
+        "No medical, security or protection effectiveness is asserted.",
+        "No device or sensor access is implied."
+      ],
+      "destination": {
+        "label": "Research destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Actual component specifications",
+        "User feedback",
+        "Measured prototype behavior"
+      ],
+      "formats": [
+        "Concept brief",
+        "Interface sketch",
+        "Prototype evaluation plan"
+      ],
+      "id": "wearables-research",
+      "journey_kind": "none",
+      "outcome": "One testable concept with its technical assumptions and evidence gaps exposed.",
+      "plan_steps": [
+        "Choose one everyday user need and a minimal concept.",
+        "Identify device, battery, data and accessibility requirements.",
+        "Review feasibility using sourced specifications and observed prototype results."
+      ],
+      "project_id": "robotics-research",
+      "project_label": "Simulation-first robotics research and education",
+      "summary": "Develop practical CryptoClockworks, CryptoCyberSecurity and related wearable concepts around user needs.",
+      "title": "Wearable technology concepts"
+    },
+    {
+      "audience": "Charles and authorized collaborators",
+      "boundaries": [
+        "Keep tax IDs, credentials and private documents out of exported public examples.",
+        "Templates do not establish legal or tax compliance."
+      ],
+      "destination": {
+        "label": "Private operating workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Authorized source records",
+        "Current expense and revenue data",
+        "Actual review completion"
+      ],
+      "formats": [
+        "Operating checklist",
+        "Decision brief",
+        "Expense review template"
+      ],
+      "id": "business-operations",
+      "journey_kind": "none",
+      "outcome": "One reusable operating routine with an owner and evidence-based completion check.",
+      "plan_steps": [
+        "Choose one recurring administrative bottleneck.",
+        "Define a minimal record, owner and review cadence.",
+        "Verify the record against authorized source documents."
+      ],
+      "project_id": "business-operations",
+      "project_label": "Business project records and operating checklists",
+      "summary": "Organize project decisions, expenses, documents and follow-ups without mixing private records into public code.",
+      "title": "Business operating system"
+    },
+    {
+      "audience": "Charles",
+      "boundaries": [
+        "No calendar, device, health record or background monitoring access is assumed.",
+        "The owner controls personal priorities and pace."
+      ],
+      "destination": {
+        "label": "Private personal workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Actual available time and device context",
+        "User-confirmed accessibility needs",
+        "Observed completion and usefulness"
+      ],
+      "formats": [
+        "Session plan",
+        "Resume bookmark",
+        "Accessibility checklist"
+      ],
+      "id": "personal-workflow",
+      "journey_kind": "none",
+      "outcome": "A practical session plan and a clear restart point after a break.",
+      "plan_steps": [
+        "Choose one achievable outcome for the available time.",
+        "Record the next action and any access or device obstacle.",
+        "Finish with a concise bookmark and the evidence needed to resume."
+      ],
+      "project_id": "business-operations",
+      "project_label": "Business project records and operating checklists",
+      "summary": "Make it easier to resume work, organize learning and capture ideas across devices and breaks.",
+      "title": "Personal focus, access and continuity"
+    }
+  ],
+  "live_metrics": null,
+  "external_actions": 0,
+  "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9"
+}
+</script>
+  <script id="jarvis-research-core">
+(() => {
+  "use strict";
+  const MAX_FILE_BYTES=64*1024, MAX_NOTES=8, QUEST_IDS=Object.freeze(["inquiry","evidence","review"]);
+  const BOOK_KEYS=Object.freeze(["schema_version","kind","scope","initiative_id","campaign_id","audience","source_visibility","objective","selected_quest","visited_quests","explored_quests","evidence_notes"]);
+  const NOTE_KEYS=Object.freeze(["note_id","label","text","url"]);
+  const LABELS=Object.freeze({attributed_claim:"Attributed claim",vetted_source:"Vetted source — your assessment",open_question:"Open question",fictional:"Fictional material"});
+  const LABEL_HELP=Object.freeze({attributed_claim:"Name who made the claim and distinguish their assertion from established evidence.",vetted_source:"Record what you checked and add its HTTPS reference. This remains your assessment, not app verification.",open_question:"Describe what remains unknown and what evidence would help answer it.",fictional:"Mark invented characters, scenes or speculation used as fiction; do not present them as sourced events."});
+  const CAMPAIGNS=[
+    {id:"general-creative-build",title:"The creative building cycle",eyebrow:"Make one useful thing",summary:"Bring any Jarvis initiative through a clear question, an evidence check and a reviewable next artifact. Keep the ambition; make the next step small.",quests:[
+      {id:"inquiry",title:"Frame a useful question",prompt:"Choose one person, need or recurring task. Describe what you want to learn or build, the limits of this attempt and the observation that would change your plan.",output:"A one-paragraph question, proposed benefit and bounded next step."},
+      {id:"evidence",title:"Gather a grounded example",prompt:"Collect a reproducible example, a primary reference or a clearly labelled observation. Look for a counterexample and record the assumptions you have not tested.",output:"A short evidence note with provenance, limits and one contrary or missing observation."},
+      {id:"review",title:"Shape the next artifact",prompt:"Compare your objective with the evidence. Choose a small draft, test or lesson to prepare, and name the human review it needs before any release or external action.",output:"A proposed artifact, its acceptance check and a practical restart point."}
+    ]},
+    {id:"smart-glasses-procurement",title:"The smart-glasses research trail",eyebrow:"A decision before a purchase",summary:"Research a real use case before selecting hardware. Product specifications, prices, stock and current recommendations belong in the separate live-research report, not these prompts.",quests:[
+      {id:"inquiry",title:"Name the wearing experience",prompt:"Describe the task, setting and person who would use the glasses. List comfort, accessibility, battery, phone compatibility, data handling and budget requirements. Decide which are essential and which are preferences.",output:"A use-case brief and a ranked requirements list, with an owner-set spending limit."},
+      {id:"evidence",title:"Check the primary record",prompt:"For each candidate, check the manufacturer's exact model, region, supported functions and stated compatibility. Record the source and date you checked it. Compare independent hands-on evidence, limitations and the seller's current return terms without assuming a feature is available.",output:"A sourced comparison with unknowns, quoted specifications clearly attributed, and a check date in your notes."},
+      {id:"review",title:"Write the decision boundary",prompt:"Compare candidates against the requirements and evidence gaps. Identify a reversible trial or the further information needed. A decision to wait or buy nothing is a valid outcome; this questbook does not purchase or approve a device.",output:"A provisional shortlist or no-purchase decision, its reasons and one next verification step."}
+    ]},
+    {id:"documentary-claims-research",title:"The documentary evidence trail",eyebrow:"Inquiry without a preset conclusion",summary:"Investigate Greer-related statements and alleged false-flag narratives as attributed claims. Keep documented events, interpretations, unanswered questions and fictional adaptations distinct.",quests:[
+      {id:"inquiry",title:"Define the claim precisely",prompt:"Choose one claim and identify who made it, where and when. Separate the allegation from any documented event. State what evidence would support it, contradict it or leave it unresolved; do not assume the proposed explanation is true.",output:"A neutral claim statement, its original attribution and a question that could change your view."},
+      {id:"evidence",title:"Trace and challenge the source",prompt:"Find original recordings or documents and preserve their context. Seek independent corroboration, contrary evidence and plausible alternative explanations. Multiple copies of the same assertion are not independent confirmation; record where evidence is missing.",output:"An evidence ledger that distinguishes primary material, commentary, contradictions and unresolved gaps."},
+      {id:"review",title:"Build an honest treatment",prompt:"Write the strongest conclusion the evidence supports, including uncertainty. Say when a claim is unsubstantiated. Attribute statements fairly, review source rights and keep fictional scenes labelled. Choose a documentary question or a clearly fictional adaptation without turning an allegation into an established fact.",output:"A balanced treatment outline with attribution, limits, alternative explanations and a human review plan."}
+    ]}
+  ];
+  const encoder=new TextEncoder();
+  class QuestbookError extends Error { constructor(message,path="") { super(message); this.name="QuestbookError"; this.path=path; } }
+  const fail=(message,path="")=>{ throw new QuestbookError(message,path); };
+  const bytes=value=>encoder.encode(value).length;
+  function validUnicode(value) {
+    for(let i=0;i<value.length;i+=1){const c=value.charCodeAt(i);if(c>=0xd800&&c<=0xdbff){const next=value.charCodeAt(++i);if(!(next>=0xdc00&&next<=0xdfff))return false;}else if(c>=0xdc00&&c<=0xdfff)return false;}return true;
+  }
+  function field(value,max,label,path="",blank=true) {
+    if(typeof value!=="string"||!validUnicode(value))fail(`${label} must contain valid Unicode text.`,path);
+    if(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(value))fail(`${label} contains unsupported control characters.`,path);
+    if(!blank&&/^\p{White_Space}*$/u.test(value))fail(`Add ${label.toLowerCase()}.`,path);
+    if(bytes(value)>max)fail(`${label} must be ${max.toLocaleString("en")} UTF-8 bytes or fewer.`,path);
+    return value;
+  }
+  function exact(value,keys,label,path="") {
+    if(!value||typeof value!=="object"||Array.isArray(value)||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))fail(`${label} has missing or unsupported fields.`,path);
+  }
+  function httpsURL(value,path="") {
+    field(value,1000,"Reference URL",path,false);
+    const authority=/^https:\/\/([^/?#]+)/iu.exec(value);
+    if(!authority||authority[1].includes("@")||/[\p{White_Space}\u0000-\u001f\\]/u.test(value))fail("Use an HTTPS reference without credentials, whitespace or a custom port.",path);
+    let parsed;try{parsed=new URL(value);}catch{fail("Use a valid HTTPS reference URL.",path);}
+    if(parsed.protocol!=="https:"||!parsed.hostname||parsed.username||parsed.password||!["","443"].includes(parsed.port))fail("Use an HTTPS reference without credentials or a custom port.",path);
+    return value;
+  }
+  function clone(book) { return {...book,visited_quests:[...book.visited_quests],explored_quests:[...book.explored_quests],evidence_notes:book.evidence_notes.map(item=>({...item}))}; }
+  function noteError(note,index) {
+    const path=`evidence_notes.${index}`;
+    exact(note,NOTE_KEYS,"Evidence note",path);
+    const match=typeof note.note_id==="string"?/^[a-z][a-z0-9_.-]{1,47}$/u.exec(note.note_id):null;
+    if(!match||match[0]!==note.note_id)fail("Evidence note IDs must use 2–48 lowercase identifier characters.",`${path}.note_id`);
+    if(typeof note.label!=="string"||!Object.hasOwn(LABELS,note.label))fail("Choose a listed evidence label.",`${path}.label`);
+    field(note.text,1500,`Note ${index+1} text`,`${path}.text`,note.label!=="vetted_source");
+    field(note.url,1000,`Note ${index+1} reference`,`${path}.url`,true);
+    if(note.url!=="")httpsURL(note.url,`${path}.url`);
+    if(note.label==="vetted_source"&&note.url==="")fail(`Add an HTTPS reference for vetted-source note ${index+1}.`,`${path}.url`);
+    return note;
+  }
+  function parseUniqueJSON(text) {
+    if(typeof text!=="string"||!validUnicode(text))fail("The file must contain valid UTF-8 JSON.");
+    if(bytes(text)>MAX_FILE_BYTES)fail("Choose a JSON file no larger than 64 KiB.");
+    let position=0;
+    const bad=()=>fail("The file is not valid, unambiguous JSON.");
+    const skip=()=>{while(position<text.length&&/[\t\n\r ]/u.test(text[position]))position+=1;};
+    function string(){const start=position;if(text[position++]!=='"')bad();while(position<text.length){const c=text[position++];if(c==='"'){try{return JSON.parse(text.slice(start,position));}catch{bad();}}if(c==="\\")position+=1;else if(c.charCodeAt(0)<32)bad();}bad();}
+    function value(depth,key=""){
+      if(depth>8)fail("The imported JSON is nested too deeply.");skip();const c=text[position];
+      if(c==='"')return string();
+      if(c==="{"){position+=1;const record=Object.create(null);skip();if(text[position]==="}"){position+=1;return record;}while(position<text.length){skip();const name=string();if(Object.hasOwn(record,name))fail("The imported JSON contains a duplicate field.");skip();if(text[position++]!==":")bad();record[name]=value(depth+1,name);skip();const next=text[position++];if(next==="}")return record;if(next!==",")bad();}bad();}
+      if(c==="["){position+=1;const items=[];skip();if(text[position]==="]"){position+=1;return items;}while(position<text.length){items.push(value(depth+1));skip();const next=text[position++];if(next==="]")return items;if(next!==",")bad();}bad();}
+      for(const [token,result] of [["true",true],["false",false],["null",null]])if(text.startsWith(token,position)){position+=token.length;return result;}
+      const number=/-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?/uy;number.lastIndex=position;const match=number.exec(text);
+      if(match){position=number.lastIndex;const result=Number(match[0]);if(!Number.isFinite(result))bad();if(key==="schema_version"&&/[.eE]/u.test(match[0]))fail("The schema version must be a JSON integer.");return result;}bad();
+    }
+    const result=value(0);skip();if(position!==text.length)bad();return result;
+  }
+  function inlineArt(value) { return typeof value==="string"&&/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/u.test(value)?value:null; }
+  function sameImportRevision(start,current) { return start.ticket===current.ticket&&start.revision===current.revision; }
+  function createEngine(catalog) {
+    if(!catalog||catalog.kind!=="jarvis.portfolio_catalog"||catalog.schema_version!==1||!Array.isArray(catalog.initiatives)||catalog.initiatives.length!==12)fail("The authored portfolio catalog is unavailable.");
+    const initiatives=catalog.initiatives.map(item=>({...item})), ids=initiatives.map(item=>item.id);
+    if(new Set(ids).size!==12||ids.some(id=>typeof id!=="string"))fail("The authored portfolio catalog is invalid.");
+    const campaign=id=>CAMPAIGNS.find(item=>item.id===id)||fail("Choose a listed research path.","campaign_id");
+    const initiative=id=>initiatives.find(item=>item.id===id)||fail("Choose a listed Jarvis initiative.","initiative_id");
+    const knownQuest=id=>{if(typeof id!=="string"||!QUEST_IDS.includes(id))fail("Choose a listed research quest.","selected_quest");return id;};
+    function validate(book){
+      exact(book,BOOK_KEYS,"Questbook");
+      if(book.schema_version!==1||book.kind!=="jarvis.research_questbook"||book.scope!=="visit_only_exploration")fail("Unsupported questbook schema or exploration scope.");
+      initiative(book.initiative_id);campaign(book.campaign_id);
+      if(!["owner","public"].includes(book.audience))fail("Choose owner or public candidate audience.","audience");
+      if(!["private","internal","public_candidate"].includes(book.source_visibility))fail("Choose a listed source visibility.","source_visibility");
+      if(book.audience==="public"&&book.source_visibility!=="public_candidate")fail("Public audience requires public candidate source visibility.","source_visibility");
+      field(book.objective,2000,"Objective","objective",true);knownQuest(book.selected_quest);
+      for(const key of ["visited_quests","explored_quests"]){if(!Array.isArray(book[key])||book[key].length>3||new Set(book[key]).size!==book[key].length||book[key].some(id=>!QUEST_IDS.includes(id)))fail("Exploration lists must contain unique, listed quest IDs.",key);}
+      if(!book.visited_quests.includes(book.selected_quest)||book.explored_quests.some(id=>!book.visited_quests.includes(id)))fail("Explored and selected quests must have been opened.","visited_quests");
+      if(!Array.isArray(book.evidence_notes)||book.evidence_notes.length>MAX_NOTES)fail("Use no more than eight evidence notes.","evidence_notes");
+      const noteIDs=new Set();book.evidence_notes.forEach((note,index)=>{noteError(note,index);if(noteIDs.has(note.note_id))fail("Evidence notes need unique IDs.",`evidence_notes.${index}.note_id`);noteIDs.add(note.note_id);});
+      if(bytes(JSON.stringify(book))>MAX_FILE_BYTES)fail("The complete questbook must be 64 KiB or smaller.");return clone(book);
+    }
+    function newBook(initiativeId=ids[0],campaignId=CAMPAIGNS[0].id){initiative(initiativeId);campaign(campaignId);return{schema_version:1,kind:"jarvis.research_questbook",scope:"visit_only_exploration",initiative_id:initiativeId,campaign_id:campaignId,audience:"owner",source_visibility:"private",objective:"",selected_quest:"inquiry",visited_quests:["inquiry"],explored_quests:[],evidence_notes:[]};}
+    function setContext(book,initiativeId,campaignId){initiative(initiativeId);campaign(campaignId);const next=clone(book);if(book.initiative_id!==initiativeId||book.campaign_id!==campaignId){next.initiative_id=initiativeId;next.campaign_id=campaignId;next.selected_quest="inquiry";next.visited_quests=["inquiry"];next.explored_quests=[];}return next;}
+    function selectQuest(book,id){knownQuest(id);const next=clone(book);next.selected_quest=id;next.visited_quests=[...new Set([...next.visited_quests,id])];return next;}
+    function toggleExplored(book){knownQuest(book.selected_quest);const next=clone(book),id=next.selected_quest;next.visited_quests=[...new Set([...next.visited_quests,id])];next.explored_quests=next.explored_quests.includes(id)?next.explored_quests.filter(item=>item!==id):[...next.explored_quests,id];return next;}
+    function addNote(book){if(book.evidence_notes.length>=MAX_NOTES)fail("This questbook already has eight notes.");const next=clone(book);let index=1;while(next.evidence_notes.some(item=>item.note_id===`note-${index}`))index+=1;next.evidence_notes.push({note_id:`note-${index}`,label:"open_question",text:"",url:""});return next;}
+    function removeNote(book,id){if(!book.evidence_notes.some(item=>item.note_id===id))fail("That note is unavailable.");const next=clone(book);next.evidence_notes=next.evidence_notes.filter(item=>item.note_id!==id);return next;}
+    function updateNote(book,id,key,value){if(!["label","text","url"].includes(key)||typeof value!=="string")fail("Choose a supported note field and text value.");if(key==="label"&&!Object.hasOwn(LABELS,value))fail("Choose a listed evidence label.");const next=clone(book),note=next.evidence_notes.find(item=>item.note_id===id);if(!note)fail("That note is unavailable.");note[key]=value;return next;}
+    function brief(book){const checked=validate(book),path=campaign(checked.campaign_id),item=initiative(checked.initiative_id);return[`JARVIS RESEARCH QUESTBOOK — ${checked.audience.toUpperCase()} / ${checked.source_visibility.toUpperCase()}`,`Initiative: ${item.title} (${item.id})`,`Research path: ${path.title}`,"Scope: visit-only exploration; no evidence verification or project completion.","Classification is not encryption or publication permission.","",`Objective: ${checked.objective||"[unfinished]"}`,`Opened prompts: ${checked.visited_quests.join(", ")}`,`Explored prompts: ${checked.explored_quests.join(", ")||"none"}`,"",...path.quests.flatMap(quest=>[`${quest.title} — PLANNED RESEARCH PROMPT`,quest.prompt,`Proposed artifact: ${quest.output}`,""]),"EVIDENCE NOTES — labels supplied by the author; not app verification",...(checked.evidence_notes.length?checked.evidence_notes.flatMap((note,index)=>[`${index+1}. ${LABELS[note.label]} (${note.note_id})`,note.text||"[unfinished]",...(note.url?[`Reference: ${note.url}`]:[]),""]):["No evidence notes yet."]),"Current facts and live research belong in the accompanying report.","No purchase, account action, model call or publication was performed."].join("\n");}
+    function serialize(book){const text=JSON.stringify(validate(book),null,2)+"\n";if(bytes(text)>MAX_FILE_BYTES)fail("The complete JSON export must be 64 KiB or smaller.");return text;}
+    function parse(text){return validate(parseUniqueJSON(text));}
+    function tryImport(current,text){try{return{ok:true,book:parse(text),error:""};}catch(error){return{ok:false,book:current,error:error instanceof QuestbookError?error.message:"The file could not be imported."};}}
+    return{initiatives,campaigns:CAMPAIGNS,labels:LABELS,labelHelp:LABEL_HELP,questIDs:QUEST_IDS,bookKeys:BOOK_KEYS,noteKeys:NOTE_KEYS,bytes,validate,newBook,setContext,selectQuest,toggleExplored,addNote,removeNote,updateNote,brief,serialize,parse,tryImport,noteError,inlineArt,sameImportRevision,maxFileBytes:MAX_FILE_BYTES,maxNotes:MAX_NOTES};
+  }
+  globalThis.JarvisResearchQuestbook=Object.freeze({createEngine});
+})();
+  </script>
+  <script id="jarvis-research-app">
+(() => {
+  "use strict";
+  const $=id=>document.getElementById(id), status=(message,error=false)=>{$("file-status").textContent=message;$("file-status").dataset.error=String(error);};
+  let engine,book,revision=0,importTicket=0;
+  try{engine=JarvisResearchQuestbook.createEngine(JSON.parse($("portfolio-data").textContent));book=engine.newBook();}catch{$("startup-error").textContent="The local catalog could not be read. Your files have not been changed.";$("startup-error").hidden=false;return;}
+  const option=(value,label)=>{const element=document.createElement("option");element.value=value;element.textContent=label;return element;};
+  const changed=()=>{revision+=1;};
+  engine.initiatives.forEach(item=>$("initiative").append(option(item.id,`${item.project_label} · ${item.title}`)));
+  engine.campaigns.forEach(item=>$("campaign").append(option(item.id,item.title)));
+  function refreshValidation(){
+    let problem=null;try{engine.validate(book);}catch(error){problem=error;}
+    $("export-book").disabled=Boolean(problem);$("copy-brief").disabled=Boolean(problem);
+    $("validation-note").textContent=problem?problem.message:"Ready to save as a local draft. Exploration markers and labels make no verification or completion claim.";
+    $("validation-note").style.color=problem?"var(--error)":"var(--muted)";
+    $("objective").setAttribute("aria-invalid",String(problem?.path==="objective"));
+    $("source-visibility").setAttribute("aria-invalid",String(problem?.path==="source_visibility"));
+    $("audience").setAttribute("aria-invalid",String(problem?.path==="audience"));
+    $("objective-limit").textContent=`${engine.bytes(book.objective).toLocaleString("en")} / 2,000 UTF-8 bytes`;
+    $("add-note").disabled=book.evidence_notes.length>=engine.maxNotes;
+    $("notes-limit").textContent=`${book.evidence_notes.length} / 8 notes. Each allows 1,500 UTF-8 text bytes and an optional HTTPS reference of up to 1,000 bytes.`;
+    book.evidence_notes.forEach((note,index)=>{let issue=null;try{engine.noteError(note,index);}catch(error){issue=error;}const errorNode=$(`note-error-${index}`);if(errorNode)errorNode.textContent=issue?issue.message:"";["text","url","label"].forEach(key=>{const input=$(`note-${key}-${index}`);if(input)input.setAttribute("aria-invalid",String(issue?.path===`evidence_notes.${index}.${key}`));});});
+  }
+  function renderEdition(){
+    const validPublic=book.audience==="public"&&book.source_visibility==="public_candidate";
+    $("edition-banner").dataset.public=String(validPublic);
+    $("edition-label").textContent=book.audience==="public"&&!validPublic?"CLASSIFICATION NEEDS ATTENTION":`${book.audience==="owner"?"OWNER EDITION":"PUBLIC CANDIDATE EDITION"} / ${book.source_visibility.replaceAll("_"," ").toUpperCase()}`;
+    $("edition-explanation").textContent=validPublic?"You selected public candidate source visibility. Review the complete file before sharing; this is not publication consent or verified provenance.":book.audience==="public"?"Public audience requires an explicit public candidate source classification. Export is paused until the selection is valid.":"Private and internal are classifications, not encryption. Keep this file with its intended audience and review every note before changing its visibility.";
+  }
+  function renderQuest(){
+    const campaign=engine.campaigns.find(item=>item.id===book.campaign_id),quest=campaign.quests.find(item=>item.id===book.selected_quest);
+    $("quest-nav").replaceChildren();campaign.quests.forEach((item,index)=>{const button=document.createElement("button");button.type="button";button.className="quest-button";button.setAttribute("aria-pressed",String(item.id===book.selected_quest));button.setAttribute("aria-controls","quest-detail");const number=document.createElement("span");number.className="number";number.textContent=`0${index+1}`;const title=document.createElement("strong");title.textContent=item.id[0].toUpperCase()+item.id.slice(1);const note=document.createElement("small");note.textContent=book.explored_quests.includes(item.id)?"Prompt explored":book.visited_quests.includes(item.id)?"Opened prompt":"Open this prompt";button.append(number,title,note);button.addEventListener("click",()=>{book=engine.selectQuest(book,item.id);changed();renderQuest();refreshValidation();$("quest-title").focus();});$("quest-nav").append(button);});
+    $("quest-title").textContent=quest.title;$("quest-title").tabIndex=-1;$("quest-prompt").textContent=quest.prompt;$("quest-output").textContent=quest.output;
+    $("toggle-explored").setAttribute("aria-pressed",String(book.explored_quests.includes(book.selected_quest)));$("toggle-explored").textContent=book.explored_quests.includes(book.selected_quest)?"Remove exploration marker":"Mark prompt explored";
+    $("exploration-progress").value=book.explored_quests.length;$("exploration-count").textContent=`${book.explored_quests.length} / 3`;$("visited-count").textContent=`${book.visited_quests.length} of 3 quest prompts opened`;
+  }
+  function renderContext(){
+    const item=engine.initiatives.find(value=>value.id===book.initiative_id),campaign=engine.campaigns.find(value=>value.id===book.campaign_id);
+    $("initiative").value=book.initiative_id;$("campaign").value=book.campaign_id;$("initiative-title").textContent=item.title;$("initiative-summary").textContent=item.summary;$("initiative-outcome").textContent=`Intended outcome: ${item.outcome}`;
+    $("initiative-boundaries").replaceChildren();item.boundaries.forEach(text=>{const li=document.createElement("li");li.textContent=text;$("initiative-boundaries").append(li);});$("initiative-destination").textContent=`Destination: ${item.destination.label} (${item.destination.state.replaceAll("_"," ")}).`;
+    $("campaign-title").textContent=campaign.title;$("campaign-eyebrow").textContent=campaign.eyebrow;$("campaign-summary").textContent=campaign.summary;renderQuest();
+  }
+  function renderNotes(){
+    $("evidence-notes").replaceChildren();$("empty-notes").hidden=book.evidence_notes.length>0;
+    book.evidence_notes.forEach((note,index)=>{
+      const card=document.createElement("section");card.className="note-card";card.setAttribute("aria-labelledby",`note-heading-${index}`);
+      const head=document.createElement("div");head.className="note-head";const heading=document.createElement("h3");heading.id=`note-heading-${index}`;heading.textContent=`Evidence note ${index+1}`;const remove=document.createElement("button");remove.type="button";remove.className="remove-note";remove.textContent="Remove";remove.setAttribute("aria-label",`Remove evidence note ${index+1}`);remove.addEventListener("click",()=>{book=engine.removeNote(book,note.note_id);changed();renderNotes();refreshValidation();$("add-note").focus();});head.append(heading,remove);card.append(head);
+      const label=document.createElement("label");label.htmlFor=`note-label-${index}`;label.textContent="Evidence classification";const select=document.createElement("select");select.id=`note-label-${index}`;select.setAttribute("aria-describedby",`note-help-${index} note-error-${index}`);Object.entries(engine.labels).forEach(([key,value])=>select.append(option(key,value)));select.value=note.label;const help=document.createElement("p");help.id=`note-help-${index}`;help.className="note-help";help.textContent=engine.labelHelp[note.label];select.addEventListener("change",()=>{book=engine.updateNote(book,note.note_id,"label",select.value);changed();help.textContent=engine.labelHelp[select.value];refreshValidation();});card.append(label,select,help);
+      for(const key of ["text","url"]){const field=document.createElement("div");field.className="field";const caption=document.createElement("label");caption.htmlFor=`note-${key}-${index}`;caption.textContent=key==="text"?"What you know, checked or still question":"HTTPS reference (optional except for vetted sources)";const input=document.createElement(key==="text"?"textarea":"input");input.id=`note-${key}-${index}`;input.value=note[key];input.setAttribute("aria-describedby",`note-help-${index} note-error-${index}`);input.autocomplete="off";if(key==="text"){input.spellcheck=true;input.lang="en";}else{input.type="url";input.spellcheck=false;input.placeholder="https://example.org/original-source";}input.addEventListener("input",()=>{book=engine.updateNote(book,note.note_id,key,input.value);changed();refreshValidation();});field.append(caption,input);card.append(field);}
+      const error=document.createElement("p");error.id=`note-error-${index}`;error.className="note-error";error.setAttribute("aria-live","polite");card.append(error);$("evidence-notes").append(card);
+    });
+  }
+  function renderAll(){renderContext();renderNotes();$("objective").value=book.objective;$("audience").value=book.audience;$("source-visibility").value=book.source_visibility;renderEdition();refreshValidation();}
+  ["initiative","campaign"].forEach(id=>$(id).addEventListener("change",()=>{book=engine.setContext(book,$("initiative").value,$("campaign").value);changed();renderContext();refreshValidation();status("Research prompts changed. Objective and evidence notes were retained; review their context before saving.");}));
+  $("toggle-explored").addEventListener("click",()=>{book=engine.toggleExplored(book);changed();renderQuest();refreshValidation();});
+  $("objective").addEventListener("input",()=>{book.objective=$("objective").value;changed();refreshValidation();});
+  $("audience").addEventListener("change",()=>{book.audience=$("audience").value;changed();renderEdition();refreshValidation();});
+  $("source-visibility").addEventListener("change",()=>{book.source_visibility=$("source-visibility").value;changed();renderEdition();refreshValidation();});
+  $("add-note").addEventListener("click",()=>{try{book=engine.addNote(book);changed();renderNotes();refreshValidation();$(`note-label-${book.evidence_notes.length-1}`).focus();}catch(error){status(error.message,true);}});
+  $("calm-mode").addEventListener("change",()=>{document.body.dataset.calm=String($("calm-mode").checked);});
+  $("copy-brief").addEventListener("click",async()=>{let text;try{text=engine.brief(book);}catch(error){status(error.message,true);return;}$("copy-preview").value=text;try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(text);status("The captured research brief was copied. Its labels and local-draft limits are included.");}catch{$("copy-preview-details").open=true;$("copy-preview").focus();$("copy-preview").select();status("Use Ctrl+C or ⌘C to copy the selected plain-text brief.");}});
+  $("export-book").addEventListener("click",()=>{let text;try{text=engine.serialize(book);}catch(error){status(error.message,true);return;}const url=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"})),anchor=document.createElement("a");anchor.href=url;anchor.download="jarvis-research-questbook.json";document.body.append(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status("Local questbook download requested. Keep its audience classification attached when sharing.");});
+  $("import-book").addEventListener("change",async()=>{
+    const file=$("import-book").files?.[0],start={ticket:++importTicket,revision};if(!file)return;
+    try{
+      if(!Number.isSafeInteger(file.size)||file.size<1||file.size>engine.maxFileBytes)throw new Error("Choose a nonempty JSON file no larger than 64 KiB.");
+      let text;try{text=new TextDecoder("utf-8",{fatal:true}).decode(await file.arrayBuffer());}catch{throw new Error("The file could not be read as valid UTF-8 JSON.");}
+      if(!engine.sameImportRevision(start,{ticket:importTicket,revision})){if(start.ticket===importTicket)status("Import left the current draft untouched because you edited it while the file was reading.",true);return;}
+      const result=engine.tryImport(book,text);if(!result.ok){status(`${result.error} Current draft preserved.`,true);return;}
+      book=result.book;changed();renderAll();status("Questbook resumed. Its audience, labels, notes and exploration markers were restored; no source was verified.");
+    }catch(error){if(start.ticket===importTicket)status(`${error.message} Current draft preserved.`,true);}
+    finally{if(start.ticket===importTicket)$("import-book").value="";}
+  });
+  const art=engine.inlineArt($("questbook-art").dataset.jarvisInlineArt);if(art){$("questbook-art").src=art;$("questbook-art").hidden=false;$("art-fallback").hidden=true;}
+  renderAll();$("questbook").hidden=false;
+})();
+  </script>
+</body>
+</html>

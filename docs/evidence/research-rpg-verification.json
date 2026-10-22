@@ -1,0 +1,215 @@
+{
+  "kind": "jarvis.research_rpg_verification",
+  "limitations": [
+    "Native browser rendering, keyboard/focus, screen-reader use, spellcheck, clipboard, downloads and file-chooser behavior remain unverified.",
+    "No usable local Chromium, Chrome or Firefox binary; prior Playwright cache contained metadata only; no installation retry or signed-in session fallback.",
+    "No AR hardware trial, device purchase or Lens Studio execution was performed by this milestone.",
+    "No account connection, Hostinger write, external dispatch or publication was established by the questbook.",
+    "No actual Greer documentary/movie was produced; the campaign supplies labelled research prompts, not validated factual conclusions.",
+    "Classification is neither encryption nor publication consent; author-assigned evidence labels are not source authentication.",
+    "The new JSON kind is a standalone browser resume contract, not a validated existing Python diary/episode or authenticated ledger format.",
+    "No new-head CI, merge or production deployment is claimed."
+  ],
+  "next_three_priorities": [
+    "A shared reviewed evidence record across diary, research and scenes, with explicit tested mappings.",
+    "One tested Lens Studio AI-building cycle and an observed compatible-device trial when available.",
+    "A repeatable reviewed-record to script/captions/episode/platform-draft route, including one evidenced Hostinger read/draft destination when access permits."
+  ],
+  "observed_at": "2026-10-22T22:56:34.150335+00:00",
+  "questbook": {
+    "campaign_ids": [
+      "general-creative-build",
+      "smart-glasses-procurement",
+      "documentary-claims-research"
+    ],
+    "campaigns": 3,
+    "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9",
+    "classification_is_encryption": false,
+    "customer_partner_journeys_remain_separate": true,
+    "default_audience": "owner",
+    "default_source_visibility": "private",
+    "education_affiliate_destinations_remain_separate": true,
+    "embedded_catalog_matches_tracked_and_python_value": true,
+    "evidence_labels": [
+      "attributed_claim",
+      "vetted_source",
+      "open_question",
+      "fictional"
+    ],
+    "evidence_labels_are_author_assessments": true,
+    "exact_note_keys": [
+      "note_id",
+      "label",
+      "text",
+      "url"
+    ],
+    "exact_top_level_keys": [
+      "schema_version",
+      "kind",
+      "scope",
+      "initiative_id",
+      "campaign_id",
+      "audience",
+      "source_visibility",
+      "objective",
+      "selected_quest",
+      "visited_quests",
+      "explored_quests",
+      "evidence_notes"
+    ],
+    "existing_python_episode_contract_changed": false,
+    "export_kind": "jarvis.research_questbook",
+    "initiatives": 12,
+    "intervening_edit_or_newer_import_rejects_stale_read": true,
+    "invalid_import_preserves_exact_prior_draft": true,
+    "maximum_file_utf8_bytes": 65536,
+    "maximum_note_text_utf8_bytes": 1500,
+    "maximum_notes": 8,
+    "maximum_objective_utf8_bytes": 2000,
+    "maximum_reference_utf8_bytes": 1000,
+    "optional_empty_inline_art_hooks": 1,
+    "progress_scope": "visit_only_exploration",
+    "projects": 7,
+    "public_audience_requires_source_visibility": "public_candidate",
+    "quest_ids_per_campaign": [
+      "inquiry",
+      "evidence",
+      "review"
+    ]
+  },
+  "schema_version": 1,
+  "scope": "offline questbook syntax, pure-helper behavior, source/structure checks, independent minimal-DOM handler review, and existing whole-suite results",
+  "source_snapshot": {
+    "dependencies_sha256": {
+      "control_tower/portfolio.py": "3fa395dea80b1a7090596eb9a3671d0a360633b0eb68b21151090428ac1382f3",
+      "examples/portfolio/catalog.json": "99c661ce7d2405e4ce251c968e67b4f3a282a9c02c4de892028c4c5ae0de6ed8"
+    },
+    "existing_python_record_source_hashes_checked": 69,
+    "existing_python_record_source_hashes_match_current_files": true,
+    "frozen_changed_source_sha256": {
+      "docs/JARVIS_RESEARCH_RPG.md": "fbbb62f35ea6663a04ca45879ddeebc59619b63d16419785390a5b88ffc10339",
+      "tests/test_research_rpg.mjs": "ed55ff24f48f6eec27de99171d859c7f7d077b95f0457c74b52c8d01104f8ec6",
+      "web/jarvis-research-rpg.html": "dd0528a35d2744e4838e4df39b6cc9ca0e73a5bd33cc1faccdc865eaa292c228"
+    },
+    "milestone_document_sha256": "4f70559733a44b292f3f177988219421b0928d11b84c06aa04f6b6fa24f170fc",
+    "new_head_ci_verified": false,
+    "remote_ci_run": null,
+    "tested_parent_commit": "de12358af2a5687ad220881f8117a26b4d34cbc6",
+    "worktree_state": "modified README and untracked milestone implementation/documentation; no new commit represented"
+  },
+  "status": "passed_with_documented_native_browser_and_hardware_limits",
+  "verification": {
+    "documentation_links": {
+      "README.md": {
+        "missing_targets": [],
+        "relative_file_references_checked": 42,
+        "scope": "file-target existence; external URLs and heading anchors were not fetched or verified"
+      },
+      "docs/RESEARCH_RPG_MILESTONE_2026_10_22.md": {
+        "missing_targets": [],
+        "relative_file_references_checked": 4,
+        "scope": "file-target existence; external URLs and heading anchors were not fetched or verified"
+      }
+    },
+    "html_static_structure": {
+      "balanced_tags": true,
+      "existing_pages_unchanged": [
+        "web/jarvis-composer.html",
+        "web/jarvis-workbench.html",
+        "web/jarvis-diary.html",
+        "web/jarvis-rpg.html"
+      ],
+      "inline_scripts": 3,
+      "optional_art_hooks": 1,
+      "resolved_label_aria_references": 24,
+      "typed_static_buttons": 4,
+      "unique_ids": 54
+    },
+    "independent_review": {
+      "actual_app_handlers_exercised_in_minimal_dom_stub": [
+        "Note edits reach current state after quest/context clone transitions.",
+        "Public/private export mismatch blocks export.",
+        "Valid owner/private resume retains classification.",
+        "Invalid-classification import preserves existing draft.",
+        "Delayed import after an intervening edit preserves the edit.",
+        "Oversized file rejects before reading content.",
+        "Invalid UTF-8 rejects through fatal decoder."
+      ],
+      "authored_research_cases_rerun": 29,
+      "independent_human_review": false,
+      "kind": "independent_ai_read_only_source_and_minimal_dom_stub_review",
+      "native_browser_exercised": false,
+      "provenance": "Independent reviewer report delivered in the team session; no native browser run or separate review artifact claimed.",
+      "remaining_concrete_blockers": [],
+      "reviewer": "/root/verify_news",
+      "source_changes_by_reviewer": false,
+      "source_observations": [
+        "Untrusted content uses text/value DOM sinks.",
+        "No app network or persistent-storage APIs.",
+        "Evidence labels remain author assessments."
+      ]
+    },
+    "node": {
+      "authored_case_count": 179,
+      "authored_cases_by_file": {
+        "tests/test_composer.mjs": 34,
+        "tests/test_diary_workbench.mjs": 48,
+        "tests/test_media_player.mjs": 7,
+        "tests/test_research_rpg.mjs": 29,
+        "tests/test_rpg_workbench.mjs": 27,
+        "tests/test_workbench.mjs": 34
+      },
+      "cancelled": 0,
+      "case_count_method": "Count actual top-level test() declarations in each of six passing files; whole-suite TAP reports file wrappers, not individual cases.",
+      "failures": 0,
+      "log_file": "reports/research-rpg-web-tests.txt",
+      "log_sha256": "0f3a10accd3e41b31f05085b9e9f8b87b00e48861e89ff0e664dec978c968a9a",
+      "new_research_case_count": 29,
+      "prior_authored_case_count": 150,
+      "research_direct_command": "node tests/test_research_rpg.mjs",
+      "research_direct_failed": 0,
+      "research_direct_passed": 29,
+      "research_direct_skipped": 0,
+      "research_initiative_campaign_roundtrips": 36,
+      "roundtrips_are_scenarios_within_authored_cases_not_additional_case_count": true,
+      "skipped": 0,
+      "test_file_sha256": {
+        "tests/test_composer.mjs": "4bc19c62cc28b003aab8a61dcce1b292f31d82fca23c667695178e770d553a99",
+        "tests/test_diary_workbench.mjs": "0092ed07f2df868b444b8ecf728d3887520345a9b65ff0b736b0057af29aad88",
+        "tests/test_media_player.mjs": "7b863cf96cf28cd437c4babac6a4be76f370bc9f3a8dad01acdb321fcc199dbc",
+        "tests/test_research_rpg.mjs": "ed55ff24f48f6eec27de99171d859c7f7d077b95f0457c74b52c8d01104f8ec6",
+        "tests/test_rpg_workbench.mjs": "69a72b376956995fb00430786390dea5105fa652fc0450f0bb48ac790c6b3062",
+        "tests/test_workbench.mjs": "72ba38312cfb93152db11f36a5be603141cbaedf3aa6ba7ba1b4486b808c088d"
+      },
+      "whole_suite_command": "node --test --test-reporter=tap tests/*.mjs",
+      "whole_suite_file_wrappers": 6,
+      "whole_suite_wrappers_passed": 6
+    },
+    "python": {
+      "errors": 0,
+      "failures": 0,
+      "log_file": "reports/control_tower_verification.txt",
+      "log_sha256": "45096634da4ad15d6363bd2fd6fe468706c54434e0b9e6a090d90c31c272e54d",
+      "observed_at": "2026-10-22T22:52:26.323627+00:00",
+      "passed": true,
+      "python_version": "3.12.14",
+      "record_file": "reports/control_tower_verification.json",
+      "record_file_sha256": "761c6338fbf615fbad65bf4c4b9cde84d009d49ceff46711980d5f8fa9dff8aa",
+      "record_internal_content_sha256": "fb4e35988aa5c1eb60f9b52a4ebd0f30a8c057bf247b7f115da84799a0ba4e7e",
+      "results_read_from_existing_root_run_not_reexecuted_for_this_record": true,
+      "retained_log_summary": "Ran 273 tests in 9.299s; OK",
+      "skipped": 0,
+      "syntax_errors": [],
+      "syntax_files_checked": 57,
+      "tests_run": 273
+    },
+    "synthetic_demo": {
+      "assistant_network_model_calls": 0,
+      "external_actions": 0,
+      "inactive_assistant_specifications": 35,
+      "portfolio_model_calls": 0,
+      "projects": 7,
+      "targets": 12
+    }
+  }
+}

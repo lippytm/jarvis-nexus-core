@@ -41,6 +41,19 @@ This pilot adapts a public engineering diary. Current news and private life
 activity are not supplied. Motion uses a camera over one original illustration;
 the character is not lip-synced. Exploring a quest does not complete real work.
 
+## Research a new idea through RPG quests
+
+Open the [Research Questbook](web/jarvis-research-rpg.html) locally. Choose any
+of the twelve portfolio initiatives and a creative-building, smart-glasses or
+documentary-research path. Work through Inquiry, Evidence and Review prompts,
+keep an objective and labelled source notes, then download a JSON draft to
+resume later. Native browser spellcheck assists text entry when available.
+
+The [questbook guide](docs/JARVIS_RESEARCH_RPG.md) explains the owner/private
+default, explicit public-candidate classification, strict resume format and
+verification limits. Exploration markers describe this planning visit; source
+labels record the author's assessment. The app makes no model or network calls.
+
 ## Keep a daily diary and develop a media edition
 
 Open [Jarvis Daily Diary](web/jarvis-diary.html) locally. Record an observation,
@@ -124,7 +137,7 @@ The command checks source syntax, runs the offline unit tests and demonstration,
 and saves a JSON evidence record plus a test log under `reports/`. It uses the
 Python standard library and makes no model, payment, or deployment calls.
 
-Test the authored composer, portfolio, diary, RPG and media-player helpers with Node
+Test the authored composer, portfolio, diary, RPG, research and media-player helpers with Node
 18 or later (CI uses Node 24):
 
 ```bash
@@ -133,6 +146,8 @@ node --test --test-reporter=tap tests/*.mjs
 
 ## Review the implementation
 
+- [Research questbook and resume contract](docs/JARVIS_RESEARCH_RPG.md)
+- [Research RPG milestone and verification](docs/RESEARCH_RPG_MILESTONE_2026_10_22.md)
 - [Anime/RPG episode milestone](docs/ANIME_RPG_MILESTONE_2026_10_22.md)
 - [Episode schema and evidence labels](docs/EPISODE_DATA_CONTRACT.md)
 - [Repeatable anime/RPG rendering](docs/ANIME_RPG_RUNBOOK.md)
