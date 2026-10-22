@@ -31,3 +31,25 @@ jobs:
           path: reports/control_tower_verification.*
           retention-days: 14
           if-no-files-found: warn
+  composer-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4, resolved 2026-10-22
+        with:
+          node-version: '24'
+      - name: Test composer spelling and draft contract
+        run: |
+          mkdir -p reports
+          node --test --test-reporter=tap tests/test_composer.mjs > reports/composer-tests.txt 2>&1
+      - name: Preserve composer test output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: composer-evidence-${{ github.sha }}
+          path: reports/composer-tests.txt
+          retention-days: 14
+          if-no-files-found: warn

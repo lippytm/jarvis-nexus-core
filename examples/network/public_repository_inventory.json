@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-10-22",
+  "source": "GitHub connector list_repositories(owner=lippytm,page_size=100,page_offset=0)",
+  "scope": "Public repository metadata only; no source audit, workflow health, installed agents or cross-repository synchronization inferred.",
+  "public_repository_count": 41,
+  "repositories": [
+    {
+      "full_name": "lippytm/Transparency-Logic-Time-Machine-Bots-",
+      "default_branch": "master",
+      "url": "https://github.com/lippytm/Transparency-Logic-Time-Machine-Bots-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/balletcrypto.github.io",
+      "default_branch": "master",
+      "url": "https://github.com/lippytm/balletcrypto.github.io",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Time-Machines-Builders-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Time-Machines-Builders-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/gatsby-starter-blog",
+      "default_branch": "master",
+      "url": "https://github.com/lippytm/gatsby-starter-blog",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Time-Machines",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Time-Machines",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Web3AI",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Web3AI",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/lippytm.ai",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/lippytm.ai",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/OpenClaw-lippytm.AI-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/OpenClaw-lippytm.AI-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Chatlippytm.ai.Bots",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Chatlippytm.ai.Bots",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Full-Stack-AI-DevOps-Synthetic-Intelligence-Engines-AgentsBots-Web3-Websites-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Full-Stack-AI-DevOps-Synthetic-Intelligence-Engines-AgentsBots-Web3-Websites-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AllBots.com",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AllBots.com",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Factory.ai",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Factory.ai",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AllBots.com.ai",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AllBots.com.ai",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/The-Encyclopedia-of-Everything-Applied-ChatAIBots",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/The-Encyclopedia-of-Everything-Applied-ChatAIBots",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/lippytm-lippytm.ai-tower-control-ai",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/lippytm-lippytm.ai-tower-control-ai",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Evolutionary-Evolutions-Social-Multimedia-Networks-Agency-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Evolutionary-Evolutions-Social-Multimedia-Networks-Agency-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Intergalactic-Zoological-Social-Multimedia-Agency-Networks-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Intergalactic-Zoological-Social-Multimedia-Agency-Networks-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Autonomous-Systems-for-all-of-my-lippytm.ai-Repositories-Research-and-Development-integration-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Autonomous-Systems-for-all-of-my-lippytm.ai-Repositories-Research-and-Development-integration-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Clawlippytm.Bots",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Clawlippytm.Bots",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Clawlippytm.ai.Bots",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Clawlippytm.ai.Bots",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Base44-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Base44-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/ClawBase44.ai.Bots",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/ClawBase44.ai.Bots",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/MyClaw.lippytm.AI-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/MyClaw.lippytm.AI-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/lippytmai.getbizfunds.com-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/lippytmai.getbizfunds.com-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Quantum-Questions-of-the-Many-Worlds-Universes-of-Reruns-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Quantum-Questions-of-the-Many-Worlds-Universes-of-Reruns-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/The-Encyclopedia-of-Law-Civilian-Law-Military-Law-Business-Law-AI-Law.-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/The-Encyclopedia-of-Law-Civilian-Law-Military-Law-Business-Law-AI-Law.-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/http-famous.ai-fpr-charles92",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/http-famous.ai-fpr-charles92",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/lippytmai.zo.computer-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/lippytmai.zo.computer-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/docs",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/docs",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Prompt-11-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Prompt-11-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Hermes-AI-Hermes",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Hermes-AI-Hermes",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Clone-of-Charles-Earl-Lipshay-lippytm-lippytm.AI-lippytmai-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Clone-of-Charles-Earl-Lipshay-lippytm-lippytm.AI-lippytmai-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Gemini-NotebookLM-s-AI-Agnostic-Clone-Engine-Fabric-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Gemini-NotebookLM-s-AI-Agnostic-Clone-Engine-Fabric-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Intergalactic-Corporate-Services-LLC-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Intergalactic-Corporate-Services-LLC-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/aievolutionaryevolutions.com-Hermes-Fabric-MemPalace-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/aievolutionaryevolutions.com-Hermes-Fabric-MemPalace-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Jarvis-Assistant-ChatGPT-Gemini-AI-GitHub-Claude-and-all-of-my-Repositories-DOG-Dog-dog-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Jarvis-Assistant-ChatGPT-Gemini-AI-GitHub-Claude-and-all-of-my-Repositories-DOG-Dog-dog-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Hostinger.com-with-my-AI-Jarvis-Assistant-ChatGPT-ChatGPT-Business-Gemini-AI-Claude",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Hostinger.com-with-my-AI-Jarvis-Assistant-ChatGPT-ChatGPT-Business-Gemini-AI-Claude",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/Claude-with-AI-Jarvis-Assistant-CodeX-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/Claude-with-AI-Jarvis-Assistant-CodeX-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Jarvis-Assistant-AI-Copilot-for-Self-Healing-and-Self-Improvements-for-all-Repositories-",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Jarvis-Assistant-AI-Copilot-for-Self-Healing-and-Self-Improvements-for-all-Repositories-",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/AI-Jarvis-Assistant-GitHub-Copilot-AI-Jarvis-Assistant-Claude-AI-Jarvis-Assistant-ChatGPT-Business",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/AI-Jarvis-Assistant-GitHub-Copilot-AI-Jarvis-Assistant-Claude-AI-Jarvis-Assistant-ChatGPT-Business",
+      "archived": false,
+      "visibility": "public"
+    },
+    {
+      "full_name": "lippytm/jarvis-nexus-core",
+      "default_branch": "main",
+      "url": "https://github.com/lippytm/jarvis-nexus-core",
+      "archived": false,
+      "visibility": "public"
+    }
+  ],
+  "source_filter": "Included only connector rows with visibility == 'public'; verified against the retained connector response before publication."
+}

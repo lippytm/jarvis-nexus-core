@@ -1,0 +1,54 @@
+$ node --test tests/test_composer.mjs
+✔ tests/test_composer.mjs (92.654372ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.580701
+
+$ node tests/test_composer.mjs
+✔ both authored scripts compile independently (3.206321ms)
+✔ native English spellcheck is requested without app autocorrection (0.343477ms)
+✔ the page blocks connections and has no external assets or storage code (0.37832ms)
+✔ a review offers corrections without mutating its input (8.723539ms)
+✔ the limited list leaves correct words, brands and unknown words unchanged (1.380369ms)
+✔ URL destinations, email addresses, handles and hashtags remain unchanged (0.354204ms)
+✔ backtick fenced code is excluded while surrounding prose is reviewed (0.371089ms)
+✔ tilde fences and unfinished fenced code are conservatively preserved (0.300592ms)
+✔ inline code supports multiple backticks and protects unfinished code (0.319441ms)
+✔ HTML code and attributes are protected; ordinary text remains reviewable (0.340784ms)
+✔ indented code, common code signatures, calls and paths are protected (0.438511ms)
+✔ compound words, code identifiers, accents and mixed-case terms are not rewritten (0.357368ms)
+✔ lowercase, title case and uppercase correction styles are preserved (0.165229ms)
+✔ only the chosen occurrence changes (0.281894ms)
+✔ multiple corrections apply safely despite changing offsets and duplicate selections (0.168283ms)
+✔ Unicode preceding a correction does not corrupt offsets (2.535741ms)
+✔ stale suggestions and forged replacement text are rejected (0.555517ms)
+✔ a correction that would exceed the export byte limit is rejected atomically (1.878421ms)
+✔ empty and unknown prose has no locally known suggestions (0.195074ms)
+✔ the draft contract has exactly its five authorized keys and preserves text (0.387023ms)
+✔ all agreed project IDs are supported, with no extra project identifiers (1.53574ms)
+✔ provider IDs include each handoff destination and distinguish OpenAI API from ChatGPT (0.383037ms)
+✔ unknown, missing and incorrectly typed selectors are rejected (0.311269ms)
+✔ export rejects whitespace-only drafts without trimming valid text (0.201523ms)
+✔ C0 controls other than tab, line feed and carriage return are rejected (0.43131ms)
+✔ the 20,000-byte boundary is inclusive for ASCII (0.436007ms)
+✔ UTF-8 byte limits count multibyte characters and emoji correctly (0.466673ms)
+✔ invalid surrogate text is rejected instead of silently replaced on export (0.200722ms)
+✔ non-string draft values are rejected (0.195935ms)
+✔ character count uses Unicode code points and bytes remain a separate measure (1.832551ms)
+✔ review JSON survives serialization without creating authority or connection fields (0.117638ms)
+✔ the shared JavaScript-to-Python fixtures match actual exports and rejection rules (0.383148ms)
+✔ undo restores chosen corrections and cleared text (0.251379ms)
+✔ editor history ignores duplicate records and respects its bounded capacity (0.197057ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39.314114

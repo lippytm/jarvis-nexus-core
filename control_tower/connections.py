@@ -11,6 +11,9 @@ import re
 from control_tower.validation import json_record_errors, valid_https_url
 
 CONNECTORS = {
+    "chatgpt": {"purpose": "reviewed manual assistant handoffs", "status": "unverified", "write_gate": "owner_review"},
+    "openai": {"purpose": "separately configured API assistant work", "status": "unverified", "write_gate": "owner_review"},
+    "youtube": {"purpose": "video draft and attribution planning", "status": "unverified", "write_gate": "owner_review"},
     "github": {"purpose": "repository QA and PR reviews", "status": "unverified", "write_gate": "owner_review"},
     "hostinger": {"purpose": "landing pages and membership forms", "status": "unverified", "write_gate": "owner_review"},
     "gemini": {"purpose": "cross-model research", "status": "unverified", "write_gate": "owner_review"},

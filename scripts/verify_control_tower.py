@@ -28,7 +28,7 @@ def main():
     if not output.is_relative_to(ROOT) or output.suffix != ".json":
         parser.error("output must be a JSON path inside this repository")
     sources = sorted([*ROOT.joinpath("control_tower").glob("*.py"),
-                      *ROOT.joinpath("tests").glob("test_*.py"), Path(__file__).resolve()])
+                      *ROOT.joinpath("tests").glob("test_*.py"), *ROOT.joinpath("scripts").glob("*.py")])
     hashes, syntax_errors = {}, []
     for path in sources:
         relative = path.relative_to(ROOT).as_posix()
@@ -38,6 +38,9 @@ def main():
             ast.parse(content.decode("utf-8"), filename=relative)
         except (SyntaxError, UnicodeError, ValueError) as exc:
             syntax_errors.append({"file": relative, "kind": type(exc).__name__})
+    for path in sorted([*ROOT.joinpath("web").glob("*.html"), *ROOT.joinpath("tests").glob("*.mjs"),
+                        *ROOT.joinpath(".github/workflows").glob("*.yml")]):
+        hashes[path.relative_to(ROOT).as_posix()] = sha256(path.read_bytes()).hexdigest()
     stream = io.StringIO()
     result = None
     if not syntax_errors:
@@ -56,6 +59,7 @@ def main():
         "observed_at": datetime.now(timezone.utc).isoformat(),
         "python_version": platform.python_version(),
         "scope": "syntax_offline_unit_tests_and_synthetic_demo",
+        "composer_runtime_tests": "separate Node test job; HTML/JS hashes included here",
         "github_checkout_sha": ci_sha,
         "syntax": {"files_checked": len(sources), "errors": syntax_errors},
         "tests": {"run": result.testsRun if result else 0,

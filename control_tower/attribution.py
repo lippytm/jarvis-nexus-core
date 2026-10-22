@@ -1,7 +1,7 @@
 """Synthetic-only channel attribution aggregation for membership/affiliate experiments."""
 from collections import Counter
 
-CHANNELS = frozenset({"facebook", "instagram", "threads", "linkedin", "substack", "hostinger"})
+CHANNELS = frozenset({"facebook", "instagram", "threads", "linkedin", "substack", "hostinger", "youtube", "github"})
 CONVERSIONS = frozenset({"newsletter_optin", "member_signup", "affiliate_application", "funding_partner_signup"})
 
 def aggregate(events):

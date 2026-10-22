@@ -12,7 +12,7 @@ from control_tower.funnels import DESTINATIONS
 MAX_EVENTS = 1000
 _ID = re.compile(r"synthetic-[a-z0-9][a-z0-9_-]{0,71}\Z")
 _SOURCES = {"direct", "test", "simulator", "facebook", "instagram", "threads",
-            "linkedin", "substack", "hostinger"}
+            "linkedin", "substack", "hostinger", "youtube", "github"}
 _KINDS = {"member", "funding_customer", "funding_partner"}
 _BASE = {"event_id", "journey_id", "kind", "event_type", "occurred_at", "source", "synthetic"}
 _CONSENT = {"service_consent", "marketing_opt_in"}
