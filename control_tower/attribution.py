@@ -9,9 +9,13 @@ def aggregate(events):
     totals = Counter()
     seen = set()
     for event in events:
+        if not isinstance(event, dict):
+            continue
         event_id = event.get("event_id")
-        channel = event.get("utm_source") or event.get("source")
-        if not event_id or event_id in seen or channel not in CHANNELS:
+        channel = event.get("utm_source", event.get("source"))
+        if not isinstance(event_id, str) or not event_id or event_id in seen or not isinstance(channel, str) or channel not in CHANNELS:
+            continue
+        if not isinstance(event.get("event_type"), str):
             continue
         seen.add(event_id)
         if event.get("event_type") == "campaign_visit":

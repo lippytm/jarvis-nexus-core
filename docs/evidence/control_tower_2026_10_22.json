@@ -1,0 +1,253 @@
+{
+  "github_checkout_sha": null,
+  "independent_human_security_review": "not_performed",
+  "live_integrations_tested": false,
+  "observed_at": "2026-10-22T20:43:06.893561+00:00",
+  "production_deployment": "not_performed",
+  "python_version": "3.12.14",
+  "record_sha256": "6ba56c7e7b87bca4a2a7d9564f3166baaab1eeebe7b68d0887cd8380805c1caf",
+  "schema_version": 1,
+  "scope": "syntax_offline_unit_tests_and_synthetic_demo",
+  "source_sha256": {
+    "control_tower/attribution.py": "9d667790bb6cd25098dcf2d94763eddd2bd236306bcfbfe0526138fbeef84c9a",
+    "control_tower/briefing.py": "c74739d95340a2a14899e33ca515200517ec8373fecb0d934b8015abd79ad1ce",
+    "control_tower/builder.py": "8ef01a1a05bfcefd6b408190972e0cd22357368c99335cbd3ab752551a62bde5",
+    "control_tower/connections.py": "300eeeb7862f66ef868b6196645e3409e69e2078564f15dc3aa3aa68541ec732",
+    "control_tower/dashboard.py": "7fe88ae82e7ae2817aff14b1a9ecb16a06975e5ade35c0e8844f62b2917164b2",
+    "control_tower/demo.py": "cfa996804c20e334a2f7274629acacb290d6899a88f933bf084de4e242f061a3",
+    "control_tower/evaluator.py": "5a2347d9be3f526539b1d5345f8249d45fd0bd743cca4c7859fe0688f8943a6c",
+    "control_tower/events.py": "54e827513bbb49bd9afa809114c53abe03011e8cb488069186b744ade3e9ca54",
+    "control_tower/funnels.py": "bf76037d3140d689951583cb705c12e6c831558ea5aff7aaf24e3424b85fd8c1",
+    "control_tower/journeys.py": "7586da03c091bc09565eb39357bbba9908b3986ad6494872d9161d54855052b0",
+    "control_tower/orchestrator.py": "9dd90bb0e988687ff59db837fb9c03c4376e6024fe6241028fd4ff1578e69b4e",
+    "control_tower/roundtrip.py": "58b776b711b5b4a17efd66c2683a0a2495016cf43ce0900480bfcebf41ccd8bd",
+    "control_tower/validation.py": "d36e33036d889694e1715688f5a325aeedb0488e43747f31f032578238323677",
+    "scripts/verify_control_tower.py": "cbefb2888c21a06f9f7649b2a053ba1fdd2b94124511449cd73054fe173ddeae",
+    "tests/test_builder_evaluator.py": "4ba8bfd14528d0bf00e64c2db7cb94c49ff80c70099c9dfab5cbb76083b63dac",
+    "tests/test_connection_observations.py": "54692d0b65eb3518abab078907e9db18f2e50c608e147f2fda95de52389503fa",
+    "tests/test_connections.py": "ecbd389b9fbd7c86b73bfd4d8c1e50260017819781c6319dcaadb55e2d2d6527",
+    "tests/test_control_tower_extensions.py": "68f27f7304a4d09ba01ce3644339965641edd0c01606494654bc2e9458403296",
+    "tests/test_demo.py": "1850940d6c25e3171a3249e0f59d86def45223e793370542f84d46a3ca9efba7",
+    "tests/test_events.py": "c381e3d92975713220d3f97b2e991e7a3a0e1108e6f06deba5e38587563bda10",
+    "tests/test_funnels_dashboard.py": "94dbddfed93b97a040b422c6024ee0c294ddec488a1fce1af9f4fc75337e7670",
+    "tests/test_input_hardening.py": "a3a75edd0ccc7b81d6890eeda73fd05a6b27635a7971c7aa7a83f2dd0f6efedd",
+    "tests/test_journeys.py": "a2fb6b379b0c756994de7da405aa39915abe297bf9099f439ce33f57923d329f",
+    "tests/test_roundtrip.py": "9a1ffad5a8940a19ded660b0c2dd62493d02a6c773835455432b5a5280323139"
+  },
+  "syntax": {
+    "errors": [],
+    "files_checked": 24
+  },
+  "synthetic_demo": {
+    "builder_candidate": {
+      "filename": "synthetic_validator.py",
+      "sha256": "a25b1b7bcf1dbe90f1b3322aaa9f819655c47e2e6de0fa44296926be37ae3df5"
+    },
+    "connectors": {
+      "airtable": {
+        "purpose": "project and evidence records",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "claude": {
+        "purpose": "coding and independent review",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "facebook": {
+        "purpose": "consented promotion",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "gemini": {
+        "purpose": "cross-model research",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "github": {
+        "purpose": "repository QA and PR reviews",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "hostinger": {
+        "purpose": "landing pages and membership forms",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "hubspot": {
+        "purpose": "consented CRM routing",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "instagram": {
+        "purpose": "consented promotion",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "linkedin": {
+        "purpose": "consented outreach and attribution",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "substack": {
+        "purpose": "newsletter and membership referrals",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "threads": {
+        "purpose": "consented promotion",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      }
+    },
+    "dashboard": {
+      "environment": "read_only_sandbox",
+      "metrics": {
+        "cost_usd": "unavailable",
+        "memberships": "unavailable",
+        "optins": "unavailable",
+        "referrals": "unavailable",
+        "verified_commissions_usd": "unavailable",
+        "visits": "unavailable"
+      },
+      "projects": [
+        {
+          "evidence_url": null,
+          "name": "Hostinger",
+          "status": "unknown"
+        }
+      ]
+    },
+    "external_actions": 0,
+    "membership_journey": {
+      "counts": {
+        "accepted": 3,
+        "duplicate": 0,
+        "rejected": 0
+      },
+      "external_actions": 0,
+      "live_commissions": "unavailable",
+      "live_memberships": "unavailable",
+      "live_revenue": "unavailable",
+      "members": {
+        "synthetic-member-1": {
+          "access_active": true,
+          "confirmed_amount_minor": 500,
+          "currency": "USD",
+          "entitlement_id": "synthetic-access-right-1",
+          "kind": "member",
+          "last_occurred_at": "2026-10-22T12:00:00-07:00",
+          "marketing_opt_in": false,
+          "payment_id": "synthetic-receipt-1",
+          "refunded_amount_minor": 0,
+          "service_consent": true,
+          "source": "linkedin",
+          "status": "active"
+        }
+      },
+      "mode": "synthetic_only",
+      "provider_authentication": "not_performed",
+      "records": [
+        {
+          "errors": [],
+          "event_id": "synthetic-signup-1",
+          "index": 0,
+          "status": "accepted"
+        },
+        {
+          "errors": [],
+          "event_id": "synthetic-payment-1",
+          "index": 1,
+          "status": "accepted"
+        },
+        {
+          "errors": [],
+          "event_id": "synthetic-access-1",
+          "index": 2,
+          "status": "accepted"
+        }
+      ],
+      "referrals": {},
+      "status": "reconciled",
+      "synthetic_metrics": {
+        "active_access_count": 1,
+        "confirmed_amount_minor": 500,
+        "currency": "USD",
+        "customer_redirect_count": 0,
+        "net_amount_minor": 500,
+        "partner_request_count": 0,
+        "refunded_amount_minor": 0
+      }
+    },
+    "mode": "synthetic_only",
+    "roundtrip": {
+      "accepted_count": 3,
+      "attribution": {
+        "facebook:visits": 1,
+        "linkedin:visits": 1,
+        "threads:visits": 1
+      },
+      "deployment": "not_deployed",
+      "duplicate_count": 0,
+      "fixture_only": true,
+      "independent_qa": "not_run",
+      "proposed_tasks": [
+        "candidate-1"
+      ],
+      "rejected": [],
+      "sha256": "4839c80ba10125214cab857a0b6764195ac30d654da749c1d0c3a566b3805b92",
+      "status": "Hostinger connection: unknown"
+    },
+    "routes": [
+      {
+        "action": "membership_registration_review",
+        "source": "linkedin",
+        "status": "sandbox_only"
+      },
+      {
+        "action": "provider_redirect_review",
+        "destinations": [
+          "https://lippytmai.getbizfunds.com",
+          "https://www.7figurescredit.com?a_aid=lippytm"
+        ],
+        "source": "facebook",
+        "status": "sandbox_only"
+      },
+      {
+        "action": "provider_redirect_review",
+        "destinations": [
+          "https://lendtrack.ai/join/lippytmai",
+          "https://join.7figurespartners.com/?a_aid=lippytm"
+        ],
+        "source": "threads",
+        "status": "sandbox_only"
+      }
+    ],
+    "static_evaluation": {
+      "deployment": "not_deployed",
+      "errors": [],
+      "execution": "not_run",
+      "independent_security_audit": false,
+      "passed": true,
+      "review_scope": "exact_template_and_static_checks"
+    }
+  },
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "run": 72,
+    "skipped": 0
+  }
+}

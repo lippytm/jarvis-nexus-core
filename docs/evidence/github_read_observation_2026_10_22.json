@@ -1,0 +1,10 @@
+{
+  "connector": "github",
+  "evidence_url": "https://api.github.com/repos/lippytm/jarvis-nexus-core/git/commits/b304e0864cd01993957b2e9b6cf252babb7cc4aa",
+  "observed_at": "2026-10-22T20:45:51.659447+00:00",
+  "operation": "read",
+  "record_sha256": "38357266e705eed74230d05c6a6441cdbc2ebaa9703e4451a209696ffd272bf3",
+  "response_sha256": "a5cc1383bd402d23e0545f8ced33f04e08265f4d3b4437d767906c1e03c52cfd",
+  "scope": "Retained GitHub connector response: public commit metadata only; write authority not tested by this read",
+  "source_revision": "b304e0864cd01993957b2e9b6cf252babb7cc4aa"
+}
