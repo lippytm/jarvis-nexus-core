@@ -59,7 +59,7 @@ def main():
         "observed_at": datetime.now(timezone.utc).isoformat(),
         "python_version": platform.python_version(),
         "scope": "syntax_offline_unit_tests_and_synthetic_demo",
-        "composer_runtime_tests": "separate Node web test job covers composer, portfolio, diary and media-player helpers; HTML/JS hashes included here",
+        "composer_runtime_tests": "separate Node web test job covers composer, portfolio, diary, RPG and media-player helpers; HTML/JS hashes included here",
         "github_checkout_sha": ci_sha,
         "syntax": {"files_checked": len(sources), "errors": syntax_errors},
         "tests": {"run": result.testsRun if result else 0,

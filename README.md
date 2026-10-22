@@ -19,6 +19,28 @@ script, documentary and trailer drafts, an original fictional film treatment,
 a music-film draft, ad-copy candidates and an interactive teaching page. The
 optional local renderer creates a text-card MP4 and a generic narration WAV.
 
+## Watch the diary as an anime-inspired RPG episode
+
+The [Jarvis RPG companion](web/jarvis-rpg.html) introduces three original worlds:
+the Lantern Archive, Copper Forge and Sky Observatory. Open a world, explore its
+planned quest, keep an objective note, read its sources and export your visit.
+The packaged edition embeds a real 106.25-second motion-comic pilot with the
+fictional guide Luma, narration, original music and measured utterance captions.
+The repository page can also play an explicitly selected local MP4 and VTT.
+
+The [anime/RPG runbook](docs/ANIME_RPG_RUNBOOK.md) explains compilation, actual
+local rendering and explicit owner editions for private diary sources. The
+[milestone](docs/ANIME_RPG_MILESTONE_2026_10_22.md) records the measured result;
+the [companion guide](docs/JARVIS_RPG_WORKBENCH.md) explains controls and limits.
+
+```bash
+python scripts/jarvis_episode.py compile --entry-file examples/episodes/public-diary-source.json --source-revision 76e7a538d7c1a3a113d57727f025a2c6b27ccf13 --episode first-rpg-episode --out reports/first-rpg-episode.json
+```
+
+This pilot adapts a public engineering diary. Current news and private life
+activity are not supplied. Motion uses a camera over one original illustration;
+the character is not lip-synced. Exploring a quest does not complete real work.
+
 ## Keep a daily diary and develop a media edition
 
 Open [Jarvis Daily Diary](web/jarvis-diary.html) locally. Record an observation,
@@ -102,7 +124,7 @@ The command checks source syntax, runs the offline unit tests and demonstration,
 and saves a JSON evidence record plus a test log under `reports/`. It uses the
 Python standard library and makes no model, payment, or deployment calls.
 
-Test the authored composer, portfolio, diary and media-player helpers with Node
+Test the authored composer, portfolio, diary, RPG and media-player helpers with Node
 18 or later (CI uses Node 24):
 
 ```bash
@@ -111,6 +133,10 @@ node --test --test-reporter=tap tests/*.mjs
 
 ## Review the implementation
 
+- [Anime/RPG episode milestone](docs/ANIME_RPG_MILESTONE_2026_10_22.md)
+- [Episode schema and evidence labels](docs/EPISODE_DATA_CONTRACT.md)
+- [Repeatable anime/RPG rendering](docs/ANIME_RPG_RUNBOOK.md)
+- [Watch-and-play companion](docs/JARVIS_RPG_WORKBENCH.md)
 - [Daily diary and multimedia milestone](docs/DIARY_MULTIMEDIA_MILESTONE_2026_10_22.md)
 - [Diary entry, revision history and privacy contract](docs/DIARY_DATA_CONTRACT.md)
 - [Media production and local CLI runbook](docs/DIARY_MEDIA_RUNBOOK.md)

@@ -1,0 +1,49 @@
+{
+  "observed_at": "2026-10-22T22:32:58.456788+00:00",
+  "scope": "direct_node_authored_helper_cases",
+  "suites": [
+    {
+      "file": "tests/test_composer.mjs",
+      "exit_code": 0,
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/test_diary_workbench.mjs",
+      "exit_code": 0,
+      "tests": 48,
+      "pass": 48,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/test_media_player.mjs",
+      "exit_code": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/test_rpg_workbench.mjs",
+      "exit_code": 0,
+      "tests": 27,
+      "pass": 27,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/test_workbench.mjs",
+      "exit_code": 0,
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "total_cases": 150,
+  "all_passed": true,
+  "native_browser_tested": false
+}
