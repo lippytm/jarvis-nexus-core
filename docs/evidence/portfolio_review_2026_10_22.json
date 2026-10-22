@@ -1,0 +1,188 @@
+{
+  "authority": {
+    "deployment": "not performed",
+    "draft_pr_update": "existing development review workflow",
+    "local_changes": "authorized continuation",
+    "merge": "not performed",
+    "paid_model_calls": 0,
+    "social_publication": "not performed"
+  },
+  "baseline_revision": "a67e743e8b32e552ccddd9e16a2108fe2f816274",
+  "dependencies": {
+    "browser": "local self-contained HTML; actual target-browser behavior unverified",
+    "ci_python": "3.11 configured; exact-head result pending publication",
+    "node": "24 for CI, no third-party web packages",
+    "python": "standard library; local 3.12.14"
+  },
+  "display_timezone": "America/Los_Angeles",
+  "evidence_scope": "working-tree source and offline behavior before publication; exact-head CI is a separate GitHub run",
+  "failure_and_fix": {
+    "change": "Normalize the resolver failure to a controlled fixed ValueError without raw path detail.",
+    "independent_retest": [
+      "cyclic output path",
+      "cyclic input path",
+      "cyclic root path"
+    ],
+    "problem": "Portfolio CLI Path.resolve raised an uncaught RuntimeError on a cyclic symlink in Python 3.12.",
+    "result": "All returned a controlled failure and left no output artifact."
+  },
+  "goal": "Turn one selected portfolio objective into a bounded, reviewable five-role mission and seven-channel editorial briefs; provide a local workbench and explicit read-only Hostinger transport.",
+  "hostinger_actual_configuration_check": {
+    "connection_status": "unverified",
+    "credential_environment_variable": "HOSTINGER_API_TOKEN",
+    "credential_present": false,
+    "credential_validation": "presence_only",
+    "live_access_verified": false,
+    "mode": "check_config",
+    "provider": "hostinger",
+    "schema_version": 1,
+    "status": "configuration_checked",
+    "transport_calls": 0,
+    "writes_requested": 0
+  },
+  "implementation": {
+    "draft_targets": 12,
+    "external_agents_started": 0,
+    "initiatives": 12,
+    "project_areas": 7,
+    "publication_brief_channels": 7,
+    "roles_per_mission": 5,
+    "source_context_for_examples": "a67e743e8b32e552ccddd9e16a2108fe2f816274",
+    "synthetic_inactive_role_drafts": 60
+  },
+  "independent_review": {
+    "candidate_link_checks": 28,
+    "hostinger_offline_tests_passed": 18,
+    "kind": "AI source and offline-behavior review; not a human audit",
+    "mission_campaign_boundary_probes": 36,
+    "remaining_concrete_blocker": null,
+    "role_ledger_round_trips": 5,
+    "tamper_probes_rejected": 7,
+    "unmocked_dns_or_socket_attempts_in_guarded_hostinger_tests": 0,
+    "workbench_individual_cases_passed": 34
+  },
+  "inputs": [
+    "user-directed portfolio expansion",
+    "existing project, target, ledger and draft contracts",
+    "owner-reference destination assignments",
+    "authored planning defaults",
+    "official Hostinger API and GitHub action documentation"
+  ],
+  "limits": [
+    "The Hostinger runtime credential was absent; no authenticated request occurred.",
+    "The fixed Horizons inventory endpoint does not establish compatibility of an existing Website Builder site.",
+    "The five-second network budget starts after DNS; an external supervisor is required for a hard DNS-inclusive limit.",
+    "The Hostinger secure output CLI requires POSIX facilities; no Windows CLI compatibility is claimed.",
+    "No rendered browser, native spellcheck, clipboard, download or assistive-technology validation occurred.",
+    "No external model dispatcher or provider write adapter is implemented.",
+    "No real audience, revenue, commission or learner outcome is reported.",
+    "The paused Studio Work Cycle requires a separate independent human accessibility review."
+  ],
+  "next_actions": [
+    "Securely configure and verify one Hostinger read and actual site identity.",
+    "Complete one real reviewed cross-AI tool-building cycle.",
+    "Validate native browser behavior and one authorized measured channel experiment."
+  ],
+  "prepared_on": "2026-10-22",
+  "privacy": "Public examples contain authored planning text and owner-reference destinations; no actual owner financial records, legal identifiers or credentials are included.",
+  "project": "Jarvis Nexus portfolio expansion",
+  "record_sha256": "f10ecf96fbcf48e4e8be7e67832f8341eb7d184ffd370736b8d8fd6e6138d739",
+  "recovery": [
+    "Retain the original request and source revision.",
+    "Write corrected plans to fresh filenames; existing outputs are preserved.",
+    "Keep failed provider returns as failed evidence until corrected and reviewed.",
+    "Use the existing branch review and revert workflow before any release."
+  ],
+  "review_destination": "https://github.com/lippytm/jarvis-nexus-core/pull/5",
+  "schema_version": 1,
+  "source_origin": "Assistant-authored repository changes with delegated implementation and separate AI review; synthetic examples are not generated execution results.",
+  "source_sha256": {
+    ".github/workflows/control-tower-tests.yml": "7be9fb040e12d1e1a0934e43b2a7cfbc7c3ef09b62d3260153d1ecac36af228f",
+    "control_tower/attribution.py": "f7a347edfe6603eed5099ffb606da5d20da38ebae93a7d45280546dcd4cfa897",
+    "control_tower/briefing.py": "c74739d95340a2a14899e33ca515200517ec8373fecb0d934b8015abd79ad1ce",
+    "control_tower/builder.py": "8ef01a1a05bfcefd6b408190972e0cd22357368c99335cbd3ab752551a62bde5",
+    "control_tower/campaigns.py": "cf8de4685c13623c7f3ab185bac7cabd132b64554d4d218a5770409a49a51f1a",
+    "control_tower/connections.py": "9e82124fd9c6706ba7e3991c8059e197b35acaf3baa9cdf3f4ad968fd141c24f",
+    "control_tower/dashboard.py": "7fe88ae82e7ae2817aff14b1a9ecb16a06975e5ade35c0e8844f62b2917164b2",
+    "control_tower/demo.py": "cb5c245f0f0a62e421dec541b507ae7088c89f970226e5d481eb313643e2227e",
+    "control_tower/evaluator.py": "5a2347d9be3f526539b1d5345f8249d45fd0bd743cca4c7859fe0688f8943a6c",
+    "control_tower/events.py": "54e827513bbb49bd9afa809114c53abe03011e8cb488069186b744ade3e9ca54",
+    "control_tower/funnels.py": "bf76037d3140d689951583cb705c12e6c831558ea5aff7aaf24e3424b85fd8c1",
+    "control_tower/handoffs.py": "8b4e1208573f30a6f8d5a0936e29614fceca36efb62af14ece14bf0eccf9304d",
+    "control_tower/hostinger_live.py": "695a02bebb08ad5c9d8ba85426dd58ad8ee576018757ade34df73a115383c452",
+    "control_tower/hostinger_probe.py": "b72a40a4b928f13bfcee4ad31ce76a84b31884bedbaf92fe28c7044783437ae1",
+    "control_tower/journeys.py": "d75ad86ae1456405383446991f49579a596bcc949e25be3f80e5265f1a7374cf",
+    "control_tower/missions.py": "7e7a087fdd39a46ac75ffbacdf14c098563219eb3b0c9e39b37936b2cbb3dfff",
+    "control_tower/network_contract.py": "204e482a82cd700a47f15275e949200a2d1f9c26b22c8559402c485c0757fee2",
+    "control_tower/network_demo.py": "39333d859cd5740b3e00e16dd02feba529021346169f36a5983f6e2c41787908",
+    "control_tower/orchestrator.py": "9dd90bb0e988687ff59db837fb9c03c4376e6024fe6241028fd4ff1578e69b4e",
+    "control_tower/portfolio.py": "3fa395dea80b1a7090596eb9a3671d0a360633b0eb68b21151090428ac1382f3",
+    "control_tower/portfolio_demo.py": "d80019791454da30930d65cd8c80192c52dce4f97049684c893fe6c96486698d",
+    "control_tower/provider_catalog.py": "97bcb8e135ecb0e57b9bc2ee256b65775313bda22a769ebfc74c6e0521d59121",
+    "control_tower/roundtrip.py": "58b776b711b5b4a17efd66c2683a0a2495016cf43ce0900480bfcebf41ccd8bd",
+    "control_tower/swarm_factory.py": "c6784d81883ffa695aaa0c0e998d15a06800243d817c59f089bbf2c3ededed03",
+    "control_tower/validation.py": "d36e33036d889694e1715688f5a325aeedb0488e43747f31f032578238323677",
+    "scripts/jarvis_hostinger.py": "f392974d46b313e801d894c4eedb5b903b7c4d8c5580031a683814d2a1b51da6",
+    "scripts/jarvis_network.py": "dfedb3030851b0d4892893363c794ece15860b2c965b75bd57fb93b2f8f66c85",
+    "scripts/jarvis_portfolio.py": "2545953e1349ee9999c194e373699cc9611b31415ac9ac5b214e21d76890a467",
+    "scripts/verify_control_tower.py": "b3cce342a1816bfe68baedc320d6170f4d43ed2fe49a126b099f0dd570339b5e",
+    "tests/test_builder_evaluator.py": "4ba8bfd14528d0bf00e64c2db7cb94c49ff80c70099c9dfab5cbb76083b63dac",
+    "tests/test_composer.mjs": "4bc19c62cc28b003aab8a61dcce1b292f31d82fca23c667695178e770d553a99",
+    "tests/test_connection_observations.py": "54692d0b65eb3518abab078907e9db18f2e50c608e147f2fda95de52389503fa",
+    "tests/test_connections.py": "ecbd389b9fbd7c86b73bfd4d8c1e50260017819781c6319dcaadb55e2d2d6527",
+    "tests/test_control_tower_extensions.py": "68f27f7304a4d09ba01ce3644339965641edd0c01606494654bc2e9458403296",
+    "tests/test_demo.py": "1850940d6c25e3171a3249e0f59d86def45223e793370542f84d46a3ca9efba7",
+    "tests/test_events.py": "c381e3d92975713220d3f97b2e991e7a3a0e1108e6f06deba5e38587563bda10",
+    "tests/test_funnels_dashboard.py": "94dbddfed93b97a040b422c6024ee0c294ddec488a1fce1af9f4fc75337e7670",
+    "tests/test_hostinger_live.py": "7fba5fbc9e85036fef34385435ba602c24bee581f740a0ff35ce0454bf0af714",
+    "tests/test_hostinger_probe.py": "540744406d22f6c38f71307b2beaa5c9a3b43d72bfacfa18c7e5059293042887",
+    "tests/test_input_hardening.py": "a3a75edd0ccc7b81d6890eeda73fd05a6b27635a7971c7aa7a83f2dd0f6efedd",
+    "tests/test_journeys.py": "a2fb6b379b0c756994de7da405aa39915abe297bf9099f439ce33f57923d329f",
+    "tests/test_network.py": "4d0e0abd7edeab397bf867351dddd02f51c668e64a341d260f088c4dd6169e13",
+    "tests/test_portfolio_missions.py": "834ad151dd483c959c8d3889e04acd5cc0685734192b3a27fcc811301e4959ac",
+    "tests/test_provider_catalog.py": "b84d0b34e0f2f39f511e3c00b6dbe1266cbd0ed2ed1d3cb2f6f5b90dd59ee18f",
+    "tests/test_roundtrip.py": "9a1ffad5a8940a19ded660b0c2dd62493d02a6c773835455432b5a5280323139",
+    "tests/test_workbench.mjs": "72ba38312cfb93152db11f36a5be603141cbaedf3aa6ba7ba1b4486b808c088d",
+    "web/jarvis-composer.html": "51196d09ad9345ba12ac58dc71dd93718d88e298dd5dd91213ce5797f74741df",
+    "web/jarvis-workbench.html": "7013b59fe66704e1a55d86133d03e0f5e205c0a96cb0eb047fdebdfab8ebf6bb"
+  },
+  "supporting_artifact_sha256": {
+    "docs/evidence/action_pins_2026_10_22.json": "b92db8b6a14e6bb60e61be32e7964d90fbf48221663d05673d0f5a139444ff83",
+    "docs/evidence/hostinger_config_2026_10_22.json": "3a132bbf44e77c022ff2b8633ba043cc9b0781116ee2d84f77b9598929038d76",
+    "docs/evidence/portfolio-composer-tests.txt": "3a6ee7f14a5221b7a15c7144e87dbe2c38a888e63e49be1c7b73d2a280473487",
+    "docs/evidence/portfolio-web-tests.txt": "70ef542b326405e011d2de58817d72e27d77908f72941d9168942eee9f986929",
+    "docs/evidence/portfolio_expansion_2026_10_22.json": "b69b1890e0fe18794f4ddba54821cd50e4febabe170bb1f84046917c77e20ac9",
+    "docs/evidence/portfolio_expansion_2026_10_22.txt": "c61e3e9e1e86ed0e1882807176e0b0ecb86046f106664f9a47ada6f7798f6bdd",
+    "docs/evidence/workbench-request-fixtures.json": "c9dbce445cfd04d6ea7c29436fe137ea966324597f42a1d1617ece7ed45168b2",
+    "docs/evidence/workbench-validation.json": "7c0fcd65e90d75323e5acf11c954a66eb7c9a082f418cd70e797701213a9994f",
+    "examples/portfolio/catalog.json": "99c661ce7d2405e4ce251c968e67b4f3a282a9c02c4de892028c4c5ae0de6ed8",
+    "examples/portfolio/mission_index.json": "8fb953ede492646e10eaf7c886c1579db67ea16bf422e754fb66ff07185930fe"
+  },
+  "verification": {
+    "combined_node_file_groups": {
+      "failed": 0,
+      "passed": 2
+    },
+    "individual_node_cases": {
+      "composer_passed": 34,
+      "failed": 0,
+      "workbench_passed": 34
+    },
+    "python_syntax": {
+      "errors": [],
+      "files_checked": 43
+    },
+    "python_tests": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "run": 163,
+      "skipped": 0
+    },
+    "source_hash_count": 48,
+    "workbench_shared_contract": {
+      "invalid_fixtures_rejected": 11,
+      "valid_exports_accepted_unchanged": 12
+    }
+  }
+}

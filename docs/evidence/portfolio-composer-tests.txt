@@ -1,0 +1,42 @@
+✔ both authored scripts compile independently (3.200643ms)
+✔ native English spellcheck is requested without app autocorrection (0.36521ms)
+✔ the page blocks connections and has no external assets or storage code (0.423759ms)
+✔ a review offers corrections without mutating its input (5.856916ms)
+✔ the limited list leaves correct words, brands and unknown words unchanged (2.261177ms)
+✔ URL destinations, email addresses, handles and hashtags remain unchanged (0.326973ms)
+✔ backtick fenced code is excluded while surrounding prose is reviewed (0.352572ms)
+✔ tilde fences and unfinished fenced code are conservatively preserved (0.19865ms)
+✔ inline code supports multiple backticks and protects unfinished code (0.254603ms)
+✔ HTML code and attributes are protected; ordinary text remains reviewable (0.641928ms)
+✔ indented code, common code signatures, calls and paths are protected (0.404189ms)
+✔ compound words, code identifiers, accents and mixed-case terms are not rewritten (0.397809ms)
+✔ lowercase, title case and uppercase correction styles are preserved (0.125589ms)
+✔ only the chosen occurrence changes (0.397469ms)
+✔ multiple corrections apply safely despite changing offsets and duplicate selections (0.199361ms)
+✔ Unicode preceding a correction does not corrupt offsets (3.169966ms)
+✔ stale suggestions and forged replacement text are rejected (0.771192ms)
+✔ a correction that would exceed the export byte limit is rejected atomically (2.407317ms)
+✔ empty and unknown prose has no locally known suggestions (0.197297ms)
+✔ the draft contract has exactly its five authorized keys and preserves text (0.351509ms)
+✔ all agreed project IDs are supported, with no extra project identifiers (0.289205ms)
+✔ provider IDs include each handoff destination and distinguish OpenAI API from ChatGPT (0.348375ms)
+✔ unknown, missing and incorrectly typed selectors are rejected (0.422607ms)
+✔ export rejects whitespace-only drafts without trimming valid text (0.246561ms)
+✔ C0 controls other than tab, line feed and carriage return are rejected (0.5705ms)
+✔ the 20,000-byte boundary is inclusive for ASCII (0.400674ms)
+✔ UTF-8 byte limits count multibyte characters and emoji correctly (0.514635ms)
+✔ invalid surrogate text is rejected instead of silently replaced on export (0.221113ms)
+✔ non-string draft values are rejected (0.199911ms)
+✔ character count uses Unicode code points and bytes remain a separate measure (1.505248ms)
+✔ review JSON survives serialization without creating authority or connection fields (0.11927ms)
+✔ the shared JavaScript-to-Python fixtures match actual exports and rejection rules (0.460394ms)
+✔ undo restores chosen corrections and cleared text (0.248945ms)
+✔ editor history ignores duplicate records and respects its bounded capacity (0.194614ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37.85316

@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Jarvis Portfolio Workbench — choose your next useful step</title>
+  <style>
+    :root { color-scheme: light; --bg: #f2f5f8; --surface: #fff; --soft: #f7f9fb; --ink: #1a2c42; --muted: #566980; --line: #d9e2eb; --accent: #17665f; --on-accent: #fff; --accent-soft: #e8f4f1; --note: #77551c; --note-bg: #fbf5e8; --danger: #a52c45; }
+    :root[data-theme="dark"] { color-scheme: dark; --bg: #111923; --surface: #1a2634; --soft: #15202c; --ink: #edf4fb; --muted: #b0c1d5; --line: #3c4e63; --accent: #8dd6c7; --on-accent: #102920; --accent-soft: #243e3e; --note: #f0ca7f; --note-bg: #343020; --danger: #ffb2c0; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark; --bg: #111923; --surface: #1a2634; --soft: #15202c; --ink: #edf4fb; --muted: #b0c1d5; --line: #3c4e63; --accent: #8dd6c7; --on-accent: #102920; --accent-soft: #243e3e; --note: #f0ca7f; --note-bg: #343020; --danger: #ffb2c0; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.55; }
+    a { color: var(--accent); }
+    button, input, select, textarea { font: inherit; }
+    button, select, input[type="search"] { min-height: 44px; }
+    button, .button-link { display: inline-flex; justify-content: center; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 9px; padding: .65rem .95rem; background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 650; cursor: pointer; text-decoration: none; }
+    button:hover:not(:disabled), .button-link:hover { background: var(--accent-soft); border-color: var(--accent); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    button.primary:hover:not(:disabled) { filter: brightness(.94); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .skip-link { position: absolute; top: -100px; left: 16px; z-index: 10; padding: 12px 18px; background: var(--surface); }
+    .skip-link:focus { top: 12px; }
+    .wrap { width: min(1260px, calc(100% - 48px)); margin: 0 auto; }
+    .topbar { min-height: 88px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; border-bottom: 1px solid var(--line); padding: 16px 0; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--ink); color: var(--surface); font-size: 24px; font-weight: 750; }
+    .brand-name { font-size: 17px; font-weight: 750; letter-spacing: .04em; }
+    .brand-sub { color: var(--muted); font-size: 10px; font-weight: 750; letter-spacing: .17em; }
+    .top-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .theme-field { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
+    select, input[type="search"], textarea { width: 100%; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); padding: .7rem .8rem; }
+    select { padding-right: 2rem; }
+    .theme-field select { width: auto; }
+    .intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 34px 0 28px; }
+    .intro-copy { max-width: 740px; }
+    .eyebrow { color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 9px 0 11px; font-size: clamp(1.9rem, 4vw, 2.6rem); letter-spacing: -.04em; line-height: 1.18; }
+    .intro p { margin: 0; color: var(--muted); font-size: 15px; }
+    .snapshot { flex: 0 0 auto; color: var(--muted); font-size: 11px; text-align: right; }
+    .snapshot strong { display: block; font-size: 12px; color: var(--ink); margin-bottom: 4px; }
+    .overview { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px 20px; margin-bottom: 22px; }
+    .overview-item { color: var(--muted); font-size: 12px; }
+    .overview-item strong { font-variant-numeric: tabular-nums; font-size: 19px; color: var(--ink); margin-right: 6px; }
+    .overview-note { margin-left: auto; color: var(--muted); font-size: 12px; }
+    .workspace { display: grid; grid-template-columns: 335px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .catalog-panel, .detail-panel { min-width: 0; }
+    .catalog-tools { display: grid; gap: 12px; }
+    .field-label { display: block; color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+    .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .filter-row select { min-width: 0; font-size: 12px; }
+    .results-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 17px 0 12px; }
+    #result-count { font-size: 12px; color: var(--muted); margin: 0; }
+    #reset-filters { min-height: 36px; padding: .35rem .6rem; font-size: 11px; }
+    #initiative-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+    .initiative-button { width: 100%; display: block; text-align: left; padding: 15px 16px; border-radius: 12px; font-weight: 400; }
+    .initiative-button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); box-shadow: inset 3px 0 var(--accent); }
+    .initiative-button .card-title { display: block; color: var(--ink); font-weight: 700; font-size: 14px; margin-bottom: 6px; line-height: 1.45; }
+    .initiative-button .card-summary { display: block; font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .initiative-button .card-tag { display: block; color: var(--accent); font-size: 10px; font-weight: 700; margin-top: 10px; letter-spacing: .025em; }
+    #no-results { padding: 22px 16px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 13px; }
+    .detail-panel { display: grid; gap: 18px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .detail-intro { padding: 25px 27px; }
+    .project-label { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+    h2 { font-size: 24px; letter-spacing: -.03em; line-height: 1.3; margin: 0 0 10px; }
+    .detail-summary { font-size: 14px; color: var(--muted); margin: 0; }
+    .audience { margin: 17px 0 0; font-size: 12px; color: var(--muted); }
+    .audience strong { color: var(--ink); }
+    #selected-filter-note { margin: 14px 0 0; color: var(--note); font-size: 12px; }
+    .outcome { padding: 20px 27px; background: var(--accent-soft); border-top: 1px solid var(--line); }
+    .outcome h3 { margin: 0 0 6px; color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: .09em; }
+    .outcome p { margin: 0; font-size: 16px; line-height: 1.55; }
+    .plan-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .plan-block { padding: 23px 25px; }
+    .plan-block + .plan-block { border-left: 1px solid var(--line); background: var(--soft); }
+    h3 { margin: 0 0 13px; font-size: 15px; letter-spacing: -.01em; }
+    .plan-block ol, .plan-block ul, .scope-list { padding-left: 20px; margin: 0; }
+    .plan-block li { font-size: 13px; padding-left: 3px; margin-bottom: 10px; }
+    .plan-block li:last-child { margin-bottom: 0; }
+    .plan-block ol li::marker { color: var(--accent); font-weight: 700; }
+    .plan-block ul { color: var(--muted); }
+    .format-row { border-top: 1px solid var(--line); padding: 15px 25px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+    .format-label { color: var(--muted); font-size: 11px; margin-right: 3px; }
+    .chip { display: inline-block; font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--soft); color: var(--muted); }
+    .destination { padding: 21px 25px; }
+    .destination-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 9px; margin-bottom: 12px; }
+    .destination-top h3 { margin: 0; }
+    .state-badge { font-size: 10px; font-weight: 700; color: var(--note); background: var(--note-bg); padding: 5px 8px; border-radius: 6px; }
+    #destination-label { margin: 0 0 7px; font-size: 13px; font-weight: 650; }
+    #destination-urls { list-style: none; margin: 0; padding: 0; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+    #destination-urls li { margin-top: 5px; }
+    #destination-note { margin: 9px 0 0; color: var(--muted); font-size: 12px; }
+    .scope-notes { padding: 17px 25px; background: var(--soft); border-top: 1px solid var(--line); }
+    .scope-notes h3 { margin-bottom: 9px; font-size: 12px; }
+    .scope-list { color: var(--muted); font-size: 12px; }
+    .scope-list li + li { margin-top: 5px; }
+    .request { padding: 25px 27px; }
+    .request h3 { font-size: 19px; margin: 5px 0 9px; }
+    .request-intro { font-size: 13px; color: var(--muted); margin: 0 0 19px; }
+    #objective { min-height: 136px; resize: vertical; font-size: 14px; line-height: 1.65; }
+    #objective::placeholder { color: var(--muted); opacity: .85; }
+    .objective-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 11px; margin: 7px 0 17px; }
+    .request-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, .5fr); gap: 14px; margin-bottom: 18px; }
+    .request-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    #request-note { color: var(--muted); font-size: 12px; min-height: 20px; margin: 12px 0 0; }
+    .invalid { color: var(--danger) !important; }
+    #action-status { color: var(--accent); font-size: 13px; min-height: 22px; margin: 12px 0 0; }
+    .brief-preview { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 16px; font-size: 12px; color: var(--muted); }
+    .brief-preview summary { cursor: pointer; color: var(--ink); font-weight: 650; }
+    #brief-text { margin-top: 12px; min-height: 250px; resize: vertical; font-size: 12px; line-height: 1.65; }
+    .page-note { color: var(--muted); font-size: 11px; padding: 25px 0 34px; }
+    .page-note p { margin: 4px 0; }
+    #catalog-error, noscript { display: block; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 20px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    [hidden] { display: none !important; }
+    @media (max-width: 1050px) { .workspace { grid-template-columns: 290px minmax(0, 1fr); gap: 18px; } .plan-grid { grid-template-columns: 1fr; } .plan-block + .plan-block { border-left: 0; border-top: 1px solid var(--line); } .filter-row { grid-template-columns: 1fr; } .overview-note { width: 100%; margin-left: 0; } }
+    @media (max-width: 760px) { .wrap { width: calc(100% - 28px); } .intro { align-items: flex-start; flex-direction: column; padding-top: 27px; gap: 15px; } .snapshot { text-align: left; } .workspace { grid-template-columns: 1fr; } .filter-row { grid-template-columns: 1fr 1fr; } #initiative-list { grid-template-columns: 1fr 1fr; max-height: 390px; overflow: auto; padding: 4px; margin: -4px; } .initiative-button { height: 100%; } .initiative-button .card-summary { display: none; } .initiative-button .card-title { font-size: 13px; } .topbar { gap: 14px; } .top-actions { width: 100%; justify-content: space-between; } }
+    @media (max-width: 430px) { .filter-row, .request-fields { grid-template-columns: 1fr; } #initiative-list { grid-template-columns: 1fr; max-height: 310px; } .detail-intro, .outcome, .request { padding-left: 20px; padding-right: 20px; } .plan-block, .destination, .scope-notes { padding-left: 20px; padding-right: 20px; } .request-actions { display: grid; } .overview { gap: 10px 20px; } .overview-item strong { font-size: 17px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#initiative-detail">Skip to the selected initiative</a>
+  <div class="wrap">
+    <header class="topbar"><div class="brand"><span class="mark" aria-hidden="true">J</span><div><div class="brand-name">JARVIS</div><div class="brand-sub">PORTFOLIO WORKBENCH</div></div></div><div class="top-actions"><a class="button-link" href="jarvis-composer.html" target="_blank" rel="noopener">Spelling composer <span aria-hidden="true">↗</span><span class="sr-only"> (opens a new tab)</span></a><label class="theme-field" for="theme">Appearance<select id="theme"><option value="auto">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div></header>
+    <main>
+      <section class="intro" aria-labelledby="page-title"><div class="intro-copy"><div class="eyebrow">From possibilities to a practical plan</div><h1 id="page-title">Choose your next useful step.</h1><p>Explore the portfolio, choose one initiative, and prepare a focused request for review.</p></div><div class="snapshot"><strong>Planning catalog</strong><span id="catalog-version">Local snapshot</span></div></section>
+      <noscript>This workbench needs JavaScript to read its embedded catalog and prepare a request. It does not load the catalog from a service.</noscript>
+      <div id="catalog-error" role="alert" hidden></div>
+      <div class="overview" aria-label="Catalog scope"><span class="overview-item"><strong id="initiative-count">—</strong> initiatives</span><span class="overview-item"><strong id="project-count">—</strong> project areas</span><span class="overview-item"><strong id="target-count">—</strong> draft destinations</span><span class="overview-note">Plans and evidence gaps · no live account status</span></div>
+      <div class="workspace" id="workspace" hidden>
+        <section class="catalog-panel" aria-labelledby="catalog-title"><h2 id="catalog-title" class="sr-only">Explore initiatives</h2><div class="catalog-tools"><div><label class="field-label" for="search">Search the portfolio</label><input type="search" id="search" maxlength="160" autocomplete="off" placeholder="Search ideas, outcomes, evidence…"></div><div class="filter-row"><div><label class="field-label" for="project-filter">Project area</label><select id="project-filter"><option value="">All project areas</option></select></div><div><label class="field-label" for="journey-filter">Journey focus</label><select id="journey-filter"><option value="">All journeys</option></select></div></div></div><div class="results-head"><p id="result-count" role="status" aria-live="polite" aria-atomic="true"></p><button type="button" id="reset-filters">Reset filters</button></div><ul id="initiative-list"></ul><p id="no-results" hidden>No initiatives match these filters. Change your search or reset the filters.</p></section>
+        <section class="detail-panel" id="initiative-detail" tabindex="-1" aria-labelledby="initiative-title">
+          <div class="card"><div class="detail-intro"><div class="project-label" id="selected-project"></div><h2 id="initiative-title" tabindex="-1"></h2><p class="detail-summary" id="initiative-summary"></p><p class="audience"><strong>Who it helps:</strong> <span id="initiative-audience"></span></p><p id="selected-filter-note" hidden>The selected initiative is outside the current filters. Its request is kept here while you explore.</p></div><div class="outcome"><h3>Intended outcome</h3><p id="initiative-outcome"></p></div></div>
+          <div class="card"><div class="plan-grid"><section class="plan-block" aria-labelledby="plan-title"><h3 id="plan-title">A plan to review</h3><ol id="plan-steps"></ol></section><section class="plan-block" aria-labelledby="gaps-title"><h3 id="gaps-title">Evidence still needed</h3><ul id="evidence-gaps"></ul></section></div><div class="format-row"><span class="format-label">Possible formats</span><span id="initiative-formats"></span></div></div>
+          <div class="card"><section class="destination" aria-labelledby="destination-title"><div class="destination-top"><h3 id="destination-title">Destination assignment</h3><span class="state-badge" id="destination-state"></span></div><p id="destination-label"></p><ul id="destination-urls" aria-label="Owner reference URLs"></ul><p id="destination-note"></p></section><section class="scope-notes" aria-labelledby="scope-title"><h3 id="scope-title">Scope notes</h3><ul class="scope-list" id="boundaries"></ul></section></div>
+          <section class="card request" aria-labelledby="request-title"><div class="eyebrow">Prepare one bounded request</div><h3 id="request-title">What would make this session useful?</h3><p class="request-intro">Set your objective and a planning timebox. Copy a brief or download the request for the local mission compiler.</p><label class="field-label" for="objective">Your objective</label><textarea id="objective" lang="en" spellcheck="true" autocorrect="off" autocomplete="off" aria-describedby="objective-limit request-note persistence-note" placeholder="Describe one concrete result you want to work toward in this session."></textarea><div class="objective-meta"><span id="objective-count">0 characters</span><span id="objective-limit">0 / 2,000 UTF-8 bytes</span></div><div class="request-fields"><div><label class="field-label" for="target">Draft destination</label><select id="target"></select></div><div><label class="field-label" for="timebox">Planning timebox</label><select id="timebox"><option value="15">15 minutes</option><option value="30" selected>30 minutes</option><option value="60">60 minutes</option><option value="90">90 minutes</option></select></div></div><div class="request-actions"><button type="button" class="primary" id="copy-brief" disabled>Copy planning brief</button><button type="button" id="export-request" disabled>Download request .json</button></div><p id="request-note">Add an objective to prepare a request.</p><p id="action-status" role="status" aria-live="polite" aria-atomic="true"></p><details class="brief-preview" id="brief-preview"><summary>Preview the plain-text brief</summary><label for="brief-text" class="sr-only">Planning brief preview, read only</label><textarea id="brief-text" readonly spellcheck="false" placeholder="Your brief appears after you add a valid objective."></textarea></details></section>
+        </section>
+      </div>
+    </main>
+    <footer class="page-note"><p id="persistence-note">Objectives are kept per initiative only while this page is open. Copy or download before closing or reloading.</p><p>Requests are planning input. This page does not start a mission, authenticate a review, or publish a finished integration.</p><p>Browser spelling follows your dictionary and settings and may use your browser’s spellcheck service.</p></footer>
+  </div>
+  <script id="portfolio-catalog" type="application/json">
+{
+  "schema_version": 1,
+  "kind": "jarvis.portfolio_catalog",
+  "catalog_version": "2026-10-22.1",
+  "scope": "authored planning defaults; not a live account, product or revenue inventory",
+  "initiatives": [
+    {
+      "audience": "Charles and future Jarvis collaborators",
+      "boundaries": [
+        "Generated proposals are inactive.",
+        "The owner retains release and account authority."
+      ],
+      "destination": {
+        "label": "Jarvis Nexus development repository",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://github.com/lippytm/jarvis-nexus-core"
+        ]
+      },
+      "evidence_gaps": [
+        "A real task selected for the next cycle",
+        "Independent release review",
+        "Observed benefit in actual use"
+      ],
+      "formats": [
+        "Tool proposal",
+        "Tested change",
+        "Teaching note"
+      ],
+      "id": "jarvis-tools",
+      "journey_kind": "none",
+      "outcome": "One useful change with reproducible checks and a clear recovery path.",
+      "plan_steps": [
+        "Choose one repeated task and a reproducible example.",
+        "Draft a minimal change with explicit inputs and outputs.",
+        "Review the change and retain its actual test evidence."
+      ],
+      "project_id": "ai-jarvis",
+      "project_label": "AI Jarvis engineering and coordination",
+      "summary": "Turn a recurring work problem into a small reusable tool and a reviewed assistant mission.",
+      "title": "Jarvis tools and assistant building"
+    },
+    {
+      "audience": "Learners exploring practical technology",
+      "boundaries": [
+        "Keep this education destination separate from the proposed affiliate platform.",
+        "An inquiry is not paid access or proof of learning."
+      ],
+      "destination": {
+        "label": "AI Evolutionary Evolutions",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://aievolutionaryevolutions.com"
+        ]
+      },
+      "evidence_gaps": [
+        "Hostinger product and site identity",
+        "Supported form delivery",
+        "Actual consented inquiry evidence"
+      ],
+      "formats": [
+        "Lesson page",
+        "Inquiry page",
+        "Learning checklist"
+      ],
+      "id": "website-learning",
+      "journey_kind": "member",
+      "outcome": "A reviewed lesson and a working, measured inquiry path when account access is available.",
+      "plan_steps": [
+        "Select one learner question and one lesson outcome.",
+        "Prepare the lesson and one optional inquiry action.",
+        "Verify the actual page, form receipt and source attribution."
+      ],
+      "project_id": "ai-evolutionary-evolutions",
+      "project_label": "Hostinger education and membership inquiries",
+      "summary": "Develop programming, Linux and AI learning material with a clear inquiry journey on AI Evolutionary Evolutions.",
+      "title": "Education website and membership inquiries"
+    },
+    {
+      "audience": "Prospective creators and affiliate partners",
+      "boundaries": [
+        "Do not route this platform to the education site by default.",
+        "Prices, demand and income remain unvalidated."
+      ],
+      "destination": {
+        "label": "Separate affiliate platform — destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Separate website assignment",
+        "Validated customer interest",
+        "Actual fulfillment and support capacity"
+      ],
+      "formats": [
+        "Offer brief",
+        "Site specification",
+        "Member workflow"
+      ],
+      "id": "affiliate-builder",
+      "journey_kind": "none",
+      "outcome": "One reviewable offer with a named delivery method and a clearly assigned destination.",
+      "plan_steps": [
+        "Choose one audience and one useful member outcome.",
+        "Describe the smallest offer and its delivery workflow.",
+        "Assign a separate destination and test demand before expanding."
+      ],
+      "project_id": "funding-affiliates",
+      "project_label": "Separate funding-customer and referral-partner journeys",
+      "summary": "Design the separate platform for affiliate products, member tools and reusable website-building services.",
+      "title": "Affiliate website and membership platform"
+    },
+    {
+      "audience": "Business owners seeking financing information",
+      "boundaries": [
+        "Keep customer financing distinct from recruiting referral partners.",
+        "No approval, amount, rate or earnings guarantee."
+      ],
+      "destination": {
+        "label": "Owner-provided financing destinations",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://lippytmai.getbizfunds.com",
+          "https://www.7figurescredit.com?a_aid=lippytm"
+        ]
+      },
+      "evidence_gaps": [
+        "Current provider terms and link behavior",
+        "Authorized attribution data",
+        "Confirmed commission records if any"
+      ],
+      "formats": [
+        "Educational explanation",
+        "Referral page brief",
+        "Attribution review"
+      ],
+      "id": "funding-customers",
+      "journey_kind": "funding_customer",
+      "outcome": "A clearly disclosed customer referral path with no invented financing outcome.",
+      "plan_steps": [
+        "Choose one customer question and confirm current provider information.",
+        "Draft an accurate explanation and visible affiliate disclosure.",
+        "Review the customer destination and measure a permitted referral event."
+      ],
+      "project_id": "funding-affiliates",
+      "project_label": "Separate funding-customer and referral-partner journeys",
+      "summary": "Help prospective business-financing customers understand the referral route and reach the selected provider.",
+      "title": "Business financing customer journey"
+    },
+    {
+      "audience": "Prospective referral partners",
+      "boundaries": [
+        "Do not replace a financing-customer link with a partner application.",
+        "No invented earnings or automatic outreach."
+      ],
+      "destination": {
+        "label": "Owner-provided partner destinations",
+        "state": "owner_reference_unverified",
+        "urls": [
+          "https://lendtrack.ai/join/lippytmai",
+          "https://join.7figurespartners.com/?a_aid=lippytm"
+        ]
+      },
+      "evidence_gaps": [
+        "Current partner terms",
+        "Verified application destination",
+        "Actual application and commission evidence"
+      ],
+      "formats": [
+        "Partner overview",
+        "Application guide",
+        "Follow-up checklist"
+      ],
+      "id": "referral-partners",
+      "journey_kind": "funding_partner",
+      "outcome": "A partner-specific application path with clear expectations and documented terms.",
+      "plan_steps": [
+        "Confirm the current partner program and audience.",
+        "Explain responsibilities and compensation only from verified terms.",
+        "Review the partner application route and retain consented outcomes."
+      ],
+      "project_id": "funding-affiliates",
+      "project_label": "Separate funding-customer and referral-partner journeys",
+      "summary": "Explain the partner opportunity and route interested people to the correct partner application.",
+      "title": "Referral partner recruitment"
+    },
+    {
+      "audience": "Readers and learners",
+      "boundaries": [
+        "The paused Studio Work Cycle remains paused.",
+        "A planning pack is not a finished book, audiobook or sale."
+      ],
+      "destination": {
+        "label": "Publishing destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Current manuscript and rights inventory",
+        "Reader feedback",
+        "Human accessibility review before Studio restart"
+      ],
+      "formats": [
+        "Book chapter",
+        "Audio script",
+        "Newsletter outline"
+      ],
+      "id": "publishing-library",
+      "journey_kind": "none",
+      "outcome": "One reviewed chapter or script with a reusable source and edition record.",
+      "plan_steps": [
+        "Select one title, reader need and chapter-sized deliverable.",
+        "Separate sourced factual claims from fiction and speculation.",
+        "Review references, rights, accessibility and edition changes."
+      ],
+      "project_id": "publishing-studio",
+      "project_label": "Source-backed books, audio, video and social drafts",
+      "summary": "Develop sourced educational titles and clearly labelled fiction, including the Encyclopedia of Everything Applied and original creative worlds.",
+      "title": "Publishing library and creative worlds"
+    },
+    {
+      "audience": "Video learners and prospective creator customers",
+      "boundaries": [
+        "An outline is not a rendered video or working interactive player.",
+        "Commercial platform hosting needs its own assignment."
+      ],
+      "destination": {
+        "label": "Video platform destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Actual source assets and permissions",
+        "Target player capability",
+        "Viewer and accessibility testing"
+      ],
+      "formats": [
+        "Storyboard",
+        "Narration script",
+        "Interaction map"
+      ],
+      "id": "interactive-video",
+      "journey_kind": "none",
+      "outcome": "A reviewable short-video production brief with captions and an interaction purpose.",
+      "plan_steps": [
+        "Choose one learning or entertainment outcome.",
+        "Map scenes, narration, captions and interaction choices.",
+        "Review asset rights and test the intended viewer experience."
+      ],
+      "project_id": "publishing-studio",
+      "project_label": "Source-backed books, audio, video and social drafts",
+      "summary": "Adapt one reviewed lesson or chapter into a storyboard, narration and meaningful interaction plan.",
+      "title": "Interactive video and teaching studio"
+    },
+    {
+      "audience": "Charles and future programming learners",
+      "boundaries": [
+        "Do not infer an installed or compatible merged Linux system.",
+        "This pack does not run installers or system commands."
+      ],
+      "destination": {
+        "label": "Local learning workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Verified operating system and device setup",
+        "Current compatibility documentation",
+        "Observed learner transfer beyond answer matching"
+      ],
+      "formats": [
+        "Lesson",
+        "Practice worksheet",
+        "Environment checklist"
+      ],
+      "id": "linux-learning",
+      "journey_kind": "none",
+      "outcome": "An instructor-reviewed exercise with explicit environment assumptions.",
+      "plan_steps": [
+        "Choose one concept and identify the actual learner environment.",
+        "Prepare a small exercise with expected observations.",
+        "Review compatibility and use a disposable environment for any later execution."
+      ],
+      "project_id": "linux-education",
+      "project_label": "Programming and Linux learning materials",
+      "summary": "Create practical lessons for the proposed Arch, Bedrock and Omarchy learning path.",
+      "title": "Linux and programming learning"
+    },
+    {
+      "audience": "Robotics learners and researchers",
+      "boundaries": [
+        "No physical robot control is included.",
+        "A source check does not establish real-world safety or readiness."
+      ],
+      "destination": {
+        "label": "Local simulation workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Selected simulator and compatible environment",
+        "Actual simulation results",
+        "Separate physical-system review if ever applicable"
+      ],
+      "formats": [
+        "Simulation specification",
+        "Evaluation plan",
+        "Teaching explanation"
+      ],
+      "id": "robotics-simulation",
+      "journey_kind": "none",
+      "outcome": "A bounded simulation brief with measurable conditions and documented limits.",
+      "plan_steps": [
+        "Define a simulated task and environment assumptions.",
+        "Choose observable success and failure conditions.",
+        "Review simulation results separately from physical robot readiness."
+      ],
+      "project_id": "robotics-research",
+      "project_label": "Simulation-first robotics research and education",
+      "summary": "Explore a single simulated robotics task before considering hardware execution.",
+      "title": "Robotics simulation and education"
+    },
+    {
+      "audience": "Potential wearable users",
+      "boundaries": [
+        "No medical, security or protection effectiveness is asserted.",
+        "No device or sensor access is implied."
+      ],
+      "destination": {
+        "label": "Research destination not assigned",
+        "state": "unassigned",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Actual component specifications",
+        "User feedback",
+        "Measured prototype behavior"
+      ],
+      "formats": [
+        "Concept brief",
+        "Interface sketch",
+        "Prototype evaluation plan"
+      ],
+      "id": "wearables-research",
+      "journey_kind": "none",
+      "outcome": "One testable concept with its technical assumptions and evidence gaps exposed.",
+      "plan_steps": [
+        "Choose one everyday user need and a minimal concept.",
+        "Identify device, battery, data and accessibility requirements.",
+        "Review feasibility using sourced specifications and observed prototype results."
+      ],
+      "project_id": "robotics-research",
+      "project_label": "Simulation-first robotics research and education",
+      "summary": "Develop practical CryptoClockworks, CryptoCyberSecurity and related wearable concepts around user needs.",
+      "title": "Wearable technology concepts"
+    },
+    {
+      "audience": "Charles and authorized collaborators",
+      "boundaries": [
+        "Keep tax IDs, credentials and private documents out of exported public examples.",
+        "Templates do not establish legal or tax compliance."
+      ],
+      "destination": {
+        "label": "Private operating workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Authorized source records",
+        "Current expense and revenue data",
+        "Actual review completion"
+      ],
+      "formats": [
+        "Operating checklist",
+        "Decision brief",
+        "Expense review template"
+      ],
+      "id": "business-operations",
+      "journey_kind": "none",
+      "outcome": "One reusable operating routine with an owner and evidence-based completion check.",
+      "plan_steps": [
+        "Choose one recurring administrative bottleneck.",
+        "Define a minimal record, owner and review cadence.",
+        "Verify the record against authorized source documents."
+      ],
+      "project_id": "business-operations",
+      "project_label": "Business project records and operating checklists",
+      "summary": "Organize project decisions, expenses, documents and follow-ups without mixing private records into public code.",
+      "title": "Business operating system"
+    },
+    {
+      "audience": "Charles",
+      "boundaries": [
+        "No calendar, device, health record or background monitoring access is assumed.",
+        "The owner controls personal priorities and pace."
+      ],
+      "destination": {
+        "label": "Private personal workspace",
+        "state": "local_only",
+        "urls": []
+      },
+      "evidence_gaps": [
+        "Actual available time and device context",
+        "User-confirmed accessibility needs",
+        "Observed completion and usefulness"
+      ],
+      "formats": [
+        "Session plan",
+        "Resume bookmark",
+        "Accessibility checklist"
+      ],
+      "id": "personal-workflow",
+      "journey_kind": "none",
+      "outcome": "A practical session plan and a clear restart point after a break.",
+      "plan_steps": [
+        "Choose one achievable outcome for the available time.",
+        "Record the next action and any access or device obstacle.",
+        "Finish with a concise bookmark and the evidence needed to resume."
+      ],
+      "project_id": "business-operations",
+      "project_label": "Business project records and operating checklists",
+      "summary": "Make it easier to resume work, organize learning and capture ideas across devices and breaks.",
+      "title": "Personal focus, access and continuity"
+    }
+  ],
+  "live_metrics": null,
+  "external_actions": 0,
+  "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9"
+}
+</script>
+  <script id="jarvis-workbench-core">
+"use strict";
+globalThis.JarvisWorkbench = (() => {
+  const MAX_OBJECTIVE_BYTES = 2000;
+  const INITIATIVE_IDS = Object.freeze(["jarvis-tools", "website-learning", "affiliate-builder", "funding-customers", "referral-partners", "publishing-library", "interactive-video", "linux-learning", "robotics-simulation", "wearables-research", "business-operations", "personal-workflow"]);
+  const PROJECT_IDS = Object.freeze(["ai-jarvis", "ai-evolutionary-evolutions", "funding-affiliates", "publishing-studio", "linux-education", "robotics-research", "business-operations"]);
+  const TARGETS = Object.freeze([["chatgpt", "ChatGPT"], ["openai", "OpenAI API draft"], ["gemini", "Gemini"], ["claude", "Claude"], ["hostinger", "Hostinger"], ["facebook", "Facebook"], ["linkedin", "LinkedIn"], ["substack", "Substack"], ["instagram", "Instagram"], ["threads", "Threads"], ["youtube", "YouTube"], ["github", "GitHub"]].map(pair => Object.freeze(pair)));
+  const TIMEBOXES = Object.freeze([15, 30, 60, 90]);
+  const JOURNEYS = Object.freeze([["none", "General planning"], ["member", "Education / membership"], ["funding_customer", "Financing customers"], ["funding_partner", "Referral partners"]].map(pair => Object.freeze(pair)));
+  const encoder = new TextEncoder();
+  const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
+  const nonempty = value => typeof value === "string" && value.replace(/\p{White_Space}/gu, "").trim().length > 0;
+
+  function validateObjective(objective) {
+    if (typeof objective !== "string") throw new TypeError("The objective must be text.");
+    if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(objective)) throw new TypeError("Remove unsupported control characters from the objective.");
+    for (let i = 0; i < objective.length; i += 1) {
+      const unit = objective.charCodeAt(i);
+      if (unit >= 0xd800 && unit <= 0xdbff) {
+        const next = objective.charCodeAt(i + 1);
+        if (!(next >= 0xdc00 && next <= 0xdfff)) throw new TypeError("Replace the invalid Unicode character in the objective.");
+        i += 1;
+      } else if (unit >= 0xdc00 && unit <= 0xdfff) throw new TypeError("Replace the invalid Unicode character in the objective.");
+    }
+    if (!nonempty(objective)) throw new TypeError("Add an objective to prepare a request.");
+    if (encoder.encode(objective).length > MAX_OBJECTIVE_BYTES) throw new RangeError("Shorten the objective to 2,000 UTF-8 bytes or fewer.");
+    return objective;
+  }
+
+  function buildMissionRequest(initiativeId, target, objective, timeboxMinutes) {
+    if (!INITIATIVE_IDS.includes(initiativeId)) throw new TypeError("Choose a listed initiative.");
+    if (!TARGETS.some(([id]) => id === target)) throw new TypeError("Choose a listed draft destination.");
+    if (!Number.isInteger(timeboxMinutes) || !TIMEBOXES.includes(timeboxMinutes)) throw new TypeError("Choose a 15, 30, 60 or 90 minute timebox.");
+    validateObjective(objective);
+    return { schema_version: 1, kind: "jarvis.mission_request", initiative_id: initiativeId, target, objective, timebox_minutes: timeboxMinutes };
+  }
+
+  function validateRequest(request) {
+    const keys = ["schema_version", "kind", "initiative_id", "target", "objective", "timebox_minutes"];
+    if (!isRecord(request) || Object.keys(request).length !== keys.length || !keys.every(key => Object.hasOwn(request, key))) throw new TypeError("The mission request has unexpected fields.");
+    if (request.schema_version !== 1 || request.kind !== "jarvis.mission_request") throw new TypeError("Unsupported mission request schema.");
+    return buildMissionRequest(request.initiative_id, request.target, request.objective, request.timebox_minutes);
+  }
+
+  function countObjective(objective) {
+    if (typeof objective !== "string") throw new TypeError("The objective must be text.");
+    return { characters: Array.from(objective).length, bytes: encoder.encode(objective).length };
+  }
+
+  function validateCatalog(catalog) {
+    if (!isRecord(catalog) || catalog.schema_version !== 1 || catalog.kind !== "jarvis.portfolio_catalog" || !nonempty(catalog.catalog_version) || !nonempty(catalog.scope)) throw new TypeError("The embedded planning catalog is invalid.");
+    if (catalog.live_metrics !== null || catalog.external_actions !== 0 || !Array.isArray(catalog.initiatives) || catalog.initiatives.length !== INITIATIVE_IDS.length) throw new TypeError("The embedded catalog must describe planning only.");
+    const seen = new Set();
+    for (const item of catalog.initiatives) {
+      if (!isRecord(item) || !INITIATIVE_IDS.includes(item.id) || seen.has(item.id) || !PROJECT_IDS.includes(item.project_id)) throw new TypeError("The catalog contains an unknown or duplicate initiative.");
+      seen.add(item.id);
+      for (const key of ["project_label", "title", "summary", "audience", "outcome"]) if (!nonempty(item[key])) throw new TypeError("The catalog is missing initiative detail.");
+      for (const key of ["formats", "plan_steps", "evidence_gaps", "boundaries"]) if (!Array.isArray(item[key]) || !item[key].length || !item[key].every(nonempty)) throw new TypeError("The catalog is missing a plan or evidence gap.");
+      if (!JOURNEYS.some(([id]) => id === item.journey_kind)) throw new TypeError("The catalog contains an unknown journey.");
+      const destination = item.destination;
+      if (!isRecord(destination) || !nonempty(destination.label) || !["owner_reference_unverified", "unassigned", "local_only"].includes(destination.state) || !Array.isArray(destination.urls) || !destination.urls.every(nonempty)) throw new TypeError("The catalog destination is invalid.");
+      if (destination.state !== "owner_reference_unverified" && destination.urls.length) throw new TypeError("An unassigned or local destination cannot inherit a website.");
+    }
+    return catalog;
+  }
+
+  function filterInitiatives(initiatives, { query = "", projectId = "", journey = "" } = {}) {
+    if (!Array.isArray(initiatives) || typeof query !== "string" || typeof projectId !== "string" || typeof journey !== "string") throw new TypeError("Invalid catalog filter.");
+    if (query.length > 160) throw new RangeError("Keep the search within 160 characters.");
+    const terms = query.normalize("NFKC").toLocaleLowerCase("en").trim().split(/\s+/u).filter(Boolean);
+    return initiatives.filter(item => {
+      if (projectId && item.project_id !== projectId) return false;
+      if (journey && item.journey_kind !== journey) return false;
+      const searchable = [item.id, item.title, item.summary, item.project_label, item.audience, item.outcome, ...item.formats, ...item.plan_steps, ...item.evidence_gaps, ...item.boundaries, item.destination.label, ...item.destination.urls].join(" ").normalize("NFKC").toLocaleLowerCase("en");
+      return terms.every(term => searchable.includes(term));
+    });
+  }
+
+  function buildBrief(initiative, request) {
+    const validated = validateRequest(request);
+    if (!isRecord(initiative) || initiative.id !== validated.initiative_id) throw new TypeError("The selected initiative does not match the request.");
+    const targetLabel = TARGETS.find(([id]) => id === validated.target)[1];
+    const lines = ["JARVIS — DRAFT PLANNING BRIEF", "", `Initiative: ${initiative.title}`, `Project area: ${initiative.project_label}`, `Draft destination: ${targetLabel}`, `Planning timebox: ${validated.timebox_minutes} minutes`, "", "REQUESTED OBJECTIVE", validated.objective, "", "INTENDED OUTCOME", initiative.outcome, "", "PLAN TO REVIEW", ...initiative.plan_steps.map((step, index) => `${index + 1}. ${step}`), "", "EVIDENCE STILL NEEDED", ...initiative.evidence_gaps.map(gap => `- ${gap}`), "", "DESTINATION ASSIGNMENT", initiative.destination.label, `Catalog state: ${initiative.destination.state}`, ...(initiative.destination.urls.length ? initiative.destination.urls : ["No website destination is assigned in this catalog."]), "", "SCOPE NOTES", ...initiative.boundaries.map(boundary => `- ${boundary}`), "", "This is planning input for review. It does not start a mission, establish account access or authorize an external action."];
+    return lines.join("\n");
+  }
+
+  function createDraftMemory() {
+    const drafts = new Map();
+    function checkId(id) { if (!INITIATIVE_IDS.includes(id)) throw new TypeError("Choose a listed initiative."); }
+    return Object.freeze({
+      read(id) { checkId(id); return { ...(drafts.get(id) || { objective: "", target: "chatgpt", timebox_minutes: 30 }) }; },
+      write(id, draft) {
+        checkId(id);
+        if (!isRecord(draft) || typeof draft.objective !== "string" || !TARGETS.some(([target]) => target === draft.target) || !Number.isInteger(draft.timebox_minutes) || !TIMEBOXES.includes(draft.timebox_minutes)) throw new TypeError("Invalid in-memory draft.");
+        drafts.set(id, { objective: draft.objective, target: draft.target, timebox_minutes: draft.timebox_minutes });
+      }
+    });
+  }
+
+  return Object.freeze({ MAX_OBJECTIVE_BYTES, INITIATIVE_IDS, PROJECT_IDS, TARGETS, TIMEBOXES, JOURNEYS, validateObjective, buildMissionRequest, validateRequest, countObjective, validateCatalog, filterInitiatives, buildBrief, createDraftMemory });
+})();
+  </script>
+  <script id="jarvis-workbench-app">
+"use strict";
+(() => {
+  const core = globalThis.JarvisWorkbench;
+  const byId = id => document.getElementById(id);
+  let catalog;
+  try { catalog = core.validateCatalog(JSON.parse(byId("portfolio-catalog").textContent)); }
+  catch { byId("catalog-error").hidden = false; byId("catalog-error").textContent = "The embedded catalog could not be loaded. Request export is unavailable; use the repository’s reviewed catalog and workbench together."; return; }
+  const items = catalog.initiatives;
+  const memory = core.createDraftMemory();
+  let selectedId = items[0].id;
+  const objective = byId("objective");
+  const target = byId("target");
+  const timebox = byId("timebox");
+  const status = byId("action-status");
+  const list = byId("initiative-list");
+  const current = () => items.find(item => item.id === selectedId);
+  const option = (value, label) => { const node = document.createElement("option"); node.value = value; node.textContent = label; return node; };
+  const projects = new Map(items.map(item => [item.project_id, item.project_label]));
+  for (const [id, label] of projects) byId("project-filter").append(option(id, label));
+  for (const [id, label] of core.JOURNEYS) byId("journey-filter").append(option(id, label));
+  for (const [id, label] of core.TARGETS) target.append(option(id, label));
+  byId("initiative-count").textContent = String(items.length);
+  byId("project-count").textContent = String(projects.size);
+  byId("target-count").textContent = String(core.TARGETS.length);
+  byId("catalog-version").textContent = `Catalog ${catalog.catalog_version}`;
+  byId("workspace").hidden = false;
+
+  function fillList(id, values) {
+    const container = byId(id);
+    container.replaceChildren();
+    for (const value of values) { const li = document.createElement("li"); li.textContent = value; container.append(li); }
+  }
+  function saveCurrent() { memory.write(selectedId, { objective: objective.value, target: target.value, timebox_minutes: Number(timebox.value) }); }
+  function makeRequest() { return core.buildMissionRequest(selectedId, target.value, objective.value, Number(timebox.value)); }
+  function updateRequest() {
+    const counts = core.countObjective(objective.value);
+    byId("objective-count").textContent = `${counts.characters.toLocaleString("en")} ${counts.characters === 1 ? "character" : "characters"}`;
+    byId("objective-limit").textContent = `${counts.bytes.toLocaleString("en")} / 2,000 UTF-8 bytes`;
+    byId("objective-limit").classList.toggle("invalid", counts.bytes > core.MAX_OBJECTIVE_BYTES);
+    let valid = false;
+    try {
+      const request = makeRequest();
+      byId("brief-text").value = core.buildBrief(current(), request);
+      byId("request-note").textContent = "The download contains only your initiative, destination, objective and timebox as a request.";
+      valid = true;
+    } catch (error) { byId("request-note").textContent = error.message; byId("brief-text").value = ""; }
+    byId("request-note").classList.toggle("invalid", !valid && objective.value.length > 0);
+    byId("copy-brief").disabled = !valid;
+    byId("export-request").disabled = !valid;
+  }
+  function renderSelection(moveFocus = false) {
+    const item = current();
+    byId("selected-project").textContent = item.project_label;
+    byId("initiative-title").textContent = item.title;
+    byId("initiative-summary").textContent = item.summary;
+    byId("initiative-audience").textContent = item.audience;
+    byId("initiative-outcome").textContent = item.outcome;
+    fillList("plan-steps", item.plan_steps);
+    fillList("evidence-gaps", item.evidence_gaps);
+    fillList("boundaries", item.boundaries);
+    fillList("destination-urls", item.destination.urls);
+    byId("destination-label").textContent = item.destination.label;
+    const destinationCopy = {
+      owner_reference_unverified: ["Owner reference · access unverified", "These are owner reference URLs. Live page behavior, account access and results are not verified by this catalog."],
+      unassigned: ["Destination not assigned", "No destination is assigned. This initiative does not inherit another project’s website."],
+      local_only: ["Local workspace", "This workspace label does not establish access to a device, account or private records."]
+    };
+    const [stateLabel, note] = destinationCopy[item.destination.state];
+    byId("destination-state").textContent = stateLabel;
+    byId("destination-note").textContent = note;
+    const formats = byId("initiative-formats");
+    formats.replaceChildren();
+    for (const format of item.formats) { const chip = document.createElement("span"); chip.className = "chip"; chip.textContent = format; formats.append(chip, document.createTextNode(" ")); }
+    const draft = memory.read(selectedId);
+    objective.value = draft.objective;
+    target.value = draft.target;
+    timebox.value = String(draft.timebox_minutes);
+    status.textContent = "";
+    updateRequest();
+    if (moveFocus) byId("initiative-title").focus();
+  }
+  function renderCatalog() {
+    let shown;
+    let filterError = "";
+    try { shown = core.filterInitiatives(items, { query: byId("search").value, projectId: byId("project-filter").value, journey: byId("journey-filter").value }); }
+    catch (error) { shown = []; filterError = error.message; }
+    list.replaceChildren();
+    for (const item of shown) {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "initiative-button";
+      button.setAttribute("aria-pressed", String(item.id === selectedId));
+      button.setAttribute("aria-controls", "initiative-detail");
+      button.setAttribute("aria-label", `Select ${item.title}`);
+      for (const [className, text] of [["card-title", item.title], ["card-summary", item.summary], ["card-tag", item.id === selectedId ? "SELECTED INITIATIVE" : item.formats[0]]]) {
+        const span = document.createElement("span"); span.className = className; span.textContent = text; button.append(span);
+      }
+      button.addEventListener("click", () => {
+        saveCurrent();
+        selectedId = item.id;
+        renderSelection(true);
+        renderCatalog();
+      });
+      li.append(button); list.append(li);
+    }
+    byId("result-count").textContent = filterError || `${shown.length} of ${items.length} initiatives shown`;
+    byId("no-results").hidden = shown.length > 0;
+    byId("selected-filter-note").hidden = shown.some(item => item.id === selectedId);
+  }
+  for (const id of ["search", "project-filter", "journey-filter"]) byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog);
+  byId("reset-filters").addEventListener("click", () => {
+    byId("search").value = ""; byId("project-filter").value = ""; byId("journey-filter").value = ""; renderCatalog(); byId("search").focus();
+  });
+  for (const element of [objective, target, timebox]) element.addEventListener(element === objective ? "input" : "change", () => { saveCurrent(); updateRequest(); status.textContent = ""; });
+  byId("theme").addEventListener("change", event => {
+    if (event.target.value === "auto") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = event.target.value;
+  });
+  byId("copy-brief").addEventListener("click", async () => {
+    let brief;
+    try { brief = core.buildBrief(current(), makeRequest()); }
+    catch (error) { status.textContent = error.message; return; }
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(brief);
+      status.textContent = "Planning brief copied. Review it in the destination you choose.";
+    } catch {
+      byId("brief-preview").open = true;
+      byId("brief-text").value = brief;
+      byId("brief-text").focus();
+      byId("brief-text").select();
+      status.textContent = "Automatic copy is unavailable. The brief is selected: use Ctrl+C or ⌘C to copy.";
+    }
+  });
+  byId("export-request").addEventListener("click", () => {
+    try {
+      const request = makeRequest();
+      const url = URL.createObjectURL(new Blob([JSON.stringify(request, null, 2) + "\n"], { type: "application/json;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url; link.download = "jarvis-mission-request.json"; link.hidden = true;
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      status.textContent = "Request download started. Check your browser’s downloads; no mission has been started.";
+    } catch (error) { status.textContent = `Request export unavailable. ${error.message}`; }
+  });
+  renderSelection();
+  renderCatalog();
+})();
+  </script>
+</body>
+</html>
