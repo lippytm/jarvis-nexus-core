@@ -1,0 +1,2011 @@
+{
+  "provenance": "Twelve synthetic entries produced by the actual shipped JarvisDiary serializer. Invalid records are explicitly labelled contract mutations. No real activity, source verification, account access or publication consent is asserted.",
+  "valid_entries": [
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-1",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "jarvis-tools",
+      "title": "Synthetic diary fixture 1",
+      "visibility": "private",
+      "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "source_linked",
+          "source_ids": [
+            "source-1"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source_id": "source-1",
+          "title": "Reserved example-domain reference for an offline fixture",
+          "url": "https://example.org/diary-fixture/1"
+        }
+      ],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-2",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "website-learning",
+      "title": "Synthetic diary fixture 2",
+      "visibility": "internal",
+      "summary": "Offline contract example for Education website and membership inquiries. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic owner_reported example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "owner_reported",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-3",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "affiliate-builder",
+      "title": "Synthetic diary fixture 3",
+      "visibility": "public_candidate",
+      "summary": "Offline contract example for Affiliate website and membership platform. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic planned example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "planned",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-4",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "funding-customers",
+      "title": "Synthetic diary fixture 4",
+      "visibility": "private",
+      "summary": "Offline contract example for Business financing customer journey. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic fictional example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "fictional",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-5",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "referral-partners",
+      "title": "Synthetic diary fixture 5",
+      "visibility": "internal",
+      "summary": "Offline contract example for Referral partner recruitment. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "source_linked",
+          "source_ids": [
+            "source-1"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source_id": "source-1",
+          "title": "Reserved example-domain reference for an offline fixture",
+          "url": "https://example.org/diary-fixture/5"
+        }
+      ],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-6",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "publishing-library",
+      "title": "Synthetic diary fixture 6",
+      "visibility": "public_candidate",
+      "summary": "Offline contract example for Publishing library and creative worlds. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic owner_reported example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "owner_reported",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-7",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "interactive-video",
+      "title": "Synthetic diary fixture 7",
+      "visibility": "private",
+      "summary": "Offline contract example for Interactive video and teaching studio. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic planned example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "planned",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-8",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "linux-learning",
+      "title": "Synthetic diary fixture 8",
+      "visibility": "internal",
+      "summary": "Offline contract example for Linux and programming learning. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic fictional example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "fictional",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-9",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "robotics-simulation",
+      "title": "Synthetic diary fixture 9",
+      "visibility": "public_candidate",
+      "summary": "Offline contract example for Robotics simulation and education. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "source_linked",
+          "source_ids": [
+            "source-1"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source_id": "source-1",
+          "title": "Reserved example-domain reference for an offline fixture",
+          "url": "https://example.org/diary-fixture/9"
+        }
+      ],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-10",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "wearables-research",
+      "title": "Synthetic diary fixture 10",
+      "visibility": "private",
+      "summary": "Offline contract example for Wearable technology concepts. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic owner_reported example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "owner_reported",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-11",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "business-operations",
+      "title": "Synthetic diary fixture 11",
+      "visibility": "internal",
+      "summary": "Offline contract example for Business operating system. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic planned example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "planned",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "jarvis.diary_entry",
+      "entry_id": "entry-fixture-12",
+      "date": "2026-10-22",
+      "timezone": "America/Los_Angeles",
+      "initiative_id": "personal-workflow",
+      "title": "Synthetic diary fixture 12",
+      "visibility": "public_candidate",
+      "summary": "Offline contract example for Personal focus, access and continuity. This is test data, not a report of real activity.",
+      "observations": [
+        {
+          "observation_id": "observation-1",
+          "text": "Synthetic fictional example for validation only. No real outcome or verified claim is asserted.",
+          "evidence_state": "fictional",
+          "source_ids": []
+        }
+      ],
+      "sources": [],
+      "next_action": "Review this synthetic fixture locally; no external action is requested.",
+      "media_notes": {
+        "audience": "Local reviewer of synthetic test data",
+        "visual_style": "",
+        "audio_style": "",
+        "learning_goal": "Understand the entry data contract.",
+        "call_to_action": ""
+      }
+    }
+  ],
+  "rejected_entries": [
+    {
+      "case": "boolean schema version",
+      "entry": {
+        "schema_version": true,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "wrong kind",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.approval",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "trailing newline identifier",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-test\n",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized entry identifier",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "invalid leap day",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-02-29",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "zero calendar year",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "0000-01-01",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "timezone mismatch",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "UTC",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "unknown initiative",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "unknown",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "Unicode whitespace title",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized title",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "unsupported visibility",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "public",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized summary",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "nonstring summary",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": null,
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "empty observation list",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "nine observations",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-2",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-3",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-4",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-5",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-6",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-7",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-8",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-9",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "duplicate observation IDs",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          },
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "blank observation",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": " ",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized observation",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "unknown evidence state",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "verified",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "source-linked observation without reference",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": []
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "unknown source reference",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "missing-source"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "duplicate source reference",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1",
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "six sources",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          },
+          {
+            "source_id": "source-2",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          },
+          {
+            "source_id": "source-3",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          },
+          {
+            "source_id": "source-4",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          },
+          {
+            "source_id": "source-5",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          },
+          {
+            "source_id": "source-6",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "duplicate source IDs",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          },
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "blank source title",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized source title",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "credentials in source URL",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://user:pass@example.org"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "HTTP source URL",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "http://example.org"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "custom source port",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org:8443"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "source URL newline",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/a\n"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized source URL",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "blank next action",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized next action",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "missing media key",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "oversized media note",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "C0 media note",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "a\u0000b",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "lone surrogate media note",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "\ud800",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "extra observation authority",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ],
+            "verified": true
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        }
+      }
+    },
+    {
+      "case": "extra entry approval",
+      "entry": {
+        "schema_version": 1,
+        "kind": "jarvis.diary_entry",
+        "entry_id": "entry-fixture-1",
+        "date": "2026-10-22",
+        "timezone": "America/Los_Angeles",
+        "initiative_id": "jarvis-tools",
+        "title": "Synthetic diary fixture 1",
+        "visibility": "private",
+        "summary": "Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.",
+        "observations": [
+          {
+            "observation_id": "observation-1",
+            "text": "Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.",
+            "evidence_state": "source_linked",
+            "source_ids": [
+              "source-1"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "source-1",
+            "title": "Reserved example-domain reference for an offline fixture",
+            "url": "https://example.org/diary-fixture/1"
+          }
+        ],
+        "next_action": "Review this synthetic fixture locally; no external action is requested.",
+        "media_notes": {
+          "audience": "Local reviewer of synthetic test data",
+          "visual_style": "",
+          "audio_style": "",
+          "learning_goal": "Understand the entry data contract.",
+          "call_to_action": ""
+        },
+        "approved": true
+      }
+    }
+  ],
+  "rejected_json": [
+    {
+      "case": "duplicate visibility key",
+      "text": "{\"schema_version\":1,\"kind\":\"jarvis.diary_entry\",\"entry_id\":\"entry-fixture-1\",\"date\":\"2026-10-22\",\"timezone\":\"America/Los_Angeles\",\"initiative_id\":\"jarvis-tools\",\"title\":\"Synthetic diary fixture 1\",\"visibility\":\"private\",\"summary\":\"Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.\",\"observations\":[{\"observation_id\":\"observation-1\",\"text\":\"Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.\",\"evidence_state\":\"source_linked\",\"source_ids\":[\"source-1\"]}],\"sources\":[{\"source_id\":\"source-1\",\"title\":\"Reserved example-domain reference for an offline fixture\",\"url\":\"https://example.org/diary-fixture/1\"}],\"next_action\":\"Review this synthetic fixture locally; no external action is requested.\",\"media_notes\":{\"audience\":\"Local reviewer of synthetic test data\",\"visual_style\":\"\",\"audio_style\":\"\",\"learning_goal\":\"Understand the entry data contract.\",\"call_to_action\":\"\"},\"visibility\":\"public_candidate\"}"
+    },
+    {
+      "case": "escaped duplicate visibility key",
+      "text": "{\"schema_version\":1,\"kind\":\"jarvis.diary_entry\",\"entry_id\":\"entry-fixture-1\",\"date\":\"2026-10-22\",\"timezone\":\"America/Los_Angeles\",\"initiative_id\":\"jarvis-tools\",\"title\":\"Synthetic diary fixture 1\",\"visibility\":\"private\",\"summary\":\"Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.\",\"observations\":[{\"observation_id\":\"observation-1\",\"text\":\"Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.\",\"evidence_state\":\"source_linked\",\"source_ids\":[\"source-1\"]}],\"sources\":[{\"source_id\":\"source-1\",\"title\":\"Reserved example-domain reference for an offline fixture\",\"url\":\"https://example.org/diary-fixture/1\"}],\"next_action\":\"Review this synthetic fixture locally; no external action is requested.\",\"media_notes\":{\"audience\":\"Local reviewer of synthetic test data\",\"visual_style\":\"\",\"audio_style\":\"\",\"learning_goal\":\"Understand the entry data contract.\",\"call_to_action\":\"\"},\"\\u0076isibility\":\"public_candidate\"}"
+    },
+    {
+      "case": "floating schema token",
+      "text": "{\"schema_version\":1.0,\"kind\":\"jarvis.diary_entry\",\"entry_id\":\"entry-fixture-1\",\"date\":\"2026-10-22\",\"timezone\":\"America/Los_Angeles\",\"initiative_id\":\"jarvis-tools\",\"title\":\"Synthetic diary fixture 1\",\"visibility\":\"private\",\"summary\":\"Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.\",\"observations\":[{\"observation_id\":\"observation-1\",\"text\":\"Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.\",\"evidence_state\":\"source_linked\",\"source_ids\":[\"source-1\"]}],\"sources\":[{\"source_id\":\"source-1\",\"title\":\"Reserved example-domain reference for an offline fixture\",\"url\":\"https://example.org/diary-fixture/1\"}],\"next_action\":\"Review this synthetic fixture locally; no external action is requested.\",\"media_notes\":{\"audience\":\"Local reviewer of synthetic test data\",\"visual_style\":\"\",\"audio_style\":\"\",\"learning_goal\":\"Understand the entry data contract.\",\"call_to_action\":\"\"}}"
+    },
+    {
+      "case": "exponential schema token",
+      "text": "{\"schema_version\":1e0,\"kind\":\"jarvis.diary_entry\",\"entry_id\":\"entry-fixture-1\",\"date\":\"2026-10-22\",\"timezone\":\"America/Los_Angeles\",\"initiative_id\":\"jarvis-tools\",\"title\":\"Synthetic diary fixture 1\",\"visibility\":\"private\",\"summary\":\"Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.\",\"observations\":[{\"observation_id\":\"observation-1\",\"text\":\"Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.\",\"evidence_state\":\"source_linked\",\"source_ids\":[\"source-1\"]}],\"sources\":[{\"source_id\":\"source-1\",\"title\":\"Reserved example-domain reference for an offline fixture\",\"url\":\"https://example.org/diary-fixture/1\"}],\"next_action\":\"Review this synthetic fixture locally; no external action is requested.\",\"media_notes\":{\"audience\":\"Local reviewer of synthetic test data\",\"visual_style\":\"\",\"audio_style\":\"\",\"learning_goal\":\"Understand the entry data contract.\",\"call_to_action\":\"\"}}"
+    },
+    {
+      "case": "trailing content",
+      "text": "{\"schema_version\":1,\"kind\":\"jarvis.diary_entry\",\"entry_id\":\"entry-fixture-1\",\"date\":\"2026-10-22\",\"timezone\":\"America/Los_Angeles\",\"initiative_id\":\"jarvis-tools\",\"title\":\"Synthetic diary fixture 1\",\"visibility\":\"private\",\"summary\":\"Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.\",\"observations\":[{\"observation_id\":\"observation-1\",\"text\":\"Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.\",\"evidence_state\":\"source_linked\",\"source_ids\":[\"source-1\"]}],\"sources\":[{\"source_id\":\"source-1\",\"title\":\"Reserved example-domain reference for an offline fixture\",\"url\":\"https://example.org/diary-fixture/1\"}],\"next_action\":\"Review this synthetic fixture locally; no external action is requested.\",\"media_notes\":{\"audience\":\"Local reviewer of synthetic test data\",\"visual_style\":\"\",\"audio_style\":\"\",\"learning_goal\":\"Understand the entry data contract.\",\"call_to_action\":\"\"}} trailing"
+    },
+    {
+      "case": "leading UTF-8 BOM",
+      "text": "﻿{\"schema_version\":1,\"kind\":\"jarvis.diary_entry\",\"entry_id\":\"entry-fixture-1\",\"date\":\"2026-10-22\",\"timezone\":\"America/Los_Angeles\",\"initiative_id\":\"jarvis-tools\",\"title\":\"Synthetic diary fixture 1\",\"visibility\":\"private\",\"summary\":\"Offline contract example for Jarvis tools and assistant building. This is test data, not a report of real activity.\",\"observations\":[{\"observation_id\":\"observation-1\",\"text\":\"Synthetic source_linked example for validation only. No real outcome or verified claim is asserted.\",\"evidence_state\":\"source_linked\",\"source_ids\":[\"source-1\"]}],\"sources\":[{\"source_id\":\"source-1\",\"title\":\"Reserved example-domain reference for an offline fixture\",\"url\":\"https://example.org/diary-fixture/1\"}],\"next_action\":\"Review this synthetic fixture locally; no external action is requested.\",\"media_notes\":{\"audience\":\"Local reviewer of synthetic test data\",\"visual_style\":\"\",\"audio_style\":\"\",\"learning_goal\":\"Understand the entry data contract.\",\"call_to_action\":\"\"}}"
+    },
+    {
+      "case": "nested non-entry array",
+      "text": "[[[[[[[[[[[[[[0]]]]]]]]]]]]]]"
+    }
+  ]
+}

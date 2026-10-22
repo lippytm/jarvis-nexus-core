@@ -12,6 +12,33 @@ and a real read-only Hostinger transport. It builds on the spelling composer and
 durable local handoff ledger. Assistant specifications and compiled missions are
 inactive planning artifacts; they do not start external agents or publish content.
 
+The daily diary expansion adds private-by-default capture, a versioned local
+diary store, audience-filtered daily briefs, and a reusable multimedia compiler.
+An explicitly selected public-candidate entry can become an EPUB, narration
+script, documentary and trailer drafts, an original fictional film treatment,
+a music-film draft, ad-copy candidates and an interactive teaching page. The
+optional local renderer creates a text-card MP4 and a generic narration WAV.
+
+## Keep a daily diary and develop a media edition
+
+Open [Jarvis Daily Diary](web/jarvis-diary.html) locally. Record an observation,
+its evidence classification, sources and one next action. Download the entry
+before closing: browser draft memory lasts for the visit. Native browser
+spellchecking can assist text entry; actual behavior depends on the browser.
+
+The [diary workbench guide](docs/JARVIS_DIARY_WORKBENCH.md) explains capture and
+import. The [media runbook](docs/DIARY_MEDIA_RUNBOOK.md) covers persistent local
+history, daily briefs and media export. A public engineering example is supplied:
+
+```bash
+python scripts/jarvis_diary.py validate --entry-file examples/diary/public-project-entry.json
+python scripts/jarvis_diary.py pack --entry-file examples/diary/public-project-entry.json --product first-diary-edition --source-revision e645c64975dc05f3b0a0f9e06d7cc903d70031b0 --out reports/first-diary-edition.zip
+```
+
+This example describes an earlier verified public commit. It contains no private
+life record. The compiler uses local templates and synthesis, makes no external
+model calls, and does not publish. [Milestone and verified scope](docs/DIARY_MULTIMEDIA_MILESTONE_2026_10_22.md).
+
 ## Choose a useful portfolio mission
 
 Open [Jarvis Portfolio Workbench](web/jarvis-workbench.html) locally. Search or
@@ -75,7 +102,8 @@ The command checks source syntax, runs the offline unit tests and demonstration,
 and saves a JSON evidence record plus a test log under `reports/`. It uses the
 Python standard library and makes no model, payment, or deployment calls.
 
-Test both authored web helpers with Node 18 or later (CI uses Node 24):
+Test the authored composer, portfolio, diary and media-player helpers with Node
+18 or later (CI uses Node 24):
 
 ```bash
 node --test --test-reporter=tap tests/*.mjs
@@ -83,6 +111,10 @@ node --test --test-reporter=tap tests/*.mjs
 
 ## Review the implementation
 
+- [Daily diary and multimedia milestone](docs/DIARY_MULTIMEDIA_MILESTONE_2026_10_22.md)
+- [Diary entry, revision history and privacy contract](docs/DIARY_DATA_CONTRACT.md)
+- [Media production and local CLI runbook](docs/DIARY_MEDIA_RUNBOOK.md)
+- [Creative product designs, viability and stage gates](docs/DIARY_PRODUCT_STUDIO.md)
 - [Portfolio expansion and next three engineering priorities](docs/PORTFOLIO_EXPANSION_2026_10_22.md)
 - [Workbench usage and browser verification limits](docs/JARVIS_WORKBENCH.md)
 - [Portfolio verification: 163 Python tests and 43 syntax checks](docs/evidence/portfolio_expansion_2026_10_22.json)
