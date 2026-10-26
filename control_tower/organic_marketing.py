@@ -17,13 +17,20 @@ FREE_CHANNELS = {
     "substack": {"kind": "newsletter", "format": "newsletter/article", "free_mode": "free publishing"},
     "reddit": {"kind": "community", "format": "discussion/resource post", "free_mode": "community participation"},
     "pinterest": {"kind": "visual", "format": "pin/idea graphic", "free_mode": "organic publishing"},
-    "tiktok": {"kind": "video", "format": "short video", "free_mode": "organic publishing"},
     "github": {"kind": "technical", "format": "project/docs update", "free_mode": "public repository/pages"},
     "threads": {"kind": "social", "format": "short discussion", "free_mode": "organic posting"},
     "google_business": {"kind": "listing", "format": "business profile update", "free_mode": "eligible free listing"},
     "bing_places": {"kind": "listing", "format": "business listing", "free_mode": "free listing"},
     "apple_business_connect": {"kind": "listing", "format": "business place card", "free_mode": "free business listing"},
     "nextdoor": {"kind": "local", "format": "business/local post", "free_mode": "free business presence/posting where available"},
+}
+
+BLOCKED_CHANNELS = {
+    "tiktok": {
+        "state": "blocked_for_owner",
+        "reason": "owner_reported_account_ban",
+        "routing_rule": "Do not generate or schedule TikTok-specific campaigns; reuse suitable short-form concepts for Instagram Reels, YouTube Shorts, Facebook Reels, Threads, Pinterest, Reddit, LinkedIn, or Substack.",
+    },
 }
 
 
@@ -144,6 +151,7 @@ def free_market_registry() -> dict:
         "kind": "jarvis.free_organic_market_registry",
         "state": "planning_registry",
         "channels": FREE_CHANNELS,
+        "blocked_channels": BLOCKED_CHANNELS,
         "external_actions": 0,
         "live_connections": 0,
     }

@@ -11,7 +11,7 @@ Build a zero-ad-spend marketing preparation layer that connects reviewed product
 
 ## Free-market registry
 
-The initial registry contains 14 markets:
+The current owner-specific registry contains 13 active markets. TikTok is recorded separately as blocked because the owner reports that the account is banned:
 
 - LinkedIn
 - YouTube
@@ -20,7 +20,6 @@ The initial registry contains 14 markets:
 - Substack
 - Reddit
 - Pinterest
-- TikTok
 - GitHub
 - Threads
 - Google Business Profile
@@ -28,7 +27,7 @@ The initial registry contains 14 markets:
 - Apple Business Connect
 - Nextdoor
 
-These are registered as organic/free-presence markets. Eligibility, account ownership, platform rules and live posting access remain platform-specific and must be verified before automation.
+These are registered as organic/free-presence markets. TikTok is not an active route for this owner and must not receive campaign drafts or scheduling requests. Short-form concepts that would otherwise fit TikTok should be redirected to Instagram Reels, YouTube Shorts, Facebook Reels, Threads, Pinterest, Reddit, LinkedIn or Substack. Eligibility, account ownership, platform rules and live posting access remain platform-specific and must be verified before automation.
 
 ## Connected product families
 
@@ -46,7 +45,7 @@ The book incubator intentionally has no public product destination until an exac
 
 ## Product -> Campaign -> Newsletter pipeline
 
-`Product Record -> Campaign Packet -> 14 Channel Briefs -> Prompt #11 Review -> Newsletter Candidate -> Platform-Specific Draft -> Human Approval -> Publish (future authorized action) -> Metrics`
+`Product Record -> Campaign Packet -> 13 Active Channel Briefs -> Prompt #11 Review -> Newsletter Candidate -> Platform-Specific Draft -> Human Approval -> Publish (future authorized action) -> Metrics`
 
 The compiler currently stops before publication.
 
@@ -77,7 +76,6 @@ AI/Jarvis campaigns must distinguish tested repository artifacts from planned in
 - **Substack:** long-form newsletter/article derivative.
 - **Reddit:** discussion-first; community self-promotion/link rules control.
 - **Pinterest:** visual concepts, diagrams, book/wearable/robotics imagery.
-- **TikTok:** short educational/entertainment video.
 - **GitHub:** engineering proof, docs, code, tests and reproducibility.
 - **Threads:** concise development discussion.
 - **Google Business / Bing Places / Apple Business Connect / Nextdoor:** only after exact business identity, eligibility and listing destination are verified.
@@ -111,7 +109,7 @@ Focused local checks on 2026-10-26:
 
 - Python syntax: PASS.
 - Behavior tests: 7 passed, 0 failed.
-- Channel registry: 14 channels.
+- Channel registry: 13 active channels; TikTok blocked for owner.
 - Campaign compiler: one unpublished brief per channel for every product.
 - Referral-parameter preservation: PASS.
 - Customer-vs-partner separation: PASS.

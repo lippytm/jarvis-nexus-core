@@ -2,15 +2,18 @@ import unittest
 from urllib.parse import parse_qs, urlsplit
 
 from control_tower.organic_marketing import (
-    FREE_CHANNELS, PRODUCTS, campaign_packet, free_market_registry,
+    BLOCKED_CHANNELS, FREE_CHANNELS, PRODUCTS, campaign_packet, free_market_registry,
     newsletter_packet, product_record,
 )
 
 
 class OrganicMarketingTests(unittest.TestCase):
-    def test_registry_has_fourteen_free_markets_and_no_live_connections(self):
+    def test_registry_has_thirteen_active_markets_and_tiktok_is_blocked(self):
         registry = free_market_registry()
-        self.assertEqual(14, len(registry["channels"]))
+        self.assertEqual(13, len(registry["channels"]))
+        self.assertNotIn("tiktok", registry["channels"])
+        self.assertEqual("blocked_for_owner", registry["blocked_channels"]["tiktok"]["state"])
+        self.assertEqual(BLOCKED_CHANNELS["tiktok"], registry["blocked_channels"]["tiktok"])
         self.assertEqual(0, registry["external_actions"])
         self.assertEqual(0, registry["live_connections"])
         self.assertEqual(64, len(registry["registry_sha256"]))
@@ -19,7 +22,8 @@ class OrganicMarketingTests(unittest.TestCase):
         for product_id in PRODUCTS:
             packet = campaign_packet(product_id, campaign_id="qa-campaign")
             self.assertEqual(set(FREE_CHANNELS), {b["channel"] for b in packet["briefs"]})
-            self.assertEqual(14, len(packet["briefs"]))
+            self.assertEqual(13, len(packet["briefs"]))
+            self.assertNotIn("tiktok", {b["channel"] for b in packet["briefs"]})
             self.assertEqual(0, packet["external_actions"])
             self.assertEqual(0, packet["publishing_actions"])
             self.assertIsNone(packet["actual_metrics"])
