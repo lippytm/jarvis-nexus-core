@@ -76,6 +76,14 @@ def main(argv=None):
     export.add_argument("--out", required=True)
     returned = commands.add_parser("import-return")
     returned.add_argument("--file", required=True)
+    context_save = commands.add_parser("save-context")
+    context_save.add_argument("--file", required=True)
+    context_save.add_argument("--expected-revision", type=int, required=True)
+    context_load = commands.add_parser("load-context")
+    context_load.add_argument("--handoff", required=True)
+    context_load.add_argument("--source-revision", required=True)
+    context_load.add_argument("--memory-revision", type=int, required=True)
+    context_load.add_argument("--out", required=True)
     commands.add_parser("status")
     demo = commands.add_parser("demo")
     demo.add_argument("--out", required=True)
@@ -99,6 +107,7 @@ def main(argv=None):
             draft = load_packet(_local(root, args.draft)) if args.command == "stage" else None
             manifest = load_packet(_local(root, args.manifest)) if args.command == "stage" else None
             returned_packet = load_packet(_local(root, args.file)) if args.command == "import-return" else None
+            context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
             with HandoffLedger(_local(root, args.database)) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
@@ -109,6 +118,12 @@ def main(argv=None):
                     result = ledger.export(args.handoff, expected_sha256=args.digest)
                 elif args.command == "import-return":
                     result = ledger.import_return(returned_packet)
+                elif args.command == "save-context":
+                    result = ledger.save_context(context_packet, expected_revision=args.expected_revision)
+                elif args.command == "load-context":
+                    result = ledger.load_context(args.handoff, expected_source_revision=args.source_revision,
+                                                 expected_memory_revision=args.memory_revision,
+                                                 audience="owner_private")
                 else:
                     result = ledger.status()
         if output:

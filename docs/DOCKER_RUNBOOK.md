@@ -27,9 +27,23 @@ To run another existing CLI operation, replace the command explicitly:
 docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 status
 ```
 
-The Python context API from HANDOFF_CONTEXT_PROFILE.md is available in the
-image; the existing CLI has no context-edit subcommand yet. Do not imply that
-running status performs a mission or saves a new context.
+The context API from HANDOFF_CONTEXT_PROFILE.md is also available through
+save-context and load-context. Given an existing staged handoff and a bounded,
+matching context JSON already placed in /data by the authorized local operator:
+
+```sh
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 save-context --file context.json --expected-revision 0
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 load-context --handoff YOUR-HANDOFF-ID --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1 --out recovered-context-001.json
+```
+
+Replace the placeholders with the original handoff's exact values. The first
+write expects context revision 0; subsequent writes require the current revision
+returned by save/load. Identical saves at that current revision are duplicates.
+A load writes a new owner-private JSON file and refuses existing outputs, stale
+source or memory revisions. Exported context remains proposed or locally reviewed;
+these commands do not authenticate users, approve releases, dispatch work or
+expose a public endpoint. Protect /data and the exported files. Running status
+does not perform a mission or save context.
 
 ## Verification
 
