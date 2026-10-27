@@ -13,7 +13,7 @@ MAX_PACKET_BYTES = 65536
 MAX_TEXT_BYTES = 20000
 TARGETS = frozenset({"chatgpt", "openai", "gemini", "claude", "hostinger", "facebook",
                      "linkedin", "substack", "instagram", "threads", "youtube", "github",
-                     "slack", "zapier", "claude-cowork", "perplexity"})
+                     "slack", "zapier", "claude-cowork", "perplexity", "codex"})
 PROJECTS = {
     "ai-jarvis": "AI Jarvis engineering and coordination",
     "ai-evolutionary-evolutions": "Hostinger education and membership inquiries",

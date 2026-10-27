@@ -21,7 +21,7 @@ class PlatformExpansionTests(unittest.TestCase):
     def test_all_targets_share_catalog_contract_and_readiness(self):
         catalog = provider_catalog()
         self.assertEqual(set(catalog), set(TARGETS))
-        self.assertEqual(len(TARGETS), 16)
+        self.assertEqual(len(TARGETS), 17)
         report = connector_report()
         for target in NEW_TARGETS:
             self.assertIn(target, TARGETS)

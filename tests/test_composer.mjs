@@ -140,7 +140,7 @@ test('all agreed project IDs are supported, with no extra project identifiers', 
 
 test('provider IDs include each handoff destination and distinguish OpenAI API from ChatGPT', () => {
   const ids = plain(core.TARGETS).map(([id]) => id);
-  assert.deepEqual(ids, ['chatgpt', 'openai', 'gemini', 'claude', 'hostinger', 'facebook', 'linkedin', 'substack', 'instagram', 'threads', 'youtube', 'github', 'slack', 'zapier', 'claude-cowork', 'perplexity']);
+  assert.deepEqual(ids, ['chatgpt', 'openai', 'gemini', 'claude', 'hostinger', 'facebook', 'linkedin', 'substack', 'instagram', 'threads', 'youtube', 'github', 'slack', 'zapier', 'claude-cowork', 'perplexity', 'codex']);
   for (const id of ids) assert.equal(core.buildDraft('publishing-studio', id, 'Draft').target, id);
   assert.equal(core.TARGETS.find(([id]) => id === 'openai')[1], 'OpenAI API draft');
 });
@@ -243,11 +243,20 @@ test('editor history ignores duplicate records and respects its bounded capacity
 
 test('expanded workspace targets export exact IDs and preserve Unicode text', () => {
   const ids = plain(core.TARGETS).map(([id]) => id);
-  assert.equal(ids.length, 16);
+  assert.equal(ids.length, 17);
   for (const target of ['slack', 'zapier', 'claude-cowork', 'perplexity']) {
     assert.ok(ids.includes(target));
     const text = 'Mission: café 😀 — reviewed draft only.';
     assert.deepEqual(plain(core.buildDraft('ai-jarvis', target, text)),
       { schema_version: 1, kind: 'jarvis.draft', project_id: 'ai-jarvis', target, text });
   }
+});
+
+test('Codex engineering is an explicit reviewed draft destination', () => {
+  assert.equal(core.TARGETS.find(([id]) => id === 'codex')[1], 'Codex engineering');
+  const packet = plain(core.buildDraft('ai-jarvis', 'codex', 'Diagnose one bounded task.'));
+  assert.equal(packet.target, 'codex');
+  assert.equal(packet.text, 'Diagnose one bounded task.');
+  assert.equal('connected' in packet, false);
+  assert.equal('approved' in packet, false);
 });

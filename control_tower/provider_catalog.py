@@ -144,6 +144,16 @@ _DATA = {
 }
 _EXPANSION_REVIEWED_ON = "2026-10-27"
 for _provider_id, _provider in {
+    "codex": _record(
+        "Codex", "engineering_assistant",
+        ("Reviewed coding-task handoff to an owner-selected Codex workspace",),
+        ("Exact project, repository and development branch", "Authorized Codex sign-in and available execution environment",
+         "Applicable repository permissions, tools, dependencies and separate release review"),
+        ("A portable handoff does not start a Codex task or establish environment uptime.",
+         "A GitHub CI success verifies that runner; it does not prove the Codex environment recovered.",
+         "Preserve blocked work and record the actual error; do not claim a test or deployment ran."),
+        ("https://learn.chatgpt.com/docs/quickstart",)),
+
     "slack": _record(
         "Slack", "communications",
         ("Reviewed manual handoff; Slack app OAuth for a future runtime adapter",),
