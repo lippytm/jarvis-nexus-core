@@ -84,6 +84,16 @@ def main(argv=None):
     context_load.add_argument("--source-revision", required=True)
     context_load.add_argument("--memory-revision", type=int, required=True)
     context_load.add_argument("--out", required=True)
+    context_review = commands.add_parser("review-context")
+    context_review.add_argument("--handoff", required=True)
+    context_review.add_argument("--reviewer", required=True)
+    context_review.add_argument("--digest", required=True)
+    context_export = commands.add_parser("export-context")
+    context_export.add_argument("--handoff", required=True)
+    context_export.add_argument("--digest", required=True)
+    context_export.add_argument("--source-revision", required=True)
+    context_export.add_argument("--memory-revision", type=int, required=True)
+    context_export.add_argument("--out", required=True)
     commands.add_parser("status")
     demo = commands.add_parser("demo")
     demo.add_argument("--out", required=True)
@@ -124,6 +134,16 @@ def main(argv=None):
                     result = ledger.load_context(args.handoff, expected_source_revision=args.source_revision,
                                                  expected_memory_revision=args.memory_revision,
                                                  audience="owner_private")
+                elif args.command == "review-context":
+                    ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest)
+                    result = {"handoff_id": args.handoff, "context_sha256": args.digest,
+                              "review_state": "locally_reviewed", "external_actions": 0,
+                              "authority": "local_record_only_not_identity_authentication"}
+                elif args.command == "export-context":
+                    result = ledger.export_context(args.handoff, expected_sha256=args.digest,
+                                                   expected_source_revision=args.source_revision,
+                                                   expected_memory_revision=args.memory_revision,
+                                                   audience="owner_private")
                 else:
                     result = ledger.status()
         if output:

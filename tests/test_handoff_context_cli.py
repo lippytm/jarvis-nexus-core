@@ -111,5 +111,77 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(stored["visibility"], "owner_private")
 
 
+    def prepare_reviews(self):
+        saved = self.save()
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        reviewed = self.cli("review", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                            "--digest", self.profile["handoff_sha256"])
+        self.assertEqual(reviewed.returncode, 0, reviewed.stderr)
+        return checksum
+
+    def review_context(self, checksum, reviewer="local-reviewer"):
+        return self.cli("review-context", "--handoff", "cli-task", "--reviewer", reviewer,
+                        "--digest", checksum)
+
+    def export_context(self, checksum, out="envelope.json", revision=REVISION, memory=1):
+        return self.cli("export-context", "--handoff", "cli-task", "--digest", checksum,
+                        "--source-revision", revision, "--memory-revision", str(memory), "--out", out)
+
+    def test_reviewed_envelope_keeps_original_binding_and_checkpoint(self):
+        checksum = self.prepare_reviews()
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+        reviewed = self.review_context(checksum)
+        self.assertEqual(reviewed.returncode, 0, reviewed.stderr)
+        self.assertEqual(json.loads(reviewed.stdout)["authority"], "local_record_only_not_identity_authentication")
+        exported = self.export_context(checksum)
+        self.assertEqual(exported.returncode, 0, exported.stderr)
+        packet = json.loads((self.root / "envelope.json").read_text())
+        self.assertEqual(packet["handoff_sha256"], self.profile["handoff_sha256"])
+        self.assertEqual(packet["context"], self.profile)
+        self.assertEqual(packet["handoff"]["draft"]["target"], "codex")
+        self.assertEqual(packet["external_actions"], 0)
+
+    def test_context_review_cannot_replace_original_handoff_review(self):
+        saved = self.save()
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+        self.assertFalse((self.root / "envelope.json").exists())
+
+    def test_self_or_wrong_digest_review_cannot_open_export_gate(self):
+        checksum = self.prepare_reviews()
+        for value, reviewer in (("0" * 64, "local-reviewer"), (checksum, "cli-pilot.builder")):
+            with self.subTest(reviewer=reviewer):
+                self.assertEqual(self.review_context(value, reviewer).returncode, 1)
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+        self.assertFalse((self.root / "envelope.json").exists())
+
+    def test_edit_invalidates_context_review_across_cli_processes(self):
+        checksum = self.prepare_reviews()
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        self.profile["execution"]["detail"] = "A new checkpoint needs review."
+        self.write(self.profile)
+        changed = self.save(1)
+        new_digest = json.loads(changed.stdout)["context_sha256"]
+        for value in (checksum, new_digest):
+            self.assertEqual(self.export_context(value).returncode, 1)
+        self.assertFalse((self.root / "envelope.json").exists())
+        self.assertEqual(self.review_context(new_digest).returncode, 0)
+        self.assertEqual(self.export_context(new_digest).returncode, 0)
+
+    def test_envelope_revision_path_and_overwrite_checks(self):
+        checksum = self.prepare_reviews()
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        for revision, memory in (("f" * 40, 1), (REVISION, 2)):
+            self.assertEqual(self.export_context(checksum, revision=revision, memory=memory).returncode, 1)
+            self.assertFalse((self.root / "envelope.json").exists())
+        self.assertEqual(self.export_context(checksum, out="../outside-envelope.json").returncode, 1)
+        self.assertEqual(self.export_context(checksum).returncode, 0)
+        previous = (self.root / "envelope.json").read_bytes()
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+        self.assertEqual((self.root / "envelope.json").read_bytes(), previous)
+
+
 if __name__ == "__main__":
     unittest.main()

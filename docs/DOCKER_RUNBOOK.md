@@ -45,6 +45,25 @@ these commands do not authenticate users, approve releases, dispatch work or
 expose a public endpoint. Protect /data and the exported files. Running status
 does not perform a mission or save context.
 
+To prepare a private manual handoff envelope, separately review the original
+handoff with the existing review command and its handoff digest, then review the
+context with its context digest (from save-context/load-context):
+
+```sh
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 review --handoff YOUR-HANDOFF-ID --reviewer YOUR-LOCAL-REVIEWER --digest YOUR-HANDOFF-SHA256
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 review-context --handoff YOUR-HANDOFF-ID --reviewer YOUR-LOCAL-REVIEWER --digest YOUR-CONTEXT-SHA256
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 export-context --handoff YOUR-HANDOFF-ID --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1 --out reviewed-envelope-001.json
+```
+
+These placeholders are not runnable mission data. Inspect the actual records
+before recording either review. The reviewer label must differ from the drafting
+asset; labels do not authenticate a reviewer or grant owner release approval.
+Both exact-content reviews are required. Any context edit clears its review.
+Export refuses stale source/memory revisions and existing output files, writes
+only inside /data, and sends nothing. The original packet/digest and blocked or
+unknown execution state remain intact. Protect the private output; this is not
+a public-safe publishing export or a live platform delivery receipt.
+
 ## Verification
 
 The Docker CI job builds this Dockerfile, validates Compose, runs all 18 local
