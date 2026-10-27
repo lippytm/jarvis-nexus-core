@@ -1,0 +1,79 @@
+# Hermes Fabric MemPalace: local handoff context, version 1
+
+This development increment extends `HandoffLedger`; it does not introduce a
+second memory store. The existing strict version-1 draft, handoff and return
+packets remain unchanged. An optional `jarvis.handoff_context` record lives in
+the same SQLite database. A `jarvis.context_envelope` export binds the original
+handoff and its digest to the separately versioned context and its digest.
+
+## Stored scope
+
+- Project, mission, source commit, asset and platform identities bind to the
+  existing handoff. Every one of the seventeen portable targets is supported,
+  including distinct `codex`, `chatgpt`, `openai` and `github` IDs.
+- A configuration version, memory revision, visibility, permitted action and
+  bounded context/evidence references retain selected provenance.
+- Execution context, attempt count, unfinished state and checkpoint reference
+  survive a fresh process reading the database. `execution_blocked` and
+  `outcome_unknown` remain unchanged on retrieval; no retry is dispatched.
+- Budget metadata permits at most three attempts, 3,600 seconds and no paid
+  execution. These are validated limits for a future worker, not an installed
+  timer or supervisor. The only permitted action remains `prepare_draft`.
+
+Keep secrets and unrelated diaries outside these records. Known sensitive
+field names are rejected by the existing validator; ordinary strings and URLs
+are not a complete sensitive-data detector. Reference visibility and review
+labels are supplied classifications, not authenticated identities.
+
+## Writes, reviews and retrieval
+
+`save_context(profile, expected_revision=0)` creates context for an existing
+handoff; later writes require the exact current local context revision.
+SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical
+replays at the current revision are duplicates. Conflicting stale writes stop.
+Memory revisions and recorded attempt counts cannot decrease; the mission ID
+cannot change. The database stores proposed context, not accepted project facts.
+
+`load_context` requires expected source and memory revisions and returns an
+independent record. `audience="public_candidate"` rejects private profiles;
+public profiles cannot contain references labelled private. This local audience
+argument is **not authentication**. A hosted adapter must authenticate callers,
+authorize project access and curate any public text before exposing this API.
+
+`review_context` records a distinct local reviewer label bound to the context
+digest. Every content change invalidates this context review, including an edit
+to checkpoint text or configuration. `export_context` requires both original
+handoff and context reviews plus exact source/memory revisions. Public envelope
+export is denied because version-1 drafts have no visibility classification;
+a public context label cannot declassify their text. Imported returns still bind
+to the original handoff digest and target and remain unverified. No review label
+here authorizes deployment, publishing, spending or permission changes.
+
+## Migration and rollback
+
+Opening a supported version-1 ledger transactionally adds `handoff_contexts`
+and sets SQLite `user_version=2`. Existing swarms, handoffs, reviews and returns
+are not rewritten; legacy APIs remain usable. Unrelated databases and unknown
+versions are rejected. Version-1 application code will reject a version-2 file.
+
+Before first migration, stop the single worker and retain a SQLite online backup
+using `Connection.backup` (or a closed-file copy). Keep the backup private. Roll
+back code **and** restore that version-1 backup together; preserve the current
+database separately so new context is not lost. Do not merely lower user_version
+or delete tables. Tests also verify a version-2 backup restores context and the
+original handoff together.
+
+## Verification and remaining work
+
+Run `python scripts/verify_control_tower.py` and
+`node --test --test-reporter=tap tests/*.mjs`. The dedicated
+`tests/test_handoff_context.py` uses synthetic local fixtures, including an actual
+fresh Python process, a separate SQLite connection and backup restoration.
+These checks do not prove authenticated provider delivery or deployed recovery.
+
+This increment supplies persistent single-worker context/checkpoints and guarded
+manual exports. Authenticated shared hosting, Sites storage integration, queue
+leases, cancellation, automatic retry/failover, connection credentials and live
+dispatch are unfinished. No service is installed or deployed. Trading Bots stays
+research/backtesting/paper only; RoboParty stays deferred. Owner release gates
+and the full business portfolio remain in place.
