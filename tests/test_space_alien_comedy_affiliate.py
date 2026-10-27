@@ -1,3 +1,4 @@
+from copy import deepcopy
 import unittest
 from control_tower.affiliate_universe import OPPORTUNITY_WORLDS
 from control_tower.injective_marketing import MEMBERSHIP_LADDER, ROUTES
@@ -9,6 +10,28 @@ from control_tower.space_alien_comedy_affiliate import (
 )
 
 class SpaceAlienComedyAffiliateTests(unittest.TestCase):
+    def test_returned_packets_cannot_change_shared_program_or_channel_rules(self):
+        expected_program = deepcopy(PROGRAM)
+        expected_registry = deepcopy(program_registry())
+        expected_family = deepcopy(product_campaign_family('education-hub'))
+        try:
+            registry = program_registry()
+            registry['program']['name'] = 'caller-modified program'
+            registry['blocked_channels']['tiktok']['state'] = 'caller-enabled'
+            family = product_campaign_family('education-hub')
+            family['blocked_channels']['tiktok']['reason'] = 'caller-modified reason'
+            self.assertEqual(expected_program, PROGRAM)
+            self.assertEqual(expected_registry, program_registry())
+            self.assertEqual(expected_family, product_campaign_family('education-hub'))
+            self.assertEqual(expected_program['name'], product_campaign('education-hub', 'facebook')['program_name'])
+        finally:
+            # Keep an unfixed implementation from contaminating later tests.
+            from control_tower.organic_marketing import BLOCKED_CHANNELS
+            PROGRAM.clear()
+            PROGRAM.update(expected_program)
+            BLOCKED_CHANNELS.clear()
+            BLOCKED_CHANNELS.update(deepcopy(expected_registry['blocked_channels']))
+
     def test_registry_covers_every_current_registry_without_claiming_metrics(self):
         registry=program_registry()
         self.assertEqual(set(PRODUCTS),set(registry['registered_products']))

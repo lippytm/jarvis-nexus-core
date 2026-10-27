@@ -5,6 +5,7 @@ account actions, memberships, affiliate enrollments, sales, commissions or reven
 Comedy/ANIMA language is creative framing; real offers retain their own facts,
 disclosures, destinations, evidence state and Prompt #11 review requirements.
 """
+from copy import deepcopy
 from hashlib import sha256
 import json
 
@@ -57,7 +58,7 @@ def program_registry():
         "schema_version": 1,
         "kind": "jarvis.space_alien_comedy_affiliate_registry",
         "state": "planning_registry",
-        "program": PROGRAM,
+        "program": deepcopy(PROGRAM),
         "coverage_basis": "all items currently present in the referenced Jarvis registries",
         "registered_products": sorted(PRODUCTS),
         "registered_portfolio_initiatives": sorted(item["id"] for item in initiatives),
@@ -65,7 +66,7 @@ def program_registry():
         "registered_memberships": sorted(MEMBERSHIP_LADDER),
         "registered_injective_routes": sorted(ROUTES),
         "active_free_channels": sorted(FREE_CHANNELS),
-        "blocked_channels": BLOCKED_CHANNELS,
+        "blocked_channels": deepcopy(BLOCKED_CHANNELS),
         "unregistered_scope_rule": "Historical or future ideas not yet present in these registries are not claimed as connected until explicitly registered and reviewed.",
         "external_actions": 0,
         "actual_metrics": None,
@@ -130,7 +131,7 @@ def product_campaign_family(product_id, *, tone="cosmic_comedy", comedy_format="
         "product_id": product_id,
         "campaign_count": len(campaigns),
         "campaigns": campaigns,
-        "blocked_channels": BLOCKED_CHANNELS,
+        "blocked_channels": deepcopy(BLOCKED_CHANNELS),
         "external_actions": 0,
         "publishing_actions": 0,
         "actual_metrics": None,
