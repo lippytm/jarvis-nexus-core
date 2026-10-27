@@ -1,0 +1,16 @@
+**
+!Dockerfile
+!control_tower/
+!control_tower/**
+!scripts/
+!scripts/**
+!tests/
+!tests/**
+!examples/
+!examples/**
+**/__pycache__/
+**/*.pyc
+**/.env*
+**/*.sqlite*
+**/*.pem
+**/*.key

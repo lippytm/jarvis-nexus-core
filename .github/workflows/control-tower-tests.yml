@@ -55,3 +55,43 @@ jobs:
           path: reports/web-tests.txt
           retention-days: 14
           if-no-files-found: warn
+  docker-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Build development container and validate Compose
+        run: |
+          docker compose config --quiet
+          docker build --progress=plain -t jarvis-nexus-ci .
+      - name: Verify context behavior inside restricted container
+        run: |
+          docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges jarvis-nexus-ci python -m unittest discover -s tests -p test_handoff_context.py -v
+      - name: Preserve a synthetic handoff across container replacement
+        shell: bash
+        run: |
+          set -euo pipefail
+          volume="jarvis-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker volume create "$volume"
+          trap 'docker volume rm "$volume"' EXIT
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges -v "$volume:/data" jarvis-nexus-ci python -c '
+          from control_tower.handoffs import HandoffLedger
+          from control_tower.swarm_factory import build_swarm
+          draft = dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis", target="codex", text="Synthetic container restart fixture.")
+          swarm = build_swarm("ai-jarvis", ["codex"], swarm_id="docker-pilot", source_revision="4360784edb85d70c38c90caaeb42fc1a4403979c")
+          with HandoffLedger("/data/handoffs.sqlite3") as ledger:
+              receipt = ledger.stage(draft, swarm, assistant_id="docker-pilot.builder", handoff_id="docker-mission")
+              open("/data/expected-digest.txt", "w").write(receipt["handoff_sha256"])
+              print("Synthetic handoff staged:", receipt["handoff_sha256"])
+          '
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges -v "$volume:/data" jarvis-nexus-ci python -c '
+          from control_tower.handoffs import HandoffLedger
+          with HandoffLedger("/data/handoffs.sqlite3") as ledger:
+              rows = ledger.status()["handoffs"]
+              assert len(rows) == 1 and rows[0]["handoff_id"] == "docker-mission"
+              assert rows[0]["handoff_sha256"] == open("/data/expected-digest.txt").read()
+              assert ledger.db.execute("PRAGMA user_version").fetchone()[0] == 2
+              print("PASS: replacement container retained the exact handoff; schema=2")
+          '
