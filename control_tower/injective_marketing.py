@@ -88,6 +88,12 @@ ROUTES = {
         "membership_id": "affiliate-builder",
         "bridge": "Teach affiliate/referral fundamentals first, then show a verified partner route with clear disclosure.",
     },
+    "funding-getbizfunds": {
+        "route_kind": "funding_customer",
+        "product_id": "funding-getbizfunds",
+        "membership_id": None,
+        "bridge": "Introduce the owner-provided GetBizFunds financing-information route without promising approval, terms or outcomes.",
+    },
     "funding-information": {
         "route_kind": "funding_customer",
         "product_id": "funding-7figures",

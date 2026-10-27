@@ -34,7 +34,7 @@ COMEDY_FORMATS = {
 
 PRODUCT_ROUTE_MAP = {
     "education-hub": "education-membership",
-    "funding-getbizfunds": "funding-information",
+    "funding-getbizfunds": "funding-getbizfunds",
     "funding-7figures": "funding-information",
     "partner-7figures": "affiliate-builder-membership",
     "partner-lendtrack": "referral-partner",
