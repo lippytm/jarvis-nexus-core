@@ -66,7 +66,7 @@ a public-safe publishing export or a live platform delivery receipt.
 
 ## Verification
 
-The Docker CI job builds this Dockerfile, validates Compose, runs all 18 local
+The Docker CI job builds this Dockerfile, validates Compose, runs the local
 context tests inside a restricted container, stages a synthetic Codex handoff
 on a named volume, then reads it in a second container after the first is removed.
 It checks the exact handoff digest and SQLite schema version. Existing Python

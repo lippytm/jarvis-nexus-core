@@ -67,8 +67,8 @@ budget and permitted-action checks still apply across all seventeen targets.
 Both legacy export and export_context refuse paused/cancelled records, including
 after process restart. A version-2 record cannot downgrade to version 1, and
 cancellation cannot resume. A paused record can explicitly resume to active;
-that edit invalidates context review, so combined-envelope export needs a fresh
-review. Cancellation does not recall prior exports or stop external work.
+that edit invalidates context review, so both export paths require a fresh
+context review for version-2 records. Cancellation does not recall prior exports or stop external work.
 Late returns remain unverified evidence and never clear the control or resolve an
 unknown execution outcome. Context reads and checkpoint updates remain available.
 

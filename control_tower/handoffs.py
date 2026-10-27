@@ -245,9 +245,12 @@ class HandoffLedger:
     def _require_export_active(self, handoff_id):
         # A corrupt stored context must fail closed, including on the legacy path.
         if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone():
-            _, profile = self._context(handoff_id)
-            if profile["schema_version"] == 2 and profile["control"]["state"] != "active":
-                raise ValueError("handoff export is paused or cancelled")
+            context, profile = self._context(handoff_id)
+            if profile["schema_version"] == 2:
+                if profile["control"]["state"] != "active":
+                    raise ValueError("handoff export is paused or cancelled")
+                if context["reviewed_digest"] != context["digest"]:
+                    raise ValueError("controlled export requires fresh context review")
 
     def save_context(self, profile, *, expected_revision):
         """CAS write of proposed context; never alters the version-1 handoff.

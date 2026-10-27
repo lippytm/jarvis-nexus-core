@@ -305,8 +305,7 @@ with HandoffLedger(sys.argv[1]) as ledger:
             self.ledger.save_context(legacy, expected_revision=1)
         active = self.control_profile("active")
         updated = self.ledger.save_context(active, expected_revision=1)
-        with self.assertRaises(ValueError):
-            self.export(updated["context_sha256"])
+        self.assert_exports_blocked(updated["context_sha256"])
         self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=updated["context_sha256"])
         self.assertEqual(self.export(updated["context_sha256"])["context"]["control"]["state"], "active")
 
