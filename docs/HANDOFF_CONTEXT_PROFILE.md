@@ -1,4 +1,4 @@
-# Hermes Fabric MemPalace: local handoff context, version 1
+# Hermes Fabric MemPalace: local handoff context, versions 1 and 2
 
 This development increment extends `HandoffLedger`; it does not introduce a
 second memory store. The existing strict version-1 draft, handoff and return
@@ -49,6 +49,36 @@ a public context label cannot declassify their text. Imported returns still bind
 to the original handoff digest and target and remain unverified. No review label
 here authorizes deployment, publishing, spending or permission changes.
 
+## Version-2 per-handoff pause/cancel
+
+Existing version-1 profiles remain unchanged and reject added fields. To opt in,
+retain the entire profile, set schema_version to 2 and add:
+
+```json
+{"control":{"state":"paused","actor_id":"local-owner-label","reason":"Operator checkpoint before further export."}}
+```
+
+This is a field example, not a complete packet. Use the existing save-context
+command and the exact current context revision; load-context returns the saved
+control and revision. State is active, paused or cancelled. The actor is a local
+label, not authenticated authority. All previous private/public, provenance,
+budget and permitted-action checks still apply across all seventeen targets.
+
+Both legacy export and export_context refuse paused/cancelled records, including
+after process restart. A version-2 record cannot downgrade to version 1, and
+cancellation cannot resume. A paused record can explicitly resume to active;
+that edit invalidates context review, so combined-envelope export needs a fresh
+review. Cancellation does not recall prior exports or stop external work.
+Late returns remain unverified evidence and never clear the control or resolve an
+unknown execution outcome. Context reads and checkpoint updates remain available.
+
+The current profile/revision is retained; this is not an append-only audit log.
+These controls do not add a dispatcher, queue lease, global pause or authenticated
+hosted service. Only this updated implementation enforces them. Do not run older
+application code against controlled records; preserve private backups and review
+controls explicitly before a rollback. No database-table migration is needed for
+this envelope opt-in; SQLite user_version remains 2.
+
 ## Migration and rollback
 
 Opening a supported version-1 ledger transactionally adds `handoff_contexts`
@@ -73,7 +103,7 @@ These checks do not prove authenticated provider delivery or deployed recovery.
 
 This increment supplies persistent single-worker context/checkpoints and guarded
 manual exports. Authenticated shared hosting, Sites storage integration, queue
-leases, cancellation, automatic retry/failover, connection credentials and live
+leases, global cancellation/worker interruption, automatic retry/failover, connection credentials and live
 dispatch are unfinished. No service is installed or deployed. Trading Bots stays
 research/backtesting/paper only; RoboParty stays deferred. Owner release gates
 and the full business portfolio remain in place.

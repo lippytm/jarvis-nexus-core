@@ -17,12 +17,25 @@ def _integer(value, low, high):
 
 
 def validate_context(profile, handoff):
-    require_record(profile, {
+    if not isinstance(profile, dict):
+        raise ValueError("context must be a record")
+    version = profile.get("schema_version")
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("unsupported context schema")
+    keys = {
         "schema_version", "kind", "handoff_id", "handoff_sha256", "project_id",
         "mission_id", "source_revision", "asset_id", "platform", "configuration_version",
         "memory_revision", "visibility", "allowed_actions", "context_refs", "evidence_refs",
-        "budget", "execution"})
-    if type(profile["schema_version"]) is not int or profile["schema_version"] != 1 or profile["kind"] != "jarvis.handoff_context":
+        "budget", "execution"}
+    require_record(profile, keys | ({"control"} if version == 2 else set()))
+    if version == 2:
+        control = profile["control"]
+        require_record(control, {"state", "actor_id", "reason"})
+        if control["state"] not in ("active", "paused", "cancelled"):
+            raise ValueError("invalid handoff control state")
+        require_identifier(control["actor_id"], "local controller label")
+        require_text(control["reason"])
+    if profile["kind"] != "jarvis.handoff_context":
         raise ValueError("unsupported context schema")
     binding = {"handoff_id": handoff["handoff_id"], "handoff_sha256": digest(handoff),
                "project_id": handoff["draft"]["project_id"], "source_revision": handoff["source_revision"],

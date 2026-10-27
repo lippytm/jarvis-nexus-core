@@ -265,5 +265,97 @@ with HandoffLedger(sys.argv[1]) as ledger:
             self.assertEqual(restored.status()["handoffs"][0]["handoff_sha256"], self.receipt["handoff_sha256"])
 
 
+    def control_profile(self, state):
+        return {**deepcopy(self.profile), "schema_version": 2,
+                "control": {"state": state, "actor_id": "local-owner-label",
+                            "reason": "Synthetic bounded control fixture."}}
+
+    def assert_exports_blocked(self, checksum):
+        with self.assertRaises(ValueError):
+            self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        with self.assertRaises(ValueError):
+            self.export(checksum)
+
+    def test_v1_is_unchanged_and_control_requires_explicit_v2(self):
+        self.save()
+        self.assertEqual(self.load()["profile"], self.profile)
+        with self.assertRaises(ValueError):
+            self.ledger.save_context({**self.profile, "control": self.control_profile("paused")["control"]}, expected_revision=1)
+        self.assertEqual(self.load()["revision"], 1)
+
+    def test_paused_and_cancelled_block_both_exports_after_reopen(self):
+        for state in ("paused", "cancelled"):
+            with self.subTest(state=state):
+                self.profile = self.control_profile(state)
+                # Reset just this test fixture between independent cases.
+                self.ledger.db.execute("DELETE FROM handoff_contexts")
+                saved = self.approve()
+                self.ledger.close()
+                self.ledger = HandoffLedger(self.path)
+                self.assert_exports_blocked(saved["context_sha256"])
+                self.assertEqual(self.load()["profile"]["control"]["state"], state)
+                self.assertEqual(self.load()["profile"]["execution"]["state"], "execution_blocked")
+
+    def test_resume_requires_fresh_context_review_and_cannot_downgrade(self):
+        self.profile = self.control_profile("paused")
+        self.approve()
+        legacy = {k: v for k, v in self.profile.items() if k != "control"}
+        legacy["schema_version"] = 1
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(legacy, expected_revision=1)
+        active = self.control_profile("active")
+        updated = self.ledger.save_context(active, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.export(updated["context_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=updated["context_sha256"])
+        self.assertEqual(self.export(updated["context_sha256"])["context"]["control"]["state"], "active")
+
+    def test_cancel_is_terminal_but_allows_unverified_late_return(self):
+        saved = self.approve()
+        self.export(saved["context_sha256"])
+        cancelled = self.control_profile("cancelled")
+        cancelled["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(cancelled, expected_revision=1)
+        for state in ("active", "paused"):
+            with self.subTest(state=state), self.assertRaises(ValueError):
+                self.ledger.save_context({**cancelled, "control": {**cancelled["control"], "state": state}}, expected_revision=2)
+        packet = {"schema_version": 1, "kind": "jarvis.return", "return_id": "late-result",
+                  "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+                  "source_provider": "codex", "text": "Synthetic late evidence.", "evidence_urls": []}
+        self.assertEqual(self.ledger.import_return(packet)["state"], "returned_unverified")
+        loaded = self.load()
+        self.assertEqual(loaded["profile"]["execution"]["state"], "outcome_unknown")
+        self.assertEqual(loaded["profile"]["control"]["state"], "cancelled")
+        self.assert_exports_blocked(loaded["context_sha256"])
+
+    def test_control_duplicate_stale_writer_and_independent_handoff(self):
+        self.profile = self.control_profile("paused")
+        self.approve()
+        with HandoffLedger(self.path) as other:
+            self.assertTrue(other.save_context(self.profile, expected_revision=1)["duplicate"])
+            with self.assertRaises(ValueError):
+                other.save_context(self.control_profile("active"), expected_revision=0)
+        self.stage("mission-two")
+        other_profile = self.context("mission-two")
+        self.ledger.save_context(other_profile, expected_revision=0)
+        self.assertNotIn("control", self.load("mission-two")["profile"])
+        self.assertEqual(self.load()["profile"]["control"]["state"], "paused")
+
+    def test_control_schema_rejects_unknown_or_authority_fields(self):
+        for change in ({"state": "running"}, {"state": True}, {"actor_id": "../outside"},
+                       {"reason": ""}, {"authenticated": True}):
+            bad = self.control_profile("paused")
+            bad["control"].update(change)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.save_context(bad, expected_revision=0)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM handoff_contexts").fetchone()[0], 0)
+
+    def test_corrupt_control_blocks_legacy_export(self):
+        self.profile = self.control_profile("active")
+        self.approve()
+        self.ledger.db.execute("UPDATE handoff_contexts SET body='{}'")
+        self.assert_exports_blocked("0" * 64)
+
+
 if __name__ == "__main__":
     unittest.main()

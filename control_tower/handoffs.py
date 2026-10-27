@@ -189,6 +189,7 @@ class HandoffLedger:
         require_digest(expected_sha256)
         with self._transaction():
             row, body = self._handoff(handoff_id)
+            self._require_export_active(handoff_id)
             if row["digest"] != expected_sha256 or row["reviewed_digest"] != expected_sha256 or row["state"] == "pending_review":
                 raise ValueError("export requires local review of this exact draft")
             if row["state"] == "reviewed":
@@ -241,6 +242,13 @@ class HandoffLedger:
             raise ValueError("stored context integrity mismatch")
         return row, profile
 
+    def _require_export_active(self, handoff_id):
+        # A corrupt stored context must fail closed, including on the legacy path.
+        if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone():
+            _, profile = self._context(handoff_id)
+            if profile["schema_version"] == 2 and profile["control"]["state"] != "active":
+                raise ValueError("handoff export is paused or cancelled")
+
     def save_context(self, profile, *, expected_revision):
         """CAS write of proposed context; never alters the version-1 handoff.
 
@@ -262,6 +270,11 @@ class HandoffLedger:
             checksum = digest(profile)
             if existing:
                 _, old = self._context(profile["handoff_id"])
+                if old["schema_version"] == 2:
+                    if profile["schema_version"] != 2:
+                        raise ValueError("controlled context cannot downgrade to version 1")
+                    if old["control"]["state"] == "cancelled" and profile["control"]["state"] != "cancelled":
+                        raise ValueError("cancelled handoff cannot resume")
                 if (profile["mission_id"] != old["mission_id"]
                     or profile["memory_revision"] < old["memory_revision"]
                     or profile["execution"]["attempts"] < old["execution"]["attempts"]):
@@ -314,6 +327,7 @@ class HandoffLedger:
             raise ValueError("invalid export audience or memory revision")
         with self._transaction():
             row, profile = self._context(handoff_id)
+            self._require_export_active(handoff_id)
             original, handoff = self._handoff(handoff_id)
             if (row["digest"] != expected_sha256 or row["reviewed_digest"] != expected_sha256
                 or original["reviewed_digest"] != original["digest"]
