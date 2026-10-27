@@ -12,7 +12,8 @@ from control_tower.validation import json_record_errors, valid_https_url
 MAX_PACKET_BYTES = 65536
 MAX_TEXT_BYTES = 20000
 TARGETS = frozenset({"chatgpt", "openai", "gemini", "claude", "hostinger", "facebook",
-                     "linkedin", "substack", "instagram", "threads", "youtube", "github"})
+                     "linkedin", "substack", "instagram", "threads", "youtube", "github",
+                     "slack", "zapier", "claude-cowork", "perplexity"})
 PROJECTS = {
     "ai-jarvis": "AI Jarvis engineering and coordination",
     "ai-evolutionary-evolutions": "Hostinger education and membership inquiries",

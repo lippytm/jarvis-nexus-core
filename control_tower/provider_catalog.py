@@ -142,6 +142,46 @@ _DATA = {
         ("https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api",
          "https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens")),
 }
+_EXPANSION_REVIEWED_ON = "2026-10-27"
+for _provider_id, _provider in {
+    "slack": _record(
+        "Slack", "communications",
+        ("Reviewed manual handoff; Slack app OAuth for a future runtime adapter",),
+        ("Exact workspace and channel IDs", "Authorized app installation and operation-specific scopes",
+         "Explicit approval for any message send"),
+        ("No message delivery, workspace read or Slack app installation is performed here.",
+         "A review label does not authenticate a Slack user."),
+        ("https://docs.slack.dev/authentication/installing-with-oauth/",)),
+    "zapier": _record(
+        "Zapier", "workflow_automation",
+        ("Reviewed manual workflow specification", "Documented Human in the Loop approval step"),
+        ("Exact account, workflow and permitted actions", "Connected destination apps",
+         "Confirm paid-plan eligibility and task budget before selecting Human in the Loop"),
+        ("No Zap is created, enabled, triggered or modified here.",
+         "An approval step must enforce the decision; merely adding a notification is insufficient."),
+        ("https://help.zapier.com/hc/en-us/articles/38731463206029-Request-approval-to-keep-your-workflow-running-with-Human-in-the-Loop",)),
+    "claude-cowork": _record(
+        "Claude Cowork", "assistant_workspace",
+        ("Reviewed manual context/artifact handoff", "Documented custom remote MCP connectors"),
+        ("Owner-selected Claude workspace", "Permitted files and connector scopes",
+         "Confirm account entitlement and authorization in the target workspace"),
+        ("The Claude Messages API does not establish synchronization with Cowork.",
+         "This package does not install plugins, run Cowork or transfer private files."),
+        ("https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp",)),
+    "perplexity": _record(
+        "Perplexity", "research",
+        ("Reviewed manual research handoff", "Search API for ranked web results"),
+        ("Authorized account or API project for the selected route", "Server-held API credential for API use",
+         "Research scope and usage budget"),
+        ("Search results are evidence candidates, not verified conclusions.",
+         "No API call or access to existing Perplexity conversations is implemented."),
+        ("https://docs.perplexity.ai/docs/search/overview",)),
+}.items():
+    _provider["reviewed_on"] = _EXPANSION_REVIEWED_ON
+    _DATA[_provider_id] = _provider
+del _provider_id, _provider
+
+
 _DATA["hostinger"]["read_only_probe"] = "implemented_with_stdlib_https_transport"
 _DATA["hostinger"]["live_api_adapter"] = "implemented_read_only_horizons_inventory"
 _DATA["hostinger"]["live_validation"] = "not_performed"

@@ -23,6 +23,10 @@ CONNECTORS = {
     "threads": {"purpose": "consented promotion", "status": "unverified", "write_gate": "owner_review"},
     "linkedin": {"purpose": "consented outreach and attribution", "status": "unverified", "write_gate": "owner_review"},
     "substack": {"purpose": "newsletter and membership referrals", "status": "unverified", "write_gate": "owner_review"},
+    "slack": {"purpose": "reviewed internal mission handoffs", "status": "unverified", "write_gate": "owner_review"},
+    "zapier": {"purpose": "reviewed workflow and approval planning", "status": "unverified", "write_gate": "owner_review"},
+    "claude-cowork": {"purpose": "workspace file and project draft collaboration", "status": "unverified", "write_gate": "owner_review"},
+    "perplexity": {"purpose": "source discovery and research handoffs", "status": "unverified", "write_gate": "owner_review"},
     "hubspot": {"purpose": "consented CRM routing", "status": "unverified", "write_gate": "owner_review"},
     "airtable": {"purpose": "project and evidence records", "status": "unverified", "write_gate": "owner_review"},
 }

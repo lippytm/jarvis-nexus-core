@@ -183,3 +183,11 @@ The repository also contains the earlier JavaScript service and installer
 prototypes. Their operation, hosting cost, production security and replacement
 coverage for third-party products were outside this Control Tower verification.
 Review those sources and their deployment assumptions before running the installer.
+
+## October 27 platform handoff expansion
+
+[Platform expansion and verification limits](docs/PLATFORM_EXPANSION_2026_10_27.md)
+adds Slack, Zapier, Claude Cowork and Perplexity as exact portable draft targets,
+bringing the current target contract and composer to sixteen destinations.
+It also repairs UTF-8 record-size measurement and independent injective-campaign
+state. These are reviewed manual handoff foundations, not live posting adapters.

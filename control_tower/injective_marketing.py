@@ -5,6 +5,7 @@ may carry one bounded, relevant business/education/product route. This module ge
 unpublished planning packets only and performs no posting, outreach, account access,
 payments, analytics reads, or financial actions.
 """
+from copy import deepcopy
 from hashlib import sha256
 import json
 
@@ -165,7 +166,7 @@ def injective_campaign(route_id, channel, *, universe_id="entertainment-of-life"
         "schema_version": 1,
         "kind": "jarvis.injective_marketing_campaign",
         "state": "unpublished_draft",
-        "theme": INJECTIVE_THEME,
+        "theme": deepcopy(INJECTIVE_THEME),
         "route_id": route_id,
         "route_kind": route["route_kind"],
         "injection_point": injection_point,
@@ -179,7 +180,7 @@ def injective_campaign(route_id, channel, *, universe_id="entertainment-of-life"
         "product_title": product.title,
         "audience": product.audience,
         "membership_id": route["membership_id"],
-        "membership": membership,
+        "membership": deepcopy(membership),
         "cta": creative["cta"],
         "destination": product.destination if membership is None or membership["destination"] is None else membership["destination"],
         "product_destination": product.destination,

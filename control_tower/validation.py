@@ -20,8 +20,8 @@ def json_record_errors(record):
     if not isinstance(record, dict):
         return ["record must be an object"]
     try:
-        encoded = json.dumps(record, allow_nan=False, ensure_ascii=True)
-    except (TypeError, ValueError, RecursionError, OverflowError):
+        encoded = json.dumps(record, allow_nan=False, ensure_ascii=False).encode("utf-8")
+    except (TypeError, ValueError, UnicodeError, RecursionError, OverflowError):
         return ["record must be finite acyclic JSON"]
     if len(encoded) > 65536:
         return ["record exceeds 64 KiB"]

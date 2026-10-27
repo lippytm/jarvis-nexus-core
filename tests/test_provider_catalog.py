@@ -50,7 +50,8 @@ class ProviderCatalogTests(unittest.TestCase):
     def test_documentation_is_official_https_and_catalog_is_json_serializable(self):
         allowed = {"learn.chatgpt.com", "developers.openai.com", "ai.google.dev", "platform.claude.com",
                    "docs.hostinger.com", "www.hostinger.com", "developers.facebook.com", "learn.microsoft.com",
-                   "support.substack.com", "developers.google.com", "docs.github.com"}
+                   "support.substack.com", "developers.google.com", "docs.github.com",
+                   "docs.slack.dev", "help.zapier.com", "support.claude.com", "docs.perplexity.ai"}
         catalog = provider_catalog()
         json.dumps(catalog, allow_nan=False)
         for row in catalog.values():
