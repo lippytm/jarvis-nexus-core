@@ -268,6 +268,44 @@ class HandoffLedger:
                     "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
                     "model_calls": 0, "external_actions": 0}
 
+    def queue_report(self, *, project_id):
+        """Private counts of recorded states, never live worker/completion metrics."""
+        if not isinstance(project_id, str) or project_id not in PROJECTS:
+            raise ValueError("unknown project")
+        with self._transaction():
+            handoffs = dict.fromkeys(("pending_review", "reviewed", "export_prepared", "returned_unverified"), 0)
+            execution = dict.fromkeys(("pending", "execution_blocked", "outcome_unknown", "without_context"), 0)
+            controls = dict.fromkeys(("active", "paused", "cancelled", "legacy_uncontrolled", "without_context"), 0)
+            attempts, bindings = 0, []
+            for item in self.db.execute("SELECT id FROM handoffs ORDER BY id").fetchall():
+                row, body = self._handoff(item["id"])
+                if body["draft"]["project_id"] != project_id:
+                    continue
+                handoffs[row["state"]] += 1
+                binding = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
+                           "state": row["state"], "source_revision": body["source_revision"],
+                           "asset_id": body["assistant_id"], "platform": body["draft"]["target"],
+                           "mission_id": None, "memory_revision": None, "destination_id": None,
+                           "context_sha256": None, "context_revision": None}
+                if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone():
+                    context, profile = self._context(row["id"])
+                    execution[profile["execution"]["state"]] += 1
+                    controls[profile["control"]["state"] if profile["schema_version"] >= 2 else "legacy_uncontrolled"] += 1
+                    attempts += profile["execution"]["attempts"]
+                    binding.update(context_sha256=context["digest"], context_revision=context["revision"],
+                        mission_id=profile["mission_id"], memory_revision=profile["memory_revision"],
+                        destination_id=profile.get("destination_id"))
+                else:
+                    execution["without_context"] += 1
+                    controls["without_context"] += 1
+                bindings.append(binding)
+            result = {"schema_version": 1, "kind": "jarvis.queue_report", "project_id": project_id,
+                "handoff_count": len(bindings), "handoff_states": handoffs, "execution_states": execution,
+                "control_states": controls, "recorded_attempts": attempts, "bindings": bindings,
+                "visibility": "owner_private", "completion_verification": "not_established",
+                "duplicate_attempts": "not_recorded", "dispatch_authorized": False, "external_actions": 0}
+            return {**result, "report_sha256": digest(result)}
+
     def destination_status(self, *, project_id, platform, destination_id):
         """Selective private metadata discovery, never connection/dispatch proof."""
         if not isinstance(project_id, str) or project_id not in PROJECTS:

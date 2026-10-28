@@ -101,6 +101,19 @@ class ContextCLITests(unittest.TestCase):
         self.assertIn("read-only", json.loads(refused.stderr)["error"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_queue_report_is_read_only_and_rejects_missing_database(self):
+        self.assertEqual(self.save().returncode, 0)
+        before = self.db.read_bytes()
+        result = self.cli("--read-only", "queue-report", "--project", "ai-jarvis")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        packet = json.loads(result.stdout)
+        self.assertEqual(packet["execution_states"]["execution_blocked"], 1)
+        self.assertEqual(packet["recorded_attempts"], 1)
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertEqual(self.cli("queue-report", "--project", "ai-jarvis", database="absent.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "absent.sqlite3").exists())
+
     def test_explicit_init_creates_empty_ledger_and_refuses_existing_state(self):
         result = self.cli("init-ledger", database="fresh/ledger.sqlite3")
         self.assertEqual(result.returncode, 0, result.stderr)

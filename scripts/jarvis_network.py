@@ -188,6 +188,8 @@ def main(argv=None):
     backup = commands.add_parser("backup-ledger")
     backup.add_argument("--out", required=True)
     commands.add_parser("status")
+    queue = commands.add_parser("queue-report")
+    queue.add_argument("--project", choices=sorted(PROJECTS), required=True)
     destination_status = commands.add_parser("destination-status")
     destination_status.add_argument("--project", choices=sorted(PROJECTS), required=True)
     destination_status.add_argument("--platform", choices=sorted(TARGETS), required=True)
@@ -204,7 +206,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -276,6 +278,8 @@ def main(argv=None):
                     result = ledger.prepare_reconciliation(args.handoff, expected_inspection_sha256=args.inspection_digest,
                         expected_sha256=args.digest, expected_source_revision=args.source_revision,
                         expected_memory_revision=args.memory_revision)
+                elif args.command == "queue-report":
+                    result = ledger.queue_report(project_id=args.project)
                 elif args.command == "destination-status":
                     result = ledger.destination_status(project_id=args.project, platform=args.platform,
                                                        destination_id=args.destination)

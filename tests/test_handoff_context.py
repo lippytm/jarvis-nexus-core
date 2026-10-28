@@ -154,6 +154,53 @@ class ContextTests(unittest.TestCase):
             self.ledger.status()
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_queue_report_retains_recorded_blocks_after_restart_without_private_text(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("contextless-task")
+        before = list(self.ledger.db.iterdump())
+        first = self.ledger.queue_report(project_id="ai-jarvis")
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis"), first)
+        self.assertEqual(first["handoff_count"], 2)
+        self.assertEqual(first["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(first["execution_states"]["without_context"], 1)
+        self.assertEqual(first["control_states"]["paused"], 1)
+        self.assertEqual(first["recorded_attempts"], 1)
+        self.assertEqual(first["completion_verification"], "not_established")
+        self.assertEqual(first["duplicate_attempts"], "not_recorded")
+        self.assertFalse(first["dispatch_authorized"])
+        self.assertNotIn("Synthetic", json.dumps(first))
+        self.assertNotIn("https://", json.dumps(first))
+        checksum = first.pop("report_sha256")
+        self.assertEqual(digest(first), checksum)
+        first["execution_states"]["outcome_unknown"] = 99
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis")["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_queue_report_is_project_scoped_and_tracks_context_revision_changes(self):
+        self.save()
+        manifest = build_swarm("publishing-studio", ["github"], swarm_id="other-project", source_revision=REVISION)
+        self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="publishing-studio",
+            target="github", text="Unrelated private publishing draft."), manifest,
+            assistant_id="other-project.builder", handoff_id="other-project-task")
+        first = self.ledger.queue_report(project_id="ai-jarvis")
+        other = self.ledger.queue_report(project_id="publishing-studio")
+        self.assertEqual(other["handoff_count"], 1)
+        self.assertEqual([r["handoff_id"] for r in first["bindings"]], ["mission-one"])
+        self.assertEqual([r["handoff_id"] for r in other["bindings"]], ["other-project-task"])
+        self.assertEqual(first["bindings"][0]["source_revision"], REVISION)
+        self.assertEqual(first["bindings"][0]["memory_revision"], 1)
+        self.profile["execution"]["detail"] = "Updated private checkpoint."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        changed = self.ledger.queue_report(project_id="ai-jarvis")
+        self.assertNotEqual(changed["report_sha256"], first["report_sha256"])
+        self.assertEqual(changed["bindings"][0]["context_revision"], 2)
+        with self.assertRaises(ValueError):
+            self.ledger.queue_report(project_id="unknown")
+
     def test_v1_migration_preserves_existing_rows_reviews_and_returns(self):
         self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
         self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])

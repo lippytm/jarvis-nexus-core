@@ -74,6 +74,24 @@ BEGIN IMMEDIATE serialization. Validation failure rolls the snapshot back.
 The result is a point-in-time observation, not a lease, dispatch grant or proof
 that imported returns are authenticated or completed work.
 
+## Private project queue report
+
+Use `python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read-only queue-report --project ai-jarvis`
+to summarize one existing project's recorded handoff, execution and control states
+from a single transaction. Version-1 jarvis.queue_report is a separate report;
+it changes no existing packet or database schema. Contextless records are counted
+explicitly, not treated as ready or successful. Source, asset, platform and available
+mission/memory/destination identities plus exact context/handoff digests bind the
+selected metadata. Draft text, execution detail and reference URLs are omitted.
+The report is always owner_private and changes no holds, reviews or attempts.
+
+recorded_attempts sums current context attempt counters. It does not measure
+actual worker runs, retries or failures; contexts are proposed records. Duplicate
+attempts are marked not_recorded, and completion_verification is not_established:
+an imported unverified return is not verified mission completion. Report checksums
+bind this metadata observation, not full review/lineage eligibility or authentication.
+The report grants no dispatch authority and is not a lease or public export.
+
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
 SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical
