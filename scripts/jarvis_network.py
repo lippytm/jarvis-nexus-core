@@ -217,8 +217,8 @@ def main(argv=None):
             context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
             observation_packet = load_packet(_local(root, args.file)) if args.command == "bind-observation" else None
             database = _local(root, args.database)
-            if args.command in ("destination-status", "bind-observation") and not database.is_file():
-                raise ValueError("destination operation requires an existing ledger")
+            if args.command != "stage" and not database.is_file():
+                raise ValueError("operation requires an existing ledger; use stage to create a new ledger")
             with HandoffLedger(database) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,

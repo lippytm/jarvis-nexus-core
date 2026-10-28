@@ -42,6 +42,14 @@ raw records to bypass rejection. No schema migration or automatic repair occurs.
 
 ## Writes, reviews and retrieval
 
+The CLI requires an existing database file for status, recovery, review and
+context operations. A missing or mistyped path fails instead of creating an
+empty ledger and reporting no pending work. Only stage may initialize a new
+ledger from valid draft/manifest packets. An existing valid empty ledger can
+still report an empty queue. This path check is not file-access authentication
+or protection against concurrent filesystem replacement; retain backups and
+control access before use.
+
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
 SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical

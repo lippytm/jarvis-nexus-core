@@ -73,6 +73,43 @@ class ContextCLITests(unittest.TestCase):
         self.assertTrue(json.loads(self.save(1).stdout)["duplicate"])
         self.assertEqual(self.save(0).returncode, 1)
 
+    def test_status_missing_ledger_fails_without_reporting_empty_queue(self):
+        result = self.cli("status", database="mistyped.sqlite3")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("existing ledger", json.loads(result.stderr)["error"])
+        self.assertFalse((self.root / "mistyped.sqlite3").exists())
+        with HandoffLedger(self.root / "empty.sqlite3"):
+            pass
+        existing = self.cli("status", database="empty.sqlite3")
+        self.assertEqual(existing.returncode, 0, existing.stderr)
+        self.assertEqual(json.loads(existing.stdout)["handoffs"], [])
+
+    def test_context_and_review_commands_do_not_create_missing_recovery_ledger(self):
+        for args in (("load-context", "--handoff", "cli-task", "--source-revision", REVISION,
+                      "--memory-revision", "1", "--out", "absent-context.json"),
+                     ("review", "--handoff", "cli-task", "--reviewer", "local-owner", "--digest", "0" * 64),
+                     ("save-context", "--file", "context.json", "--expected-revision", "0")):
+            with self.subTest(command=args[0]):
+                result = self.cli(*args, database="missing/recovery.sqlite3")
+                self.assertEqual(result.returncode, 1)
+                self.assertIn("existing ledger", json.loads(result.stderr)["error"])
+                self.assertFalse((self.root / "missing").exists())
+                self.assertFalse((self.root / "absent-context.json").exists())
+
+    def test_stage_still_creates_a_new_ledger_from_valid_packets(self):
+        with HandoffLedger(self.db) as ledger:
+            _, handoff = ledger._handoff("cli-task")
+            manifest = ledger._swarm(handoff["swarm_id"])
+        (self.root / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+        (self.root / "draft.json").write_text(json.dumps(handoff["draft"]), encoding="utf-8")
+        result = self.cli("stage", "--manifest", "manifest.json", "--draft", "draft.json",
+            "--assistant", handoff["assistant_id"], "--handoff", "new-task", database="new/ledger.sqlite3")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        status = self.cli("status", database="new/ledger.sqlite3")
+        self.assertEqual(status.returncode, 0, status.stderr)
+        self.assertEqual(json.loads(status.stdout)["handoffs"][0]["handoff_id"], "new-task")
+
     def test_revision_failures_leave_no_export_or_overwrite(self):
         self.assertEqual(self.save().returncode, 0)
         for revision, memory in (("f" * 40, 1), (REVISION, 2)):
