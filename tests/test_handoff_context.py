@@ -274,6 +274,88 @@ class ContextTests(unittest.TestCase):
         self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
         self.assert_exports_blocked(saved["context_sha256"])
 
+    def returned_parent(self):
+        saved = self.approve()
+        self.export(saved["context_sha256"])
+        self.ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": "parent-return",
+            "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+            "source_provider": "codex", "text": "Synthetic unverified parent result.", "evidence_urls": []})
+
+    def stage_followup(self):
+        return self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+            "target": "codex", "text": "Synthetic follow-up draft."}, self.manifest,
+            assistant_id="memory-pilot.builder", handoff_id="followup-one", parent_id="mission-one")
+
+    def test_parent_hold_blocks_new_child_without_consuming_budget(self):
+        self.returned_parent()
+        held = deepcopy(self.profile)
+        held["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(held, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.stage_followup()
+        self.assertEqual(len(self.ledger.status()["handoffs"]), 1)
+        self.assertEqual(self.ledger.status()["return_count"], 1)
+
+    def test_cyclic_stored_ancestry_fails_closed(self):
+        _, body = self.ledger._handoff("mission-one")
+        body["parent_id"] = "mission-one"
+        checksum = digest(body)
+        self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=?,state='reviewed' WHERE id=?",
+                              (json.dumps(body), checksum, checksum, "mission-one"))
+        with self.assertRaisesRegex(ValueError, "ancestry"):
+            self.ledger.export("mission-one", expected_sha256=checksum)
+
+    def test_existing_child_exports_observe_parent_pause_and_resume_review(self):
+        self.profile = self.control_profile("active")
+        self.returned_parent()
+        child = self.stage_followup()
+        profile = self.context("followup-one")
+        saved = self.ledger.save_context(profile, expected_revision=0)
+        self.ledger.review("followup-one", reviewer_id="local-evaluator", expected_sha256=child["handoff_sha256"])
+        self.ledger.review_context("followup-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        paused = self.control_profile("paused")
+        self.ledger.save_context(paused, expected_revision=1)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        def export_child():
+            return self.ledger.export_context("followup-one", expected_sha256=saved["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=1)
+        for export in (lambda: self.ledger.export("followup-one", expected_sha256=child["handoff_sha256"]), export_child):
+            with self.assertRaises(ValueError):
+                export()
+        active = self.control_profile("active")
+        resumed = self.ledger.save_context(active, expected_revision=2)
+        with self.assertRaises(ValueError):
+            export_child()
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=resumed["context_sha256"])
+        self.assertEqual(export_child()["handoff_sha256"], child["handoff_sha256"])
+        self.assertEqual(self.load("followup-one")["profile"], profile)
+
+    def test_cancelled_ancestor_blocks_depth_two_legacy_export(self):
+        with TemporaryDirectory() as directory, HandoffLedger(Path(directory) / "chain.sqlite3") as ledger:
+            swarm = build_swarm("ai-jarvis", ["codex"], swarm_id="chain-pilot", source_revision=REVISION,
+                                max_depth=2, max_handoffs_per_assistant=3)
+            parent = None
+            records = []
+            for i in range(3):
+                identifier = f"chain-{i}"
+                item = ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+                    "target": "codex", "text": "Synthetic chain."}, swarm, assistant_id="chain-pilot.builder",
+                    handoff_id=identifier, parent_id=parent)
+                ledger.review(identifier, reviewer_id="local-evaluator", expected_sha256=item["handoff_sha256"])
+                ledger.export(identifier, expected_sha256=item["handoff_sha256"])
+                ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": f"chain-return-{i}",
+                    "handoff_id": identifier, "handoff_sha256": item["handoff_sha256"], "source_provider": "codex",
+                    "text": "Synthetic returned evidence.", "evidence_urls": []})
+                records.append(item)
+                parent = identifier
+            cancelled = self.control_profile("cancelled")
+            cancelled.update(handoff_id="chain-0", handoff_sha256=records[0]["handoff_sha256"], asset_id="chain-pilot.builder")
+            ledger.save_context(cancelled, expected_revision=0)
+            with self.assertRaises(ValueError):
+                ledger.export("chain-2", expected_sha256=records[2]["handoff_sha256"])
+            self.assertEqual(ledger.status()["return_count"], 3)
+
     def test_corrupt_context_fails_closed(self):
         self.save()
         self.ledger.db.execute("UPDATE handoff_contexts SET body=?", (json.dumps({**self.profile, "memory_revision": 2}),))

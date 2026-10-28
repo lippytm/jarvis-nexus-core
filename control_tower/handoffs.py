@@ -134,6 +134,7 @@ class HandoffLedger:
                 parent, parent_body = self._handoff(parent_id)
                 if parent["state"] != "returned_unverified" or parent_body["manifest_sha256"] != swarm["manifest_sha256"]:
                     raise ValueError("parent requires a returned packet in the same swarm")
+                self._require_export_active(parent_id)
                 depth = parent_body["depth"] + 1
             if depth > swarm["max_depth"]:
                 raise ValueError("handoff depth budget reached")
@@ -243,16 +244,25 @@ class HandoffLedger:
         return row, profile
 
     def _require_export_active(self, handoff_id):
-        # A corrupt stored context must fail closed, including on the legacy path.
-        if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone():
-            context, profile = self._context(handoff_id)
-            if profile["execution"]["state"] == "outcome_unknown":
-                raise ValueError("unknown outcome requires reconciliation before export")
-            if profile["schema_version"] == 2:
-                if profile["control"]["state"] != "active":
-                    raise ValueError("handoff export is paused or cancelled")
-                if context["reviewed_digest"] != context["digest"]:
-                    raise ValueError("controlled export requires fresh context review")
+        # Factory contracts permit depth at most two: self plus two ancestors.
+        # Validate every ancestor even when the leaf has no context of its own.
+        current, seen = handoff_id, set()
+        while current is not None:
+            require_identifier(current, "ancestor handoff ID")
+            if current in seen or len(seen) >= 3:
+                raise ValueError("invalid or excessive handoff ancestry")
+            seen.add(current)
+            _, body = self._handoff(current)
+            if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (current,)).fetchone():
+                context, profile = self._context(current)
+                if profile["execution"]["state"] == "outcome_unknown":
+                    raise ValueError("unknown outcome requires reconciliation before export")
+                if profile["schema_version"] == 2:
+                    if profile["control"]["state"] != "active":
+                        raise ValueError("handoff export is paused or cancelled")
+                    if context["reviewed_digest"] != context["digest"]:
+                        raise ValueError("controlled export requires fresh context review")
+            current = body["parent_id"]
 
     def save_context(self, profile, *, expected_revision):
         """CAS write of proposed context; never alters the version-1 handoff.

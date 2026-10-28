@@ -66,6 +66,24 @@ handoff ID, raw database edit or older application version. Use load-context for
 private inspection; export is preparation for further manual handoff. These local
 guards do not stop previously exported work or authenticate provider responses.
 
+## Follow-up lineage controls
+
+Staging a follow-up now checks its parent and ancestors for the same local hold
+and review conditions used by export. Both export paths also recheck the complete
+bounded lineage, including descendants staged before a later parent pause,
+cancellation or unknown outcome. This applies even if a descendant has no context
+record. The existing factory limit is two delegation levels (three records in a
+lineage); cycles or excessive chains fail closed. Rejected staging leaves the
+handoff budget and existing return evidence unchanged.
+
+An explicit parent resume still needs fresh parent context review before a child
+can be exported. Existing child records, their own reviews and private checkpoints
+are retained. This is not global cancellation or a recall of exported work, and
+does not prove a child result used the latest parent memory revision. A separately
+staged root is not automatically recognized as the same mission; operators must
+not allocate new IDs to evade a hold. Authenticated dispatch and evidence-bound
+reconciliation remain unfinished.
+
 ## Version-2 per-handoff pause/cancel
 
 Existing version-1 profiles remain unchanged and reject added fields. To opt in,
