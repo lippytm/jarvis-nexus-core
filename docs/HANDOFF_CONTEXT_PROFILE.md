@@ -49,6 +49,23 @@ a public context label cannot declassify their text. Imported returns still bind
 to the original handoff digest and target and remain unverified. No review label
 here authorizes deployment, publishing, spending or permission changes.
 
+## Unknown-outcome hold
+
+For both supported profile versions, outcome_unknown blocks both legacy and
+combined-envelope export, even after a matching local review or process restart.
+An ordinary save-context update cannot clear that state, increase its attempt
+count or replace the original execution context ID. It can retain additional
+evidence references, checkpoint details and version-2 pause/cancel controls;
+changed content still invalidates context review. Reads and identical duplicate
+saves remain available. Unverified provider returns do not clear the hold.
+
+There is no reconciliation/release operation in this increment. A future explicit
+protocol must bind verified destination evidence and owner authority before a
+retry or resolution can be enabled. Do not bypass the hold with a replacement
+handoff ID, raw database edit or older application version. Use load-context for
+private inspection; export is preparation for further manual handoff. These local
+guards do not stop previously exported work or authenticate provider responses.
+
 ## Version-2 per-handoff pause/cancel
 
 Existing version-1 profiles remain unchanged and reject added fields. To opt in,

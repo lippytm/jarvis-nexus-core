@@ -227,6 +227,53 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ledger.save_context(decreased, expected_revision=1)
 
+    def test_unknown_outcome_blocks_both_export_paths_after_reopen(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.assertEqual(self.load()["profile"], self.profile)
+        controlled = self.control_profile("active")
+        updated = self.ledger.save_context(controlled, expected_revision=1)
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=updated["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assert_exports_blocked(updated["context_sha256"])
+        self.assertEqual(self.load()["profile"], controlled)
+
+    def test_unknown_outcome_cannot_be_cleared_or_retried_by_context_edit(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        for change in ({"state": "pending"}, {"state": "execution_blocked"},
+                       {"attempts": 2}, {"context_id": "replacement-worker"}):
+            changed = deepcopy(self.profile)
+            changed["execution"].update(change)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.save_context(changed, expected_revision=1)
+        loaded = self.load()
+        self.assertEqual(loaded["profile"], self.profile)
+        self.assertEqual(loaded["context_sha256"], saved["context_sha256"])
+        self.assertEqual(loaded["review_state"], "locally_reviewed")
+        self.assertTrue(self.ledger.save_context(self.profile, expected_revision=1)["duplicate"])
+
+    def test_unknown_outcome_accepts_evidence_and_cancel_but_stays_held(self):
+        self.profile = self.control_profile("active")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.approve()
+        changed = deepcopy(self.profile)
+        changed["control"]["state"] = "cancelled"
+        changed["execution"]["detail"] = "Synthetic observation retained for reconciliation."
+        changed["evidence_refs"] = [{"url": "https://example.invalid/observation", "revision": 1,
+                                     "visibility": "owner_private"}]
+        saved = self.ledger.save_context(changed, expected_revision=1)
+        self.assertEqual(self.load()["profile"], changed)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.assert_exports_blocked(saved["context_sha256"])
+
     def test_corrupt_context_fails_closed(self):
         self.save()
         self.ledger.db.execute("UPDATE handoff_contexts SET body=?", (json.dumps({**self.profile, "memory_revision": 2}),))

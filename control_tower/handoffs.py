@@ -246,6 +246,8 @@ class HandoffLedger:
         # A corrupt stored context must fail closed, including on the legacy path.
         if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone():
             context, profile = self._context(handoff_id)
+            if profile["execution"]["state"] == "outcome_unknown":
+                raise ValueError("unknown outcome requires reconciliation before export")
             if profile["schema_version"] == 2:
                 if profile["control"]["state"] != "active":
                     raise ValueError("handoff export is paused or cancelled")
@@ -273,6 +275,10 @@ class HandoffLedger:
             checksum = digest(profile)
             if existing:
                 _, old = self._context(profile["handoff_id"])
+                if old["execution"]["state"] == "outcome_unknown":
+                    if any(profile["execution"][field] != old["execution"][field]
+                           for field in ("state", "attempts", "context_id")):
+                        raise ValueError("unknown outcome cannot be cleared or retried by context edit")
                 if old["schema_version"] == 2:
                     if profile["schema_version"] != 2:
                         raise ValueError("controlled context cannot downgrade to version 1")
