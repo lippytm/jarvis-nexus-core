@@ -694,6 +694,37 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ledger.destination_status(**query)
 
+    def test_exports_reject_changed_registered_configuration_after_reopen(self):
+        saved = self.approve()
+        row = self.ledger.db.execute("SELECT * FROM swarms").fetchone()
+        manifest = json.loads(row["body"])
+        manifest["assistants"][0]["max_handoffs"] = 99
+        self.ledger.db.execute("UPDATE swarms SET body=?", (json.dumps(manifest),))
+        before = list(self.ledger.db.iterdump())
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        for export in (lambda: self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"]),
+                       lambda: self.export(saved["context_sha256"])):
+            with self.subTest(export=export), self.assertRaises(ValueError):
+                export()
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_exports_reject_registered_manifest_digest_mismatch(self):
+        saved = self.approve()
+        self.ledger.db.execute("UPDATE swarms SET digest=?", ("0" * 64,))
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_legacy_export_rejects_rehashed_handoff_outside_its_registered_project(self):
+        _, handoff = self.ledger._handoff("mission-one")
+        handoff["draft"]["project_id"] = "publishing-studio"
+        checksum = digest(handoff)
+        self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=?,reviewer_id='local-evaluator',state='reviewed' WHERE id=?",
+            (json.dumps(handoff), checksum, checksum, "mission-one"))
+        before = list(self.ledger.db.iterdump())
+        with self.assertRaises(ValueError):
+            self.ledger.export("mission-one", expected_sha256=checksum)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

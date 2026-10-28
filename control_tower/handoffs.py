@@ -79,6 +79,19 @@ class HandoffLedger:
         else:
             self.db.commit()
 
+    def _swarm(self, swarm_id):
+        require_identifier(swarm_id, "swarm ID")
+        row = self.db.execute("SELECT * FROM swarms WHERE id=?", (swarm_id,)).fetchone()
+        if row is None:
+            raise ValueError("unknown stored swarm")
+        try:
+            manifest = validate_swarm(json.loads(row["body"]))
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored swarm configuration is invalid") from None
+        if row["id"] != manifest["swarm_id"] or row["digest"] != manifest["manifest_sha256"]:
+            raise ValueError("stored swarm identity or digest mismatch")
+        return manifest
+
     def _handoff(self, handoff_id):
         require_identifier(handoff_id, "handoff ID")
         row = self.db.execute("SELECT * FROM handoffs WHERE id=?", (handoff_id,)).fetchone()
@@ -94,6 +107,13 @@ class HandoffLedger:
             raise ValueError("stored handoff structure mismatch")
         if digest(body) != row["digest"] or body["handoff_id"] != row["id"] or body["assistant_id"] != row["assistant_id"] or body["swarm_id"] != row["swarm_id"]:
             raise ValueError("stored handoff integrity mismatch")
+        manifest = self._swarm(body["swarm_id"])
+        draft = validate_draft(body["draft"])
+        if (body["manifest_sha256"] != manifest["manifest_sha256"]
+            or body["source_revision"] != manifest["source_revision"]
+            or body["assistant_id"] not in {a["assistant_id"] for a in manifest["assistants"]}
+            or draft["project_id"] != manifest["project_id"] or draft["target"] not in manifest["targets"]):
+            raise ValueError("stored handoff is outside its registered swarm scope")
         self._check_stored_return(row, body)
         return row, body
 

@@ -25,6 +25,18 @@ field names are rejected by the existing validator; ordinary strings and URLs
 are not a complete sensitive-data detector. Reference visibility and review
 labels are supplied classifications, not authenticated identities.
 
+## Stored configuration integrity
+
+The shared handoff read path validates the registered swarm through the existing
+strict configuration validator, checks its saved identity/digest, and verifies
+the handoff's manifest/source revision, assistant, project and target. Reviews,
+exports, imported returns and context operations therefore reject inconsistent
+stored scope before changing state. Backups reuse these checks rather than
+maintaining a separate scope validator. This is integrity checking, not author
+authentication or an adversarial-file security boundary; a checksum does not
+establish approval. Retain the damaged source for investigation instead of editing
+raw records to bypass rejection. No schema migration or automatic repair occurs.
+
 ## Writes, reviews and retrieval
 
 `save_context(profile, expected_revision=0)` creates context for an existing
