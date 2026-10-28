@@ -68,7 +68,7 @@ jobs:
           docker build --progress=plain -t jarvis-nexus-ci .
       - name: Verify context behavior inside restricted container
         run: |
-          docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges jarvis-nexus-ci python -m unittest discover -s tests -p test_handoff_context.py -v
+          docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges jarvis-nexus-ci python -m unittest discover -s tests -p 'test_handoff_context*.py' -v
       - name: Preserve a synthetic handoff across container replacement
         shell: bash
         run: |

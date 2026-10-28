@@ -1,14 +1,17 @@
 """Actual CLI subprocesses against synthetic private checkpoint fixtures."""
 from copy import deepcopy
 import json
+import hashlib
 from pathlib import Path
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from control_tower.handoffs import HandoffLedger
 from control_tower.swarm_factory import build_swarm
+from scripts.jarvis_network import _backup
 
 ROOT = Path(__file__).resolve().parents[1]
 REVISION = "b5fd40ff22814feae3b60a8761821856f0976d75"
@@ -227,6 +230,88 @@ class ContextCLITests(unittest.TestCase):
         stale = self.cli(*args)
         self.assertEqual(stale.returncode, 1)
         self.assertIn("inspection is stale", stale.stderr)
+
+
+    def test_backup_restores_checkpoint_reviews_and_return_without_releasing_hold(self):
+        checksum = self.prepare_reviews()
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        self.assertEqual(self.export_context(checksum).returncode, 0)
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile.update(schema_version=2, control=dict(state="cancelled", actor_id="local-owner", reason="Synthetic hold."))
+        self.write(self.profile)
+        checksum = json.loads(self.save(1).stdout)["context_sha256"]
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        with HandoffLedger(self.db) as ledger:
+            ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id="backup-return",
+                handoff_id="cli-task", handoff_sha256=self.profile["handoff_sha256"], source_provider="codex",
+                text="Synthetic unverified return.", evidence_urls=[]))
+        result = self.cli("backup-ledger", "--out", "backups/checkpoint.sqlite3")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads(result.stdout)
+        backup = self.root / "backups/checkpoint.sqlite3"
+        self.assertEqual(hashlib.sha256(backup.read_bytes()).hexdigest(), receipt["backup_sha256"])
+        self.assertEqual((receipt["handoff_count"], receipt["context_count"], receipt["return_count"]), (1, 1, 1))
+        loaded = self.cli("load-context", "--handoff", "cli-task", "--source-revision", REVISION,
+            "--memory-revision", "1", "--out", "backup-loaded.json", database="backups/checkpoint.sqlite3")
+        self.assertEqual(loaded.returncode, 0, loaded.stderr)
+        record = json.loads((self.root / "backup-loaded.json").read_text())
+        self.assertEqual(record["profile"], self.profile)
+        self.assertEqual(record["review_state"], "locally_reviewed")
+        with HandoffLedger(backup) as restored:
+            self.assertEqual(restored.status()["handoffs"][0]["state"], "returned_unverified")
+            with self.assertRaises(ValueError):
+                restored.export("cli-task", expected_sha256=self.profile["handoff_sha256"])
+        self.profile["execution"]["detail"] = "Later source checkpoint."
+        self.write(self.profile)
+        self.assertEqual(self.save(2).returncode, 0)
+        with HandoffLedger(backup) as restored:
+            self.assertEqual(restored.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["revision"], 2)
+
+    def test_backup_reads_committed_wal_records_and_leaves_source_unchanged(self):
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("PRAGMA journal_mode=WAL")
+            ledger.save_context(self.profile, expected_revision=0)
+            before = list(ledger.db.iterdump())
+            result = self.cli("backup-ledger", "--out", "wal-backup.sqlite3")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(list(ledger.db.iterdump()), before)
+        with HandoffLedger(self.root / "wal-backup.sqlite3") as restored:
+            self.assertEqual(restored.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+
+    def test_backup_refuses_missing_source_escape_overwrite_and_corrupt_context(self):
+        self.assertEqual(self.cli("backup-ledger", "--out", "absent.sqlite3", database="missing.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "missing.sqlite3").exists())
+        self.assertEqual(self.cli("backup-ledger", "--out", "../outside.sqlite3").returncode, 1)
+        self.assertEqual(self.save().returncode, 0)
+        self.assertEqual(self.cli("backup-ledger", "--out", "existing.sqlite3").returncode, 0)
+        before = (self.root / "existing.sqlite3").read_bytes()
+        self.assertEqual(self.cli("backup-ledger", "--out", "existing.sqlite3").returncode, 1)
+        self.assertEqual((self.root / "existing.sqlite3").read_bytes(), before)
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("UPDATE handoff_contexts SET body='{}'")
+        self.assertEqual(self.cli("backup-ledger", "--out", "invalid.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "invalid.sqlite3").exists())
+        self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("DROP TABLE handoff_contexts")
+            ledger.db.execute("PRAGMA user_version=1")
+        legacy = self.db.read_bytes()
+        self.assertEqual(self.cli("backup-ledger", "--out", "legacy-copy.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "legacy-copy.sqlite3").exists())
+        self.assertEqual(self.db.read_bytes(), legacy)
+
+    def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
+        target = self.root / "race.sqlite3"
+        def competing_link(*_):
+            target.write_bytes(b"Other writer's existing evidence")
+            raise FileExistsError()
+        with HandoffLedger(self.db) as ledger, patch("scripts.jarvis_network.os.link", side_effect=competing_link):
+            with self.assertRaises(FileExistsError):
+                _backup(ledger.db, target)
+        self.assertEqual(target.read_bytes(), b"Other writer's existing evidence")
+        self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
 
 
 if __name__ == "__main__":

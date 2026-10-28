@@ -3,12 +3,15 @@
 Every file and database path must stay inside --root. No network call is made.
 """
 import argparse
+from contextlib import closing
+import hashlib
 import json
 import os
 from pathlib import Path
 import sqlite3
 import sys
 import tempfile
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -42,6 +45,51 @@ def _write(path, record):
         # A hard link publishes the complete same-filesystem file atomically and
         # fails if the final name already exists. It never replaces old evidence.
         os.link(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
+def _backup(connection, path):
+    """Publish a checked SQLite online backup, never replace an existing file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    deadline = time.monotonic() + 10
+    def progress(*_):
+        if time.monotonic() > deadline:
+            raise ValueError("backup time budget exceeded")
+    try:
+        with tempfile.NamedTemporaryFile(dir=path.parent, prefix=".jarvis-backup-", delete=False) as handle:
+            temporary = Path(handle.name)
+        with closing(sqlite3.connect(temporary)) as destination:
+            connection.backup(destination, pages=128, progress=progress, sleep=0.01)
+            if destination.execute("PRAGMA user_version").fetchone()[0] != 2:
+                raise ValueError("backup requires a version-2 ledger; retain legacy backups before migration")
+            if destination.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
+                raise ValueError("backup SQLite integrity check failed")
+            if destination.execute("PRAGMA foreign_key_check").fetchone() is not None:
+                raise ValueError("backup foreign key check failed")
+        with HandoffLedger(temporary) as checked:
+            status = checked.status()  # Validates stored handoff and return bindings.
+            contexts = checked.db.execute("SELECT handoff_id FROM handoff_contexts").fetchall()
+            for row in contexts:
+                checked._context(row["handoff_id"])
+        checksum = hashlib.sha256()
+        with temporary.open("rb") as handle:
+            for block in iter(lambda: handle.read(65536), b""):
+                checksum.update(block)
+            os.fsync(handle.fileno())
+        size = temporary.stat().st_size
+        os.link(temporary, path)  # Atomic no-clobber publication on the same filesystem.
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+        return {"backup_sha256": checksum.hexdigest(), "bytes": size, "schema_version": 2,
+                "handoff_count": len(status["handoffs"]), "context_count": len(contexts),
+                "return_count": status["return_count"], "visibility": "owner_private",
+                "external_actions": 0}
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
@@ -106,6 +154,8 @@ def main(argv=None):
     recovery_check.add_argument("--digest", required=True, help="Exact selected context SHA-256")
     recovery_check.add_argument("--source-revision", required=True)
     recovery_check.add_argument("--memory-revision", type=int, required=True)
+    backup = commands.add_parser("backup-ledger")
+    backup.add_argument("--out", required=True)
     commands.add_parser("status")
     demo = commands.add_parser("demo")
     demo.add_argument("--out", required=True)
@@ -124,6 +174,14 @@ def main(argv=None):
             result = {"projects": PROJECTS, "providers": provider_catalog(), "external_actions": 0}
         elif args.command == "demo":
             result = demonstrate_network()
+        elif args.command == "backup-ledger":
+            database = _local(root, args.database)
+            if not database.is_file():
+                raise ValueError("backup requires an existing ledger")
+            with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True, timeout=2)) as source:
+                result = _backup(source, output)
+            output = None  # SQLite output is already published; do not JSON-overwrite it.
+            result["saved"] = args.out
         else:
             # Parse user-controlled packets before opening/mutating the ledger.
             draft = load_packet(_local(root, args.draft)) if args.command == "stage" else None

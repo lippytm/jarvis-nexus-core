@@ -81,7 +81,7 @@ for evidence review; authenticated resolution and retry approval are unfinished.
 ## Verification
 
 The Docker CI job builds this Dockerfile, validates Compose, runs the local
-context tests inside a restricted container, stages a synthetic Codex handoff
+context and CLI tests inside a restricted container, stages a synthetic Codex handoff
 on a named volume, then reads it in a second container after the first is removed.
 It checks the exact handoff digest and SQLite schema version. Existing Python
 and Node jobs remain separate. CI is runner evidence, not proof Docker is
@@ -99,6 +99,33 @@ docker compose down -v on valuable state. A volume is persistence, not a backup.
 Use SQLite Connection.backup while access is controlled, and verify restoration
 before relying on it. Follow the v1-to-v2 rollback procedure in
 HANDOFF_CONTEXT_PROFILE.md; reverting only the image does not revert a database.
+
+For an existing version-2 ledger, create a checked local recovery copy:
+
+```sh
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 backup-ledger --out backups/ledger-001.sqlite3
+```
+
+The command opens the source read-only and uses SQLite's online backup API,
+including committed WAL records. A ten-second backup-copy budget bounds busy
+retries; it is not a worker timer. Before publishing, the copy must pass SQLite
+integrity/foreign-key checks and stored handoff/context/return binding checks.
+The complete file is synced and linked to a fresh destination without replacing
+an existing file, including a competing writer's file. Failed pre-publication
+copies are removed. The receipt includes the file SHA-256, byte size and counts;
+it does not print private record contents. The file remains private local data,
+without encryption, authenticated hosting or an off-device copy. A sync failure
+after publication can leave a complete file: inspect that destination before
+retrying, and never overwrite unknown-outcome evidence.
+
+To test recovery, use the saved copy as a separate --database path with
+load-context, inspect-recovery and status; compare its receipt/checkpoint before
+adopting it. No restore-overwrite command is provided. Pause operator writes and
+retain the current ledger separately before any owner-approved replacement.
+Do not run both copies as workers or use a backup to bypass newer holds. Unknown
+outcomes, cancellation, local reviews and unverified returns remain unchanged.
+Legacy/unknown schemas are rejected without source migration; retain the closed
+version-1 backup required by HANDOFF_CONTEXT_PROFILE.md before migration.
 
 Start with one operator. This setup does not supply authentication, encrypted
 backups, shared multi-user hosting, Sites deployment, leases, timed retries or
