@@ -423,6 +423,9 @@ class HandoffLedger:
             control_state=profile.get("control", {"state": "legacy_uncontrolled"})["state"],
             review_state="proposed_unverified", proposed_resolution="retain_hold",
             evidence_verification="not_established", retry_authorized=False, external_actions=0)
+        if profile["schema_version"] == 3:
+            # Keep strict version-1 proposals unchanged for older contexts.
+            result.update(schema_version=2, destination_id=profile["destination_id"])
         return {**result, "proposal_sha256": digest(result)}
 
     def save_context(self, profile, *, expected_revision):

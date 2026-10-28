@@ -129,14 +129,21 @@ does not verify destination evidence, clear a hold or authorize a retry.
 ## Proposed reconciliation evidence
 
 For an outcome_unknown record with at least one saved evidence reference,
-prepare-reconciliation emits a separate version-1 jarvis.reconciliation_proposal.
+prepare-reconciliation emits a separate jarvis.reconciliation_proposal. Version-1
+and version-2 contexts retain the original version-1 proposal shape. Version-3
+contexts produce an explicit version-2 proposal with the exact destination_id;
+no field is silently added to the version-1 proposal. A consumer supporting only
+version 1 must reject version 2, not discard the destination or guess a resource.
 It requires the exact current context digest, source/memory revisions and saved
 inspection digest; context, local review, ancestor or return changes can invalidate
 that inspection. It retains mission/project/asset/platform identities, scoped
 configuration/actions/budget, execution checkpoint, control state and selected
 evidence references from the existing context. Context and inspection digests
 bind the remaining source records; draft text and unrelated context references
-are omitted. The proposal has its own checksum and is always owner_private.
+are omitted. The proposal has its own checksum, covering destination_id when
+present, and is always owner_private. A destination is a scoped opaque label;
+the trusted collector still needs to check its actual resource mapping. No new
+authentication, destination verification or hold-release authority is implied.
 
 ```sh
 python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 prepare-reconciliation --handoff YOUR-HANDOFF-ID --inspection-digest YOUR-INSPECTION-SHA256 --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1 --out reconciliation-proposal-001.json
@@ -225,9 +232,10 @@ envelope rather than stripping its destination binding; original handoff packets
 remain unchanged. Version-1/2 legacy export compatibility is preserved.
 Both export paths enforce version-3 pause/cancel, unknown-outcome and fresh-review
 guards. Compatible private envelopes retain the full version-3 context while the
-strict version-1 handoff remains unchanged. Inspection/proposal digests bind the
+strict version-1 handoff remains unchanged. Inspection digests bind the
 destination through its context digest; retrieve the matching context to inspect
-the resource ID. Existing version-1/2 profiles remain valid and reject a silently
+the resource ID. Version-2 reconciliation proposals also retain destination_id
+explicitly so a reviewer can see its exact scope. Existing version-1/2 profiles remain valid and reject a silently
 added destination_id. SQLite user_version remains 2; no table migration occurs.
 Backups retain destination identity and controls. Older application versions reject
 version-3 context; do not roll them back against these records.

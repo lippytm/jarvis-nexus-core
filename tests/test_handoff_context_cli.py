@@ -368,6 +368,35 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads((self.root / "destination.json").read_text())["profile"], self.profile)
 
+    def test_cli_destination_reconciliation_is_versioned_and_keeps_hold(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic reconciliation."))
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["evidence_refs"] = [dict(url="https://example.invalid/evidence", revision=1, visibility="owner_private")]
+        self.write(self.profile)
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        self.assertEqual(self.inspect(checksum).returncode, 0)
+        inspected = json.loads((self.root / "inspection.json").read_text())
+        args = ("prepare-reconciliation", "--handoff", "cli-task", "--digest", checksum,
+            "--inspection-digest", inspected["inspection_sha256"], "--source-revision", REVISION,
+            "--memory-revision", "1", "--out", "bound-proposal.json")
+        with HandoffLedger(self.db) as ledger:
+            before = list(ledger.db.iterdump())
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        content = (self.root / "bound-proposal.json").read_bytes()
+        packet = json.loads(content)
+        self.assertEqual(packet["schema_version"], 2)
+        self.assertEqual(packet["destination_id"], "repo-one")
+        self.assertEqual(packet["context_sha256"], checksum)
+        self.assertEqual(packet["proposed_resolution"], "retain_hold")
+        self.assertFalse(packet["retry_authorized"])
+        self.assertEqual(self.cli(*args).returncode, 1)
+        self.assertEqual((self.root / "bound-proposal.json").read_bytes(), content)
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+        with HandoffLedger(self.db) as ledger:
+            self.assertEqual(list(ledger.db.iterdump()), before)
+
     def test_destination_requires_context_export_instead_of_legacy_cli_packet(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="active", actor_id="local-owner", reason="Synthetic exact destination."))

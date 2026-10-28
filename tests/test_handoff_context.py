@@ -529,6 +529,8 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(first["visibility"], "owner_private")
         self.assertEqual(first["review_state"], "proposed_unverified")
         self.assertEqual(first["proposed_resolution"], "retain_hold")
+        self.assertEqual(first["schema_version"], 1)
+        self.assertNotIn("destination_id", first)
         self.assertFalse(first["retry_authorized"])
         self.assertNotIn("context_refs", first)
         checksum = first.pop("proposal_sha256")
@@ -536,6 +538,44 @@ class ContextTests(unittest.TestCase):
         first["evidence_refs"].clear()
         self.assertEqual(len(self.proposal()["evidence_refs"]), 1)
         self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_destination_reconciliation_preserves_exact_destination_after_restart(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "cancelled"
+        saved = self.proposal_fixture()
+        before = list(self.ledger.db.iterdump())
+        first = self.proposal()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.proposal(), first)
+        self.assertEqual(first["schema_version"], 2)
+        self.assertEqual(first["destination_id"], "repository-one")
+        self.assertEqual(first["platform"], "codex")
+        self.assertEqual(first["context_sha256"], saved["context_sha256"])
+        self.assertEqual(first["control_state"], "cancelled")
+        self.assertEqual(first["execution"]["state"], "outcome_unknown")
+        self.assertEqual(first["visibility"], "owner_private")
+        self.assertFalse(first["retry_authorized"])
+        checksum = first.pop("proposal_sha256")
+        self.assertEqual(digest(first), checksum)
+        first["destination_id"] = "repository-two"
+        self.assertNotEqual(digest(first), checksum)
+        self.assertEqual(self.proposal()["destination_id"], "repository-one")
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_controlled_legacy_reconciliation_preserves_version_one_shape(self):
+        self.profile = self.control_profile("paused")
+        self.proposal_fixture()
+        proposal = self.proposal()
+        self.assertEqual(proposal["schema_version"], 1)
+        self.assertNotIn("destination_id", proposal)
+        self.assertEqual(set(proposal), {"project_id", "mission_id", "asset_id", "platform",
+            "source_revision", "memory_revision", "configuration_version", "allowed_actions",
+            "budget", "execution", "evidence_refs", "schema_version", "kind", "handoff_id",
+            "handoff_sha256", "context_sha256", "context_revision", "inspection_sha256",
+            "visibility", "control_state", "review_state", "proposed_resolution",
+            "evidence_verification", "retry_authorized", "external_actions", "proposal_sha256"})
 
     def test_reconciliation_proposal_rejects_missing_evidence_and_known_outcomes(self):
         self.save()
