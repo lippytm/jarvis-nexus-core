@@ -71,8 +71,9 @@ def _backup(connection, path):
             temporary = Path(handle.name)
         with closing(sqlite3.connect(temporary)) as destination:
             connection.backup(destination, pages=128, progress=progress, sleep=0.01)
-            if destination.execute("PRAGMA user_version").fetchone()[0] != 2:
-                raise ValueError("backup requires a version-2 ledger; retain legacy backups before migration")
+            version = destination.execute("PRAGMA user_version").fetchone()[0]
+            if version not in (2, 3):
+                raise ValueError("backup requires a version-2 or version-3 ledger; retain legacy backups before migration")
             if destination.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
                 raise ValueError("backup SQLite integrity check failed")
             if destination.execute("PRAGMA foreign_key_check").fetchone() is not None:
@@ -83,6 +84,9 @@ def _backup(connection, path):
             contexts = checked.db.execute("SELECT handoff_id FROM handoff_contexts").fetchall()
             for row in contexts:
                 checked._context(row["handoff_id"])
+            if version == 3:
+                for row in checked.db.execute("SELECT handoff_id,revision FROM context_checkpoints").fetchall():
+                    checked._checkpoint(row["handoff_id"], row["revision"])
         checksum = hashlib.sha256()
         with temporary.open("rb") as handle:
             for block in iter(lambda: handle.read(65536), b""):
@@ -95,7 +99,7 @@ def _backup(connection, path):
             os.fsync(directory)
         finally:
             os.close(directory)
-        return {"backup_sha256": checksum.hexdigest(), "bytes": size, "schema_version": 2,
+        return {"backup_sha256": checksum.hexdigest(), "bytes": size, "schema_version": version,
                 "handoff_count": len(status["handoffs"]), "context_count": len(contexts),
                 "return_count": status["return_count"], "visibility": "owner_private",
                 "external_actions": 0}
@@ -121,7 +125,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=str(ROOT))
     parser.add_argument("--database", default="reports/jarvis-network.sqlite3")
-    parser.add_argument("--read-only", action="store_true", help="Inspect an existing version-2 ledger without database writes")
+    parser.add_argument("--read-only", action="store_true", help="Inspect an existing version-2/3 ledger without database writes")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("init-ledger")
     catalog = commands.add_parser("catalog")

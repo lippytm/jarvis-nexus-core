@@ -38,7 +38,7 @@ damaged record has a recalculated digest. Boolean substitutes are rejected.
 These fixed contract checks do not change valid older records or install an
 executor. These are integrity checks, not authentication, an adversarial-file
 security boundary or proof of approval. Retain the damaged source for investigation instead of editing
-raw records to bypass rejection. No schema migration or automatic repair occurs.
+raw records to bypass rejection. These read checks perform no automatic repair.
 
 ## Writes, reviews and retrieval
 
@@ -59,7 +59,7 @@ python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read
 It uses SQLite mode=ro, skips schema setup/migration and uses read transactions.
 Only inspection and backup commands are accepted; export, review, initialization
 and other ledger writes are refused. Inspection may still save a requested
-private output file. An existing version-2 ledger is required; retain a backup
+private output file. An existing version-2 or version-3 ledger is required; retain a backup
 and use the normal writable path separately for a version-1 migration. Defaults
 and valid old records are unchanged. This protects against database writes
 through this connection, not concurrent writers, filesystem replacement or
@@ -91,6 +91,35 @@ attempts are marked not_recorded, and completion_verification is not_established
 an imported unverified return is not verified mission completion. Report checksums
 bind this metadata observation, not full review/lineage eligibility or authentication.
 The report grants no dispatch authority and is not a lease or public export.
+
+## Opt-in retained context checkpoints
+
+The local API checkpoint_context(handoff_id, expected_sha256=..., expected_source_revision=...,
+expected_memory_revision=...) retains the exact current context before a later edit.
+Its first successful call explicitly upgrades SQLite user_version from 2 to 3 and
+adds context_checkpoints in the same ledger. Existing tables/records and strict
+packet schemas are unchanged. No history is invented for revisions already lost.
+Stop older clients before opting in. New/default ledgers remain version 2 until this API is used; capture has no CLI
+or automatic worker in this increment. Retain a checked version-2 backup before
+opting in. Older code rejects version 3; rollback needs the matching old backup,
+not a lowered pragma or deleted table. Never overwrite an active ledger.
+
+Capture requires exact context/source/memory revisions, refuses read-only handles,
+deduplicates by handoff and context revision, and permits at most 1,000 retained
+contexts per ledger. Rejection rolls back the schema upgrade and insert together.
+Capture does not alter current context, reviews, attempts or execution/control state.
+Historical profiles retain their original profile schema and provenance.
+
+load_checkpoint(handoff_id, revision, expected_sha256=..., expected_source_revision=...,
+expected_memory_revision=...) retrieves an independent, always owner-private copy
+with historical_context_only_not_approval authority and retry_authorized=false.
+It does not restore historical approvals or rewind current holds. Ordinary saves
+still reject cancellation reversal, unknown-outcome clearing and memory regression.
+This is selective local history, not authenticated shared storage or automatic
+recovery. Checkpoint tables remain writable by someone controlling the database;
+hashes are integrity checks, not an adversarial-file boundary or authenticated authorship.
+Checked backups support SQLite versions 2 and 3, validate every retained profile
+and preserve history on restoration. Corrupt checkpoints prevent publication.
 
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
@@ -259,7 +288,7 @@ These controls do not add a dispatcher, queue lease, global pause or authenticat
 hosted service. Only this updated implementation enforces them. Do not run older
 application code against controlled records; preserve private backups and review
 controls explicitly before a rollback. No database-table migration is needed for
-this envelope opt-in; SQLite user_version remains 2.
+this envelope opt-in alone; SQLite user_version remains 2 unless checkpoints are explicitly captured.
 
 ## Version-3 destination binding
 
@@ -289,7 +318,8 @@ strict version-1 handoff remains unchanged. Inspection digests bind the
 destination through its context digest; retrieve the matching context to inspect
 the resource ID. Version-2 reconciliation proposals also retain destination_id
 explicitly so a reviewer can see its exact scope. Existing version-1/2 profiles remain valid and reject a silently
-added destination_id. SQLite user_version remains 2; no table migration occurs.
+added destination_id. Destination binding alone does not migrate tables; SQLite
+user_version remains 2 unless retained checkpoints are explicitly captured.
 Backups retain destination identity and controls. Older application versions reject
 version-3 context; do not roll them back against these records.
 

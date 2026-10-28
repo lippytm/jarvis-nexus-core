@@ -17,6 +17,7 @@ from control_tower.connections import connector_report
 
 MAX_HANDOFFS = 1000
 MAX_SWARMS = 100
+MAX_CONTEXT_CHECKPOINTS = 1000
 
 
 def _now():
@@ -41,13 +42,14 @@ class HandoffLedger:
             version = self.db.execute("PRAGMA user_version").fetchone()[0]
             tables = {r[0] for r in self.db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
             legacy_tables = {"swarms", "handoffs", "returns"}
-            if (version not in (0, 1, 2) or (version == 0 and tables)
+            if (version not in (0, 1, 2, 3) or (version == 0 and tables)
                 or (version == 1 and tables != legacy_tables)
-                or (version == 2 and tables != legacy_tables | {"handoff_contexts"})):
+                or (version == 2 and tables != legacy_tables | {"handoff_contexts"})
+                or (version == 3 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints"})):
                 raise ValueError("unsupported or unrelated ledger database")
             if read_only:
-                if version != 2:
-                    raise ValueError("read-only inspection requires an existing version-2 ledger; migration is separate")
+                if version not in (2, 3):
+                    raise ValueError("read-only inspection requires an existing version-2 or version-3 ledger; migration is separate")
                 return
             with self._transaction():
                 self.db.execute("CREATE TABLE IF NOT EXISTS swarms (id TEXT PRIMARY KEY, digest TEXT NOT NULL, body TEXT NOT NULL)")
@@ -64,7 +66,7 @@ class HandoffLedger:
                     handoff_id TEXT PRIMARY KEY REFERENCES handoffs(id),
                     revision INTEGER NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
                     reviewer_id TEXT, reviewed_digest TEXT)""")
-                self.db.execute("PRAGMA user_version=2")
+                self.db.execute("PRAGMA user_version=3" if version == 3 else "PRAGMA user_version=2")
         except Exception:
             self.db.close()
             raise
@@ -345,6 +347,65 @@ class HandoffLedger:
         if digest(profile) != row["digest"] or type(row["revision"]) is not int or row["revision"] < 1:
             raise ValueError("stored context integrity mismatch")
         return row, profile
+
+    def _checkpoint(self, handoff_id, revision):
+        if type(revision) is not int or revision < 1:
+            raise ValueError("invalid checkpoint revision")
+        current, current_profile = self._context(handoff_id)
+        if self.db.execute("PRAGMA user_version").fetchone()[0] != 3:
+            raise ValueError("ledger has no retained context checkpoints")
+        row = self.db.execute("SELECT * FROM context_checkpoints WHERE handoff_id=? AND revision=?",
+                              (handoff_id, revision)).fetchone()
+        if row is None:
+            raise ValueError("unknown context checkpoint")
+        _, handoff = self._handoff(handoff_id)
+        try:
+            profile = validate_context(json.loads(row["body"]), handoff)
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored context checkpoint is invalid") from None
+        if (digest(profile) != row["digest"] or revision > current["revision"]
+            or profile["memory_revision"] > current_profile["memory_revision"]
+            or (revision == current["revision"] and row["digest"] != current["digest"])):
+            raise ValueError("stored context checkpoint integrity mismatch")
+        return row, profile
+
+    def checkpoint_context(self, handoff_id, *, expected_sha256, expected_source_revision, expected_memory_revision):
+        """Opt-in version-3 local history; never rewinds current context or reviews."""
+        require_digest(expected_sha256)
+        if self.read_only:
+            raise ValueError("read-only inspection cannot capture checkpoints")
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if (row["digest"] != expected_sha256 or profile["source_revision"] != expected_source_revision
+                or type(expected_memory_revision) is not int or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("checkpoint requires exact current context and revisions")
+            self.db.execute("""CREATE TABLE IF NOT EXISTS context_checkpoints (
+                handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
+                digest TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(handoff_id,revision))""")
+            self.db.execute("PRAGMA user_version=3")
+            duplicate = self.db.execute("SELECT 1 FROM context_checkpoints WHERE handoff_id=? AND revision=?",
+                                        (handoff_id, row["revision"])).fetchone() is not None
+            if duplicate:
+                self._checkpoint(handoff_id, row["revision"])
+            else:
+                if self.db.execute("SELECT count(*) FROM context_checkpoints").fetchone()[0] >= MAX_CONTEXT_CHECKPOINTS:
+                    raise ValueError("context checkpoint limit reached")
+                self.db.execute("INSERT INTO context_checkpoints VALUES (?,?,?,?)",
+                                (handoff_id, row["revision"], row["digest"], row["body"]))
+            return {"handoff_id": handoff_id, "checkpoint_revision": row["revision"],
+                    "context_sha256": row["digest"], "duplicate": duplicate,
+                    "visibility": "owner_private", "authority": "historical_context_only_not_approval", "external_actions": 0}
+
+    def load_checkpoint(self, handoff_id, revision, *, expected_sha256, expected_source_revision, expected_memory_revision):
+        require_digest(expected_sha256)
+        with self._transaction():
+            row, profile = self._checkpoint(handoff_id, revision)
+            if (row["digest"] != expected_sha256 or profile["source_revision"] != expected_source_revision
+                or type(expected_memory_revision) is not int or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("checkpoint digest or revision mismatch")
+            return {"handoff_id": handoff_id, "checkpoint_revision": revision, "context_sha256": row["digest"],
+                    "profile": profile, "visibility": "owner_private", "authority": "historical_context_only_not_approval",
+                    "retry_authorized": False, "external_actions": 0}
 
     def _lineage(self, handoff_id):
         # Factory contracts permit depth at most two: self plus two ancestors.

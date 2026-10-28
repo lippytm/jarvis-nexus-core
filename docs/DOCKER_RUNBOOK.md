@@ -107,7 +107,7 @@ Use SQLite Connection.backup while access is controlled, and verify restoration
 before relying on it. Follow the v1-to-v2 rollback procedure in
 HANDOFF_CONTEXT_PROFILE.md; reverting only the image does not revert a database.
 
-For an existing version-2 ledger, create a checked local recovery copy:
+For an existing version-2 ledger (or version 3 after opt-in checkpoint capture), create a checked local recovery copy:
 
 ```sh
 docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 backup-ledger --out backups/ledger-001.sqlite3

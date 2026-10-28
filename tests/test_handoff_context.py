@@ -154,6 +154,72 @@ class ContextTests(unittest.TestCase):
             self.ledger.status()
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_opt_in_checkpoint_retains_old_context_without_rewinding_current_holds(self):
+        saved = self.approve()
+        original = deepcopy(self.profile)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts")
+        rows = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
+        captured = self.ledger.checkpoint_context("mission-one", **args)
+        self.assertFalse(captured["duplicate"])
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 3)
+        self.assertEqual(rows, {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables})
+        self.assertTrue(self.ledger.checkpoint_context("mission-one", **args)["duplicate"])
+        self.profile = self.control_profile("cancelled")
+        self.profile["memory_revision"] = 2
+        self.profile["execution"]["state"] = "outcome_unknown"
+        current = self.ledger.save_context(self.profile, expected_revision=1)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        before = list(self.ledger.db.iterdump())
+        history = self.ledger.load_checkpoint("mission-one", 1, **args)
+        self.assertEqual(history["profile"], original)
+        self.assertEqual(history["visibility"], "owner_private")
+        self.assertFalse(history["retry_authorized"])
+        history["profile"]["execution"]["detail"] = "Changed returned copy."
+        self.assertEqual(self.ledger.load_checkpoint("mission-one", 1, **args)["profile"], original)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], self.profile)
+        self.assertEqual(self.load(expected_memory_revision=2)["review_state"], "proposed")
+        self.assert_exports_blocked(current["context_sha256"])
+        with self.assertRaisesRegex(ValueError, "unknown outcome"):
+            self.ledger.export_context("mission-one", expected_sha256=current["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=2)
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(original, expected_revision=2)
+
+    def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
+        before = list(self.ledger.db.iterdump())
+        for change in (dict(expected_sha256="0" * 64), dict(expected_source_revision="0" * 40),
+                       dict(expected_memory_revision=True)):
+            with self.assertRaises(ValueError):
+                self.ledger.checkpoint_context("mission-one", **{**args, **change})
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        with patch("control_tower.handoffs.MAX_CONTEXT_CHECKPOINTS", 0), self.assertRaises(ValueError):
+            self.ledger.checkpoint_context("mission-one", **args)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.ledger.checkpoint_context("mission-one", **args)
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        second = self.ledger.save_context(independent, expected_revision=0)
+        second_args = {**args, "expected_sha256": second["context_sha256"]}
+        self.ledger.checkpoint_context("independent-task", **second_args)
+        self.assertEqual(self.ledger.load_checkpoint("independent-task", 1, **second_args)["profile"], independent)
+        self.assertEqual(self.ledger.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            self.assertEqual(inspected.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+            with self.assertRaises(ValueError):
+                inspected.checkpoint_context("mission-one", **args)
+            with self.assertRaises(ValueError):
+                inspected.load_checkpoint("mission-one", 1, **{**args, "expected_memory_revision": 2})
+        self.ledger.db.execute("UPDATE context_checkpoints SET body='{}'")
+        with self.assertRaises(ValueError):
+            self.ledger.load_checkpoint("mission-one", 1, **args)
+
     def test_queue_report_retains_recorded_blocks_after_restart_without_private_text(self):
         self.profile = self.control_profile("paused")
         self.profile["execution"]["state"] = "outcome_unknown"

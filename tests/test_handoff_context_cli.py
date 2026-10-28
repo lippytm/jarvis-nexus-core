@@ -114,6 +114,24 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli("queue-report", "--project", "ai-jarvis", database="absent.sqlite3").returncode, 1)
         self.assertFalse((self.root / "absent.sqlite3").exists())
 
+    def test_backup_preserves_opt_in_history_and_rejects_corrupt_checkpoint(self):
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        args = dict(expected_sha256=checksum, expected_source_revision=REVISION, expected_memory_revision=1)
+        with HandoffLedger(self.db) as ledger:
+            ledger.checkpoint_context("cli-task", **args)
+        self.assertEqual(self.cli("backup-ledger", "--out", "history.sqlite3").returncode, 0)
+        with HandoffLedger(self.root / "history.sqlite3", read_only=True) as restored:
+            self.assertEqual(restored.db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(restored.load_checkpoint("cli-task", 1, **args)["profile"], self.profile)
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("UPDATE context_checkpoints SET digest=?", ("0" * 64,))
+            before = list(ledger.db.iterdump())
+        rejected = self.cli("backup-ledger", "--out", "bad-history.sqlite3")
+        self.assertEqual(rejected.returncode, 1)
+        self.assertFalse((self.root / "bad-history.sqlite3").exists())
+        with HandoffLedger(self.db) as ledger:
+            self.assertEqual(list(ledger.db.iterdump()), before)
+
     def test_explicit_init_creates_empty_ledger_and_refuses_existing_state(self):
         result = self.cli("init-ledger", database="fresh/ledger.sqlite3")
         self.assertEqual(result.returncode, 0, result.stderr)
