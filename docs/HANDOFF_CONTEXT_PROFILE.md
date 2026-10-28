@@ -44,8 +44,12 @@ raw records to bypass rejection. No schema migration or automatic repair occurs.
 
 The CLI requires an existing database file for status, recovery, review and
 context operations. A missing or mistyped path fails instead of creating an
-empty ledger and reporting no pending work. Only stage may initialize a new
-ledger from valid draft/manifest packets. An existing valid empty ledger can
+empty ledger and reporting no pending work. Stage may initialize a new
+ledger from valid draft/manifest packets. Alternatively, init-ledger explicitly
+creates a checked empty version-2 ledger through atomic no-overwrite publication;
+it refuses existing ledgers/files, including when another writer wins publication.
+It does not alter packet schemas or establish authenticated storage.
+An existing valid empty ledger can
 still report an empty queue. This path check is not file-access authentication
 or protection against concurrent filesystem replacement; retain backups and
 control access before use.

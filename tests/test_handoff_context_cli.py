@@ -85,6 +85,34 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(existing.returncode, 0, existing.stderr)
         self.assertEqual(json.loads(existing.stdout)["handoffs"], [])
 
+    def test_explicit_init_creates_empty_ledger_and_refuses_existing_state(self):
+        result = self.cli("init-ledger", database="fresh/ledger.sqlite3")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        path = self.root / "fresh/ledger.sqlite3"
+        content = path.read_bytes()
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt["mode"], "initialized_empty_ledger")
+        self.assertEqual(receipt["ledger_sha256"], hashlib.sha256(content).hexdigest())
+        self.assertEqual(receipt["external_actions"], 0)
+        status = self.cli("status", database="fresh/ledger.sqlite3")
+        self.assertEqual(status.returncode, 0, status.stderr)
+        self.assertEqual(json.loads(status.stdout)["handoffs"], [])
+        # Opening an existing ledger can update SQLite's header during schema setup.
+        content = path.read_bytes()
+        self.assertEqual(self.cli("init-ledger", database="fresh/ledger.sqlite3").returncode, 1)
+        self.assertEqual(path.read_bytes(), content)
+        before = self.db.read_bytes()
+        self.assertEqual(self.cli("init-ledger").returncode, 1)
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_explicit_init_refuses_escape_and_preserves_unrelated_files(self):
+        self.assertEqual(self.cli("init-ledger", database="../outside.sqlite3").returncode, 1)
+        path = self.root / "unrelated.sqlite3"
+        path.write_bytes(b"unrelated content")
+        result = self.cli("init-ledger", database="unrelated.sqlite3")
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(path.read_bytes(), b"unrelated content")
+
     def test_context_and_review_commands_do_not_create_missing_recovery_ledger(self):
         for args in (("load-context", "--handoff", "cli-task", "--source-revision", REVISION,
                       "--memory-revision", "1", "--out", "absent-context.json"),

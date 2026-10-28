@@ -69,6 +69,25 @@ jobs:
       - name: Verify context behavior inside restricted container
         run: |
           docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges jarvis-nexus-ci python -m unittest discover -s tests -p 'test_handoff_context*.py' -v
+      - name: Verify explicit first-run Compose initialization
+        shell: bash
+        run: |
+          set -euo pipefail
+          project="jarvis-bootstrap-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          trap 'docker compose -p "$project" down -v' EXIT
+          docker tag jarvis-nexus-ci jarvis-nexus-local:development
+          if docker compose -p "$project" run --rm --no-deps jarvis; then
+            echo "ERROR: missing ledger reported successful status"
+            exit 1
+          fi
+          docker compose -p "$project" run --rm --no-deps jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 init-ledger
+          docker compose -p "$project" run --rm --no-deps jarvis
+          if docker compose -p "$project" run --rm --no-deps jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 init-ledger; then
+            echo "ERROR: initialization accepted an existing ledger"
+            exit 1
+          fi
+          docker compose -p "$project" run --rm --no-deps jarvis
+          echo "PASS: explicit Compose bootstrap and repeated status"
       - name: Preserve a synthetic handoff across container replacement
         shell: bash
         run: |

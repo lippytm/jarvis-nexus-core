@@ -11,13 +11,18 @@ From this branch with Docker Engine and Compose available:
 
 ```sh
 docker compose build
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 init-ledger
 docker compose run --rm jarvis
 docker compose run --rm jarvis python -m unittest discover -s tests -p test_handoff_context.py -v
 ```
 
-The first run displays ledger metadata and initializes a version-2 database in
-the named jarvis-ledger volume. It does not start a worker. Repeating the command
-uses the same ledger. Image builds need registry access; runtime Compose calls
+Run init-ledger only for a new volume: it explicitly creates a checked empty
+version-2 database in the named jarvis-ledger volume and refuses an existing
+ledger or unrelated file. The default Compose command displays status; it fails
+on a missing database instead of creating one. On an existing volume, skip
+init-ledger and run the default command. Initialization is local preparation,
+not a worker or authenticated service. Repeating status uses the same ledger.
+Image builds need registry access; runtime Compose calls
 use network_mode: none. The non-root UID/GID is 10001, the root filesystem is
 read-only, /tmp is temporary and /data holds persistent local state.
 
@@ -80,7 +85,9 @@ for evidence review; authenticated resolution and retry approval are unfinished.
 
 ## Verification
 
-The Docker CI job builds this Dockerfile, validates Compose, runs the local
+The Docker CI job builds this Dockerfile, validates Compose, verifies that a
+fresh Compose volume requires explicit initialization and refuses reinitialization,
+then runs the local
 context and CLI tests inside a restricted container, stages a synthetic Codex handoff
 on a named volume, then reads it in a second container after the first is removed.
 It checks the exact handoff digest and SQLite schema version. Existing Python

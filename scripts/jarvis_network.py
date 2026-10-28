@@ -104,11 +104,25 @@ def _backup(connection, path):
             temporary.unlink(missing_ok=True)
 
 
+def _initialize_ledger(path):
+    """Explicit empty-ledger bootstrap; checked atomic publication never replaces."""
+    if path.exists():
+        raise ValueError("ledger already exists; initialization refuses overwrite")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=path.parent, prefix=".jarvis-init-") as directory:
+        with HandoffLedger(Path(directory) / "empty.sqlite3") as ledger:
+            receipt = _backup(ledger.db, path)
+    return {"mode": "initialized_empty_ledger", "schema_version": receipt["schema_version"],
+            "ledger_sha256": receipt["backup_sha256"], "visibility": "owner_private",
+            "external_actions": 0}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=str(ROOT))
     parser.add_argument("--database", default="reports/jarvis-network.sqlite3")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("init-ledger")
     catalog = commands.add_parser("catalog")
     catalog.add_argument("--out", required=True)
     factory = commands.add_parser("factory")
@@ -201,6 +215,8 @@ def main(argv=None):
             result = {"projects": PROJECTS, "providers": provider_catalog(), "external_actions": 0}
         elif args.command == "demo":
             result = demonstrate_network()
+        elif args.command == "init-ledger":
+            result = _initialize_ledger(_local(root, args.database))
         elif args.command == "backup-ledger":
             database = _local(root, args.database)
             if not database.is_file():
