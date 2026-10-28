@@ -366,6 +366,20 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads((self.root / "destination.json").read_text())["profile"], self.profile)
 
+    def test_destination_requires_context_export_instead_of_legacy_cli_packet(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="active", actor_id="local-owner", reason="Synthetic exact destination."))
+        self.write(self.profile)
+        checksum = self.prepare_reviews()
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        legacy = self.cli("export", "--handoff", "cli-task", "--digest", self.profile["handoff_sha256"],
+                          "--out", "legacy.json")
+        self.assertEqual(legacy.returncode, 1)
+        self.assertFalse((self.root / "legacy.json").exists())
+        self.assertEqual(self.export_context(checksum).returncode, 0)
+        packet = json.loads((self.root / "envelope.json").read_text())
+        self.assertEqual(packet["context"]["destination_id"], "repo-one")
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):

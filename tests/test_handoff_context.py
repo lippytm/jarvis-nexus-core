@@ -594,6 +594,16 @@ class ContextTests(unittest.TestCase):
                 self.ledger.save_context(changed, expected_revision=1)
         self.assertEqual(self.load()["profile"], self.profile)
 
+    def test_destination_bound_handoff_cannot_export_without_its_context(self):
+        self.profile = self.destination_profile()
+        saved = self.approve()
+        with self.assertRaisesRegex(ValueError, "context envelope"):
+            self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        self.assertEqual(self.ledger.status()["handoffs"][0]["state"], "reviewed")
+        packet = self.export(saved["context_sha256"])
+        self.assertEqual(packet["context"]["destination_id"], "repository-one")
+        self.assertEqual(packet["handoff_sha256"], self.receipt["handoff_sha256"])
+
     def test_destination_requires_a_bounded_opaque_identifier(self):
         for value in ("", "../outside", "https://example.invalid/channel", "a" * 129, None):
             with self.subTest(value=value), self.assertRaises(ValueError):

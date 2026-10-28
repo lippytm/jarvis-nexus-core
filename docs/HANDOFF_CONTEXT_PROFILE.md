@@ -206,6 +206,11 @@ a genuinely different destination use a separately scoped, reviewed mission;
 never allocate another identity to evade an existing hold or deduplication.
 
 Use the existing save-context/load-context/review-context/export-context commands.
+For version 3, export-context is required: the legacy export command rejects even
+a fully reviewed record because its version-1 packet cannot retain destination
+metadata. Rejection leaves the handoff state unchanged. Use the private context
+envelope rather than stripping its destination binding; original handoff packets
+remain unchanged. Version-1/2 legacy export compatibility is preserved.
 Both export paths enforce version-3 pause/cancel, unknown-outcome and fresh-review
 guards. Compatible private envelopes retain the full version-3 context while the
 strict version-1 handoff remains unchanged. Inspection/proposal digests bind the

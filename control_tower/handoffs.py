@@ -193,6 +193,9 @@ class HandoffLedger:
             self._require_export_active(handoff_id)
             if row["digest"] != expected_sha256 or row["reviewed_digest"] != expected_sha256 or row["state"] == "pending_review":
                 raise ValueError("export requires local review of this exact draft")
+            if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone():
+                if self._context(handoff_id)[1]["schema_version"] == 3:
+                    raise ValueError("destination-bound handoff requires context envelope export")
             if row["state"] == "reviewed":
                 self.db.execute("UPDATE handoffs SET state='export_prepared',exported_at=? WHERE id=?", (_now(), handoff_id))
             return {"schema_version": 1, "mode": "manual_handoff", "handoff": body,
