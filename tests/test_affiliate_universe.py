@@ -1,12 +1,43 @@
+from copy import deepcopy
 import unittest
 
 from control_tower.affiliate_universe import (
-    AFFILIATE_UNIVERSE, OPPORTUNITY_WORLDS, opportunity_matrix,
+    AFFILIATE_UNIVERSE, OPPORTUNITY_WORLDS, ROUTE_CLASSES, opportunity_matrix,
     opportunity_world, universe_registry,
 )
 
 
 class AffiliateUniverseTests(unittest.TestCase):
+    def test_registry_edits_preserve_other_records_and_guardrails(self):
+        theme = deepcopy(AFFILIATE_UNIVERSE)
+        worlds = deepcopy(OPPORTUNITY_WORLDS)
+        routes = deepcopy(ROUTE_CLASSES)
+        baseline = deepcopy(universe_registry())
+        matrix = opportunity_matrix()
+        packets = {wid: opportunity_world(wid) for wid in worlds}
+        try:
+            edited = universe_registry()
+            independent = universe_registry()
+            edited["theme"]["reality_label"] = "Caller-only change"
+            edited["opportunity_worlds"]["business-funding-referrals"]["guardrails"].clear()
+            edited["opportunity_worlds"]["education-memberships"]["examples"].append("Caller-only example")
+            del edited["opportunity_worlds"]["ai-tools-software"]
+            edited["route_classes"]["affiliate_referral"] = "Caller-only route"
+            self.assertEqual(independent, baseline)
+            self.assertEqual(universe_registry(), baseline)
+            self.assertEqual(AFFILIATE_UNIVERSE, theme)
+            self.assertEqual(OPPORTUNITY_WORLDS, worlds)
+            self.assertEqual(ROUTE_CLASSES, routes)
+            self.assertEqual(opportunity_matrix(), matrix)
+            for wid, packet in packets.items():
+                with self.subTest(world=wid):
+                    self.assertEqual(opportunity_world(wid), packet)
+        finally:
+            # Preserve isolation when reproducing the unfixed shared-state bug.
+            for shared, original in ((AFFILIATE_UNIVERSE, theme), (OPPORTUNITY_WORLDS, worlds), (ROUTE_CLASSES, routes)):
+                shared.clear()
+                shared.update(original)
+
     def test_registry_contains_twelve_worlds_without_claiming_actual_program_count(self):
         registry = universe_registry()
         self.assertEqual(12, len(registry["opportunity_worlds"]))

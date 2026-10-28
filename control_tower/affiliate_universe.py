@@ -5,6 +5,7 @@ or join affiliate programs, publish content, contact providers, move money, read
 or represent earnings. "Unlimited possibilities" and "infinite opportunities" are creative
 brand language, not guarantees of availability, acceptance, demand, commissions, or income.
 """
+from copy import deepcopy
 from hashlib import sha256
 import json
 
@@ -133,9 +134,9 @@ def universe_registry():
         "schema_version": 1,
         "kind": "jarvis.affiliate_universe_registry",
         "state": "planning_registry",
-        "theme": AFFILIATE_UNIVERSE,
-        "opportunity_worlds": OPPORTUNITY_WORLDS,
-        "route_classes": ROUTE_CLASSES,
+        "theme": deepcopy(AFFILIATE_UNIVERSE),
+        "opportunity_worlds": deepcopy(OPPORTUNITY_WORLDS),
+        "route_classes": deepcopy(ROUTE_CLASSES),
         "actual_program_count": None,
         "actual_revenue": None,
         "external_actions": 0,
