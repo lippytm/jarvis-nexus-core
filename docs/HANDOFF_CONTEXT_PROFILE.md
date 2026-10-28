@@ -66,6 +66,37 @@ handoff ID, raw database edit or older application version. Use load-context for
 private inspection; export is preparation for further manual handoff. These local
 guards do not stop previously exported work or authenticate provider responses.
 
+## Private recovery inspection
+
+`inspect_recovery` and the `inspect-recovery` CLI command prepare a deterministic
+metadata snapshot from this same ledger. They require the selected context's
+exact SHA-256, source revision and memory revision. In one SQLite transaction,
+the inspection captures the selected handoff and at most two ancestors, validates
+stored handoff/context/return integrity, and records their current digests,
+context revisions, execution/control states, local review status and unverified
+return bindings. An ancestor without a context is explicitly shown as null.
+Unrelated missions are excluded. The snapshot's inspection_sha256 hashes the
+whole report except that checksum field; changed context or return bindings
+produce a different snapshot. It is a current observation, not revision history.
+
+The separate version-1 `jarvis.recovery_inspection` report does not change any
+strict packet or database schema. It is always owner_private, including for
+public-labelled contexts: identity and control metadata still need protection.
+Draft/return text, execution detail, context/evidence URLs and checkpoint URLs
+are omitted; the context digest binds those retained records for later selective
+inspection. The report is not a public publishing export. Authentication is not
+established by this local command or its checksum.
+
+Inspection changes no handoff state, review, attempt count or context. It remains
+available while unknown-outcome/pause/cancel holds prevent further exports.
+`retry_authorized` is always false, including when the holds list is empty. That
+list reports unknown-outcome and version-2 control/review holds, not complete
+dispatch eligibility. Re-read the current ledger before any later decision;
+this snapshot grants no authorization and cannot be imported as a return or
+reconciliation approval. A future reconciliation proposal must bind current
+inspection/context revisions to actual destination evidence and authenticated
+owner approval. Verified resolution and hold release remain unimplemented.
+
 ## Follow-up lineage controls
 
 Staging a follow-up now checks its parent and ancestors for the same local hold

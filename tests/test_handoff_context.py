@@ -362,6 +362,89 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.load()
 
+    def inspect(self, identifier="mission-one", **changes):
+        context = self.load(identifier)
+        return self.ledger.inspect_recovery(identifier, **{
+            "expected_sha256": context["context_sha256"], "expected_source_revision": REVISION,
+            "expected_memory_revision": 1, **changes})
+
+    def test_recovery_inspection_survives_restart_without_releasing_unknown_hold(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        before = list(self.ledger.db.iterdump())
+        first = self.inspect()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.inspect(), first)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(first["lineage"][0]["holds"], ["outcome_unknown"])
+        self.assertEqual(first["lineage"][0]["context"]["attempts"], 1)
+        self.assertFalse(first["retry_authorized"])
+        checksum = first.pop("inspection_sha256")
+        self.assertEqual(digest(first), checksum)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_recovery_inspection_retains_parent_bindings_without_other_missions_or_text(self):
+        self.returned_parent()
+        child = self.stage_followup()
+        self.ledger.save_context(self.context("followup-one"), expected_revision=0)
+        held = self.control_profile("paused")
+        held["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(held, expected_revision=1)
+        self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+            "target": "github", "text": "Unrelated synthetic mission."}, self.manifest,
+            assistant_id="memory-pilot.evaluator", handoff_id="unrelated-mission")
+        packet = self.inspect("followup-one")
+        self.assertEqual([r["handoff_id"] for r in packet["lineage"]], ["followup-one", "mission-one"])
+        leaf, parent = packet["lineage"]
+        self.assertEqual(leaf["handoff_sha256"], child["handoff_sha256"])
+        self.assertEqual(parent["holds"], ["outcome_unknown", "paused", "context_review_required"])
+        self.assertEqual(parent["context"]["revision"], 2)
+        self.assertEqual(parent["returned_evidence"]["return_id"], "parent-return")
+        self.assertEqual(parent["returned_evidence"]["state"], "returned_unverified")
+        text = json.dumps(packet)
+        for private_text in ("Synthetic", "https://", "unrelated-mission"):
+            self.assertNotIn(private_text, text)
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertEqual(packet["sender_authentication"], "not_established")
+        parent["context"]["revision"] = 999
+        self.assertEqual(self.inspect("followup-one")["lineage"][1]["context"]["revision"], 2)
+
+    def test_recovery_inspection_rejects_stale_content_and_revisions(self):
+        saved = self.save()
+        first = self.inspect()
+        self.profile["execution"]["detail"] = "New observation without changing memory revision."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        for change in ({"expected_sha256": saved["context_sha256"]},
+                       {"expected_source_revision": "f" * 40}, {"expected_memory_revision": 2},
+                       {"expected_memory_revision": True}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.inspect(**change)
+        self.assertNotEqual(self.inspect()["inspection_sha256"], first["inspection_sha256"])
+        self.assertEqual(self.load()["revision"], 2)
+
+    def test_recovery_inspection_keeps_legacy_parent_without_context(self):
+        self.returned_parent()
+        self.ledger.db.execute("DELETE FROM handoff_contexts WHERE handoff_id='mission-one'")
+        self.stage_followup()
+        public = self.context("followup-one")
+        public.update(visibility="public_candidate", context_refs=[])
+        self.ledger.save_context(public, expected_revision=0)
+        packet = self.inspect("followup-one")
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertFalse(packet["retry_authorized"])
+        parent = packet["lineage"][1]
+        self.assertIsNone(parent["context"])
+        self.assertEqual(parent["returned_evidence"]["state"], "returned_unverified")
+
+    def test_recovery_inspection_rejects_corrupt_ancestor_evidence(self):
+        self.returned_parent()
+        self.stage_followup()
+        self.ledger.save_context(self.context("followup-one"), expected_revision=0)
+        self.ledger.db.execute("UPDATE returns SET digest=?", ("0" * 64,))
+        with self.assertRaisesRegex(ValueError, "return integrity"):
+            self.inspect("followup-one")
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

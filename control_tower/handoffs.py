@@ -243,16 +243,23 @@ class HandoffLedger:
             raise ValueError("stored context integrity mismatch")
         return row, profile
 
-    def _require_export_active(self, handoff_id):
+    def _lineage(self, handoff_id):
         # Factory contracts permit depth at most two: self plus two ancestors.
         # Validate every ancestor even when the leaf has no context of its own.
-        current, seen = handoff_id, set()
+        current, seen, records = handoff_id, set(), []
         while current is not None:
             require_identifier(current, "ancestor handoff ID")
             if current in seen or len(seen) >= 3:
                 raise ValueError("invalid or excessive handoff ancestry")
             seen.add(current)
-            _, body = self._handoff(current)
+            row, body = self._handoff(current)
+            records.append((row, body))
+            current = body["parent_id"]
+        return records
+
+    def _require_export_active(self, handoff_id):
+        for row, body in self._lineage(handoff_id):
+            current = row["id"]
             if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (current,)).fetchone():
                 context, profile = self._context(current)
                 if profile["execution"]["state"] == "outcome_unknown":
@@ -262,7 +269,62 @@ class HandoffLedger:
                         raise ValueError("handoff export is paused or cancelled")
                     if context["reviewed_digest"] != context["digest"]:
                         raise ValueError("controlled export requires fresh context review")
-            current = body["parent_id"]
+
+    def inspect_recovery(self, handoff_id, *, expected_sha256, expected_source_revision,
+                         expected_memory_revision):
+        """Private metadata snapshot for reconciliation; never releases or retries.
+
+        The expected digest binds the selected context. Ancestor context/return
+        bindings are captured together in the same SQLite transaction. Free text,
+        reference URLs and provider-return contents are deliberately omitted.
+        """
+        require_digest(expected_sha256)
+        if type(expected_memory_revision) is not int:
+            raise ValueError("invalid expected memory revision")
+        with self._transaction():
+            selected, profile = self._context(handoff_id)
+            if (selected["digest"] != expected_sha256
+                or profile["source_revision"] != expected_source_revision
+                or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("recovery inspection context or revision mismatch")
+            lineage = []
+            for row, body in self._lineage(handoff_id):
+                item = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
+                        "parent_id": body["parent_id"], "source_revision": body["source_revision"],
+                        "project_id": body["draft"]["project_id"], "asset_id": body["assistant_id"],
+                        "platform": body["draft"]["target"], "handoff_state": row["state"],
+                        "handoff_review_current": row["reviewed_digest"] == row["digest"],
+                        "context": None, "returned_evidence": None, "holds": []}
+                if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone():
+                    context, saved = self._context(row["id"])
+                    execution = saved["execution"]
+                    control = saved["control"]["state"] if saved["schema_version"] == 2 else "legacy_uncontrolled"
+                    reviewed = context["reviewed_digest"] == context["digest"]
+                    item["context"] = {"schema_version": saved["schema_version"],
+                        "revision": context["revision"], "context_sha256": context["digest"],
+                        "mission_id": saved["mission_id"], "memory_revision": saved["memory_revision"],
+                        "configuration_version": saved["configuration_version"],
+                        "visibility": saved["visibility"], "review_current": reviewed,
+                        "execution_state": execution["state"], "context_id": execution["context_id"],
+                        "attempts": execution["attempts"],
+                        "checkpoint_present": execution["checkpoint_ref"] is not None,
+                        "control_state": control}
+                    if execution["state"] == "outcome_unknown":
+                        item["holds"].append("outcome_unknown")
+                    if control in ("paused", "cancelled"):
+                        item["holds"].append(control)
+                    if saved["schema_version"] == 2 and not reviewed:
+                        item["holds"].append("context_review_required")
+                returned = self.db.execute("SELECT id,digest FROM returns WHERE handoff_id=?", (row["id"],)).fetchone()
+                if returned:
+                    item["returned_evidence"] = {"return_id": returned["id"], "return_sha256": returned["digest"],
+                                                  "state": "returned_unverified"}
+                lineage.append(item)
+            result = {"schema_version": 1, "kind": "jarvis.recovery_inspection",
+                      "handoff_id": handoff_id, "visibility": "owner_private", "lineage": lineage,
+                      "mode": "inspection_only", "retry_authorized": False,
+                      "sender_authentication": "not_established", "external_actions": 0}
+            return {**result, "inspection_sha256": digest(result)}
 
     def save_context(self, profile, *, expected_revision):
         """CAS write of proposed context; never alters the version-1 handoff.

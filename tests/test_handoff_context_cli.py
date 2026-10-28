@@ -182,6 +182,36 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.export_context(checksum).returncode, 1)
         self.assertEqual((self.root / "envelope.json").read_bytes(), previous)
 
+    def inspect(self, checksum, out="inspection.json", revision=REVISION, memory=1):
+        return self.cli("inspect-recovery", "--handoff", "cli-task", "--digest", checksum,
+                        "--source-revision", revision, "--memory-revision", str(memory), "--out", out)
+
+    def test_recovery_inspection_in_new_process_preserves_hold_and_omits_private_text(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.write(self.profile)
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        inspected = self.inspect(checksum)
+        self.assertEqual(inspected.returncode, 0, inspected.stderr)
+        packet = json.loads((self.root / "inspection.json").read_text())
+        self.assertEqual(packet["kind"], "jarvis.recovery_inspection")
+        self.assertEqual(packet["lineage"][0]["holds"], ["outcome_unknown"])
+        self.assertFalse(packet["retry_authorized"])
+        self.assertNotIn("https://", json.dumps(packet))
+        self.assertEqual(self.load().returncode, 0)
+        self.assertEqual(json.loads((self.root / "resumed.json").read_text())["profile"], self.profile)
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+
+    def test_recovery_inspection_rejects_stale_inputs_escape_and_overwrite(self):
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        for value, revision, memory in (("0" * 64, REVISION, 1), (checksum, "f" * 40, 1), (checksum, REVISION, 2)):
+            self.assertEqual(self.inspect(value, revision=revision, memory=memory).returncode, 1)
+            self.assertFalse((self.root / "inspection.json").exists())
+        self.assertEqual(self.inspect(checksum, out="../outside.json").returncode, 1)
+        self.assertEqual(self.inspect(checksum).returncode, 0)
+        original = (self.root / "inspection.json").read_bytes()
+        self.assertEqual(self.inspect(checksum).returncode, 1)
+        self.assertEqual((self.root / "inspection.json").read_bytes(), original)
+
 
 if __name__ == "__main__":
     unittest.main()

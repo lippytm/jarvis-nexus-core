@@ -64,6 +64,20 @@ only inside /data, and sends nothing. The original packet/digest and blocked or
 unknown execution state remain intact. Protect the private output; this is not
 a public-safe publishing export or a live platform delivery receipt.
 
+To inspect a held mission before preparing a reconciliation proposal:
+
+```sh
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 inspect-recovery --handoff YOUR-HANDOFF-ID --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1 --out recovery-inspection-001.json
+```
+
+Use the current context digest and revisions returned by load-context. This
+creates a new private metadata report, including bounded ancestor holds and
+unverified return bindings, without exporting another executable task, clearing
+holds, changing attempts or dispatching a retry. It refuses stale inputs,
+existing output files and paths outside /data. Keep the report private and
+refresh it after any relevant context/return change. Inspection is preparation
+for evidence review; authenticated resolution and retry approval are unfinished.
+
 ## Verification
 
 The Docker CI job builds this Dockerfile, validates Compose, runs the local
