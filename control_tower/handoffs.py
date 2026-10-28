@@ -39,19 +39,21 @@ class HandoffLedger:
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA foreign_keys=ON")
         try:
-            version = self.db.execute("PRAGMA user_version").fetchone()[0]
-            tables = {r[0] for r in self.db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
-            legacy_tables = {"swarms", "handoffs", "returns"}
-            if (version not in (0, 1, 2, 3) or (version == 0 and tables)
-                or (version == 1 and tables != legacy_tables)
-                or (version == 2 and tables != legacy_tables | {"handoff_contexts"})
-                or (version == 3 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints"})):
-                raise ValueError("unsupported or unrelated ledger database")
-            if read_only:
-                if version not in (2, 3):
-                    raise ValueError("read-only inspection requires an existing version-2 or version-3 ledger; migration is separate")
-                return
             with self._transaction():
+                # Inspect and initialize under one lock/snapshot. A concurrent
+                # checkpoint upgrade must never be overwritten by a stale version.
+                version = self.db.execute("PRAGMA user_version").fetchone()[0]
+                tables = {r[0] for r in self.db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
+                legacy_tables = {"swarms", "handoffs", "returns"}
+                if (version not in (0, 1, 2, 3) or (version == 0 and tables)
+                    or (version == 1 and tables != legacy_tables)
+                    or (version == 2 and tables != legacy_tables | {"handoff_contexts"})
+                    or (version == 3 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints"})):
+                    raise ValueError("unsupported or unrelated ledger database")
+                if read_only:
+                    if version not in (2, 3):
+                        raise ValueError("read-only inspection requires an existing version-2 or version-3 ledger; migration is separate")
+                    return
                 self.db.execute("CREATE TABLE IF NOT EXISTS swarms (id TEXT PRIMARY KEY, digest TEXT NOT NULL, body TEXT NOT NULL)")
                 self.db.execute("""CREATE TABLE IF NOT EXISTS handoffs (
                     id TEXT PRIMARY KEY, swarm_id TEXT NOT NULL REFERENCES swarms(id),

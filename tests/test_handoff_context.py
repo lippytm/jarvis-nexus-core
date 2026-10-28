@@ -1,5 +1,6 @@
 """Synthetic local recovery fixtures; no provider call or hosted service."""
 from copy import deepcopy
+from contextlib import contextmanager
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -187,6 +188,66 @@ class ContextTests(unittest.TestCase):
                 expected_source_revision=REVISION, expected_memory_revision=2)
         with self.assertRaises(ValueError):
             self.ledger.save_context(original, expected_revision=2)
+
+    def test_overlapping_open_preserves_first_checkpoint_upgrade(self):
+        saved = self.approve()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts")
+        before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+        transaction = HandoffLedger._transaction
+        captures = []
+
+        @contextmanager
+        def capture_before_open_lock(opening):
+            # A real second connection upgrades immediately before the opener's
+            # transaction begins, after any unsafe pre-lock schema observations.
+            if opening is not self.ledger:
+                captures.append(self.ledger.checkpoint_context("mission-one", **args))
+            with transaction(opening):
+                yield
+
+        with patch.object(HandoffLedger, "_transaction", capture_before_open_lock):
+            opened = HandoffLedger(self.path)
+        try:
+            self.assertEqual(len(captures), 1)
+            self.assertFalse(captures[0]["duplicate"])
+            self.assertEqual(opened.db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertFalse(opened.db.in_transaction)
+        finally:
+            opened.close()
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+            self.assertEqual(before, {t: [tuple(r) for r in restarted.db.execute("SELECT * FROM " + t)] for t in tables})
+
+    def test_read_only_open_uses_one_schema_snapshot_during_upgrade(self):
+        self.ledger.db.execute("PRAGMA journal_mode=WAL")
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        writer = self.ledger
+        captures = []
+
+        class UpgradeBetweenSchemaReads(sqlite3.Connection):
+            def execute(connection, sql, *parameters):
+                if sql.startswith("SELECT name FROM sqlite_master"):
+                    captures.append(writer.checkpoint_context("mission-one", **args))
+                return super().execute(sql, *parameters)
+
+        connect = sqlite3.connect
+        def instrumented_connect(*args, **kwargs):
+            return connect(*args, factory=UpgradeBetweenSchemaReads, **kwargs)
+
+        with patch("control_tower.handoffs.sqlite3.connect", instrumented_connect):
+            opened = HandoffLedger(self.path, read_only=True)
+        try:
+            self.assertEqual(len(captures), 1)
+            self.assertFalse(captures[0]["duplicate"])
+            self.assertFalse(opened.db.in_transaction)
+            self.assertEqual(opened.db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(opened.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+        finally:
+            opened.close()
 
     def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
         saved = self.save()
