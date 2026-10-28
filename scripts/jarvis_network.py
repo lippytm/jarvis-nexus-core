@@ -16,10 +16,10 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
-from control_tower.network_contract import PROJECTS, TARGETS, load_packet
+from control_tower.network_contract import PROJECTS, TARGETS, load_packet, validate_draft
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
-from control_tower.swarm_factory import build_swarm
+from control_tower.swarm_factory import build_swarm, validate_swarm
 
 
 def _local(root, value):
@@ -50,6 +50,32 @@ def _write(path, record):
             temporary.unlink(missing_ok=True)
 
 
+def _check_backup_scopes(ledger):
+    """Check saved Fabric specifications and their handoff scope bindings."""
+    manifests = {}
+    for row in ledger.db.execute("SELECT * FROM swarms"):
+        try:
+            manifest = validate_swarm(json.loads(row["body"]))
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("backup swarm configuration is invalid") from None
+        if row["id"] != manifest["swarm_id"] or row["digest"] != manifest["manifest_sha256"]:
+            raise ValueError("backup swarm identity or digest mismatch")
+        manifests[row["id"]] = manifest
+    for row in ledger.db.execute("SELECT id FROM handoffs"):
+        _, handoff = ledger._handoff(row["id"])
+        try:
+            manifest = manifests[handoff["swarm_id"]]
+            draft = validate_draft(handoff["draft"])
+            valid = (handoff["manifest_sha256"] == manifest["manifest_sha256"]
+                and handoff["source_revision"] == manifest["source_revision"]
+                and handoff["assistant_id"] in {a["assistant_id"] for a in manifest["assistants"]}
+                and draft["project_id"] == manifest["project_id"] and draft["target"] in manifest["targets"])
+        except (KeyError, TypeError, ValueError):
+            raise ValueError("backup handoff scope is invalid") from None
+        if not valid:
+            raise ValueError("backup handoff is outside its registered swarm scope")
+
+
 def _backup(connection, path):
     """Publish a checked SQLite online backup, never replace an existing file."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -70,6 +96,7 @@ def _backup(connection, path):
             if destination.execute("PRAGMA foreign_key_check").fetchone() is not None:
                 raise ValueError("backup foreign key check failed")
         with HandoffLedger(temporary) as checked:
+            _check_backup_scopes(checked)
             status = checked.status()  # Validates stored handoff and return bindings.
             contexts = checked.db.execute("SELECT handoff_id FROM handoff_contexts").fetchall()
             for row in contexts:

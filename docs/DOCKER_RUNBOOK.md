@@ -110,6 +110,12 @@ The command opens the source read-only and uses SQLite's online backup API,
 including committed WAL records. A ten-second backup-copy budget bounds busy
 retries; it is not a worker timer. Before publishing, the copy must pass SQLite
 integrity/foreign-key checks and stored handoff/context/return binding checks.
+Registered swarm configurations are rebuilt through the existing strict validator;
+their saved IDs/digests must match. Each handoff must retain the registered
+manifest/source revision, permitted assistant, project and target. A changed
+configuration or out-of-scope handoff therefore fails before publication even
+when the altered handoff's own checksum was recomputed. Keep the original source
+for investigation; this command neither repairs it nor authenticates its author.
 The complete file is synced and linked to a fresh destination without replacing
 an existing file, including a competing writer's file. Failed pre-publication
 copies are removed. The receipt includes the file SHA-256, byte size and counts;

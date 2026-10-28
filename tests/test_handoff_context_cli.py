@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 from control_tower.handoffs import HandoffLedger
 from control_tower.swarm_factory import build_swarm
+from control_tower.network_contract import digest
 from scripts.jarvis_network import _backup
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -301,6 +302,37 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli("backup-ledger", "--out", "legacy-copy.sqlite3").returncode, 1)
         self.assertFalse((self.root / "legacy-copy.sqlite3").exists())
         self.assertEqual(self.db.read_bytes(), legacy)
+
+    def test_backup_rejects_corrupt_swarm_configuration_before_publication(self):
+        with HandoffLedger(self.db) as ledger:
+            row = ledger.db.execute("SELECT * FROM swarms").fetchone()
+            manifest = json.loads(row["body"])
+            manifest["assistants"][0]["max_handoffs"] = 99
+            ledger.db.execute("UPDATE swarms SET body=?", (json.dumps(manifest),))
+            before = list(ledger.db.iterdump())
+        result = self.cli("backup-ledger", "--out", "bad-swarm.sqlite3")
+        self.assertEqual(result.returncode, 1)
+        self.assertFalse((self.root / "bad-swarm.sqlite3").exists())
+        self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+        with HandoffLedger(self.db) as ledger:
+            self.assertEqual(list(ledger.db.iterdump()), before)
+
+    def test_backup_rejects_swarm_row_digest_mismatch(self):
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("UPDATE swarms SET digest=?", ("0" * 64,))
+        result = self.cli("backup-ledger", "--out", "bad-binding.sqlite3")
+        self.assertEqual(result.returncode, 1)
+        self.assertFalse((self.root / "bad-binding.sqlite3").exists())
+
+    def test_backup_rejects_rehashed_handoff_outside_registered_scope(self):
+        with HandoffLedger(self.db) as ledger:
+            row, handoff = ledger._handoff("cli-task")
+            handoff["draft"]["target"] = "github"
+            ledger.db.execute("UPDATE handoffs SET body=?,digest=? WHERE id=?",
+                (json.dumps(handoff), digest(handoff), "cli-task"))
+        result = self.cli("backup-ledger", "--out", "bad-scope.sqlite3")
+        self.assertEqual(result.returncode, 1)
+        self.assertFalse((self.root / "bad-scope.sqlite3").exists())
 
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
