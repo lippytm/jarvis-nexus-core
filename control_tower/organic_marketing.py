@@ -3,6 +3,7 @@
 This module prepares unpublished briefs only. It performs no model calls,
 account connections, publishing, outreach, analytics reads, or financial actions.
 """
+from copy import deepcopy
 from dataclasses import asdict, dataclass
 from hashlib import sha256
 import json
@@ -150,8 +151,8 @@ def free_market_registry() -> dict:
         "schema_version": 1,
         "kind": "jarvis.free_organic_market_registry",
         "state": "planning_registry",
-        "channels": FREE_CHANNELS,
-        "blocked_channels": BLOCKED_CHANNELS,
+        "channels": deepcopy(FREE_CHANNELS),
+        "blocked_channels": deepcopy(BLOCKED_CHANNELS),
         "external_actions": 0,
         "live_connections": 0,
     }

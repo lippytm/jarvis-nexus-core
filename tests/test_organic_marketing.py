@@ -1,3 +1,4 @@
+from copy import deepcopy
 import unittest
 from urllib.parse import parse_qs, urlsplit
 
@@ -8,6 +9,34 @@ from control_tower.organic_marketing import (
 
 
 class OrganicMarketingTests(unittest.TestCase):
+    def test_registry_mutation_cannot_change_other_snapshots_or_campaigns(self):
+        channels = deepcopy(FREE_CHANNELS)
+        blocked = deepcopy(BLOCKED_CHANNELS)
+        baseline = deepcopy(free_market_registry())
+        campaigns = {pid: campaign_packet(pid) for pid in PRODUCTS}
+        try:
+            edited = free_market_registry()
+            independent = free_market_registry()
+            edited["channels"]["linkedin"]["format"] = "Changed caller copy"
+            del edited["channels"]["youtube"]
+            edited["channels"]["caller-only"] = {"format": "Synthetic"}
+            edited["blocked_channels"]["tiktok"]["state"] = "Changed caller copy"
+            edited["blocked_channels"]["tiktok"]["routing_rule"] = "Changed caller rule"
+            edited["blocked_channels"]["caller-only"] = {"state": "Synthetic"}
+            self.assertEqual(independent, baseline)
+            self.assertEqual(free_market_registry(), baseline)
+            self.assertEqual(FREE_CHANNELS, channels)
+            self.assertEqual(BLOCKED_CHANNELS, blocked)
+            for pid, original in campaigns.items():
+                with self.subTest(product=pid):
+                    self.assertEqual(campaign_packet(pid), original)
+        finally:
+            # Keep failure on an unfixed implementation isolated from other tests.
+            FREE_CHANNELS.clear()
+            FREE_CHANNELS.update(channels)
+            BLOCKED_CHANNELS.clear()
+            BLOCKED_CHANNELS.update(blocked)
+
     def test_registry_has_thirteen_active_markets_and_tiktok_is_blocked(self):
         registry = free_market_registry()
         self.assertEqual(13, len(registry["channels"]))
