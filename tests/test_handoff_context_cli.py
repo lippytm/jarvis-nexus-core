@@ -380,6 +380,23 @@ class ContextCLITests(unittest.TestCase):
         packet = json.loads((self.root / "envelope.json").read_text())
         self.assertEqual(packet["context"]["destination_id"], "repo-one")
 
+    def test_destination_status_cli_reads_existing_private_metadata_only(self):
+        args = ("destination-status", "--project", "ai-jarvis", "--platform", "codex", "--destination", "repo-one")
+        missing = self.cli(*args, database="missing.sqlite3")
+        self.assertEqual(missing.returncode, 1)
+        self.assertFalse((self.root / "missing.sqlite3").exists())
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic private checkpoint."))
+        self.write(self.profile)
+        saved = json.loads(self.save().stdout)
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        packet = json.loads(result.stdout)
+        self.assertEqual(packet["records"][0]["context_sha256"], saved["context_sha256"])
+        self.assertEqual(packet["records"][0]["control_state"], "paused")
+        self.assertNotIn("https://", result.stdout)
+        self.assertFalse(packet["dispatch_authorized"])
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):

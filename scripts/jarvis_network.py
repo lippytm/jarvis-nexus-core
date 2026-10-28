@@ -191,6 +191,10 @@ def main(argv=None):
     backup = commands.add_parser("backup-ledger")
     backup.add_argument("--out", required=True)
     commands.add_parser("status")
+    destination_status = commands.add_parser("destination-status")
+    destination_status.add_argument("--project", choices=sorted(PROJECTS), required=True)
+    destination_status.add_argument("--platform", choices=sorted(TARGETS), required=True)
+    destination_status.add_argument("--destination", required=True)
     demo = commands.add_parser("demo")
     demo.add_argument("--out", required=True)
     args = parser.parse_args(argv)
@@ -222,7 +226,10 @@ def main(argv=None):
             manifest = load_packet(_local(root, args.manifest)) if args.command == "stage" else None
             returned_packet = load_packet(_local(root, args.file)) if args.command == "import-return" else None
             context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
-            with HandoffLedger(_local(root, args.database)) as ledger:
+            database = _local(root, args.database)
+            if args.command == "destination-status" and not database.is_file():
+                raise ValueError("destination status requires an existing ledger")
+            with HandoffLedger(database) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
                                           handoff_id=args.handoff, parent_id=args.parent)
@@ -259,6 +266,9 @@ def main(argv=None):
                     result = ledger.prepare_reconciliation(args.handoff, expected_inspection_sha256=args.inspection_digest,
                         expected_sha256=args.digest, expected_source_revision=args.source_revision,
                         expected_memory_revision=args.memory_revision)
+                elif args.command == "destination-status":
+                    result = ledger.destination_status(project_id=args.project, platform=args.platform,
+                                                       destination_id=args.destination)
                 else:
                     result = ledger.status()
         if output:

@@ -641,6 +641,59 @@ class ContextTests(unittest.TestCase):
             self.export(saved["context_sha256"], audience="public_candidate")
         self.assertEqual(self.load()["profile"]["execution"]["state"], "outcome_unknown")
 
+    def test_destination_status_selects_exact_platform_and_destination_without_private_text(self):
+        self.profile = self.destination_profile()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("mission-two", target="github")
+        other = {**self.context("mission-two"), "schema_version": 3, "destination_id": "repository-one",
+                 "control": self.profile["control"]}
+        self.ledger.save_context(other, expected_revision=0)
+        for name, destination in (("third", "repository-two"), ("legacy", None)):
+            staged = self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+                "target": "codex", "text": "Unrelated private fixture."}, self.manifest,
+                assistant_id="memory-pilot.evaluator", handoff_id=name)
+            profile = self.context(name)
+            profile["asset_id"] = "memory-pilot.evaluator"
+            if destination:
+                profile.update(schema_version=3, destination_id=destination, control=self.profile["control"])
+            self.ledger.save_context(profile, expected_revision=0)
+        before = list(self.ledger.db.iterdump())
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        query = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        result = self.ledger.destination_status(**query)
+        self.assertEqual([r["handoff_id"] for r in result["records"]], ["mission-one"])
+        self.assertEqual(result["records"][0]["execution_state"], "outcome_unknown")
+        self.assertFalse(result["dispatch_authorized"])
+        self.assertEqual(result["visibility"], "owner_private")
+        self.assertEqual(result["sender_authentication"], "not_established")
+        for text in ("https://", "Synthetic", "Unrelated", "mission-two"):
+            self.assertNotIn(text, json.dumps(result))
+        result["records"].clear()
+        self.assertEqual(len(self.ledger.destination_status(**query)["records"]), 1)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_destination_status_project_isolation_and_empty_results(self):
+        self.profile = self.destination_profile()
+        self.save()
+        for change in ({"project_id": "publishing-studio"}, {"platform": "github"},
+                       {"destination_id": "repository-two"}):
+            query = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+            query.update(change)
+            self.assertEqual(self.ledger.destination_status(**query)["records"], [])
+
+    def test_destination_status_rejects_invalid_scope_and_corrupt_context(self):
+        query = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        for change in ({"project_id": "unknown"}, {"platform": []}, {"destination_id": "../outside"}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.destination_status(**{**query, **change})
+        self.profile = self.destination_profile()
+        self.save()
+        self.ledger.db.execute("UPDATE handoff_contexts SET body='{}'")
+        with self.assertRaises(ValueError):
+            self.ledger.destination_status(**query)
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

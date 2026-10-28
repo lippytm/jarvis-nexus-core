@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import sqlite3
 
-from control_tower.network_contract import (canonical, digest, require_digest,
+from control_tower.network_contract import (PROJECTS, TARGETS, canonical, digest, require_digest,
     require_identifier, validate_draft, validate_return)
 from control_tower.swarm_factory import validate_swarm
 from control_tower.handoff_context import validate_context
@@ -232,6 +232,33 @@ class HandoffLedger:
                 "swarm_count": self.db.execute("SELECT count(*) FROM swarms").fetchone()[0],
                 "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
                 "model_calls": 0, "external_actions": 0}
+
+    def destination_status(self, *, project_id, platform, destination_id):
+        """Selective private metadata discovery, never connection/dispatch proof."""
+        if not isinstance(project_id, str) or project_id not in PROJECTS:
+            raise ValueError("unknown project")
+        if not isinstance(platform, str) or platform not in TARGETS:
+            raise ValueError("unknown platform")
+        require_identifier(destination_id, "destination ID")
+        with self._transaction():
+            matches = []
+            rows = self.db.execute("SELECT handoff_id FROM handoff_contexts ORDER BY handoff_id").fetchall()
+            for item in rows:
+                row, profile = self._context(item["handoff_id"])
+                if (profile["schema_version"] != 3 or profile["project_id"] != project_id
+                    or profile["platform"] != platform or profile["destination_id"] != destination_id):
+                    continue
+                original, _ = self._handoff(item["handoff_id"])
+                matches.append({"handoff_id": item["handoff_id"], "mission_id": profile["mission_id"],
+                    "asset_id": profile["asset_id"], "source_revision": profile["source_revision"],
+                    "memory_revision": profile["memory_revision"], "context_revision": row["revision"],
+                    "context_sha256": row["digest"], "handoff_state": original["state"],
+                    "execution_state": profile["execution"]["state"], "control_state": profile["control"]["state"],
+                    "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed"})
+            return {"schema_version": 1, "kind": "jarvis.destination_status", "project_id": project_id,
+                    "platform": platform, "destination_id": destination_id, "records": matches,
+                    "visibility": "owner_private", "sender_authentication": "not_established",
+                    "dispatch_authorized": False, "external_actions": 0}
 
     def _context(self, handoff_id):
         _, handoff = self._handoff(handoff_id)
