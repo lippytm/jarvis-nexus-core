@@ -106,6 +106,10 @@ class HandoffLedger:
                 "source_revision", "draft", "parent_id", "depth", "mode", "external_actions"}
         if not isinstance(body, dict) or set(body) != keys:
             raise ValueError("stored handoff structure mismatch")
+        if (type(body["schema_version"]) is not int or body["schema_version"] != 1
+            or body["kind"] != "jarvis.handoff" or body["mode"] != "manual_export_only"
+            or type(body["external_actions"]) is not int or body["external_actions"] != 0):
+            raise ValueError("stored handoff contract requires version 1, manual mode and zero external actions")
         if digest(body) != row["digest"] or body["handoff_id"] != row["id"] or body["assistant_id"] != row["assistant_id"] or body["swarm_id"] != row["swarm_id"]:
             raise ValueError("stored handoff integrity mismatch")
         manifest = self._swarm(body["swarm_id"])

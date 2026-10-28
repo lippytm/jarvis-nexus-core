@@ -32,9 +32,12 @@ strict configuration validator, checks its saved identity/digest, and verifies
 the handoff's manifest/source revision, assistant, project and target. Reviews,
 exports, imported returns and context operations therefore reject inconsistent
 stored scope before changing state. Backups reuse these checks rather than
-maintaining a separate scope validator. This is integrity checking, not author
-authentication or an adversarial-file security boundary; a checksum does not
-establish approval. Retain the damaged source for investigation instead of editing
+maintaining a separate scope validator. Shared reads also require the stored handoff's exact version-1
+kind, manual_export_only mode and integer zero external_actions, even when a
+damaged record has a recalculated digest. Boolean substitutes are rejected.
+These fixed contract checks do not change valid older records or install an
+executor. These are integrity checks, not authentication, an adversarial-file
+security boundary or proof of approval. Retain the damaged source for investigation instead of editing
 raw records to bypass rejection. No schema migration or automatic repair occurs.
 
 ## Writes, reviews and retrieval

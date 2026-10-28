@@ -772,6 +772,24 @@ class ContextTests(unittest.TestCase):
                       response_sha256="a" * 64, scope="Synthetic metadata read", source_revision=REVISION)
         return read_observation(provider, **{**values, **changes})
 
+    def test_shared_reads_reject_rehashed_handoff_contract_changes(self):
+        _, original = self.ledger._handoff("mission-one")
+        for field, value in (("schema_version", 2), ("schema_version", True),
+                             ("kind", "jarvis.return"), ("mode", "automatic_dispatch"),
+                             ("external_actions", 1), ("external_actions", False)):
+            with self.subTest(field=field, value=value):
+                body = {**original, field: value}
+                checksum = digest(body)
+                self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=?,reviewer_id='local-evaluator',state='reviewed' WHERE id=?",
+                    (json.dumps(body), checksum, checksum, "mission-one"))
+                before = list(self.ledger.db.iterdump())
+                for read in (self.ledger.status,
+                             lambda: self.ledger.export("mission-one", expected_sha256=checksum)):
+                    with self.assertRaisesRegex(ValueError, "stored handoff contract"):
+                        read()
+                self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+
     def bind_observation(self, observation, checksum=None):
         return self.ledger.bind_destination_observation("mission-one", observation,
             expected_sha256=checksum or self.load()["context_sha256"], expected_source_revision=REVISION,

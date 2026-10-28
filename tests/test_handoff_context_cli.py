@@ -326,6 +326,19 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertFalse((self.root / "bad-binding.sqlite3").exists())
 
+    def test_backup_rejects_rehashed_nonmanual_handoff_without_mutating_source(self):
+        with HandoffLedger(self.db) as ledger:
+            _, body = ledger._handoff("cli-task")
+            body["mode"] = "automatic_dispatch"
+            ledger.db.execute("UPDATE handoffs SET body=?,digest=? WHERE id=?",
+                (json.dumps(body), digest(body), "cli-task"))
+            before = list(ledger.db.iterdump())
+        result = self.cli("backup-ledger", "--out", "bad-contract.sqlite3")
+        self.assertEqual(result.returncode, 1)
+        self.assertFalse((self.root / "bad-contract.sqlite3").exists())
+        with HandoffLedger(self.db) as ledger:
+            self.assertEqual(list(ledger.db.iterdump()), before)
+
     def test_backup_rejects_rehashed_handoff_outside_registered_scope(self):
         with HandoffLedger(self.db) as ledger:
             row, handoff = ledger._handoff("cli-task")
