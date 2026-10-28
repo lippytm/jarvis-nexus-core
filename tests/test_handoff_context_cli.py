@@ -85,6 +85,22 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(existing.returncode, 0, existing.stderr)
         self.assertEqual(json.loads(existing.stdout)["handoffs"], [])
 
+    def test_cli_read_only_status_and_context_leave_database_unchanged(self):
+        self.assertEqual(self.save().returncode, 0)
+        before = self.db.read_bytes()
+        base = [sys.executable, str(ROOT / "scripts/jarvis_network.py"), "--root", str(self.root),
+                "--database", "ledger.sqlite3", "--read-only"]
+        for args in (("status",), ("load-context", "--handoff", "cli-task", "--source-revision", REVISION,
+                      "--memory-revision", "1", "--out", "read-only-context.json")):
+            result = subprocess.run(base + list(args), capture_output=True, text=True, timeout=15, cwd=ROOT)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(self.db.read_bytes(), before)
+        self.assertEqual(json.loads((self.root / "read-only-context.json").read_text())["profile"], self.profile)
+        refused = subprocess.run(base + ["init-ledger"], capture_output=True, text=True, timeout=15, cwd=ROOT)
+        self.assertEqual(refused.returncode, 1)
+        self.assertIn("read-only", json.loads(refused.stderr)["error"])
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_explicit_init_creates_empty_ledger_and_refuses_existing_state(self):
         result = self.cli("init-ledger", database="fresh/ledger.sqlite3")
         self.assertEqual(result.returncode, 0, result.stderr)

@@ -121,6 +121,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=str(ROOT))
     parser.add_argument("--database", default="reports/jarvis-network.sqlite3")
+    parser.add_argument("--read-only", action="store_true", help="Inspect an existing version-2 ledger without database writes")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("init-ledger")
     catalog = commands.add_parser("catalog")
@@ -202,6 +203,9 @@ def main(argv=None):
     demo.add_argument("--out", required=True)
     args = parser.parse_args(argv)
     try:
+        if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger"}:
+            raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
             raise ValueError("root must be an existing directory")
@@ -235,7 +239,7 @@ def main(argv=None):
             database = _local(root, args.database)
             if args.command != "stage" and not database.is_file():
                 raise ValueError("operation requires an existing ledger; use stage to create a new ledger")
-            with HandoffLedger(database) as ledger:
+            with HandoffLedger(database, read_only=args.read_only) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
                                           handoff_id=args.handoff, parent_id=args.parent)

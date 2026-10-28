@@ -26,10 +26,15 @@ def _now():
 class HandoffLedger:
     """Single local SQLite ledger; opaque IDs are never used as filenames."""
 
-    def __init__(self, path):
+    def __init__(self, path, *, read_only=False):
+        if type(read_only) is not bool:
+            raise ValueError("read-only option must be boolean")
+        self.read_only = read_only
         path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        self.db = sqlite3.connect(path, timeout=2, isolation_level=None)
+        if not read_only:
+            path.parent.mkdir(parents=True, exist_ok=True)
+        self.db = sqlite3.connect(path.resolve().as_uri() + "?mode=ro" if read_only else path,
+                                 uri=read_only, timeout=2, isolation_level=None)
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA foreign_keys=ON")
         try:
@@ -40,6 +45,10 @@ class HandoffLedger:
                 or (version == 1 and tables != legacy_tables)
                 or (version == 2 and tables != legacy_tables | {"handoff_contexts"})):
                 raise ValueError("unsupported or unrelated ledger database")
+            if read_only:
+                if version != 2:
+                    raise ValueError("read-only inspection requires an existing version-2 ledger; migration is separate")
+                return
             with self._transaction():
                 self.db.execute("CREATE TABLE IF NOT EXISTS swarms (id TEXT PRIMARY KEY, digest TEXT NOT NULL, body TEXT NOT NULL)")
                 self.db.execute("""CREATE TABLE IF NOT EXISTS handoffs (
@@ -71,7 +80,7 @@ class HandoffLedger:
 
     @contextmanager
     def _transaction(self):
-        self.db.execute("BEGIN IMMEDIATE")
+        self.db.execute("BEGIN" if self.read_only else "BEGIN IMMEDIATE")
         try:
             yield
         except Exception:

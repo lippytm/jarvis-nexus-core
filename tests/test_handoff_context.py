@@ -80,6 +80,52 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(first["external_actions"], 0)
         self.assertEqual(resumed["sender_authentication"], "not_established")
 
+    def test_read_only_inspection_preserves_checkpoint_and_database_bytes(self):
+        self.save()
+        expected = self.load()
+        self.ledger.close()
+        before = self.path.read_bytes()
+        try:
+            with HandoffLedger(self.path, read_only=True) as inspected:
+                self.assertEqual(inspected.load_context("mission-one", expected_source_revision=REVISION,
+                    expected_memory_revision=1), expected)
+                with self.assertRaises(sqlite3.OperationalError):
+                    inspected.db.execute("DELETE FROM handoff_contexts")
+            self.assertEqual(self.path.read_bytes(), before)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+
+    def test_read_only_requires_current_existing_schema_without_migrating(self):
+        absent = Path(self.directory.name) / "absent" / "ledger.sqlite3"
+        with self.assertRaises(sqlite3.OperationalError):
+            HandoffLedger(absent, read_only=True)
+        self.assertFalse(absent.parent.exists())
+        self.ledger.db.execute("DROP TABLE handoff_contexts")
+        self.ledger.db.execute("PRAGMA user_version=1")
+        self.ledger.close()
+        before = self.path.read_bytes()
+        try:
+            with self.assertRaisesRegex(ValueError, "read-only.*version-2"):
+                HandoffLedger(self.path, read_only=True)
+            self.assertEqual(self.path.read_bytes(), before)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+
+    def test_read_only_reads_committed_wal_checkpoint_and_unknown_hold(self):
+        self.ledger.db.execute("PRAGMA journal_mode=WAL")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.assertTrue(Path(str(self.path) + "-wal").is_file())
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            loaded = inspected.load_context("mission-one", expected_source_revision=REVISION,
+                                            expected_memory_revision=1)
+            self.assertEqual(loaded["profile"], self.profile)
+            snapshot = inspected.inspect_recovery("mission-one", expected_sha256=saved["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertIn("outcome_unknown", snapshot["lineage"][0]["holds"])
+            self.assertFalse(snapshot["retry_authorized"])
+
     def test_v1_migration_preserves_existing_rows_reviews_and_returns(self):
         self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
         self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])

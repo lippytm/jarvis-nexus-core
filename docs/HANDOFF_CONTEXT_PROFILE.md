@@ -54,6 +54,18 @@ still report an empty queue. This path check is not file-access authentication
 or protection against concurrent filesystem replacement; retain backups and
 control access before use.
 
+For an optional audit, place --read-only before the command (for example,
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read-only status).
+It uses SQLite mode=ro, skips schema setup/migration and uses read transactions.
+Only inspection and backup commands are accepted; export, review, initialization
+and other ledger writes are refused. Inspection may still save a requested
+private output file. An existing version-2 ledger is required; retain a backup
+and use the normal writable path separately for a version-1 migration. Defaults
+and valid old records are unchanged. This protects against database writes
+through this connection, not concurrent writers, filesystem replacement or
+unauthorized readers. SQLite WAL/shared-memory sidecars may require filesystem
+access; read-only mode is not immutable-file mode and must not ignore WAL data.
+
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
 SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical
