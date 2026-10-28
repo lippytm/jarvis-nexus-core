@@ -114,6 +114,89 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli("queue-report", "--project", "ai-jarvis", database="absent.sqlite3").returncode, 1)
         self.assertFalse((self.root / "absent.sqlite3").exists())
 
+    def test_cli_checkpoint_capture_and_historical_read_preserve_current_holds(self):
+        checksum = self.prepare_reviews()
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        args = ("--handoff", "cli-task", "--digest", checksum, "--source-revision", REVISION,
+                "--memory-revision", "1")
+        first = self.cli("capture-checkpoint", "--allow-schema-upgrade", *args)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        receipt = json.loads(first.stdout)
+        self.assertEqual(receipt["checkpoint_revision"], 1)
+        self.assertFalse(receipt["duplicate"])
+        self.assertTrue(json.loads(self.cli("capture-checkpoint", "--allow-schema-upgrade", *args).stdout)["duplicate"])
+        original = deepcopy(self.profile)
+        self.profile.update(schema_version=2, memory_revision=2,
+            control=dict(state="cancelled", actor_id="local-owner", reason="Synthetic hold."))
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.write(self.profile)
+        self.assertEqual(self.save(1).returncode, 0)
+        before = self.db.read_bytes()
+        loaded = self.cli("load-checkpoint", *args, "--checkpoint-revision", "1", "--out", "history.json")
+        self.assertEqual(loaded.returncode, 0, loaded.stderr)
+        packet = json.loads((self.root / "history.json").read_text())
+        self.assertEqual(packet["profile"], original)
+        self.assertEqual(packet["authority"], "historical_context_only_not_approval")
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertFalse(packet["retry_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.db.execute("PRAGMA user_version").fetchone()[0], 3)
+            current = ledger.load_context("cli-task", expected_source_revision=REVISION, expected_memory_revision=2)
+            self.assertEqual(current["profile"], self.profile)
+            self.assertEqual(current["review_state"], "proposed")
+            with self.assertRaises(ValueError):
+                ledger.export_context("cli-task", expected_sha256=current["context_sha256"],
+                    expected_source_revision=REVISION, expected_memory_revision=2)
+
+    def test_cli_checkpoint_capture_requires_opt_in_and_exact_existing_context(self):
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        args = ("--handoff", "cli-task", "--digest", checksum, "--source-revision", REVISION,
+                "--memory-revision", "1")
+        before = self.db.read_bytes()
+        missing_flag = self.cli("capture-checkpoint", *args)
+        self.assertNotEqual(missing_flag.returncode, 0)
+        self.assertEqual(self.db.read_bytes(), before)
+        readonly = self.cli("--read-only", "capture-checkpoint", "--allow-schema-upgrade", *args)
+        self.assertEqual(readonly.returncode, 1)
+        self.assertIn("read-only", json.loads(readonly.stderr)["error"])
+        self.assertEqual(self.db.read_bytes(), before)
+        for changed in (("--digest", "0" * 64), ("--source-revision", "0" * 40), ("--memory-revision", "2")):
+            values = list(args)
+            values[values.index(changed[0]) + 1] = changed[1]
+            self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", *values).returncode, 1)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+        absent = self.cli("capture-checkpoint", "--allow-schema-upgrade", *args, database="missing/ledger.sqlite3")
+        self.assertEqual(absent.returncode, 1)
+        self.assertFalse((self.root / "missing").exists())
+
+    def test_cli_historical_read_rejects_stale_revision_escape_and_overwrite(self):
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        args = ("--handoff", "cli-task", "--digest", checksum, "--source-revision", REVISION,
+                "--memory-revision", "1", "--checkpoint-revision", "1")
+        self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", *args[:-2]).returncode, 0)
+        before = self.db.read_bytes()
+        for flag, value in (("--digest", "0" * 64), ("--source-revision", "0" * 40),
+                            ("--memory-revision", "2"), ("--checkpoint-revision", "2"), ("--checkpoint-revision", "0")):
+            values = list(args)
+            values[values.index(flag) + 1] = value
+            result = self.cli("load-checkpoint", *values, "--out", "rejected-history.json")
+            self.assertEqual(result.returncode, 1, result.stderr)
+            self.assertFalse((self.root / "rejected-history.json").exists())
+        self.assertEqual(self.cli("load-checkpoint", *args, "--out", "../outside-history.json").returncode, 1)
+        self.assertEqual(self.cli("--read-only", "load-checkpoint", *args, "--out", "private/history.json").returncode, 0)
+        content = (self.root / "private/history.json").read_bytes()
+        self.assertEqual(self.cli("load-checkpoint", *args, "--out", "private/history.json").returncode, 1)
+        self.assertEqual((self.root / "private/history.json").read_bytes(), content)
+        self.assertEqual(self.cli("load-checkpoint", *args, "--out", "absent-history.json",
+            database="absent/ledger.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "absent").exists())
+        self.assertFalse((self.root / "absent-history.json").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_backup_preserves_opt_in_history_and_rejects_corrupt_checkpoint(self):
         checksum = json.loads(self.save().stdout)["context_sha256"]
         args = dict(expected_sha256=checksum, expected_source_revision=REVISION, expected_memory_revision=1)

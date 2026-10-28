@@ -99,8 +99,8 @@ expected_memory_revision=...) retains the exact current context before a later e
 Its first successful call explicitly upgrades SQLite user_version from 2 to 3 and
 adds context_checkpoints in the same ledger. Existing tables/records and strict
 packet schemas are unchanged. No history is invented for revisions already lost.
-Stop older clients before opting in. New/default ledgers remain version 2 until this API is used; capture has no CLI
-or automatic worker in this increment. Retain a checked version-2 backup before
+Stop older clients before opting in. New/default ledgers remain version 2 until capture is used;
+there is no automatic capture worker. Retain a checked version-2 backup before
 opting in. Older code rejects version 3; rollback needs the matching old backup,
 not a lowered pragma or deleted table. Never overwrite an active ledger.
 
@@ -120,6 +120,25 @@ recovery. Checkpoint tables remain writable by someone controlling the database;
 hashes are integrity checks, not an adversarial-file boundary or authenticated authorship.
 Checked backups support SQLite versions 2 and 3, validate every retained profile
 and preserve history on restoration. Corrupt checkpoints prevent publication.
+
+For an existing staged handoff/context, the operator CLI exposes these same APIs:
+
+```sh
+python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --database ledger.sqlite3 capture-checkpoint --allow-schema-upgrade --handoff YOUR-HANDOFF-ID --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1
+python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --database ledger.sqlite3 load-checkpoint --handoff YOUR-HANDOFF-ID --checkpoint-revision 1 --digest YOUR-CAPTURED-CONTEXT-SHA256 --source-revision YOUR-CAPTURED-40-CHAR-SOURCE-SHA --memory-revision 1 --out private/history-001.json
+```
+
+Replace placeholders with values from the actual saved context/capture receipt.
+capture-checkpoint requires --allow-schema-upgrade on every call, including duplicate
+captures; this explicit local opt-in is not identity authentication or release approval.
+It requires an existing ledger and prints a metadata receipt with checkpoint_revision,
+context_sha256 and duplicate. An exact replay at the unchanged current revision is
+deduplicated. It cannot capture already-replaced context. --read-only rejects capture.
+load-checkpoint always opens the database read-only, even without --read-only. Its
+checkpoint revision, digest, source and memory revision select the retained historical
+record, which may differ from current context. It writes a new owner-private JSON file
+inside --root and refuses existing outputs, path escapes, missing ledgers and mismatches.
+Neither command dispatches work, retries a mission, accepts facts or restores approvals.
 
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.

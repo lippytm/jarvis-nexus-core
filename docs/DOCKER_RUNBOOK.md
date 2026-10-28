@@ -50,6 +50,24 @@ these commands do not authenticate users, approve releases, dispatch work or
 expose a public endpoint. Protect /data and the exported files. Running status
 does not perform a mission or save context.
 
+To retain the exact current context before replacing it, first stop older clients
+and retain a checked version-2 backup as described below. Capture explicitly opts
+the existing ledger into storage version 3; this is separate from the profile's
+schema version. With actual saved-context values:
+
+```sh
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 capture-checkpoint --allow-schema-upgrade --handoff YOUR-HANDOFF-ID --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1
+docker compose run --rm jarvis python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 load-checkpoint --handoff YOUR-HANDOFF-ID --checkpoint-revision 1 --digest YOUR-CAPTURED-CONTEXT-SHA256 --source-revision YOUR-CAPTURED-40-CHAR-SOURCE-SHA --memory-revision 1 --out private/history-001.json
+```
+
+Every capture requires --allow-schema-upgrade and returns its exact checkpoint
+revision/digest; unchanged repeats deduplicate. Retrieval always opens SQLite
+read-only and writes a fresh private historical-context file, never overwriting
+evidence or changing current holds/reviews. Use captured source/memory revisions
+for history, which can differ from current values. This is manual local retention,
+not automatic recovery. Older code rejects storage version 3; rolling back needs
+the matching old backup, never lowering the pragma or deleting the history table.
+
 To prepare a private manual handoff envelope, separately review the original
 handoff with the existing review command and its handoff digest, then review the
 context with its context digest (from save-context/load-context):

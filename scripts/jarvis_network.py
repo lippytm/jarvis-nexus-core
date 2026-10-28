@@ -160,6 +160,20 @@ def main(argv=None):
     context_load.add_argument("--source-revision", required=True)
     context_load.add_argument("--memory-revision", type=int, required=True)
     context_load.add_argument("--out", required=True)
+    checkpoint_capture = commands.add_parser("capture-checkpoint", help="Retain exact current context; opt in to storage version 3")
+    checkpoint_capture.add_argument("--handoff", required=True)
+    checkpoint_capture.add_argument("--digest", required=True)
+    checkpoint_capture.add_argument("--source-revision", required=True)
+    checkpoint_capture.add_argument("--memory-revision", type=int, required=True)
+    checkpoint_capture.add_argument("--allow-schema-upgrade", action="store_true", required=True,
+        help="Explicitly permit opt-in version-3 history storage; required on every capture")
+    checkpoint_load = commands.add_parser("load-checkpoint", help="Read one private historical context without database writes")
+    checkpoint_load.add_argument("--handoff", required=True)
+    checkpoint_load.add_argument("--checkpoint-revision", type=int, required=True)
+    checkpoint_load.add_argument("--digest", required=True)
+    checkpoint_load.add_argument("--source-revision", required=True)
+    checkpoint_load.add_argument("--memory-revision", type=int, required=True)
+    checkpoint_load.add_argument("--out", required=True)
     context_review = commands.add_parser("review-context")
     context_review.add_argument("--handoff", required=True)
     context_review.add_argument("--reviewer", required=True)
@@ -210,7 +224,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report", "load-checkpoint"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -245,7 +259,7 @@ def main(argv=None):
             database = _local(root, args.database)
             if args.command != "stage" and not database.is_file():
                 raise ValueError("operation requires an existing ledger; use stage to create a new ledger")
-            with HandoffLedger(database, read_only=args.read_only) as ledger:
+            with HandoffLedger(database, read_only=args.read_only or args.command == "load-checkpoint") as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
                                           handoff_id=args.handoff, parent_id=args.parent)
@@ -261,6 +275,12 @@ def main(argv=None):
                     result = ledger.load_context(args.handoff, expected_source_revision=args.source_revision,
                                                  expected_memory_revision=args.memory_revision,
                                                  audience="owner_private")
+                elif args.command == "capture-checkpoint":
+                    result = ledger.checkpoint_context(args.handoff, expected_sha256=args.digest,
+                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
+                elif args.command == "load-checkpoint":
+                    result = ledger.load_checkpoint(args.handoff, args.checkpoint_revision, expected_sha256=args.digest,
+                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
                 elif args.command == "review-context":
                     ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest)
                     result = {"handoff_id": args.handoff, "context_sha256": args.digest,
