@@ -13,6 +13,7 @@ from control_tower.network_contract import (PROJECTS, TARGETS, canonical, digest
     require_identifier, validate_draft, validate_return)
 from control_tower.swarm_factory import validate_swarm
 from control_tower.handoff_context import validate_context
+from control_tower.connections import connector_report
 
 MAX_HANDOFFS = 1000
 MAX_SWARMS = 100
@@ -488,6 +489,29 @@ class HandoffLedger:
             return {"revision": row["revision"], "context_sha256": row["digest"],
                     "profile": profile, "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed",
                     "sender_authentication": "not_established", "external_actions": 0}
+
+    def bind_destination_observation(self, handoff_id, observation, *, expected_sha256,
+                                     expected_source_revision, expected_memory_revision, now=None):
+        """Bind supplied read metadata to exact destination context; no authority."""
+        require_digest(expected_sha256)
+        report = connector_report([observation], now=now)
+        loaded = self.load_context(handoff_id, expected_source_revision=expected_source_revision,
+                                   expected_memory_revision=expected_memory_revision)
+        profile = loaded["profile"]
+        if (profile["schema_version"] != 3 or loaded["context_sha256"] != expected_sha256
+            or observation["connector"] != profile["platform"]
+            or observation["source_revision"] != profile["source_revision"]):
+            raise ValueError("observation requires the exact destination context, provider and source revision")
+        fields = ("project_id", "mission_id", "asset_id", "platform", "destination_id",
+                  "source_revision", "memory_revision", "configuration_version")
+        result = {key: profile[key] for key in fields}
+        result.update(schema_version=1, kind="jarvis.destination_observation", handoff_id=handoff_id,
+            handoff_sha256=profile["handoff_sha256"], context_revision=loaded["revision"],
+            context_sha256=expected_sha256, observation=dict(observation), visibility="owner_private",
+            review_state=loaded["review_state"], observation_status=report[profile["platform"]]["status"],
+            observation_verification="integrity_only", runtime_available="unknown",
+            dispatch_authorized=False, external_actions=0)
+        return {**result, "receipt_sha256": digest(result)}
 
     def review_context(self, handoff_id, *, reviewer_id, expected_sha256):
         require_identifier(reviewer_id, "reviewer label")

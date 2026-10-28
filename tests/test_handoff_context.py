@@ -1,5 +1,6 @@
 """Synthetic local recovery fixtures; no provider call or hosted service."""
 from copy import deepcopy
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 import sqlite3
@@ -11,6 +12,7 @@ import unittest
 from control_tower.handoffs import HandoffLedger
 from control_tower.network_contract import TARGETS, digest, validate_draft
 from control_tower.swarm_factory import build_swarm
+from control_tower.connections import read_observation
 
 REVISION = "0825e98c5cd148f0cf708e81dbe77fe462164ac2"
 
@@ -724,6 +726,64 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ledger.export("mission-one", expected_sha256=checksum)
         self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def observation(self, provider="codex", **changes):
+        values = dict(observed_at="2026-10-28T00:00:00Z", evidence_url="https://example.invalid/read",
+                      response_sha256="a" * 64, scope="Synthetic metadata read", source_revision=REVISION)
+        return read_observation(provider, **{**values, **changes})
+
+    def bind_observation(self, observation, checksum=None):
+        return self.ledger.bind_destination_observation("mission-one", observation,
+            expected_sha256=checksum or self.load()["context_sha256"], expected_source_revision=REVISION,
+            expected_memory_revision=1, now=datetime(2026, 10, 28, 1, tzinfo=timezone.utc))
+
+    def test_destination_observation_retains_bindings_without_changing_holds_or_records(self):
+        self.profile = self.destination_profile()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["control"]["state"] = "cancelled"
+        saved = self.approve()
+        original = self.observation()
+        before = list(self.ledger.db.iterdump())
+        bound = self.bind_observation(original)
+        self.assertEqual(bound["destination_id"], "repository-one")
+        self.assertEqual(bound["observation"], original)
+        self.assertEqual(bound["observation_status"], "read_observed")
+        self.assertEqual(bound["runtime_available"], "unknown")
+        self.assertFalse(bound["dispatch_authorized"])
+        self.assertNotIn("execution", bound)
+        self.assertNotIn("context_refs", bound)
+        self.assertEqual(bound["visibility"], "owner_private")
+        checksum = bound.pop("receipt_sha256")
+        self.assertEqual(digest(bound), checksum)
+        bound["observation"]["scope"] = "Changed returned metadata."
+        self.assertEqual(self.observation(), original)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_destination_observation_rejects_mismatch_tampering_and_legacy_context(self):
+        self.save()
+        with self.assertRaises(ValueError):
+            self.bind_observation(self.observation())
+        self.profile = self.destination_profile()
+        saved = self.ledger.save_context(self.profile, expected_revision=1)
+        tampered = self.observation()
+        tampered["response_sha256"] = "b" * 64
+        for record in (tampered, self.observation("github"), self.observation(source_revision="f" * 40)):
+            with self.subTest(record=record), self.assertRaises(ValueError):
+                self.bind_observation(record)
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "New selected context."
+        self.ledger.save_context(changed, expected_revision=2)
+        with self.assertRaises(ValueError):
+            self.bind_observation(self.observation(), saved["context_sha256"])
+
+    def test_destination_observation_preserves_stale_status_and_rejects_future_time(self):
+        self.profile = self.destination_profile()
+        self.save()
+        old = self.bind_observation(self.observation(observed_at="2026-10-20T00:00:00Z"))
+        self.assertEqual(old["observation_status"], "unverified")
+        with self.assertRaises(ValueError):
+            self.bind_observation(self.observation(observed_at="2026-10-29T00:00:00Z"))
 
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()

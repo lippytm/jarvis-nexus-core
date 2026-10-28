@@ -263,6 +263,32 @@ current provider availability. This local command supplies no access-control
 service; future hosted adapters must authenticate and authorize project/resource
 access. Do not expose the report publicly.
 
+## Destination-bound read observations
+
+bind-observation wraps the existing strict connector read-observation format in
+a separate version-1 jarvis.destination_observation receipt. Supply an existing
+version-3 context and its exact digest/source/memory revisions. Provider and source
+revision must match that context. Observation structure, checksum and timestamp
+use the existing connector validator; stale observations retain unverified status
+and future observations are rejected. Original observation and packet fields are
+unchanged. The receipt includes destination/mission identity, context revision and
+digest, original read metadata and a separate receipt checksum, always private.
+
+```sh
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 bind-observation --handoff YOUR-HANDOFF-ID --file read-observation.json --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1 --out destination-read-001.json
+```
+
+The collector must obtain and retain the real response independently, compute its
+SHA-256 over those exact bytes, and verify that its resource matches the intended
+opaque destination. This command does not fetch URLs or prove that a supplied
+hash, URL, scope label or destination mapping is authentic. It omits context text,
+reference lists and execution detail, changes no ledger state or holds, sends
+nothing and refuses existing output files. The source observation remains data;
+no authenticated registry or live adapter is installed. Runtime availability stays
+unknown and dispatch authorization stays false, even after a real successful read.
+Check current revisions again before later decisions; the receipt is not a lease,
+write authorization or authenticated delivery/mission-completion receipt.
+
 ## Migration and rollback
 
 Opening a supported version-1 ledger transactionally adds `handoff_contexts`

@@ -1,5 +1,6 @@
 """Actual CLI subprocesses against synthetic private checkpoint fixtures."""
 from copy import deepcopy
+from datetime import datetime, timezone
 import json
 import hashlib
 from pathlib import Path
@@ -12,6 +13,7 @@ from unittest.mock import patch
 from control_tower.handoffs import HandoffLedger
 from control_tower.swarm_factory import build_swarm
 from control_tower.network_contract import digest
+from control_tower.connections import read_observation
 from scripts.jarvis_network import _backup
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -396,6 +398,25 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(packet["records"][0]["control_state"], "paused")
         self.assertNotIn("https://", result.stdout)
         self.assertFalse(packet["dispatch_authorized"])
+
+    def test_cli_binds_observation_without_overwriting_private_output(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic local read."))
+        self.write(self.profile)
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        observation = read_observation("codex", observed_at=datetime.now(timezone.utc).isoformat(),
+            evidence_url="https://example.invalid/read", response_sha256="a" * 64,
+            scope="Synthetic CLI read", source_revision=REVISION)
+        (self.root / "observation.json").write_text(json.dumps(observation))
+        args = ("bind-observation", "--handoff", "cli-task", "--file", "observation.json", "--digest", checksum,
+                "--source-revision", REVISION, "--memory-revision", "1", "--out", "bound-read.json")
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        content = (self.root / "bound-read.json").read_bytes()
+        self.assertEqual(json.loads(content)["observation"], observation)
+        self.assertFalse(json.loads(content)["dispatch_authorized"])
+        self.assertEqual(self.cli(*args).returncode, 1)
+        self.assertEqual((self.root / "bound-read.json").read_bytes(), content)
 
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
