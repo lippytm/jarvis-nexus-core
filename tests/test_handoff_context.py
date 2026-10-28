@@ -8,6 +8,7 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from control_tower.handoffs import HandoffLedger
 from control_tower.network_contract import TARGETS, digest, validate_draft
@@ -125,6 +126,33 @@ class ContextTests(unittest.TestCase):
                 expected_source_revision=REVISION, expected_memory_revision=1)
             self.assertIn("outcome_unknown", snapshot["lineage"][0]["holds"])
             self.assertFalse(snapshot["retry_authorized"])
+
+    def test_status_snapshot_does_not_mix_late_return_with_old_handoff_state(self):
+        self.ledger.db.execute("PRAGMA journal_mode=WAL")
+        self.ledger.review("mission-one", reviewer_id="local-evaluator",
+                           expected_sha256=self.receipt["handoff_sha256"])
+        self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        packet = dict(schema_version=1, kind="jarvis.return", return_id="late-return",
+            handoff_id="mission-one", handoff_sha256=self.receipt["handoff_sha256"],
+            source_provider="codex", text="Synthetic concurrent return.", evidence_urls=[])
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            summarize = inspected._summary
+            def commit_return(row, **kwargs):
+                self.ledger.import_return(packet)
+                return summarize(row, **kwargs)
+            with patch.object(inspected, "_summary", side_effect=commit_return):
+                snapshot = inspected.status()
+            self.assertEqual(snapshot["handoffs"][0]["state"], "export_prepared")
+            self.assertEqual(snapshot["return_count"], 0)
+            current = inspected.status()
+            self.assertEqual(current["handoffs"][0]["state"], "returned_unverified")
+            self.assertEqual(current["return_count"], 1)
+
+    def test_status_validation_failure_closes_snapshot_transaction(self):
+        self.ledger.db.execute("UPDATE handoffs SET body='{}'")
+        with self.assertRaises(ValueError):
+            self.ledger.status()
+        self.assertFalse(self.ledger.db.in_transaction)
 
     def test_v1_migration_preserves_existing_rows_reviews_and_returns(self):
         self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])

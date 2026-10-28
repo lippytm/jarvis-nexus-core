@@ -66,6 +66,14 @@ through this connection, not concurrent writers, filesystem replacement or
 unauthorized readers. SQLite WAL/shared-memory sidecars may require filesystem
 access; read-only mode is not immutable-file mode and must not ignore WAL data.
 
+Status reads handoff metadata, validates stored bindings and counts swarms/returns
+inside one transaction. In read-only WAL inspection, a return committed by another
+connection during the read appears in the next report, not mixed with an older
+handoff state in the current report. Normal writable mode uses the existing
+BEGIN IMMEDIATE serialization. Validation failure rolls the snapshot back.
+The result is a point-in-time observation, not a lease, dispatch grant or proof
+that imported returns are authenticated or completed work.
+
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
 SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical

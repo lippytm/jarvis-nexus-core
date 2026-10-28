@@ -261,11 +261,12 @@ class HandoffLedger:
 
     def status(self):
         """Return metadata only; draft and imported text remain in the local ledger."""
-        rows = self.db.execute("SELECT id FROM handoffs ORDER BY created_at,id").fetchall()
-        return {"mode": "local_ledger", "handoffs": [self._summary(self._handoff(r["id"])[0]) for r in rows],
-                "swarm_count": self.db.execute("SELECT count(*) FROM swarms").fetchone()[0],
-                "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
-                "model_calls": 0, "external_actions": 0}
+        with self._transaction():
+            rows = self.db.execute("SELECT id FROM handoffs ORDER BY created_at,id").fetchall()
+            return {"mode": "local_ledger", "handoffs": [self._summary(self._handoff(r["id"])[0]) for r in rows],
+                    "swarm_count": self.db.execute("SELECT count(*) FROM swarms").fetchone()[0],
+                    "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
+                    "model_calls": 0, "external_actions": 0}
 
     def destination_status(self, *, project_id, platform, destination_id):
         """Selective private metadata discovery, never connection/dispatch proof."""
