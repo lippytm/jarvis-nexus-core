@@ -97,6 +97,23 @@ reconciliation approval. A future reconciliation proposal must bind current
 inspection/context revisions to actual destination evidence and authenticated
 owner approval. Verified resolution and hold release remain unimplemented.
 
+Before using an inspection in a later review, `check_recovery` can compare its
+inspection_sha256 with a fresh transactional snapshot. The CLI equivalent is:
+
+```sh
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 check-recovery --handoff YOUR-HANDOFF-ID --inspection-digest YOUR-INSPECTION-SHA256 --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1
+```
+
+Use real values from inspect-recovery/load-context; these are placeholders. A
+changed ancestor context, local review state or late return invalidates the old
+inspection even if the selected context digest is unchanged. The check prints
+only a small private receipt, not the lineage or source text. It changes no
+ledger records and establishes only a current local observation. It is not a
+lease: another process can change the ledger after the snapshot transaction.
+Any future state-changing reconciliation must recheck the expected snapshot
+atomically with its write and authenticate owner authority. A successful check
+does not verify destination evidence, clear a hold or authorize a retry.
+
 ## Follow-up lineage controls
 
 Staging a follow-up now checks its parent and ancestors for the same local hold

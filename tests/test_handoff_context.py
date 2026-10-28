@@ -445,6 +445,62 @@ class ContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "return integrity"):
             self.inspect("followup-one")
 
+    def check_inspection(self, packet):
+        leaf = packet["lineage"][0]
+        return self.ledger.check_recovery(packet["handoff_id"],
+            expected_inspection_sha256=packet["inspection_sha256"],
+            expected_sha256=leaf["context"]["context_sha256"],
+            expected_source_revision=leaf["source_revision"],
+            expected_memory_revision=leaf["context"]["memory_revision"])
+
+    def test_checked_inspection_survives_restart_but_never_releases_hold(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        packet = self.inspect()
+        before = list(self.ledger.db.iterdump())
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        checked = self.check_inspection(packet)
+        self.assertEqual(checked["state"], "current_local_observation_only")
+        self.assertFalse(checked["retry_authorized"])
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assert_exports_blocked(saved["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.check_inspection({**packet, "inspection_sha256": "0" * 64})
+
+    def test_parent_context_and_review_changes_invalidate_child_inspection(self):
+        self.returned_parent()
+        self.stage_followup()
+        self.ledger.save_context(self.context("followup-one"), expected_revision=0)
+        original = self.inspect("followup-one")
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "New ancestor observation."
+        saved = self.ledger.save_context(changed, expected_revision=1)
+        with self.assertRaisesRegex(ValueError, "inspection is stale"):
+            self.check_inspection(original)
+        refreshed = self.inspect("followup-one")
+        self.assertEqual(original["lineage"][0], refreshed["lineage"][0])
+        self.check_inspection(refreshed)
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        with self.assertRaisesRegex(ValueError, "inspection is stale"):
+            self.check_inspection(refreshed)
+
+    def test_late_return_invalidates_inspection_without_clearing_unknown_outcome(self):
+        saved = self.approve()
+        self.export(saved["context_sha256"])
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(self.profile, expected_revision=1)
+        original = self.inspect()
+        self.ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": "late-evidence",
+            "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+            "source_provider": "codex", "text": "Synthetic late return, still unverified.", "evidence_urls": []})
+        with self.assertRaisesRegex(ValueError, "inspection is stale"):
+            self.check_inspection(original)
+        refreshed = self.inspect()
+        self.assertEqual(original["lineage"][0]["context"], refreshed["lineage"][0]["context"])
+        self.assertFalse(self.check_inspection(refreshed)["retry_authorized"])
+        self.assert_exports_blocked(refreshed["lineage"][0]["context"]["context_sha256"])
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

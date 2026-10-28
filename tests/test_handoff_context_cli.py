@@ -213,5 +213,21 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "inspection.json").read_bytes(), original)
 
 
+    def test_check_recovery_accepts_current_snapshot_and_rejects_changed_review(self):
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        self.assertEqual(self.inspect(checksum).returncode, 0)
+        packet = json.loads((self.root / "inspection.json").read_text())
+        args = ("check-recovery", "--handoff", "cli-task", "--inspection-digest", packet["inspection_sha256"],
+                "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1")
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(json.loads(result.stdout)["retry_authorized"])
+        self.assertNotIn("lineage", json.loads(result.stdout))
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        stale = self.cli(*args)
+        self.assertEqual(stale.returncode, 1)
+        self.assertIn("inspection is stale", stale.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

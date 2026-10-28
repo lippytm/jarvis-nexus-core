@@ -326,6 +326,23 @@ class HandoffLedger:
                       "sender_authentication": "not_established", "external_actions": 0}
             return {**result, "inspection_sha256": digest(result)}
 
+    def check_recovery(self, handoff_id, *, expected_inspection_sha256, expected_sha256,
+                       expected_source_revision, expected_memory_revision):
+        """Check a previously inspected snapshot, without authorizing any action.
+
+        Valid only at the observation point, not a lease or a future release gate.
+        Ancestor changes and late returns invalidate the complete snapshot even
+        when the selected context digest and memory revision remain unchanged.
+        """
+        require_digest(expected_inspection_sha256)
+        current = self.inspect_recovery(handoff_id, expected_sha256=expected_sha256,
+            expected_source_revision=expected_source_revision, expected_memory_revision=expected_memory_revision)
+        if current["inspection_sha256"] != expected_inspection_sha256:
+            raise ValueError("recovery inspection is stale; inspect current evidence again")
+        return {"handoff_id": handoff_id, "inspection_sha256": expected_inspection_sha256,
+                "state": "current_local_observation_only", "visibility": "owner_private",
+                "retry_authorized": False, "sender_authentication": "not_established", "external_actions": 0}
+
     def save_context(self, profile, *, expected_revision):
         """CAS write of proposed context; never alters the version-1 handoff.
 
