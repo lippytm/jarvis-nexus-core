@@ -355,6 +355,17 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "proposal.json").read_bytes(), content)
         self.assertEqual(self.export_context(checksum).returncode, 1)
 
+    def test_destination_context_survives_cli_backup_and_restoration_read(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic destination checkpoint."))
+        self.write(self.profile)
+        self.assertEqual(self.save().returncode, 0)
+        self.assertEqual(self.cli("backup-ledger", "--out", "destination.sqlite3").returncode, 0)
+        result = self.cli("load-context", "--handoff", "cli-task", "--source-revision", REVISION,
+            "--memory-revision", "1", "--out", "destination.json", database="destination.sqlite3")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads((self.root / "destination.json").read_text())["profile"], self.profile)
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):

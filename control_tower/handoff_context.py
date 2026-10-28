@@ -20,15 +20,18 @@ def validate_context(profile, handoff):
     if not isinstance(profile, dict):
         raise ValueError("context must be a record")
     version = profile.get("schema_version")
-    if type(version) is not int or version not in (1, 2):
+    if type(version) is not int or version not in (1, 2, 3):
         raise ValueError("unsupported context schema")
     keys = {
         "schema_version", "kind", "handoff_id", "handoff_sha256", "project_id",
         "mission_id", "source_revision", "asset_id", "platform", "configuration_version",
         "memory_revision", "visibility", "allowed_actions", "context_refs", "evidence_refs",
         "budget", "execution"}
-    require_record(profile, keys | ({"control"} if version == 2 else set()))
-    if version == 2:
+    require_record(profile, keys | ({"control"} if version >= 2 else set())
+                   | ({"destination_id"} if version == 3 else set()))
+    if version == 3:
+        require_identifier(profile["destination_id"], "destination ID")
+    if version >= 2:
         control = profile["control"]
         require_record(control, {"state", "actor_id", "reason"})
         if control["state"] not in ("active", "paused", "cancelled"):

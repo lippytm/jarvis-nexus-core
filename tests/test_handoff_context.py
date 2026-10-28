@@ -560,6 +560,77 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.proposal(expected_memory_revision=2)
 
+    def destination_profile(self, destination="repository-one"):
+        return {**self.control_profile("active"), "schema_version": 3, "destination_id": destination}
+
+    def test_destination_round_trip_requires_both_reviews_and_survives_restart(self):
+        self.profile = self.destination_profile()
+        saved = self.save()
+        self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.load()["profile"], self.profile)
+        packet = self.export(saved["context_sha256"])
+        self.assertEqual(packet["context"]["destination_id"], "repository-one")
+        self.assertEqual(packet["handoff_sha256"], self.receipt["handoff_sha256"])
+        self.assertNotIn("destination_id", packet["handoff"])
+
+    def test_destination_cannot_be_silently_added_or_changed_or_downgraded(self):
+        for version in (1, 2):
+            bad = self.destination_profile()
+            bad["schema_version"] = version
+            if version == 1:
+                del bad["control"]
+            with self.assertRaises(ValueError):
+                self.ledger.save_context(bad, expected_revision=0)
+        self.profile = self.destination_profile()
+        self.save()
+        downgrade = self.control_profile("active")
+        downgrade.pop("destination_id")
+        for changed in (self.destination_profile("repository-two"), downgrade):
+            with self.assertRaises(ValueError):
+                self.ledger.save_context(changed, expected_revision=1)
+        self.assertEqual(self.load()["profile"], self.profile)
+
+    def test_destination_requires_a_bounded_opaque_identifier(self):
+        for value in ("", "../outside", "https://example.invalid/channel", "a" * 129, None):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.ledger.save_context(self.destination_profile(value), expected_revision=0)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM handoff_contexts").fetchone()[0], 0)
+
+    def test_destination_opt_in_only_before_original_review(self):
+        self.save()
+        self.profile = self.destination_profile()
+        self.ledger.save_context(self.profile, expected_revision=1)
+        self.stage("mission-two")
+        other = self.context("mission-two")
+        self.ledger.save_context(other, expected_revision=0)
+        _, handoff = self.ledger._handoff("mission-two")
+        self.ledger.review("mission-two", reviewer_id="local-evaluator", expected_sha256=digest(handoff))
+        other.update(schema_version=3, destination_id="repository-two", control=self.profile["control"])
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(other, expected_revision=1)
+        self.assertEqual(self.load("mission-two")["profile"]["schema_version"], 1)
+
+    def test_destination_records_are_independent_and_unknown_cancelled_state_is_retained(self):
+        self.profile = self.destination_profile()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["control"]["state"] = "cancelled"
+        saved = self.approve()
+        self.stage("mission-two")
+        other = {**self.context("mission-two"), "schema_version": 3, "destination_id": "repository-two",
+                 "control": self.control_profile("active")["control"]}
+        other["control"]["state"] = "active"
+        self.ledger.save_context(other, expected_revision=0)
+        self.assertEqual(self.load()["profile"]["destination_id"], "repository-one")
+        self.assertEqual(self.load("mission-two")["profile"]["destination_id"], "repository-two")
+        self.assert_exports_blocked(saved["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.export(saved["context_sha256"], audience="public_candidate")
+        self.assertEqual(self.load()["profile"]["execution"]["state"], "outcome_unknown")
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

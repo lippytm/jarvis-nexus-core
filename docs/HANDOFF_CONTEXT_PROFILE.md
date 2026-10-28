@@ -1,4 +1,4 @@
-# Hermes Fabric MemPalace: local handoff context, versions 1 and 2
+# Hermes Fabric MemPalace: local handoff context, versions 1, 2 and 3
 
 This development increment extends `HandoffLedger`; it does not introduce a
 second memory store. The existing strict version-1 draft, handoff and return
@@ -188,6 +188,38 @@ hosted service. Only this updated implementation enforces them. Do not run older
 application code against controlled records; preserve private backups and review
 controls explicitly before a rollback. No database-table migration is needed for
 this envelope opt-in; SQLite user_version remains 2.
+
+## Version-3 destination binding
+
+Version 3 retains all version-2 fields and adds one required opaque destination_id,
+for example repository-one or channel-one. This identifies an intended resource
+within the existing project/platform scope; it is not a URL, credential, verified
+account identity or authenticated connection. Use a bounded identifier and retain
+the owner's mapping to the actual resource in authorized evidence. All seventeen
+portable platforms remain supported and distinct, including codex.
+
+Create the version-3 context, or explicitly upgrade an older context, while the
+original handoff is still pending_review. Binding after original review/export is
+rejected; do not retroactively label previously exported work. Once bound, the
+destination cannot change or be removed, and schema downgrade is rejected. For
+a genuinely different destination use a separately scoped, reviewed mission;
+never allocate another identity to evade an existing hold or deduplication.
+
+Use the existing save-context/load-context/review-context/export-context commands.
+Both export paths enforce version-3 pause/cancel, unknown-outcome and fresh-review
+guards. Compatible private envelopes retain the full version-3 context while the
+strict version-1 handoff remains unchanged. Inspection/proposal digests bind the
+destination through its context digest; retrieve the matching context to inspect
+the resource ID. Existing version-1/2 profiles remain valid and reject a silently
+added destination_id. SQLite user_version remains 2; no table migration occurs.
+Backups retain destination identity and controls. Older application versions reject
+version-3 context; do not roll them back against these records.
+
+This is immutable local destination metadata, not a complete connection registry,
+authenticated adapter, destination-specific return protocol or live dispatch.
+Legacy manual exports and unverified returns still bind only the original target
+and handoff digest. An authenticated worker must enforce the exact resource and
+owner release gate before external delivery; version-3 labels alone grant nothing.
 
 ## Migration and rollback
 

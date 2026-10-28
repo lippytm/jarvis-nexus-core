@@ -264,7 +264,7 @@ class HandoffLedger:
                 context, profile = self._context(current)
                 if profile["execution"]["state"] == "outcome_unknown":
                     raise ValueError("unknown outcome requires reconciliation before export")
-                if profile["schema_version"] == 2:
+                if profile["schema_version"] >= 2:
                     if profile["control"]["state"] != "active":
                         raise ValueError("handoff export is paused or cancelled")
                     if context["reviewed_digest"] != context["digest"]:
@@ -298,7 +298,7 @@ class HandoffLedger:
                 if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone():
                     context, saved = self._context(row["id"])
                     execution = saved["execution"]
-                    control = saved["control"]["state"] if saved["schema_version"] == 2 else "legacy_uncontrolled"
+                    control = saved["control"]["state"] if saved["schema_version"] >= 2 else "legacy_uncontrolled"
                     reviewed = context["reviewed_digest"] == context["digest"]
                     item["context"] = {"schema_version": saved["schema_version"],
                         "revision": context["revision"], "context_sha256": context["digest"],
@@ -313,7 +313,7 @@ class HandoffLedger:
                         item["holds"].append("outcome_unknown")
                     if control in ("paused", "cancelled"):
                         item["holds"].append(control)
-                    if saved["schema_version"] == 2 and not reviewed:
+                    if saved["schema_version"] >= 2 and not reviewed:
                         item["holds"].append("context_review_required")
                 returned = self.db.execute("SELECT id,digest FROM returns WHERE handoff_id=?", (row["id"],)).fetchone()
                 if returned:
@@ -385,7 +385,7 @@ class HandoffLedger:
         if not isinstance(profile, dict):
             raise ValueError("context must be a record")
         with self._transaction():
-            _, handoff = self._handoff(profile.get("handoff_id"))
+            original, handoff = self._handoff(profile.get("handoff_id"))
             profile = validate_context(profile, handoff)
             existing = self.db.execute("SELECT * FROM handoff_contexts WHERE handoff_id=?",
                                        (profile["handoff_id"],)).fetchone()
@@ -393,14 +393,19 @@ class HandoffLedger:
             if revision != expected_revision:
                 raise ValueError("context revision mismatch")
             checksum = digest(profile)
+            if (profile["schema_version"] == 3 and (not existing or self._context(profile["handoff_id"])[1]["schema_version"] < 3)
+                and original["state"] != "pending_review"):
+                raise ValueError("destination binding must precede the original handoff review")
             if existing:
                 _, old = self._context(profile["handoff_id"])
                 if old["execution"]["state"] == "outcome_unknown":
                     if any(profile["execution"][field] != old["execution"][field]
                            for field in ("state", "attempts", "context_id")):
                         raise ValueError("unknown outcome cannot be cleared or retried by context edit")
-                if old["schema_version"] == 2:
-                    if profile["schema_version"] != 2:
+                if old["schema_version"] == 3 and profile.get("destination_id") != old["destination_id"]:
+                    raise ValueError("bound destination cannot change or be removed")
+                if old["schema_version"] >= 2:
+                    if profile["schema_version"] < old["schema_version"]:
                         raise ValueError("controlled context cannot downgrade to version 1")
                     if old["control"]["state"] == "cancelled" and profile["control"]["state"] != "cancelled":
                         raise ValueError("cancelled handoff cannot resume")
