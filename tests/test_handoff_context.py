@@ -501,6 +501,65 @@ class ContextTests(unittest.TestCase):
         self.assertFalse(self.check_inspection(refreshed)["retry_authorized"])
         self.assert_exports_blocked(refreshed["lineage"][0]["context"]["context_sha256"])
 
+    def proposal(self, inspection=None, **changes):
+        packet = inspection or self.inspect()
+        return self.ledger.prepare_reconciliation("mission-one", **{
+            "expected_inspection_sha256": packet["inspection_sha256"],
+            "expected_sha256": packet["lineage"][0]["context"]["context_sha256"],
+            "expected_source_revision": REVISION, "expected_memory_revision": 1, **changes})
+
+    def proposal_fixture(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["evidence_refs"] = [{"url": "https://example.invalid/observation", "revision": 2,
+                                         "visibility": "owner_private"}]
+        return self.approve()
+
+    def test_reconciliation_proposal_retains_evidence_after_restart_without_state_change(self):
+        saved = self.proposal_fixture()
+        before = list(self.ledger.db.iterdump())
+        first = self.proposal()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.proposal(), first)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(first["evidence_refs"], self.profile["evidence_refs"])
+        self.assertEqual(first["execution"], self.profile["execution"])
+        self.assertEqual(first["visibility"], "owner_private")
+        self.assertEqual(first["review_state"], "proposed_unverified")
+        self.assertEqual(first["proposed_resolution"], "retain_hold")
+        self.assertFalse(first["retry_authorized"])
+        self.assertNotIn("context_refs", first)
+        checksum = first.pop("proposal_sha256")
+        self.assertEqual(digest(first), checksum)
+        first["evidence_refs"].clear()
+        self.assertEqual(len(self.proposal()["evidence_refs"]), 1)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_reconciliation_proposal_rejects_missing_evidence_and_known_outcomes(self):
+        self.save()
+        with self.assertRaises(ValueError):
+            self.proposal()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(self.profile, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.proposal()
+
+    def test_reconciliation_proposal_rejects_stale_review_and_context(self):
+        self.proposal_fixture()
+        old = self.inspect()
+        changed = deepcopy(self.profile)
+        changed["evidence_refs"][0]["revision"] = 3
+        self.ledger.save_context(changed, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.proposal(old)
+        refreshed = self.inspect()
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=refreshed["lineage"][0]["context"]["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.proposal(refreshed)
+        with self.assertRaises(ValueError):
+            self.proposal(expected_memory_revision=2)
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

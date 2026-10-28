@@ -334,6 +334,27 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertFalse((self.root / "bad-scope.sqlite3").exists())
 
+    def test_cli_prepares_private_reconciliation_without_releasing_or_overwriting(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["evidence_refs"] = [dict(url="https://example.invalid/evidence", revision=1, visibility="owner_private")]
+        self.write(self.profile)
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        self.assertEqual(self.inspect(checksum).returncode, 0)
+        inspected = json.loads((self.root / "inspection.json").read_text())
+        args = ("prepare-reconciliation", "--handoff", "cli-task", "--digest", checksum,
+            "--inspection-digest", inspected["inspection_sha256"], "--source-revision", REVISION,
+            "--memory-revision", "1", "--out", "proposal.json")
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        content = (self.root / "proposal.json").read_bytes()
+        packet = json.loads(content)
+        self.assertEqual(packet["kind"], "jarvis.reconciliation_proposal")
+        self.assertEqual(packet["evidence_verification"], "not_established")
+        self.assertFalse(packet["retry_authorized"])
+        self.assertEqual(self.cli(*args).returncode, 1)
+        self.assertEqual((self.root / "proposal.json").read_bytes(), content)
+        self.assertEqual(self.export_context(checksum).returncode, 1)
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):

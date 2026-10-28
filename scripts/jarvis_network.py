@@ -181,6 +181,13 @@ def main(argv=None):
     recovery_check.add_argument("--digest", required=True, help="Exact selected context SHA-256")
     recovery_check.add_argument("--source-revision", required=True)
     recovery_check.add_argument("--memory-revision", type=int, required=True)
+    reconciliation = commands.add_parser("prepare-reconciliation")
+    reconciliation.add_argument("--handoff", required=True)
+    reconciliation.add_argument("--inspection-digest", required=True)
+    reconciliation.add_argument("--digest", required=True)
+    reconciliation.add_argument("--source-revision", required=True)
+    reconciliation.add_argument("--memory-revision", type=int, required=True)
+    reconciliation.add_argument("--out", required=True)
     backup = commands.add_parser("backup-ledger")
     backup.add_argument("--out", required=True)
     commands.add_parser("status")
@@ -246,6 +253,10 @@ def main(argv=None):
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
                 elif args.command == "check-recovery":
                     result = ledger.check_recovery(args.handoff, expected_inspection_sha256=args.inspection_digest,
+                        expected_sha256=args.digest, expected_source_revision=args.source_revision,
+                        expected_memory_revision=args.memory_revision)
+                elif args.command == "prepare-reconciliation":
+                    result = ledger.prepare_reconciliation(args.handoff, expected_inspection_sha256=args.inspection_digest,
                         expected_sha256=args.digest, expected_source_revision=args.source_revision,
                         expected_memory_revision=args.memory_revision)
                 else:

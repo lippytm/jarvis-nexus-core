@@ -59,7 +59,7 @@ evidence references, checkpoint details and version-2 pause/cancel controls;
 changed content still invalidates context review. Reads and identical duplicate
 saves remain available. Unverified provider returns do not clear the hold.
 
-There is no reconciliation/release operation in this increment. A future explicit
+There is no reconciliation resolution/release operation in this increment. A future explicit
 protocol must bind verified destination evidence and owner authority before a
 retry or resolution can be enabled. Do not bypass the hold with a replacement
 handoff ID, raw database edit or older application version. Use load-context for
@@ -113,6 +113,33 @@ lease: another process can change the ledger after the snapshot transaction.
 Any future state-changing reconciliation must recheck the expected snapshot
 atomically with its write and authenticate owner authority. A successful check
 does not verify destination evidence, clear a hold or authorize a retry.
+
+## Proposed reconciliation evidence
+
+For an outcome_unknown record with at least one saved evidence reference,
+prepare-reconciliation emits a separate version-1 jarvis.reconciliation_proposal.
+It requires the exact current context digest, source/memory revisions and saved
+inspection digest; context, local review, ancestor or return changes can invalidate
+that inspection. It retains mission/project/asset/platform identities, scoped
+configuration/actions/budget, execution checkpoint, control state and selected
+evidence references from the existing context. Context and inspection digests
+bind the remaining source records; draft text and unrelated context references
+are omitted. The proposal has its own checksum and is always owner_private.
+
+```sh
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 prepare-reconciliation --handoff YOUR-HANDOFF-ID --inspection-digest YOUR-INSPECTION-SHA256 --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1 --out reconciliation-proposal-001.json
+```
+
+Replace placeholders using fresh load-context/inspect-recovery results after
+saving the selected evidence references. The output uses proposed_unverified,
+evidence_verification=not_established and proposed_resolution=retain_hold.
+References are supplied observations, not verified destination facts. This command
+does not fetch URLs, record approval, increment attempts, dispatch work, resolve
+an outcome or clear any hold. It sends nothing and refuses existing output files.
+It is a point-in-time proposal, not a lease; future authenticated resolution must
+recheck current context/inspection and owner authority atomically with its write.
+Keep the proposal private and verify actual destination evidence independently.
+No import/approval/release operation for proposals is implemented.
 
 ## Follow-up lineage controls
 

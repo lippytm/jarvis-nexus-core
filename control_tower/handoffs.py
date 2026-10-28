@@ -343,6 +343,37 @@ class HandoffLedger:
                 "state": "current_local_observation_only", "visibility": "owner_private",
                 "retry_authorized": False, "sender_authentication": "not_established", "external_actions": 0}
 
+    def prepare_reconciliation(self, handoff_id, *, expected_inspection_sha256, expected_sha256,
+                               expected_source_revision, expected_memory_revision):
+        """Prepare private review evidence, never resolve or release an outcome.
+
+        Read selected context first, then bind it to a fresh exact snapshot.
+        No state-changing decision follows this observation; a future authenticated
+        resolution write must recheck its expected snapshot atomically.
+        """
+        require_digest(expected_inspection_sha256)
+        loaded = self.load_context(handoff_id, expected_source_revision=expected_source_revision,
+                                   expected_memory_revision=expected_memory_revision)
+        profile = loaded["profile"]
+        inspection = self.inspect_recovery(handoff_id, expected_sha256=expected_sha256,
+            expected_source_revision=expected_source_revision, expected_memory_revision=expected_memory_revision)
+        if (loaded["context_sha256"] != expected_sha256
+            or inspection["inspection_sha256"] != expected_inspection_sha256):
+            raise ValueError("reconciliation requires the current context and inspection")
+        if profile["execution"]["state"] != "outcome_unknown" or not profile["evidence_refs"]:
+            raise ValueError("reconciliation proposal requires an unknown outcome and saved evidence references")
+        fields = ("project_id", "mission_id", "asset_id", "platform", "source_revision", "memory_revision",
+                  "configuration_version", "allowed_actions", "budget", "execution", "evidence_refs")
+        result = {key: profile[key] for key in fields}
+        result.update(schema_version=1, kind="jarvis.reconciliation_proposal", handoff_id=handoff_id,
+            handoff_sha256=profile["handoff_sha256"], context_sha256=expected_sha256,
+            context_revision=inspection["lineage"][0]["context"]["revision"],
+            inspection_sha256=expected_inspection_sha256, visibility="owner_private",
+            control_state=profile.get("control", {"state": "legacy_uncontrolled"})["state"],
+            review_state="proposed_unverified", proposed_resolution="retain_hold",
+            evidence_verification="not_established", retry_authorized=False, external_actions=0)
+        return {**result, "proposal_sha256": digest(result)}
+
     def save_context(self, profile, *, expected_revision):
         """CAS write of proposed context; never alters the version-1 handoff.
 
