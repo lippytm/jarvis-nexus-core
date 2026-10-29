@@ -75,3 +75,11 @@ The saved [YouTube slot-2 draft](../examples/portfolio/jarvis-daily-youtube-slot
 was selected from the exact 24-assignment example above. It targets `codex` for
 preparation, includes its source brief and has not been staged in an operational
 ledger, reviewed by the owner, sent to a provider or turned into a finished video.
+
+The portfolio CLI writer flushes file contents before publishing a fresh name
+without overwrite; on POSIX it also flushes the containing directory before
+reporting success. A directory-sync error returns failure while retaining the
+complete file. Inspect that artifact before retrying: an existing output still
+cannot be overwritten. Temporary files are cleaned up. These checks do not test
+physical power-loss recovery or guarantee durability of newly created ancestor
+directories; non-POSIX behavior retains the existing file flush and no-overwrite.

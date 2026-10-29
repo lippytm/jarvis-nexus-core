@@ -1,7 +1,9 @@
 from copy import deepcopy
 import io
 import json
+import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 import tempfile
@@ -379,6 +381,48 @@ class PortfolioCLITests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 _write(path, {"changed": True})
             self.assertEqual({"ok": True}, load_packet(path))
+
+    @unittest.skipUnless(os.name == "posix", "directory fsync requires POSIX")
+    def test_portfolio_write_flushes_file_then_published_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result.json"
+            real_fsync = os.fsync
+            calls = []
+            def observe(descriptor):
+                is_directory = stat.S_ISDIR(os.fstat(descriptor).st_mode)
+                calls.append(is_directory)
+                if is_directory:
+                    self.assertEqual({"ok": True}, load_packet(path))
+                real_fsync(descriptor)
+            with patch("scripts.jarvis_portfolio.os.fsync", side_effect=observe):
+                _write(path, {"ok": True})
+            self.assertEqual([False, True], calls)
+
+    @unittest.skipUnless(os.name == "posix", "directory fsync requires POSIX")
+    def test_portfolio_directory_sync_failure_keeps_complete_output_and_refuses_retry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            real_fsync = os.fsync
+            descriptors = []
+            def fail_directory(descriptor):
+                if stat.S_ISDIR(os.fstat(descriptor).st_mode):
+                    descriptors.append(descriptor)
+                    raise OSError("private filesystem detail")
+                real_fsync(descriptor)
+            with patch("scripts.jarvis_portfolio.os.fsync", side_effect=fail_directory):
+                code, output, error = self.call("--root", directory, "catalog", "--out", "catalog.json")
+            self.assertEqual(1, code)
+            self.assertEqual("", output)
+            self.assertNotIn("private filesystem detail", error)
+            self.assertEqual("jarvis.portfolio_catalog", load_packet(root / "catalog.json")["kind"])
+            before = (root / "catalog.json").read_bytes()
+            self.assertEqual([], list(root.glob(".jarvis-portfolio-*")))
+            self.assertEqual(1, len(descriptors))
+            with self.assertRaises(OSError):
+                os.fstat(descriptors[0])
+            retry, _, _ = self.call("--root", directory, "catalog", "--out", "catalog.json")
+            self.assertEqual(1, retry)
+            self.assertEqual(before, (root / "catalog.json").read_bytes())
 
     def test_cyclic_symlink_paths_return_sanitized_failures(self):
         with tempfile.TemporaryDirectory() as directory:

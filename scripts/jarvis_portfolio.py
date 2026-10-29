@@ -43,6 +43,14 @@ def _write(path, record):
             handle.flush()
             os.fsync(handle.fileno())
         os.link(temporary, path)
+        if os.name == "posix":
+            # Flush the published name before reporting success. If this fails,
+            # retain the complete artifact and require reconciliation, not overwrite.
+            directory = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory)
+            finally:
+                os.close(directory)
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
