@@ -104,3 +104,5 @@ directories; non-POSIX behavior retains the existing file flush and no-overwrite
 The selected assignment now has an [unpublished script and shot plan](media/jarvis-youtube-slot2-20261029.md),
 proposed captions and an original SVG storyboard. These are review artifacts;
 narration recording, final caption timing, video rendering and release remain unfinished.
+
+The four Facebook slots now have an [unpublished copy and illustration-specification package](media/jarvis-facebook-four-slots-20261029.md). Captions and proposed alt text are authored; images, owner review, destination confirmation and publication remain unfinished.
