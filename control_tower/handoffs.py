@@ -13,7 +13,8 @@ from control_tower.network_contract import (PROJECTS, TARGETS, canonical, digest
     require_identifier, validate_draft, validate_return)
 from control_tower.swarm_factory import validate_swarm
 from control_tower.handoff_context import validate_context
-from control_tower.connections import connector_report
+from control_tower.connections import (connector_report, validate_destination_registry,
+    verify_github_commit_response)
 
 MAX_HANDOFFS = 1000
 MAX_SWARMS = 100
@@ -650,6 +651,37 @@ class HandoffLedger:
             review_state=loaded["review_state"], observation_status=report[profile["platform"]]["status"],
             observation_verification="integrity_only", runtime_available="unknown",
             dispatch_authorized=False, external_actions=0)
+        return {**result, "receipt_sha256": digest(result)}
+
+    def bind_configured_github_observation(self, handoff_id, observation, content, registry, *,
+            expected_registry_sha256, expected_registry_revision, expected_sha256,
+            expected_source_revision, expected_memory_revision, now=None):
+        """Check a supplied registry snapshot and retain its exact mapping in an envelope.
+
+        This is a private, read-only configuration check, not authenticated registry
+        installation, provider delivery, hold release or dispatch authorization.
+        """
+        require_digest(expected_registry_sha256)
+        registry = validate_destination_registry(registry)
+        if (type(expected_registry_revision) is not int
+            or registry["revision"] != expected_registry_revision
+            or digest(registry) != expected_registry_sha256):
+            raise ValueError("registry digest or revision mismatch")
+        original = self.bind_destination_observation(handoff_id, observation,
+            expected_sha256=expected_sha256, expected_source_revision=expected_source_revision,
+            expected_memory_revision=expected_memory_revision, now=now)
+        selected = next((entry for entry in registry["entries"] if all(
+            entry[key] == original[key] for key in ("project_id", "platform", "destination_id"))), None)
+        if selected is None or selected["platform"] != "github":
+            raise ValueError("registry has no matching GitHub destination")
+        verify_github_commit_response(content, original["observation"], selected["resource_id"])
+        binding = {key: registry[key] for key in
+                   ("registry_id", "revision", "source_revision", "configuration_version")}
+        binding.update(registry_sha256=expected_registry_sha256, entry=selected)
+        result = {"schema_version": 1, "kind": "jarvis.configured_destination_observation",
+            "destination_observation": original, "registry_binding": binding,
+            "mapping_verification": "supplied_configuration_only", "visibility": "owner_private",
+            "sender_authentication": "not_established", "dispatch_authorized": False, "external_actions": 0}
         return {**result, "receipt_sha256": digest(result)}
 
     def review_context(self, handoff_id, *, reviewer_id, expected_sha256):

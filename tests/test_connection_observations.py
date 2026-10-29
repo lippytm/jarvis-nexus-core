@@ -1,8 +1,11 @@
 from datetime import datetime, timezone
 import unittest
 import json
+from copy import deepcopy
 from hashlib import sha256
-from control_tower.connections import read_observation, connector_report, verify_github_commit_response
+from control_tower.connections import (read_observation, connector_report,
+    verify_github_commit_response, validate_destination_registry)
+from control_tower.network_contract import TARGETS
 
 NOW = datetime(2026, 10, 22, 20, tzinfo=timezone.utc)
 
@@ -16,6 +19,43 @@ def observed(**changes):
 
 
 class ConnectionObservationTests(unittest.TestCase):
+    def registry(self):
+        return {"schema_version": 1, "kind": "jarvis.destination_registry", "registry_id": "local-test",
+            "revision": 1, "source_revision": "a" * 40, "configuration_version": "read-config.v1",
+            "visibility": "owner_private", "entries": [{"project_id": "ai-jarvis", "platform": target,
+                "destination_id": "resource-one", "resource_id": "owner/repository" if target == "github" else "opaque-resource",
+                "allowed_actions": ["read"]} for target in sorted(TARGETS)]}
+
+    def test_destination_registry_retains_all_targets_and_independent_snapshots(self):
+        registry = self.registry()
+        restored = validate_destination_registry(json.loads(json.dumps(registry)))
+        self.assertEqual(restored, registry)
+        self.assertEqual({e["platform"] for e in restored["entries"]}, set(TARGETS))
+        restored["entries"][0]["allowed_actions"].append("write")
+        self.assertEqual(validate_destination_registry(registry), registry)
+        other = deepcopy(registry)
+        # Use another actual project ID without inventing a registry namespace.
+        from control_tower.network_contract import PROJECTS
+        other["entries"][0]["project_id"] = next(p for p in PROJECTS if p != "ai-jarvis")
+        registry["entries"].append(other["entries"][0])
+        self.assertEqual(len(validate_destination_registry(registry)["entries"]), len(TARGETS) + 1)
+
+    def test_destination_registry_rejects_ambiguous_public_or_expanded_contracts(self):
+        original = self.registry()
+        invalid = [{**original, "schema_version": True}, {**original, "revision": True},
+            {**original, "revision": 0}, {**original, "visibility": "public_candidate"},
+            {**original, "source_revision": "main"}, {**original, "entries": []},
+            {**original, "entries": original["entries"] * 101}, {**original, "extra": "field"},
+            {**original, "entries": original["entries"] + [original["entries"][0]]}]
+        for field, value in (("project_id", "unknown"), ("platform", []), ("destination_id", "../bad"),
+                             ("resource_id", "../bad"), ("allowed_actions", ["read", "write"])):
+            changed = deepcopy(original)
+            changed["entries"][0][field] = value
+            invalid.append(changed)
+        for registry in invalid:
+            with self.subTest(registry=registry), self.assertRaises(ValueError):
+                validate_destination_registry(registry)
+
     def test_github_commit_repository_names_preserve_resource_boundaries(self):
         source = "a" * 40
         def verify(repository):

@@ -5,10 +5,12 @@ observations from real connector responses. Even a fresh observation describes a
 past read and does not establish current availability or permission to write.
 """
 from datetime import datetime, timezone, timedelta
+from copy import deepcopy
 from hashlib import sha256
 import json
 import re
 from control_tower.validation import json_record_errors, valid_https_url
+from control_tower.network_contract import PROJECTS, TARGETS, require_identifier, require_record
 
 CONNECTORS = {
     "chatgpt": {"purpose": "reviewed manual assistant handoffs", "status": "unverified", "write_gate": "owner_review"},
@@ -68,14 +70,58 @@ def read_observation(connector, *, observed_at, evidence_url, response_sha256, s
     return {**record, "record_sha256": _digest(record)}
 
 
-def verify_github_commit_response(content, observation, repository):
-    """Check retained Git-data commit identity, not provider/collector authenticity."""
-    if not isinstance(content, bytes) or len(content) > 65536:
-        raise ValueError("commit response must be bounded bytes")
+def _github_repository(repository):
     if (not isinstance(repository, str)
             or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_.-]{1,100}", repository)
             or repository.rsplit("/", 1)[1] in {".", ".."}):
         raise ValueError("invalid declared GitHub repository")
+
+
+def validate_destination_registry(registry):
+    """Validate a supplied private configuration snapshot, never its authority.
+
+    Keep this alongside existing connector contracts, outside strict v1 packets.
+    A hosted collector must obtain the snapshot through authenticated storage.
+    """
+    require_record(registry, {"schema_version", "kind", "registry_id", "revision",
+        "source_revision", "configuration_version", "visibility", "entries"})
+    if (type(registry["schema_version"]) is not int or registry["schema_version"] != 1
+        or registry["kind"] != "jarvis.destination_registry"
+        or registry["visibility"] != "owner_private"):
+        raise ValueError("unsupported or non-private destination registry")
+    require_identifier(registry["registry_id"], "registry ID")
+    require_identifier(registry["configuration_version"], "configuration version")
+    if type(registry["revision"]) is not int or not 1 <= registry["revision"] <= 2147483647:
+        raise ValueError("invalid registry revision")
+    if not isinstance(registry["source_revision"], str) or not re.fullmatch(r"[a-f0-9]{40}", registry["source_revision"]):
+        raise ValueError("registry requires an exact source revision")
+    entries = registry["entries"]
+    if not isinstance(entries, list) or not 1 <= len(entries) <= 100:
+        raise ValueError("registry requires one to 100 entries")
+    seen = set()
+    for entry in entries:
+        require_record(entry, {"project_id", "platform", "destination_id", "resource_id", "allowed_actions"})
+        if (not isinstance(entry["project_id"], str) or entry["project_id"] not in PROJECTS
+            or not isinstance(entry["platform"], str) or entry["platform"] not in TARGETS
+            or entry["allowed_actions"] != ["read"]):
+            raise ValueError("invalid registry project, platform or read scope")
+        require_identifier(entry["destination_id"], "destination ID")
+        if entry["platform"] == "github":
+            _github_repository(entry["resource_id"])
+        else:
+            require_identifier(entry["resource_id"], "opaque resource ID")
+        key = (entry["project_id"], entry["platform"], entry["destination_id"])
+        if key in seen:
+            raise ValueError("duplicate registry destination scope")
+        seen.add(key)
+    return deepcopy(registry)
+
+
+def verify_github_commit_response(content, observation, repository):
+    """Check retained Git-data commit identity, not provider/collector authenticity."""
+    if not isinstance(content, bytes) or len(content) > 65536:
+        raise ValueError("commit response must be bounded bytes")
+    _github_repository(repository)
     if not isinstance(observation, dict) or observation.get("connector") != "github":
         raise ValueError("commit response requires a GitHub observation")
     source = observation.get("source_revision")

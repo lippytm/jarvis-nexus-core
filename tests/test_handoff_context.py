@@ -1123,6 +1123,96 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.bind_observation(self.observation(observed_at="2026-10-29T00:00:00Z"))
 
+    def configured_read(self):
+        self.stage("github-read", target="github")
+        profile = {**self.context("github-read"), "schema_version": 3, "destination_id": "repository-one",
+            "control": {"state": "paused", "actor_id": "local-owner", "reason": "Keep the failed task paused."}}
+        profile["execution"]["state"] = "outcome_unknown"
+        saved = self.ledger.save_context(profile, expected_revision=0)
+        url = f"https://api.github.com/repos/owner/repository/git/commits/{REVISION}"
+        raw = json.dumps(dict(sha=REVISION, url=url)).encode()
+        from hashlib import sha256
+        observation = read_observation("github", observed_at="2026-10-28T00:00:00Z", evidence_url=url,
+            response_sha256=sha256(raw).hexdigest(), scope="Synthetic commit read", source_revision=REVISION)
+        registry = {"schema_version": 1, "kind": "jarvis.destination_registry", "registry_id": "local-test",
+            "revision": 2, "source_revision": "a" * 40, "configuration_version": "read-config.v1",
+            "visibility": "owner_private", "entries": [{"project_id": "ai-jarvis", "platform": "github",
+                "destination_id": "repository-one", "resource_id": "owner/repository", "allowed_actions": ["read"]},
+                {"project_id": "ai-jarvis", "platform": "github", "destination_id": "repository-two",
+                 "resource_id": "other/private-repository", "allowed_actions": ["read"]}]}
+        args = dict(expected_registry_sha256=digest(registry), expected_registry_revision=2,
+            expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+            expected_memory_revision=1, now=datetime(2026, 10, 28, 1, tzinfo=timezone.utc))
+        return raw, observation, registry, args
+
+    def test_configured_read_preserves_legacy_receipt_and_holds_across_read_only_restart(self):
+        raw, observation, registry, args = self.configured_read()
+        before = list(self.ledger.db.iterdump())
+        envelope = self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args)
+        legacy = self.ledger.bind_destination_observation("github-read", observation,
+            **{k: v for k, v in args.items() if not k.startswith("expected_registry")})
+        self.assertEqual(envelope["destination_observation"], legacy)
+        self.assertEqual(envelope["registry_binding"]["entry"], registry["entries"][0])
+        self.assertNotIn("private-repository", json.dumps(envelope))
+        self.assertNotIn("context_refs", json.dumps(envelope))
+        self.assertFalse(envelope["dispatch_authorized"])
+        self.assertEqual(envelope["sender_authentication"], "not_established")
+        self.assertEqual(envelope["mapping_verification"], "supplied_configuration_only")
+        self.assertEqual(digest({k: v for k, v in envelope.items() if k != "receipt_sha256"}), envelope["receipt_sha256"])
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.ledger.close()
+        original_bytes = self.path.read_bytes()
+        try:
+            with HandoffLedger(self.path, read_only=True) as ledger:
+                self.assertEqual(ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args), envelope)
+                context = ledger.load_context("github-read", expected_source_revision=REVISION, expected_memory_revision=1)
+                self.assertEqual(context["profile"]["execution"]["state"], "outcome_unknown")
+                self.assertEqual(context["profile"]["control"]["state"], "paused")
+                self.assertEqual(context["review_state"], "proposed")
+            self.assertEqual(self.path.read_bytes(), original_bytes)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+        envelope["registry_binding"]["entry"]["resource_id"] = "changed/repository"
+        self.assertEqual(registry["entries"][0]["resource_id"], "owner/repository")
+
+    def test_configured_read_rejects_stale_registry_and_wrong_resource_or_destination(self):
+        raw, observation, registry, args = self.configured_read()
+        before = list(self.ledger.db.iterdump())
+        for changes in ({"expected_registry_sha256": "0" * 64}, {"expected_registry_revision": 1},
+                        {"expected_registry_revision": True}, {"expected_sha256": "0" * 64},
+                        {"expected_source_revision": "b" * 40}, {"expected_memory_revision": 2}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **{**args, **changes})
+        for field, value in (("project_id", "ai-evolutionary-evolutions"), ("platform", "codex"),
+                             ("destination_id", "repository-other"), ("resource_id", "other/repository")):
+            changed = deepcopy(registry)
+            changed["entries"][0][field] = value
+            if field == "platform":
+                changed["entries"][0]["resource_id"] = "opaque-repository"
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                self.ledger.bind_configured_github_observation("github-read", observation, raw, changed,
+                    **{**args, "expected_registry_sha256": digest(changed)})
+        with self.assertRaises(ValueError):
+            self.ledger.bind_configured_github_observation("github-read", observation, raw + b" ", registry, **args)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_configured_read_requires_current_context_after_review_invalidation(self):
+        raw, observation, registry, args = self.configured_read()
+        self.ledger.review_context("github-read", reviewer_id="local-evaluator", expected_sha256=args["expected_sha256"])
+        self.assertEqual(self.ledger.bind_configured_github_observation("github-read", observation, raw, registry,
+            **args)["destination_observation"]["review_state"], "locally_reviewed")
+        loaded = self.ledger.load_context("github-read", expected_source_revision=REVISION, expected_memory_revision=1)
+        changed = loaded["profile"]
+        changed["memory_revision"] = 2
+        changed["execution"]["detail"] = "Retain uncertain outcome after a context revision."
+        saved = self.ledger.save_context(changed, expected_revision=loaded["revision"])
+        with self.assertRaises(ValueError):
+            self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args)
+        result = self.ledger.bind_configured_github_observation("github-read", observation, raw, registry,
+            **{**args, "expected_sha256": saved["context_sha256"], "expected_memory_revision": 2})
+        self.assertEqual(result["destination_observation"]["review_state"], "proposed")
+        self.assertFalse(result["dispatch_authorized"])
+
     def test_fresh_process_reads_checkpoint_without_retry(self):
         self.save()
         self.ledger.close()

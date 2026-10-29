@@ -400,6 +400,66 @@ current provider availability. This local command supplies no access-control
 service; future hosted adapters must authenticate and authorize project/resource
 access. Do not expose the report publicly.
 
+## Supplied destination configuration snapshots
+
+`validate_destination_registry` in `control_tower.connections` validates a bounded
+private Fabric configuration snapshot. Its explicit version-1 schema is separate
+from strict version-1 handoff/observation packets and existing context versions.
+It does not create another memory store or migrate the ledger. A snapshot contains:
+
+```json
+{
+  "schema_version": 1,
+  "kind": "jarvis.destination_registry",
+  "registry_id": "project-read-config",
+  "revision": 1,
+  "source_revision": "6281cb49bad73007a3fc1c5f94526496d03ef1d3",
+  "configuration_version": "github-read.v1",
+  "visibility": "owner_private",
+  "entries": [{
+    "project_id": "ai-jarvis",
+    "platform": "github",
+    "destination_id": "repo-lippytm-jarvis-nexus-core",
+    "resource_id": "lippytm/jarvis-nexus-core",
+    "allowed_actions": ["read"]
+  }]
+}
+```
+
+This is an illustrative proposed configuration, not an accepted installed registry.
+The source revision identifies the configuration's provenance; it need not equal a
+later observation's source revision. Registry revision and canonical SHA-256 must
+both match the independently selected expected values. Unknown fields, non-private
+snapshots, duplicate project/platform/destination keys, expanded action lists and
+more than 100 entries are rejected. The schema retains all 17 portable platform
+IDs. Non-GitHub resources are bounded opaque IDs without adapter verification.
+
+`HandoffLedger.bind_configured_github_observation(handoff_id, observation,
+content, registry, expected_registry_sha256=..., expected_registry_revision=...,
+expected_sha256=..., expected_source_revision=..., expected_memory_revision=...,
+now=...)` is the first mapping-check implementation. Supply the retained response
+as exact bytes and the same context guards as `bind_destination_observation`.
+It selects only the entry matching that context's project, platform and destination,
+then checks the GitHub commit URL, SHA and response bytes against the selected
+repository. A different configured repository is rejected even if the response
+is otherwise valid. No other provider/endpoint is implemented by this method.
+
+The result is a new version-1 `jarvis.configured_destination_observation` envelope
+containing the unchanged destination-observation receipt plus the registry ID,
+revision, source/configuration version, digest and **only the selected entry**.
+It omits unrelated resources and context text. Its own checksum covers both parts.
+The API also works with an existing read-only ledger, creates no tables, and never
+changes context, checkpoint history, review, pause/cancel or unknown-outcome state.
+Changed context requires fresh exact guards and retains existing review invalidation.
+
+This checks agreement with a supplied configuration, not trusted mapping provenance.
+The envelope explicitly records `mapping_verification: supplied_configuration_only`,
+`sender_authentication: not_established` and `dispatch_authorized: false`. A hash or
+read action list grants no access. Authenticated private registry storage, accepted
+configuration review, resource authorization, live ingestion and worker dispatch
+remain separate unfinished work. There is no new CLI, external request or automatic
+retry. Existing metadata-only and declared-repository APIs remain compatible.
+
 ## Destination-bound read observations
 
 bind-observation wraps the existing strict connector read-observation format in
