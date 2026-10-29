@@ -22,6 +22,23 @@ and model_calls/external_actions remain zero. Account access, private storage
 authentication, owner release and publication remain separate requirements.
 The complete compact packet must fit the existing bounded JSON loader.
 
+## Local command-line workflow
+
+Use a previously saved validated mission, an explicit editorial date and fresh
+output paths under the chosen root:
+
+```bash
+python scripts/jarvis_portfolio.py --root /your/workspace daily-campaign --mission-file mission.json --editorial-date 2026-10-29 --out daily.json
+python scripts/jarvis_portfolio.py --root /your/workspace export-daily-assignment --mission-file mission.json --editorial-date 2026-10-29 --channel youtube --slot 2 --campaign-digest YOUR_DAILY_BRIEFS_SHA256 --out selected.json
+```
+
+Read `briefs_sha256` from `daily.json` and supply that exact value in the second
+command. If using `--destination-index`, use the same explicit choice in both
+commands. A changed date, source mission or destination invalidates the digest.
+Existing files cannot be overwritten. The selector saves a draft only; neither
+command stages a queue item, grants review, schedules work, connects an account
+or publishes anything. The existing portfolio commands keep their behavior.
+
 The saved [24-assignment example](../examples/portfolio/jarvis-daily-media-20261029.json)
 uses source revision `3f1b4e5697e9ed74430214563008a6c8dea093fd`, the exact `codex`
 engineering target and the existing `jarvis-tools` initiative. It does not claim

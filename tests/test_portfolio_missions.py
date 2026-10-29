@@ -338,6 +338,52 @@ class CampaignTests(unittest.TestCase):
 
 
 class PortfolioCLITests(unittest.TestCase):
+    def test_daily_commands_round_trip_in_separate_processes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = mission(target="codex")
+            (root / "mission.json").write_bytes(canonical(source))
+            def run(*args):
+                return subprocess.run([sys.executable, str(ROOT / "scripts/jarvis_portfolio.py"),
+                    "--root", directory, *args], capture_output=True, text=True, timeout=10)
+            common = ("--mission-file", "mission.json", "--editorial-date", "2026-10-29")
+            result = run("daily-campaign", *common, "--out", "daily.json")
+            self.assertEqual(0, result.returncode, result.stderr)
+            packet = load_packet(root / "daily.json")
+            self.assertEqual(24, len(packet["posts"]))
+            args = ("export-daily-assignment", *common, "--channel", "youtube", "--slot", "2",
+                    "--campaign-digest", packet["briefs_sha256"], "--out", "selected.json")
+            result = run(*args)
+            self.assertEqual(0, result.returncode, result.stderr)
+            expected = daily_assignment_draft(source, editorial_date="2026-10-29", channel="youtube", slot=2,
+                expected_campaign_sha256=packet["briefs_sha256"])
+            self.assertEqual(expected, validate_draft(load_packet(root / "selected.json")))
+            self.assertEqual(0, json.loads(result.stdout)["external_actions"])
+            before = (root / "selected.json").read_bytes()
+            self.assertEqual(1, run(*args).returncode)
+            self.assertEqual(before, (root / "selected.json").read_bytes())
+
+    def test_daily_commands_reject_stale_or_invalid_selection_without_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = mission("funding-customers", target="codex")
+            (root / "mission.json").write_bytes(canonical(source))
+            digest_value = daily_campaign_briefs(source, editorial_date="2026-10-29")["briefs_sha256"]
+            common = ("--root", directory, "export-daily-assignment", "--mission-file", "mission.json",
+                      "--out", "refused.json")
+            cases = (("2026-10-30", "youtube", "2", digest_value, "0"),
+                     ("2026-10-29", "youtube", "2", digest_value, "1"),
+                     ("2026-02-30", "youtube", "2", digest_value, "0"),
+                     ("2026-10-29", "github", "2", digest_value, "0"),
+                     ("2026-10-29", "youtube", "5", digest_value, "0"))
+            for day, channel, slot, checksum, destination in cases:
+                with self.subTest(day=day, channel=channel, slot=slot, destination=destination):
+                    code, output, _ = self.call(*common, "--editorial-date", day, "--channel", channel,
+                        "--slot", slot, "--campaign-digest", checksum, "--destination-index", destination)
+                    self.assertEqual(1, code)
+                    self.assertEqual("", output)
+                    self.assertFalse((root / "refused.json").exists())
+
     def call(self, *args):
         with patch("sys.stdout", new_callable=io.StringIO) as out, patch("sys.stderr", new_callable=io.StringIO) as err:
             code = main(list(args))

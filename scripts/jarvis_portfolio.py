@@ -8,7 +8,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from control_tower.campaigns import campaign_briefs
+from control_tower.campaigns import campaign_briefs, daily_campaign_briefs, daily_assignment_draft
 from control_tower.missions import compile_mission, export_role_draft, validate_mission
 from control_tower.network_contract import canonical, load_packet
 from control_tower.portfolio import portfolio_catalog
@@ -78,6 +78,16 @@ def main(argv=None):
     campaign.add_argument("--mission-file", required=True)
     campaign.add_argument("--destination-index", type=int, default=0)
     campaign.add_argument("--out", required=True)
+    for name in ("daily-campaign", "export-daily-assignment"):
+        daily = commands.add_parser(name)
+        daily.add_argument("--mission-file", required=True)
+        daily.add_argument("--editorial-date", required=True)
+        daily.add_argument("--destination-index", type=int, default=0)
+        daily.add_argument("--out", required=True)
+        if name == "export-daily-assignment":
+            daily.add_argument("--channel", required=True)
+            daily.add_argument("--slot", type=int, required=True)
+            daily.add_argument("--campaign-digest", required=True)
     args = parser.parse_args(argv)
     try:
         root = _resolve(Path(args.root), strict=True)
@@ -97,6 +107,13 @@ def main(argv=None):
                 result = export_role_draft(mission, args.role)
             elif args.command == "export-swarm":
                 result = validate_mission(mission)["swarm"]
+            elif args.command == "daily-campaign":
+                result = daily_campaign_briefs(mission, editorial_date=args.editorial_date,
+                                               destination_index=args.destination_index)
+            elif args.command == "export-daily-assignment":
+                result = daily_assignment_draft(mission, editorial_date=args.editorial_date,
+                    channel=args.channel, slot=args.slot, expected_campaign_sha256=args.campaign_digest,
+                    destination_index=args.destination_index)
             else:
                 result = campaign_briefs(mission, destination_index=args.destination_index)
         _write(output, result)
