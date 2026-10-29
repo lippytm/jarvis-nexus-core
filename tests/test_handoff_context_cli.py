@@ -686,6 +686,41 @@ class ContextCLITests(unittest.TestCase):
             self.assertEqual(self.cli("bind-observation", *args, "--response-file", name, "--out", "rejected.json").returncode, 1)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_dot_repository_commit_check_retains_paused_private_binding(self):
+        database = "github.sqlite3"
+        with HandoffLedger(self.root / database) as ledger:
+            manifest = build_swarm("ai-jarvis", ["github"], swarm_id="github-pilot", source_revision=REVISION)
+            staged = ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="github", text="Synthetic dot repository check."), manifest,
+                assistant_id="github-pilot.builder", handoff_id="github-task")
+        self.profile.update(schema_version=3, handoff_id="github-task", mission_id="github-task",
+            handoff_sha256=staged["handoff_sha256"], asset_id="github-pilot.builder", platform="github",
+            destination_id="repo-dot", control=dict(state="paused", actor_id="local-owner", reason="Synthetic check."))
+        self.write(self.profile)
+        saved = self.cli("save-context", "--file", "context.json", "--expected-revision", "0", database=database)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        url = f"https://api.github.com/repos/owner/.github/git/commits/{REVISION}"
+        raw = json.dumps(dict(sha=REVISION, url=url)).encode()
+        (self.root / "response.bin").write_bytes(raw)
+        observation = read_observation("github", observed_at=datetime.now(timezone.utc).isoformat(),
+            evidence_url=url, response_sha256=hashlib.sha256(raw).hexdigest(),
+            scope="Synthetic dot repository", source_revision=REVISION)
+        (self.root / "observation.json").write_text(json.dumps(observation))
+        before = (self.root / database).read_bytes()
+        result = self.cli("--read-only", "bind-observation", "--handoff", "github-task",
+            "--file", "observation.json", "--digest", checksum, "--source-revision", REVISION,
+            "--memory-revision", "1", "--response-file", "response.bin",
+            "--github-commit-repository", "owner/.github", "--out", "dot-checked.json", database=database)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads((self.root / "dot-checked.json").read_text())
+        self.assertEqual(receipt["observation"], observation)
+        self.assertFalse(receipt["dispatch_authorized"])
+        self.assertEqual((self.root / database).read_bytes(), before)
+        with HandoffLedger(self.root / database, read_only=True) as ledger:
+            current = ledger.load_context("github-task", expected_source_revision=REVISION, expected_memory_revision=1)
+        self.assertEqual(current["profile"], self.profile)
+
     def test_cli_commit_identity_option_requires_response_before_ledger_open(self):
         (self.root / "observation.json").write_text('{}')
         before = self.db.read_bytes()

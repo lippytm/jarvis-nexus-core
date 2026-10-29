@@ -16,6 +16,22 @@ def observed(**changes):
 
 
 class ConnectionObservationTests(unittest.TestCase):
+    def test_github_commit_repository_names_preserve_resource_boundaries(self):
+        source = "a" * 40
+        def verify(repository):
+            url = f"https://api.github.com/repos/{repository}/git/commits/{source}"
+            content = json.dumps(dict(sha=source, url=url)).encode()
+            record = observed(source_revision=source, evidence_url=url,
+                              response_sha256=sha256(content).hexdigest())
+            verify_github_commit_response(content, record, repository)
+        for name in (".github", "-repo", "_repo", "repo..name", "a" * 100):
+            with self.subTest(name=name):
+                verify("owner/" + name)
+        for name in (".", "..", "../repo", "repo/path", "repo\\path", "%2e%2e", "repo?query",
+                     "repo#fragment", "", "a" * 101, "r\u00e9po"):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                verify("owner/" + name)
+
     def test_github_commit_response_identity_and_exact_bytes(self):
         source = "a" * 40
         url = f"https://api.github.com/repos/lippytm/jarvis-nexus-core/git/commits/{source}"

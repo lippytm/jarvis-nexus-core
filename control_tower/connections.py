@@ -72,7 +72,9 @@ def verify_github_commit_response(content, observation, repository):
     """Check retained Git-data commit identity, not provider/collector authenticity."""
     if not isinstance(content, bytes) or len(content) > 65536:
         raise ValueError("commit response must be bounded bytes")
-    if not isinstance(repository, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9_.-]{0,99}", repository):
+    if (not isinstance(repository, str)
+            or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_.-]{1,100}", repository)
+            or repository.rsplit("/", 1)[1] in {".", ".."}):
         raise ValueError("invalid declared GitHub repository")
     if not isinstance(observation, dict) or observation.get("connector") != "github":
         raise ValueError("commit response requires a GitHub observation")
