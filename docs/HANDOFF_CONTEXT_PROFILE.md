@@ -417,7 +417,14 @@ python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 bind-o
 
 The collector must obtain and retain the real response independently, compute its
 SHA-256 over those exact bytes, and verify that its resource matches the intended
-opaque destination. This command does not fetch URLs or prove that a supplied
+opaque destination. Optionally add --response-file retained-response.bin to check
+that the retained bytes match the observation's response_sha256 before opening the
+ledger. The input must be a regular file inside --root, at most 64 KiB; comparison
+includes whitespace and encoding bytes, with no JSON reserialization. This option
+does not copy response contents into the receipt or change its schema. Without it,
+the earlier metadata-only behavior remains compatible. It proves byte agreement,
+not collector/provider authenticity or correct resource-to-destination mapping.
+This command does not fetch URLs or prove that a supplied
 hash, URL, scope label or destination mapping is authentic. It omits context text,
 reference lists and execution detail, changes no ledger state or holds, sends
 nothing and refuses existing output files. The source observation remains data;

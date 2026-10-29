@@ -3,6 +3,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import json
 import hashlib
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -656,6 +657,44 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(packet["records"][0]["control_state"], "paused")
         self.assertNotIn("https://", result.stdout)
         self.assertFalse(packet["dispatch_authorized"])
+
+    def test_cli_binding_checks_exact_retained_response_bytes(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic retained response."))
+        self.write(self.profile)
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        raw = b'{"sha":"synthetic"}\n'
+        (self.root / "response.bin").write_bytes(raw)
+        observation = read_observation("codex", observed_at=datetime.now(timezone.utc).isoformat(),
+            evidence_url="https://example.invalid/read", response_sha256=hashlib.sha256(raw).hexdigest(),
+            scope="Synthetic fixture", source_revision=REVISION)
+        (self.root / "observation.json").write_text(json.dumps(observation))
+        args = ("--handoff", "cli-task", "--file", "observation.json", "--digest", checksum,
+            "--source-revision", REVISION, "--memory-revision", "1")
+        before = self.db.read_bytes()
+        result = self.cli("--read-only", "bind-observation", *args, "--response-file", "response.bin", "--out", "checked.json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        legacy = self.cli("--read-only", "bind-observation", *args, "--out", "legacy-observation.json")
+        self.assertEqual(legacy.returncode, 0, legacy.stderr)
+        self.assertEqual((self.root / "checked.json").read_bytes(), (self.root / "legacy-observation.json").read_bytes())
+        for content in (raw.rstrip(), b'x' * 65537):
+            (self.root / "response.bin").write_bytes(content)
+            refused = self.cli("bind-observation", *args, "--response-file", "response.bin", "--out", "rejected.json")
+            self.assertEqual(refused.returncode, 1, refused.stderr)
+            self.assertFalse((self.root / "rejected.json").exists())
+        for name in ("missing.bin", "../outside.bin"):
+            self.assertEqual(self.cli("bind-observation", *args, "--response-file", name, "--out", "rejected.json").returncode, 1)
+        self.assertEqual(self.db.read_bytes(), before)
+
+    @unittest.skipUnless(hasattr(os, 'mkfifo'), 'FIFO probe requires POSIX')
+    def test_cli_response_file_refuses_fifo_without_blocking(self):
+        (self.root / "observation.json").write_text('{}')
+        os.mkfifo(self.root / "response.pipe")
+        result = self.cli("bind-observation", "--handoff", "cli-task", "--file", "observation.json",
+            "--digest", "0" * 64, "--source-revision", REVISION, "--memory-revision", "1",
+            "--response-file", "response.pipe", "--out", "fifo.json")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertFalse((self.root / "fifo.json").exists())
 
     def test_cli_binds_observation_without_overwriting_private_output(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
