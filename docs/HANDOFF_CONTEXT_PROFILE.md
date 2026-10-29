@@ -457,8 +457,24 @@ The envelope explicitly records `mapping_verification: supplied_configuration_on
 `sender_authentication: not_established` and `dispatch_authorized: false`. A hash or
 read action list grants no access. Authenticated private registry storage, accepted
 configuration review, resource authorization, live ingestion and worker dispatch
-remain separate unfinished work. There is no new CLI, external request or automatic
-retry. Existing metadata-only and declared-repository APIs remain compatible.
+remain separate unfinished work. There is no external request or automatic retry.
+Existing metadata-only and declared-repository APIs remain compatible.
+
+The packaged CLI can select this same API with all three registry options:
+
+```sh
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 bind-observation --handoff YOUR-HANDOFF-ID --file observation.json --response-file response.bin --registry-file proposed-registry.json --registry-digest YOUR-REGISTRY-SHA256 --registry-revision 1 --digest YOUR-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 2 --out configured-read-001.json
+```
+
+Any registry option requires the full set and `--response-file`. A simultaneous
+`--github-commit-repository` override is rejected: the selected configuration must
+supply the repository. Registry structure/digest/revision and response byte hash
+are checked before opening the ledger. Registry mode always opens it read-only,
+even without `--read-only`, and writes only a fresh output file through the existing
+bounded no-overwrite writer. Context and resource mismatch still fail through the
+API. The output is the explicit configured-observation envelope described above;
+without registry options, earlier receipt formats and behavior remain unchanged.
+This does not load a trusted registry automatically or accept the proposed mapping.
 
 ## Destination-bound read observations
 

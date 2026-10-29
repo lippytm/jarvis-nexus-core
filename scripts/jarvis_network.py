@@ -17,8 +17,8 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
-from control_tower.connections import verify_github_commit_response
-from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, load_packet
+from control_tower.connections import verify_github_commit_response, validate_destination_registry
+from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, load_packet, digest, require_digest
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
 from control_tower.swarm_factory import build_swarm
@@ -240,6 +240,9 @@ def main(argv=None):
     observation.add_argument("--file", required=True)
     observation.add_argument("--response-file", help="Optional retained raw response, at most 64 KiB; compare exact bytes with observation hash")
     observation.add_argument("--github-commit-repository", help="Optional owner/repo identity check for a Git-data commit response; requires --response-file")
+    observation.add_argument("--registry-file", help="Private proposed destination configuration; requires response file, registry digest and revision")
+    observation.add_argument("--registry-digest")
+    observation.add_argument("--registry-revision", type=int)
     observation.add_argument("--digest", required=True)
     observation.add_argument("--source-revision", required=True)
     observation.add_argument("--memory-revision", type=int, required=True)
@@ -281,6 +284,18 @@ def main(argv=None):
             returned_packet = load_packet(_local(root, args.file)) if args.command == "import-return" else None
             context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
             observation_packet = load_packet(_local(root, args.file)) if args.command == "bind-observation" else None
+            registry = None
+            if args.command == "bind-observation" and any(value is not None for value in
+                    (args.registry_file, args.registry_digest, args.registry_revision)):
+                if (args.registry_file is None or args.registry_digest is None or args.registry_revision is None
+                    or not args.response_file):
+                    raise ValueError("registry check requires --registry-file, --registry-digest, --registry-revision and --response-file")
+                if args.github_commit_repository is not None:
+                    raise ValueError("registry mapping cannot be combined with a declared repository override")
+                registry = validate_destination_registry(load_packet(_local(root, args.registry_file)))
+                require_digest(args.registry_digest)
+                if digest(registry) != args.registry_digest or registry["revision"] != args.registry_revision:
+                    raise ValueError("registry digest or revision mismatch")
             if args.command == "bind-observation" and args.response_file:
                 response = _response_bytes(_local(root, args.response_file))
                 if hashlib.sha256(response).hexdigest() != observation_packet.get("response_sha256"):
@@ -292,7 +307,7 @@ def main(argv=None):
             database = _local(root, args.database)
             if args.command != "stage" and not database.is_file():
                 raise ValueError("operation requires an existing ledger; use stage to create a new ledger")
-            with HandoffLedger(database, read_only=args.read_only or args.command in {"load-checkpoint", "list-checkpoints"}) as ledger:
+            with HandoffLedger(database, read_only=args.read_only or registry is not None or args.command in {"load-checkpoint", "list-checkpoints"}) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
                                           handoff_id=args.handoff, parent_id=args.parent)
@@ -343,9 +358,14 @@ def main(argv=None):
                     result = ledger.destination_status(project_id=args.project, platform=args.platform,
                                                        destination_id=args.destination)
                 elif args.command == "bind-observation":
-                    result = ledger.bind_destination_observation(args.handoff, observation_packet,
-                        expected_sha256=args.digest, expected_source_revision=args.source_revision,
-                        expected_memory_revision=args.memory_revision)
+                    guards = dict(expected_sha256=args.digest, expected_source_revision=args.source_revision,
+                                  expected_memory_revision=args.memory_revision)
+                    if registry is not None:
+                        result = ledger.bind_configured_github_observation(args.handoff, observation_packet,
+                            response, registry, expected_registry_sha256=args.registry_digest,
+                            expected_registry_revision=args.registry_revision, **guards)
+                    else:
+                        result = ledger.bind_destination_observation(args.handoff, observation_packet, **guards)
                 else:
                     result = ledger.status()
         if output:

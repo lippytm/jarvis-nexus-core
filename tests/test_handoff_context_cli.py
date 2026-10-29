@@ -732,6 +732,97 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "missing-response.json").exists())
         self.assertEqual(self.db.read_bytes(), before)
 
+    def configured_fixture(self):
+        with HandoffLedger(self.db) as ledger:
+            manifest = build_swarm("ai-jarvis", ["github"], swarm_id="mapping-pilot", source_revision=REVISION)
+            staged = ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="github", text="Synthetic mapping CLI fixture."), manifest,
+                assistant_id="mapping-pilot.builder", handoff_id="mapping-task")
+            profile = deepcopy(self.profile)
+            profile.update(schema_version=3, handoff_id="mapping-task", mission_id="mapping-task",
+                handoff_sha256=staged["handoff_sha256"], asset_id="mapping-pilot.builder", platform="github",
+                destination_id="repo-one", control=dict(state="paused", actor_id="local-owner", reason="Keep blocked."))
+            saved = ledger.save_context(profile, expected_revision=0)
+        url = f"https://api.github.com/repos/owner/.github/git/commits/{REVISION}"
+        raw = json.dumps(dict(sha=REVISION, url=url)).encode()
+        (self.root / "response.bin").write_bytes(raw)
+        observation = read_observation("github", observed_at=datetime.now(timezone.utc).isoformat(), evidence_url=url,
+            response_sha256=hashlib.sha256(raw).hexdigest(), scope="Synthetic configured read", source_revision=REVISION)
+        (self.root / "observation.json").write_text(json.dumps(observation))
+        registry = dict(schema_version=1, kind="jarvis.destination_registry", registry_id="local-fixture",
+            revision=1, source_revision=REVISION, configuration_version="github-read.v1", visibility="owner_private",
+            entries=[dict(project_id="ai-jarvis", platform="github", destination_id="repo-one",
+                          resource_id="owner/.github", allowed_actions=["read"])])
+        (self.root / "registry.json").write_text(json.dumps(registry))
+        args = ["bind-observation", "--handoff", "mapping-task", "--file", "observation.json",
+            "--response-file", "response.bin", "--registry-file", "registry.json", "--registry-digest", digest(registry),
+            "--registry-revision", "1", "--digest", saved["context_sha256"], "--source-revision", REVISION,
+            "--memory-revision", "1", "--out", "configured.json"]
+        return args, registry, profile
+
+    def test_cli_configured_read_round_trip_preserves_blocked_pause_and_refuses_overwrite(self):
+        args, registry, profile = self.configured_fixture()
+        before = self.db.read_bytes()
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        path = self.root / "configured.json"
+        raw = path.read_bytes()
+        envelope = json.loads(raw)
+        self.assertEqual(envelope["kind"], "jarvis.configured_destination_observation")
+        self.assertEqual(envelope["registry_binding"]["entry"], registry["entries"][0])
+        self.assertFalse(envelope["dispatch_authorized"])
+        self.assertEqual(envelope["visibility"], "owner_private")
+        self.assertEqual(self.cli(*args).returncode, 1)
+        self.assertEqual(path.read_bytes(), raw)
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            loaded = ledger.load_context("mapping-task", expected_source_revision=REVISION, expected_memory_revision=1)
+        self.assertEqual(loaded["profile"], profile)
+        self.assertEqual(loaded["review_state"], "proposed")
+
+    def test_cli_registry_preflight_rejects_partial_stale_or_ambiguous_options_before_open(self):
+        args, _, _ = self.configured_fixture()
+        from scripts.jarvis_network import main
+        cases = []
+        for option in ("--registry-file", "--registry-digest", "--registry-revision", "--response-file"):
+            changed = list(args)
+            start = changed.index(option)
+            del changed[start:start + 2]
+            cases.append(changed)
+        for option, value in (("--registry-digest", "0" * 64), ("--registry-revision", "2")):
+            changed = list(args)
+            changed[changed.index(option) + 1] = value
+            cases.append(changed)
+        cases.append(args + ["--github-commit-repository", "owner/.github"])
+        before = self.db.read_bytes()
+        for changed in cases:
+            with self.subTest(args=changed), patch("scripts.jarvis_network.HandoffLedger") as opened:
+                self.assertEqual(main(["--root", str(self.root), "--database", "ledger.sqlite3", *changed]), 1)
+                opened.assert_not_called()
+        self.assertFalse((self.root / "configured.json").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_cli_registry_wrong_resource_and_forced_read_only_refuse_changes(self):
+        args, registry, _ = self.configured_fixture()
+        changed = deepcopy(registry)
+        changed["entries"][0]["resource_id"] = "other/repository"
+        (self.root / "registry.json").write_text(json.dumps(changed))
+        args[args.index("--registry-digest") + 1] = digest(changed)
+        before = self.db.read_bytes()
+        self.assertEqual(self.cli(*args).returncode, 1)
+        self.assertEqual(self.db.read_bytes(), before)
+        (self.root / "registry.json").write_text(json.dumps(registry))
+        args[args.index("--registry-digest") + 1] = digest(registry)
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("DROP TABLE handoff_contexts")
+            ledger.db.execute("PRAGMA user_version=1")
+        before = self.db.read_bytes()
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("read-only inspection requires", result.stderr)
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertFalse((self.root / "configured.json").exists())
+
     @unittest.skipUnless(hasattr(os, 'mkfifo'), 'FIFO probe requires POSIX')
     def test_cli_response_file_refuses_fifo_without_blocking(self):
         (self.root / "observation.json").write_text('{}')
