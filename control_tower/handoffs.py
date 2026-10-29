@@ -398,6 +398,27 @@ class HandoffLedger:
                     "context_sha256": row["digest"], "duplicate": duplicate,
                     "visibility": "owner_private", "authority": "historical_context_only_not_approval", "external_actions": 0}
 
+    def list_checkpoints(self, handoff_id):
+        """Private selective history index; neither context text nor release authority."""
+        with self._transaction():
+            _, handoff = self._handoff(handoff_id)
+            records = []
+            if self.db.execute("PRAGMA user_version").fetchone()[0] == 3:
+                rows = self.db.execute("SELECT revision FROM context_checkpoints WHERE handoff_id=? ORDER BY revision LIMIT ?",
+                                       (handoff_id, MAX_CONTEXT_CHECKPOINTS + 1)).fetchall()
+                if len(rows) > MAX_CONTEXT_CHECKPOINTS:
+                    raise ValueError("context checkpoint limit exceeded")
+                for row in rows:
+                    stored, profile = self._checkpoint(handoff_id, row["revision"])
+                    records.append({"checkpoint_revision": row["revision"], "context_sha256": stored["digest"],
+                        "source_revision": profile["source_revision"], "memory_revision": profile["memory_revision"],
+                        "execution_state": profile["execution"]["state"]})
+            return {"schema_version": 1, "kind": "jarvis.checkpoint_index", "handoff_id": handoff_id,
+                    "project_id": handoff["draft"]["project_id"], "platform": handoff["draft"]["target"],
+                    "checkpoints": records, "visibility": "owner_private",
+                    "authority": "historical_context_only_not_approval", "retry_authorized": False,
+                    "external_actions": 0}
+
     def load_checkpoint(self, handoff_id, revision, *, expected_sha256, expected_source_revision, expected_memory_revision):
         require_digest(expected_sha256)
         with self._transaction():

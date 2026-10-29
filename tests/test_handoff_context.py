@@ -249,6 +249,38 @@ class ContextTests(unittest.TestCase):
         finally:
             opened.close()
 
+    def test_checkpoint_index_is_selective_validated_and_retained_after_restart(self):
+        self.assertEqual(self.ledger.list_checkpoints("mission-one")["checkpoints"], [])
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        self.stage("separate-task")
+        other = self.context("separate-task")
+        second = self.ledger.save_context(other, expected_revision=0)
+        self.ledger.checkpoint_context("separate-task", **{**args, "expected_sha256": second["context_sha256"]})
+        self.profile["memory_revision"] = 2
+        current = self.ledger.save_context(self.profile, expected_revision=1)
+        self.ledger.checkpoint_context("mission-one", **{**args, "expected_sha256": current["context_sha256"], "expected_memory_revision": 2})
+        first = self.ledger.list_checkpoints("mission-one")
+        self.assertEqual([r["checkpoint_revision"] for r in first["checkpoints"]], [1, 2])
+        self.assertEqual([r["memory_revision"] for r in first["checkpoints"]], [1, 2])
+        self.assertEqual(first["checkpoints"][0]["context_sha256"], saved["context_sha256"])
+        self.assertNotIn("separate-task", json.dumps(first))
+        self.assertNotIn("https://", json.dumps(first))
+        self.assertNotIn("detail", json.dumps(first))
+        self.assertFalse(first["retry_authorized"])
+        self.assertEqual(first["visibility"], "owner_private")
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.list_checkpoints("mission-one"), first)
+            first["checkpoints"].clear()
+            self.assertEqual(len(restarted.list_checkpoints("mission-one")["checkpoints"]), 2)
+            with self.assertRaises(ValueError):
+                restarted.list_checkpoints("unknown-task")
+        self.ledger.db.execute("UPDATE context_checkpoints SET digest=? WHERE handoff_id=? AND revision=1", ("0" * 64, "mission-one"))
+        with self.assertRaises(ValueError):
+            self.ledger.list_checkpoints("mission-one")
+        self.assertFalse(self.ledger.db.in_transaction)
+
     def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
         saved = self.save()
         args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)

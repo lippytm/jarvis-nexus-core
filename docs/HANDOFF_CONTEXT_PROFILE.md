@@ -140,6 +140,22 @@ record, which may differ from current context. It writes a new owner-private JSO
 inside --root and refuses existing outputs, path escapes, missing ledgers and mismatches.
 Neither command dispatches work, retries a mission, accepts facts or restores approvals.
 
+To recover the revision/digest selectors when the capture receipt is unavailable:
+
+```sh
+python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --database ledger.sqlite3 list-checkpoints --handoff YOUR-HANDOFF-ID
+```
+
+This command always opens SQLite read-only and prints a private, handoff-scoped
+jarvis.checkpoint_index version-1 record. It validates each listed retained profile
+and returns only revision, digest, source/memory revision and recorded execution state,
+plus project/platform identity. Draft text, context/evidence URLs and execution detail
+are excluded. A valid version-2 ledger returns an empty list without upgrading;
+unknown handoffs, missing ledgers or corrupt selected history fail. The index is
+a current observation, not a trusted digest source against a malicious database,
+an approval, a retry grant or a public export. Use its selectors with load-checkpoint
+and review the private historical record before any further action.
+
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
 SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical

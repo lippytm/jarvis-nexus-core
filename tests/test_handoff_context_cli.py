@@ -197,6 +197,27 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "absent-history.json").exists())
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_checkpoint_index_does_not_upgrade_or_mutate_ledger(self):
+        before = self.db.read_bytes()
+        empty = self.cli("list-checkpoints", "--handoff", "cli-task")
+        self.assertEqual(empty.returncode, 0, empty.stderr)
+        self.assertEqual(json.loads(empty.stdout)["checkpoints"], [])
+        self.assertEqual(self.db.read_bytes(), before)
+        checksum = json.loads(self.save().stdout)["context_sha256"]
+        self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", "--handoff", "cli-task",
+            "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1").returncode, 0)
+        before = self.db.read_bytes()
+        result = self.cli("--read-only", "list-checkpoints", "--handoff", "cli-task")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        index = json.loads(result.stdout)
+        self.assertEqual(index["kind"], "jarvis.checkpoint_index")
+        self.assertEqual(index["checkpoints"][0]["context_sha256"], checksum)
+        self.assertNotIn("Synthetic", result.stdout)
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertEqual(self.cli("list-checkpoints", "--handoff", "unknown-task").returncode, 1)
+        self.assertEqual(self.cli("list-checkpoints", "--handoff", "cli-task", database="absent/ledger.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "absent").exists())
+
     def test_backup_preserves_opt_in_history_and_rejects_corrupt_checkpoint(self):
         checksum = json.loads(self.save().stdout)["context_sha256"]
         args = dict(expected_sha256=checksum, expected_source_revision=REVISION, expected_memory_revision=1)
