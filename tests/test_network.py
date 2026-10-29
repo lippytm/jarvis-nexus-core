@@ -16,7 +16,7 @@ from control_tower.network_contract import (MAX_PACKET_BYTES, PROJECTS, TARGETS,
     digest, load_packet, validate_draft, validate_return)
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
-from control_tower.swarm_factory import build_swarm, validate_swarm
+from control_tower.swarm_factory import ROLE_TEMPLATES, build_swarm, validate_swarm
 
 REVISION = "575ebc777fae0165c93247e8c6da44c440539c4d"
 ROOT = Path(__file__).resolve().parents[1]
@@ -155,6 +155,31 @@ class LedgerTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.ledger.review("task-one", reviewer_id=reviewer, expected_sha256=checksum)
         self.assertEqual(self.ledger.status()["handoffs"][0]["state"], "pending_review")
+
+    def test_role_catalog_cannot_invalidate_reviewed_handoff_across_restart(self):
+        record = self.prepare()
+        original = ROLE_TEMPLATES["builder"]
+        before = self.ledger.status()
+        replacement = ("validation_tool", "Changed role instructions.")
+        try:
+            with self.assertRaises(TypeError):
+                ROLE_TEMPLATES["builder"] = replacement
+        finally:
+            # Keep the pre-fix reproduction from changing other tests' baseline.
+            if isinstance(ROLE_TEMPLATES, dict):
+                ROLE_TEMPLATES["builder"] = original
+        with self.assertRaises(TypeError):
+            ROLE_TEMPLATES["new_role"] = replacement
+        with self.assertRaises(TypeError):
+            del ROLE_TEMPLATES["evaluator"]
+        self.assertEqual(validate_swarm(self.manifest), self.manifest)
+        self.assertEqual(swarm(), self.manifest)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.ledger.status(), before)
+        self.assertTrue(self.stage()["duplicate"])
+        self.assertEqual(self.ledger.export("task-one", expected_sha256=record["handoff_sha256"])["handoff_sha256"],
+                         record["handoff_sha256"])
 
     def test_roundtrip_persists_and_duplicates_do_not_consume_budget(self):
         record = self.prepare()

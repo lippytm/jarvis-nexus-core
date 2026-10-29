@@ -1,6 +1,7 @@
 """Build portable, inactive assistant specifications from reviewed local templates."""
 from copy import deepcopy
 import re
+from types import MappingProxyType
 
 from control_tower.builder import ToolSpec, generate_candidate
 from control_tower.evaluator import evaluate_candidate
@@ -8,13 +9,14 @@ from control_tower.network_contract import PROJECTS, TARGETS, canonical, digest,
 from control_tower.validation import json_record_errors
 from control_tower.orchestrator import AgentPassport, Proposal, plan
 
-ROLE_TEMPLATES = {
+# These tuples form the reconstruction baseline for saved swarm manifests.
+ROLE_TEMPLATES = MappingProxyType({
     "researcher": ("report_tool", "Prepare source-backed research notes and mark uncertainty."),
     "architect": ("validation_tool", "Propose a bounded design with explicit dependencies and acceptance checks."),
     "builder": ("consent_check", "Draft the smallest useful tool or integration change; do not execute generated source."),
     "evaluator": ("validation_tool", "Review proposed changes independently and return reproducible findings."),
     "reporter": ("synthetic_count", "Prepare an evidence-based update and platform-specific draft for review."),
-}
+})
 
 
 def build_swarm(project_id, targets, *, swarm_id, source_revision,
