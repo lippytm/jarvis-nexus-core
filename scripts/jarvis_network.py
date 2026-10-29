@@ -17,6 +17,7 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
+from control_tower.connections import verify_github_commit_response
 from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, load_packet
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
@@ -32,7 +33,7 @@ def _local(root, value):
     return path
 
 
-def _response_digest(path):
+def _response_bytes(path):
     flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
     with os.fdopen(os.open(path, flags), "rb") as handle:
         if not stat.S_ISREG(os.fstat(handle.fileno()).st_mode):
@@ -40,7 +41,7 @@ def _response_digest(path):
         content = handle.read(MAX_PACKET_BYTES + 1)
     if len(content) > MAX_PACKET_BYTES:
         raise ValueError("response input exceeds 64 KiB")
-    return hashlib.sha256(content).hexdigest()
+    return content
 
 
 def _write(path, record):
@@ -238,6 +239,7 @@ def main(argv=None):
     observation.add_argument("--handoff", required=True)
     observation.add_argument("--file", required=True)
     observation.add_argument("--response-file", help="Optional retained raw response, at most 64 KiB; compare exact bytes with observation hash")
+    observation.add_argument("--github-commit-repository", help="Optional owner/repo identity check for a Git-data commit response; requires --response-file")
     observation.add_argument("--digest", required=True)
     observation.add_argument("--source-revision", required=True)
     observation.add_argument("--memory-revision", type=int, required=True)
@@ -280,8 +282,13 @@ def main(argv=None):
             context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
             observation_packet = load_packet(_local(root, args.file)) if args.command == "bind-observation" else None
             if args.command == "bind-observation" and args.response_file:
-                if _response_digest(_local(root, args.response_file)) != observation_packet.get("response_sha256"):
+                response = _response_bytes(_local(root, args.response_file))
+                if hashlib.sha256(response).hexdigest() != observation_packet.get("response_sha256"):
                     raise ValueError("retained response digest does not match observation")
+            if args.command == "bind-observation" and args.github_commit_repository is not None:
+                if not args.response_file:
+                    raise ValueError("GitHub commit identity check requires --response-file")
+                verify_github_commit_response(response, observation_packet, args.github_commit_repository)
             database = _local(root, args.database)
             if args.command != "stage" and not database.is_file():
                 raise ValueError("operation requires an existing ledger; use stage to create a new ledger")

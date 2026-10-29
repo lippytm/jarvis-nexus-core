@@ -68,6 +68,37 @@ def read_observation(connector, *, observed_at, evidence_url, response_sha256, s
     return {**record, "record_sha256": _digest(record)}
 
 
+def verify_github_commit_response(content, observation, repository):
+    """Check retained Git-data commit identity, not provider/collector authenticity."""
+    if not isinstance(content, bytes) or len(content) > 65536:
+        raise ValueError("commit response must be bounded bytes")
+    if not isinstance(repository, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9_.-]{0,99}", repository):
+        raise ValueError("invalid declared GitHub repository")
+    if not isinstance(observation, dict) or observation.get("connector") != "github":
+        raise ValueError("commit response requires a GitHub observation")
+    source = observation.get("source_revision")
+    if not isinstance(source, str) or not re.fullmatch(r"[a-f0-9]{40}", source):
+        raise ValueError("commit response requires an exact source SHA")
+    expected_url = f"https://api.github.com/repos/{repository}/git/commits/{source}"
+    if observation.get("evidence_url") != expected_url:
+        raise ValueError("observation URL does not match declared commit resource")
+    def unique_fields(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate commit response field")
+            result[key] = value
+        return result
+    try:
+        response = json.loads(content.decode("utf-8"), object_pairs_hook=unique_fields)
+    except (UnicodeError, json.JSONDecodeError, RecursionError):
+        raise ValueError("invalid commit response JSON") from None
+    if json_record_errors(response) or response.get("sha") != source or response.get("url") != expected_url:
+        raise ValueError("response identity does not match declared commit resource")
+    if sha256(content).hexdigest() != observation.get("response_sha256"):
+        raise ValueError("retained response digest does not match observation")
+
+
 def connector_report(observations=(), *, now=None, max_age_hours=24):
     """Show recent recorded reads without turning them into live connection claims."""
     if not isinstance(observations, (list, tuple)) or len(observations) > 100:

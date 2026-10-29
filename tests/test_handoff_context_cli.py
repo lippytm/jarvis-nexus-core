@@ -686,6 +686,17 @@ class ContextCLITests(unittest.TestCase):
             self.assertEqual(self.cli("bind-observation", *args, "--response-file", name, "--out", "rejected.json").returncode, 1)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_commit_identity_option_requires_response_before_ledger_open(self):
+        (self.root / "observation.json").write_text('{}')
+        before = self.db.read_bytes()
+        result = self.cli("bind-observation", "--handoff", "cli-task", "--file", "observation.json",
+            "--digest", "0" * 64, "--source-revision", REVISION, "--memory-revision", "1",
+            "--github-commit-repository", "lippytm/jarvis-nexus-core", "--out", "missing-response.json")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("requires --response-file", result.stderr)
+        self.assertFalse((self.root / "missing-response.json").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     @unittest.skipUnless(hasattr(os, 'mkfifo'), 'FIFO probe requires POSIX')
     def test_cli_response_file_refuses_fifo_without_blocking(self):
         (self.root / "observation.json").write_text('{}')

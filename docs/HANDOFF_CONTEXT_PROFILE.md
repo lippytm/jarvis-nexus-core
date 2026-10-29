@@ -424,6 +424,17 @@ includes whitespace and encoding bytes, with no JSON reserialization. This optio
 does not copy response contents into the receipt or change its schema. Without it,
 the earlier metadata-only behavior remains compatible. It proves byte agreement,
 not collector/provider authenticity or correct resource-to-destination mapping.
+For a GitHub Git-data commit response only, also supply
+--github-commit-repository OWNER/REPO. This requires --response-file and a GitHub
+observation with an exact 40-character source SHA. The declared repository and
+source must match both the observation's evidence URL and the response's sha/url
+fields, using the exact https://api.github.com/repos/OWNER/REPO/git/commits/SHA
+resource. Duplicate JSON keys, malformed/bounded inputs and identity/hash mismatches
+are rejected before opening the ledger. Existing receipts remain unchanged.
+This checks identity against the caller's declared repository, not an authenticated
+registry mapping to an opaque destination ID; that mapping still needs trusted
+collection and owner-scoped access control. No other GitHub endpoint is supported
+by this optional identity check, and no request is made to GitHub.
 This command does not fetch URLs or prove that a supplied
 hash, URL, scope label or destination mapping is authentic. It omits context text,
 reference lists and execution detail, changes no ledger state or holds, sends

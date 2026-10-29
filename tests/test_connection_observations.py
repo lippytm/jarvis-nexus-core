@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 import unittest
-from control_tower.connections import read_observation, connector_report
+import json
+from hashlib import sha256
+from control_tower.connections import read_observation, connector_report, verify_github_commit_response
 
 NOW = datetime(2026, 10, 22, 20, tzinfo=timezone.utc)
 
@@ -14,6 +16,29 @@ def observed(**changes):
 
 
 class ConnectionObservationTests(unittest.TestCase):
+    def test_github_commit_response_identity_and_exact_bytes(self):
+        source = "a" * 40
+        url = f"https://api.github.com/repos/lippytm/jarvis-nexus-core/git/commits/{source}"
+        content = json.dumps(dict(sha=source, url=url)).encode()
+        record = observed(source_revision=source, evidence_url=url, response_sha256=sha256(content).hexdigest())
+        original = dict(record)
+        verify_github_commit_response(content, record, "lippytm/jarvis-nexus-core")
+        self.assertEqual(record, original)
+        bad_content = [json.dumps(dict(sha="b" * 40, url=url)).encode(),
+            json.dumps(dict(sha=source, url=url.replace("lippytm/", "other/"))).encode(),
+            ('{"sha":"wrong","sha":"' + source + '","url":"' + url + '"}').encode(),
+            b'[]', b'\xff', b'x' * 65537]
+        for raw in bad_content:
+            with self.subTest(content=raw[:60]), self.assertRaises(ValueError):
+                verify_github_commit_response(raw, {**record, "response_sha256": sha256(raw).hexdigest()}, "lippytm/jarvis-nexus-core")
+        for change in (dict(connector="codex"), dict(source_revision="main"),
+                       dict(evidence_url=url + "?other=1"), dict(response_sha256="0" * 64)):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                verify_github_commit_response(content, {**record, **change}, "lippytm/jarvis-nexus-core")
+        for repository in ("other/repo", "../repo", "lippytm/repo/path", "https://github.com/lippytm/repo", None):
+            with self.subTest(repository=repository), self.assertRaises(ValueError):
+                verify_github_commit_response(content, record, repository)
+
     def test_configuration_does_not_imply_live_access(self):
         result = connector_report(now=NOW)
         self.assertTrue(all(row["status"] == "unverified" for row in result.values()))
