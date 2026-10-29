@@ -100,3 +100,7 @@ complete file. Inspect that artifact before retrying: an existing output still
 cannot be overwritten. Temporary files are cleaned up. These checks do not test
 physical power-loss recovery or guarantee durability of newly created ancestor
 directories; non-POSIX behavior retains the existing file flush and no-overwrite.
+
+The selected assignment now has an [unpublished script and shot plan](media/jarvis-youtube-slot2-20261029.md),
+proposed captions and an original SVG storyboard. These are review artifacts;
+narration recording, final caption timing, video rendering and release remain unfinished.
