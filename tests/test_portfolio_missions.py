@@ -9,7 +9,7 @@ import unittest
 from urllib.parse import parse_qs, urlsplit
 from unittest.mock import patch
 
-from control_tower.campaigns import CHANNEL_FORMATS, campaign_briefs, daily_campaign_briefs
+from control_tower.campaigns import CHANNEL_FORMATS, campaign_briefs, daily_campaign_briefs, daily_assignment_draft
 from control_tower.funnels import DESTINATIONS
 from control_tower.handoffs import HandoffLedger
 from control_tower.missions import (TIMEBOXES, compile_mission, export_role_draft,
@@ -240,6 +240,54 @@ class MissionCompilerTests(unittest.TestCase):
 
 
 class CampaignTests(unittest.TestCase):
+    def test_selected_daily_assignment_retains_source_and_survives_ledger_restart(self):
+        source = mission("funding-customers", target="codex")
+        packet = daily_campaign_briefs(source, editorial_date="2026-10-29", destination_index=1)
+        original = deepcopy(source)
+        draft = daily_assignment_draft(source, editorial_date="2026-10-29", channel="youtube", slot=2,
+            expected_campaign_sha256=packet["briefs_sha256"], destination_index=1)
+        brief = next(b for b in packet["source_briefs"] if b["channel"] == "youtube")
+        self.assertIn(brief["draft"]["text"], draft["text"])
+        self.assertIn(packet["briefs_sha256"], draft["text"])
+        self.assertEqual(original, source)
+        self.assertEqual("codex", validate_draft(draft)["target"])
+        builder = next(t for t in source["tasks"] if t["role"] == "builder")
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "ledger.sqlite"
+            with HandoffLedger(path) as ledger:
+                staged = ledger.stage(draft, source["swarm"], assistant_id=builder["assistant_id"], handoff_id="daily-selected")
+                with self.assertRaises(ValueError):
+                    ledger.export("daily-selected", expected_sha256=staged["handoff_sha256"])
+            with HandoffLedger(path) as ledger:
+                duplicate = ledger.stage(draft, source["swarm"], assistant_id=builder["assistant_id"], handoff_id="daily-selected")
+                self.assertTrue(duplicate["duplicate"])
+                ledger.review("daily-selected", reviewer_id="synthetic-reviewer", expected_sha256=staged["handoff_sha256"])
+                result = ledger.export("daily-selected", expected_sha256=staged["handoff_sha256"])
+                self.assertEqual(draft, result["handoff"]["draft"])
+                self.assertEqual(0, result["external_actions"])
+                other = daily_assignment_draft(source, editorial_date="2026-10-29", channel="youtube", slot=3,
+                    expected_campaign_sha256=packet["briefs_sha256"], destination_index=1)
+                with self.assertRaises(ValueError):
+                    ledger.stage(other, source["swarm"], assistant_id=builder["assistant_id"], handoff_id="daily-selected")
+                independent = ledger.stage(other, source["swarm"], assistant_id=builder["assistant_id"], handoff_id="daily-other")
+                self.assertEqual("pending_review", independent["state"])
+                with self.assertRaises(ValueError):
+                    ledger.export("daily-other", expected_sha256=independent["handoff_sha256"])
+                self.assertEqual(result, ledger.export("daily-selected", expected_sha256=staged["handoff_sha256"]))
+
+    def test_daily_selection_rejects_changed_campaign_and_invalid_selector(self):
+        source = mission(target="codex")
+        packet = daily_campaign_briefs(source, editorial_date="2026-10-29")
+        args = dict(editorial_date="2026-10-29", channel="youtube", slot=1,
+                    expected_campaign_sha256=packet["briefs_sha256"])
+        for change in (dict(editorial_date="2026-10-30"), dict(expected_campaign_sha256="0" * 64),
+                       dict(channel="github"), dict(channel=[]), dict(slot=True), dict(slot=0), dict(slot=5)):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                daily_assignment_draft(source, **{**args, **change})
+        source["request"]["objective"] = "Tampered input"
+        with self.assertRaises(ValueError):
+            daily_assignment_draft(source, **args)
+
     def test_all_seven_channels_keep_handoff_provider_separate(self):
         result = campaign_briefs(mission())
         self.assertEqual(set(CHANNEL_FORMATS), {b["channel"] for b in result["briefs"]})

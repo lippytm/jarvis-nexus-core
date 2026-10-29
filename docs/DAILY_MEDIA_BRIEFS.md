@@ -45,3 +45,33 @@ This API prepares one packet at a time. It does not reserve a mission ID in a
 durable queue, detect already published content, create agents, start a worker,
 or change any newsletter schedule. Use the existing ledger's exact-content
 review flow and an authenticated adapter before any future external action.
+
+## Select one source-complete assignment
+
+`daily_assignment_draft` rebuilds the campaign from its validated mission and
+requires its exact digest before selecting one channel/slot. It returns an
+unchanged strict version-1 draft shape whose text includes the assignment, date,
+campaign digest and complete source brief (audience, objective, destination,
+disclosures and evidence limits). This avoids transferring an assignment without
+the context it references. The returned draft still requires exact-content review.
+
+```python
+from control_tower.campaigns import daily_assignment_draft
+
+draft = daily_assignment_draft(
+    mission, editorial_date="2026-10-29", channel="youtube", slot=2,
+    expected_campaign_sha256=packet["briefs_sha256"],
+)
+```
+
+The selector does not authenticate the source or reviewer, persist a queue item,
+or dispatch anything. A changed date, mission or destination choice must be
+recompiled and selected with its new digest. To retain the draft, explicitly stage
+it in the existing HandoffLedger with a scoped swarm/assistant/handoff identity;
+that ledger preserves its original review, duplicate and restart controls.
+Context envelopes and per-destination holds remain necessary wherever applicable.
+
+The saved [YouTube slot-2 draft](../examples/portfolio/jarvis-daily-youtube-slot2.draft.json)
+was selected from the exact 24-assignment example above. It targets `codex` for
+preparation, includes its source brief and has not been staged in an operational
+ledger, reviewed by the owner, sent to a provider or turned into a finished video.

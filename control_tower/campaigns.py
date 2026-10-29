@@ -3,7 +3,7 @@ from datetime import date
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from control_tower.missions import validate_mission
-from control_tower.network_contract import canonical, digest, require_record, validate_draft
+from control_tower.network_contract import canonical, digest, require_digest, require_record, validate_draft
 
 CHANNEL_FORMATS = {
     "facebook": ("Educational post", ("Audience question", "Useful explanation", "Evidence and limits", "Relevant next action")),
@@ -87,6 +87,33 @@ def campaign_briefs(mission, *, destination_index=0):
     if len(canonical(result)) + 1 > 65536:
         raise ValueError("campaign packet exceeds limit")
     return result
+
+
+def daily_assignment_draft(mission, *, editorial_date, channel, slot,
+                           expected_campaign_sha256, destination_index=0):
+    """Select one source-complete draft for the existing manual ledger flow.
+
+    Rebuild the bounded campaign from its validated mission before checking the
+    supplied exact digest. Selection does not stage, review or send the draft.
+    """
+    require_digest(expected_campaign_sha256)
+    if not isinstance(channel, str) or type(slot) is not int or not 1 <= slot <= 4:
+        raise ValueError("invalid daily assignment selector")
+    packet = daily_campaign_briefs(mission, editorial_date=editorial_date,
+                                   destination_index=destination_index)
+    if packet["briefs_sha256"] != expected_campaign_sha256:
+        raise ValueError("daily campaign revision mismatch")
+    selected = next((p for p in packet["posts"] if p["channel"] == channel and p["slot"] == slot), None)
+    if selected is None:
+        raise ValueError("unknown daily assignment channel")
+    source = next(b for b in packet["source_briefs"] if b["channel"] == channel)
+    text = "\n\n".join((
+        f"Daily campaign: {packet['campaign_id']}; SHA-256: {expected_campaign_sha256}",
+        selected["draft"]["text"],
+        "INCLUDED SOURCE BRIEF — unreviewed draft context, not execution authority",
+        source["draft"]["text"],
+    ))
+    return validate_draft({**selected["draft"], "text": text})
 
 
 def daily_campaign_briefs(mission, *, editorial_date, destination_index=0):
