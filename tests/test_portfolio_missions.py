@@ -9,7 +9,7 @@ import unittest
 from urllib.parse import parse_qs, urlsplit
 from unittest.mock import patch
 
-from control_tower.campaigns import CHANNEL_FORMATS, campaign_briefs
+from control_tower.campaigns import CHANNEL_FORMATS, campaign_briefs, daily_campaign_briefs
 from control_tower.funnels import DESTINATIONS
 from control_tower.handoffs import HandoffLedger
 from control_tower.missions import (TIMEBOXES, compile_mission, export_role_draft,
@@ -34,6 +34,43 @@ def mission(initiative_id="jarvis-tools", **updates):
 
 
 class CatalogTests(unittest.TestCase):
+    def test_daily_media_assignments_are_bounded_distinct_and_round_trip(self):
+        source = mission(target="codex")
+        original = deepcopy(source)
+        result = daily_campaign_briefs(source, editorial_date="2026-10-29")
+        self.assertEqual(source, original)
+        self.assertEqual(result, json.loads(canonical(result)))
+        self.assertEqual(result["briefs_sha256"], digest({k:v for k,v in result.items() if k != "briefs_sha256"}))
+        channels = {"facebook", "linkedin", "youtube", "instagram", "threads", "substack"}
+        self.assertEqual(24, len(result["posts"]))
+        self.assertEqual(channels, {b["channel"] for b in result["source_briefs"]})
+        for channel in channels:
+            posts = [p for p in result["posts"] if p["channel"] == channel]
+            self.assertEqual({1, 2, 3, 4}, {p["slot"] for p in posts})
+            self.assertEqual(4, len({p["draft"]["text"] for p in posts}))
+            brief = next(b for b in result["source_briefs"] if b["channel"] == channel)
+            for post in posts:
+                self.assertEqual(digest(brief), post["source_brief_sha256"])
+                self.assertEqual("codex", validate_draft(post["draft"])["target"])
+        self.assertIsNone(result["publication_schedule"])
+        self.assertIsNone(result["actual_metrics"])
+        self.assertEqual(0, result["external_actions"])
+        result["posts"][0]["draft"]["text"] = "Caller edit"
+        self.assertNotEqual(result, daily_campaign_briefs(source, editorial_date="2026-10-29"))
+
+    def test_daily_media_keeps_customer_partner_destinations_and_rejects_stale_input(self):
+        for kind in ("funding-customers", "referral-partners"):
+            source = mission(kind)
+            result = daily_campaign_briefs(source, editorial_date="2026-10-29", destination_index=1)
+            expected = campaign_briefs(source, destination_index=1)
+            self.assertTrue(all(b in expected["briefs"] for b in result["source_briefs"]))
+        source["request"]["objective"] = "Unreviewed tampering"
+        with self.assertRaises(ValueError):
+            daily_campaign_briefs(source, editorial_date="2026-10-29")
+        for value in (None, "2026-02-30", "20261029", "2026-10-29T12:00:00"):
+            with self.subTest(date=value), self.assertRaises(ValueError):
+                daily_campaign_briefs(mission(), editorial_date=value)
+
     def test_catalog_and_tracked_browser_snapshot_match(self):
         catalog = portfolio_catalog()
         self.assertEqual(12, len(catalog["initiatives"]))

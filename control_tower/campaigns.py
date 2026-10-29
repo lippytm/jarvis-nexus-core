@@ -1,4 +1,5 @@
 """Prepare channel-specific editorial briefs and tagged reference links offline."""
+from datetime import date
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from control_tower.missions import validate_mission
@@ -85,4 +86,63 @@ def campaign_briefs(mission, *, destination_index=0):
     require_record(result, set(result))
     if len(canonical(result)) + 1 > 65536:
         raise ValueError("campaign packet exceeds limit")
+    return result
+
+
+def daily_campaign_briefs(mission, *, editorial_date, destination_index=0):
+    """Prepare 24 bounded media assignments; a date is not a posting schedule.
+
+    Uses the existing validated mission and channel briefs. No account access,
+    finished copy/media, approval, dispatch or publication is established here.
+    """
+    if not isinstance(editorial_date, str):
+        raise ValueError("editorial date must be YYYY-MM-DD")
+    try:
+        if date.fromisoformat(editorial_date).isoformat() != editorial_date:
+            raise ValueError()
+    except ValueError:
+        raise ValueError("editorial date must be YYYY-MM-DD") from None
+    source = campaign_briefs(mission, destination_index=destination_index)
+    # Creative production choices, not claims about platform upload requirements.
+    media = (
+        ("facebook", "Single illustration with explanatory caption", "One diagram, descriptive alternative text and a discussion question."),
+        ("linkedin", "Four-slide project explainer", "Problem, method, evidence and next step; provide a plain-text equivalent."),
+        ("youtube", "45-60 second video storyboard", "Opening, demonstration, evidence limit and closing; draft narration, captions and shot list. Video not rendered."),
+        ("instagram", "Five-card carousel", "Opening, explanation, example, limitation and question; draft card text and alternative text."),
+        ("threads", "Three-part text discussion", "Opening idea, concrete example, then evidence limit and question; no invented replies."),
+        ("substack", "200-350 word Note outline", "Lead, practical example, source/limit and reader question; not a scheduled newsletter edition."),
+    )
+    angles = (
+        ("explain", "Explain one audience problem and one relevant concept."),
+        ("demonstrate", "Show one reproducible example; label proposed demonstrations as unperformed."),
+        ("limits", "Explain one evidence gap or limitation and how a reader can check it."),
+        ("next-step", "Give one bounded next step appropriate to the source audience and journey."),
+    )
+    briefs = [b for b in source["briefs"] if b["channel"] in {m[0] for m in media}]
+    posts = []
+    for channel, format_name, specification in media:
+        brief = next(b for b in briefs if b["channel"] == channel)
+        for slot, (angle, direction) in enumerate(angles, 1):
+            text = "\n".join(("UNPUBLISHED MEDIA ASSIGNMENT — copy and assets still require creation and review",
+                f"Channel: {channel}; editorial slot: {slot}; angle: {angle}",
+                f"Source brief SHA-256: {digest(brief)}", direction,
+                f"Proposed format: {format_name}. {specification}",
+                "Use the included source brief for the exact audience, objective, destination and disclosures.",
+                "Do not claim publication, finished video, verified account access or measured audience results."))
+            posts.append({"slot": slot, "channel": channel, "angle": angle,
+                "source_brief_sha256": digest(brief), "media_specification": specification,
+                "format": format_name, "state": "unpublished_media_assignment",
+                "draft": validate_draft({**brief["draft"], "text": text})})
+    record = {"schema_version": 1, "kind": "jarvis.daily_campaign_briefs",
+        "campaign_id": source["campaign_id"] + ".daily." + editorial_date,
+        "mission_id": source["mission_id"], "mission_sha256": source["mission_sha256"],
+        "source_context_revision": mission["source_context_revision"],
+        "project_id": source["project_id"], "editorial_date": editorial_date,
+        "source_briefs": briefs, "posts": posts, "review_state": "pending",
+        "state": "unpublished_media_assignments", "publication_schedule": None,
+        "actual_metrics": None, "model_calls": 0, "external_actions": 0}
+    result = {**record, "briefs_sha256": digest(record)}
+    require_record(result, set(result))
+    if len(canonical(result)) + 1 > 65536:
+        raise ValueError("daily campaign packet exceeds limit")
     return result
