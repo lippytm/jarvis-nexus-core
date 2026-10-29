@@ -140,6 +140,17 @@ record, which may differ from current context. It writes a new owner-private JSO
 inside --root and refuses existing outputs, path escapes, missing ledgers and mismatches.
 Neither command dispatches work, retries a mission, accepts facts or restores approvals.
 
+JSON CLI outputs flush file contents before atomic no-overwrite publication. On
+POSIX, the writer also synchronizes the containing directory before reporting
+success. A failure after publication can leave a complete output despite a CLI
+error: inspect that existing file and the current ledger before retrying; never
+delete/overwrite it merely to replay a command. This is a filesystem sync protocol,
+not a tested power-loss guarantee. Newly created ancestor directories, storage
+hardware and mount behavior still require separate recovery verification. Other
+platforms retain the prior file-flush/publication behavior without this directory
+sync step. These output files do not authenticate facts, approve retries or release
+held missions.
+
 To recover the revision/digest selectors when the capture receipt is unavailable:
 
 ```sh

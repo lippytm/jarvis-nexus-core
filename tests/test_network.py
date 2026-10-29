@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import os
 import sqlite3
+import stat
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -305,6 +306,36 @@ class LedgerTests(unittest.TestCase):
 
 
 class IntegrationTests(unittest.TestCase):
+    @unittest.skipUnless(os.name == "posix", "directory fsync requires POSIX")
+    def test_json_publication_syncs_directory_and_preserves_uncertain_output(self):
+        fsync = os.fsync
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "evidence.json"
+            calls = []
+            def track_sync(fd):
+                is_directory = stat.S_ISDIR(os.fstat(fd).st_mode)
+                calls.append(is_directory)
+                if is_directory:
+                    self.assertEqual(json.loads(path.read_text()), {"safe": True})
+                fsync(fd)
+            with patch("scripts.jarvis_network.os.fsync", side_effect=track_sync):
+                _write(path, {"safe": True})
+            self.assertEqual(calls, [False, True])
+            uncertain = Path(directory) / "uncertain.json"
+            def fail_directory_sync(fd):
+                if stat.S_ISDIR(os.fstat(fd).st_mode):
+                    raise OSError("simulated directory sync failure")
+                fsync(fd)
+            with patch("scripts.jarvis_network.os.fsync", side_effect=fail_directory_sync), self.assertRaises(OSError):
+                _write(uncertain, {"retained": True})
+            # Publication already occurred: reconcile this file, never overwrite it.
+            original = uncertain.read_bytes()
+            self.assertEqual(json.loads(original), {"retained": True})
+            self.assertEqual(sorted(p.name for p in Path(directory).iterdir()), ["evidence.json", "uncertain.json"])
+            with self.assertRaises(FileExistsError):
+                _write(uncertain, {"changed": True})
+            self.assertEqual(uncertain.read_bytes(), original)
+
     def test_youtube_and_github_attribution_and_journeys(self):
         from control_tower.attribution import aggregate
         from control_tower.journeys import reconcile_journeys

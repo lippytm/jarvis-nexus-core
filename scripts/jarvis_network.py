@@ -45,6 +45,14 @@ def _write(path, record):
         # A hard link publishes the complete same-filesystem file atomically and
         # fails if the final name already exists. It never replaces old evidence.
         os.link(temporary, path)
+        if os.name == "posix":
+            # Flush publication before acknowledging success. A failure here
+            # leaves a complete output to reconcile, never an overwrite retry.
+            directory = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory)
+            finally:
+                os.close(directory)
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
