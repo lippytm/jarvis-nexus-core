@@ -3,6 +3,21 @@ from control_tower.builder import TEMPLATE_SOURCES, ToolSpec, generate_candidate
 from control_tower.evaluator import evaluate_candidate
 
 class BuilderEvaluationTests(unittest.TestCase):
+    def test_invalid_unicode_returns_failed_review_without_mutating_candidate(self):
+        candidate = generate_candidate(ToolSpec("safe_tool", "validation_tool", "Sample"))
+        for invalid in ("\ud800", "\udfff", candidate["content"] + "# \ud800\n"):
+            malformed = {**candidate, "content": invalid}
+            original = dict(malformed)
+            with self.subTest(source=repr(invalid)):
+                result = evaluate_candidate(malformed)
+                self.assertFalse(result["passed"])
+                self.assertIn("source must be valid UTF-8", result["errors"])
+                self.assertEqual(result["execution"], "not_run")
+                self.assertEqual(result["deployment"], "not_deployed")
+                self.assertEqual(malformed, original)
+                self.assertNotIn(invalid, str(result))
+        self.assertTrue(evaluate_candidate(candidate)["passed"])
+
     def test_shared_template_catalog_cannot_change_builder_or_evaluator_baseline(self):
         candidate = generate_candidate(ToolSpec("safe_tool", "validation_tool", "Sample"))
         original = TEMPLATE_SOURCES["validation_tool"]
