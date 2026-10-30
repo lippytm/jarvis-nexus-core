@@ -15,7 +15,7 @@ from control_tower.handoffs import HandoffLedger
 from control_tower.swarm_factory import build_swarm
 from control_tower.network_contract import digest
 from control_tower.connections import read_observation
-from scripts.jarvis_network import _backup
+from scripts.jarvis_network import _backup, _set_context_control
 
 ROOT = Path(__file__).resolve().parents[1]
 REVISION = "b5fd40ff22814feae3b60a8761821856f0976d75"
@@ -58,6 +58,165 @@ class ContextCLITests(unittest.TestCase):
     def load(self, out="resumed.json", revision=REVISION, memory=1):
         return self.cli("load-context", "--handoff", "cli-task", "--source-revision", revision,
                         "--memory-revision", str(memory), "--out", out)
+
+    def controlled(self, execution="execution_blocked"):
+        self.profile.update(schema_version=3, destination_id="synthetic-codex-workspace",
+            control=dict(state="active", actor_id="local-controller", reason="Synthetic active task."))
+        self.profile["execution"]["state"] = execution
+        self.profile["context_refs"] = [dict(url="https://example.invalid/private-control-context",
+            revision=1, visibility="owner_private")]
+        self.write(self.profile)
+        saved = self.save()
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        return json.loads(saved.stdout)["context_sha256"]
+
+    def control(self, checksum, state="paused", memory=1, source=REVISION):
+        return self.cli("set-context-control", "--handoff", "cli-task", "--state", state,
+            "--actor", "local-controller", "--reason", "Synthetic operator hold.",
+            "--digest", checksum, "--source-revision", source, "--memory-revision", str(memory))
+
+    def control_snapshot(self):
+        # Writable ledger opens may update SQLite file metadata. Compare every
+        # saved record/schema statement rather than the database header bytes.
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            return (ledger.db.execute("PRAGMA user_version").fetchone()[0], tuple(ledger.db.iterdump()))
+
+    def test_control_cli_pause_restart_duplicate_and_review_invalidation(self):
+        checksum = self.controlled()
+        with HandoffLedger(self.db) as ledger:
+            manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="cli-pilot", source_revision=REVISION)
+            staged = ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Independent synthetic task."), manifest,
+                assistant_id="cli-pilot.builder", handoff_id="other-task")
+            independent = deepcopy(self.profile)
+            independent.update(handoff_id="other-task", mission_id="other-task",
+                handoff_sha256=staged["handoff_sha256"], destination_id="other-synthetic-workspace")
+            ledger.save_context(independent, expected_revision=0)
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        paused = self.control(checksum)
+        self.assertEqual(paused.returncode, 0, paused.stderr)
+        receipt = json.loads(paused.stdout)
+        self.assertEqual((receipt["revision"], receipt["memory_revision"]), (2, 2))
+        self.assertFalse(receipt["retry_authorized"])
+        self.assertFalse(receipt["dispatch_authorized"])
+        self.assertEqual(self.load(memory=2).returncode, 0)
+        retained = json.loads((self.root / "resumed.json").read_text())
+        expected = deepcopy(self.profile)
+        expected.update(memory_revision=2, control=dict(state="paused", actor_id="local-controller",
+            reason="Synthetic operator hold."))
+        self.assertEqual(retained["profile"], expected)
+        self.assertEqual(retained["review_state"], "proposed")
+        before = self.control_snapshot()
+        duplicate = self.control(receipt["context_sha256"], memory=2)
+        self.assertEqual(duplicate.returncode, 0, duplicate.stderr)
+        replay = json.loads(duplicate.stdout)
+        self.assertTrue(replay["duplicate"])
+        self.assertEqual((replay["revision"], replay["memory_revision"]), (2, 2))
+        self.assertEqual(self.control_snapshot(), before)
+        cancelled = self.control(receipt["context_sha256"], state="cancelled", memory=2)
+        self.assertEqual(cancelled.returncode, 0, cancelled.stderr)
+        terminal = json.loads(cancelled.stdout)
+        before = self.control_snapshot()
+        self.assertNotEqual(self.control(terminal["context_sha256"], memory=3).returncode, 0)
+        self.assertEqual(self.control_snapshot(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.load_context("other-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], independent)
+
+    def test_control_cli_preserves_unknown_outcome_and_checkpoint(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        paused = self.control(checksum)
+        self.assertEqual(paused.returncode, 0, paused.stderr)
+        receipt = json.loads(paused.stdout)
+        self.assertEqual(receipt["execution_state"], "outcome_unknown")
+        self.assertEqual(self.load(memory=2).returncode, 0)
+        retained = json.loads((self.root / "resumed.json").read_text())["profile"]
+        self.assertEqual(retained["execution"], self.profile["execution"])
+        self.assertEqual(retained["destination_id"], self.profile["destination_id"])
+        self.assertEqual(retained["handoff_sha256"], self.profile["handoff_sha256"])
+
+    def test_control_cli_refuses_legacy_stale_guards_and_read_only(self):
+        saved = self.save()
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        before = self.control_snapshot()
+        result = self.control(checksum)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("explicitly saved", result.stderr)
+        self.assertEqual(self.control_snapshot(), before)
+        self.profile.update(schema_version=2,
+            control=dict(state="active", actor_id="local-controller", reason="Synthetic active task."))
+        self.write(self.profile)
+        checksum = json.loads(self.save(1).stdout)["context_sha256"]
+        before = self.control_snapshot()
+        for guard in (("0" * 64, REVISION, 1), (checksum, "f" * 40, 1), (checksum, REVISION, 2)):
+            result = self.control(guard[0], source=guard[1], memory=guard[2])
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(self.control_snapshot(), before)
+        readonly = self.cli("--read-only", "set-context-control", "--handoff", "cli-task",
+            "--state", "paused", "--actor", "local-controller", "--reason", "Synthetic hold.",
+            "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1")
+        self.assertNotEqual(readonly.returncode, 0)
+        self.assertIn("read-only", readonly.stderr)
+        self.assertEqual(self.control_snapshot(), before)
+        self.profile["visibility"] = "public_candidate"
+        self.write(self.profile)
+        checksum = json.loads(self.save(2).stdout)["context_sha256"]
+        before = self.control_snapshot()
+        public = self.control(checksum)
+        self.assertNotEqual(public.returncode, 0)
+        self.assertIn("owner-private", public.stderr)
+        self.assertEqual(self.control_snapshot(), before)
+
+    def test_control_edit_retains_all_portable_target_scopes(self):
+        from control_tower.network_contract import TARGETS
+        with HandoffLedger(self.db) as ledger:
+            for target in sorted(TARGETS):
+                swarm = "control-" + target
+                handoff = "hold-" + target
+                manifest = build_swarm("ai-jarvis", [target], swarm_id=swarm, source_revision=REVISION)
+                staged = ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                    target=target, text="Synthetic portable control task."), manifest,
+                    assistant_id=swarm + ".builder", handoff_id=handoff)
+                profile = deepcopy(self.profile)
+                profile.update(schema_version=3, handoff_id=handoff, mission_id=handoff,
+                    handoff_sha256=staged["handoff_sha256"], asset_id=swarm + ".builder", platform=target,
+                    destination_id="dest-" + target,
+                    control=dict(state="active", actor_id="local-controller", reason="Synthetic active task."))
+                saved = ledger.save_context(profile, expected_revision=0)
+                result = _set_context_control(ledger, handoff_id=handoff, state="paused",
+                    actor_id="local-controller", reason="Synthetic portable hold.",
+                    expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+                self.assertEqual(result["memory_revision"], 2)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            for target in sorted(TARGETS):
+                retained = ledger.load_context("hold-" + target, expected_source_revision=REVISION,
+                                               expected_memory_revision=2)["profile"]
+                self.assertEqual(retained["platform"], target)
+                self.assertEqual(retained["destination_id"], "dest-" + target)
+                self.assertEqual(retained["control"]["state"], "paused")
+                self.assertEqual(retained["execution"], self.profile["execution"])
+
+    def test_control_edit_rejects_concurrent_update_without_overwriting(self):
+        checksum = self.controlled()
+        with HandoffLedger(self.db) as ledger, HandoffLedger(self.db) as other:
+            original_load = ledger.load_context
+            def interleave(*args, **kwargs):
+                selected = original_load(*args, **kwargs)
+                changed = deepcopy(selected["profile"])
+                changed["execution"]["detail"] = "Concurrent retained checkpoint."
+                changed["memory_revision"] = 2
+                other.save_context(changed, expected_revision=selected["revision"])
+                return selected
+            with patch.object(ledger, "load_context", side_effect=interleave):
+                with self.assertRaisesRegex(ValueError, "context revision mismatch"):
+                    _set_context_control(ledger, handoff_id="cli-task", state="paused",
+                        actor_id="local-controller", reason="Synthetic hold.",
+                        expected_sha256=checksum, expected_source_revision=REVISION, expected_memory_revision=1)
+            retained = other.load_context("cli-task", expected_source_revision=REVISION,
+                                          expected_memory_revision=2)["profile"]
+            self.assertEqual(retained["control"]["state"], "active")
+            self.assertEqual(retained["execution"]["detail"], "Concurrent retained checkpoint.")
 
     def test_distinct_cli_processes_save_reload_and_duplicate(self):
         first = self.save()

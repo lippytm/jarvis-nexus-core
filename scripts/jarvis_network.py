@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
 from control_tower.connections import verify_github_commit_response, validate_destination_registry
-from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, canonical, load_packet, digest, require_digest
+from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, canonical, load_packet, digest, require_digest, require_identifier, require_text
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
 from control_tower.swarm_factory import build_swarm
@@ -71,6 +71,35 @@ def _write(path, record, *, packet_output=False):
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
+
+
+def _set_context_control(ledger, *, handoff_id, state, actor_id, reason,
+                         expected_sha256, expected_source_revision, expected_memory_revision):
+    """Narrow local pause/cancel edit through existing context CAS, not authority."""
+    require_digest(expected_sha256)
+    require_identifier(actor_id, "local controller label")
+    require_text(reason)
+    if state not in {"paused", "cancelled"}:
+        raise ValueError("control command permits only pause or cancel")
+    selected = ledger.load_context(handoff_id, expected_source_revision=expected_source_revision,
+        expected_memory_revision=expected_memory_revision, audience="owner_private")
+    if selected["context_sha256"] != expected_sha256:
+        raise ValueError("context digest mismatch")
+    profile = selected["profile"]
+    if profile["schema_version"] < 2:
+        raise ValueError("control command requires an explicitly saved version-2 or version-3 profile")
+    if profile["visibility"] != "owner_private":
+        raise ValueError("control command requires owner-private context")
+    control = {"state": state, "actor_id": actor_id, "reason": reason}
+    if profile["control"] != control:
+        profile["control"] = control
+        profile["memory_revision"] += 1
+    result = ledger.save_context(profile, expected_revision=selected["revision"])
+    return {**result, "handoff_id": handoff_id, "control_state": state,
+            "memory_revision": profile["memory_revision"],
+            "execution_state": profile["execution"]["state"], "visibility": "owner_private",
+            "authority": "local_record_only_not_identity_authentication",
+            "retry_authorized": False, "dispatch_authorized": False, "external_actions": 0}
 
 
 def _check_backup_scopes(ledger):
@@ -183,6 +212,14 @@ def main(argv=None):
     context_load.add_argument("--source-revision", required=True)
     context_load.add_argument("--memory-revision", type=int, required=True)
     context_load.add_argument("--out", required=True)
+    control = commands.add_parser("set-context-control", help="Pause/cancel existing controlled context with exact guards")
+    control.add_argument("--handoff", required=True)
+    control.add_argument("--state", choices=("paused", "cancelled"), required=True)
+    control.add_argument("--actor", required=True, help="Local label, not authenticated identity")
+    control.add_argument("--reason", required=True)
+    control.add_argument("--digest", required=True)
+    control.add_argument("--source-revision", required=True)
+    control.add_argument("--memory-revision", type=int, required=True)
     checkpoint_capture = commands.add_parser("capture-checkpoint", help="Retain exact current context; opt in to storage version 3")
     checkpoint_capture.add_argument("--handoff", required=True)
     checkpoint_capture.add_argument("--digest", required=True)
@@ -321,6 +358,10 @@ def main(argv=None):
                     result = ledger.import_return(returned_packet)
                 elif args.command == "save-context":
                     result = ledger.save_context(context_packet, expected_revision=args.expected_revision)
+                elif args.command == "set-context-control":
+                    result = _set_context_control(ledger, handoff_id=args.handoff, state=args.state,
+                        actor_id=args.actor, reason=args.reason, expected_sha256=args.digest,
+                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
                 elif args.command == "load-context":
                     result = ledger.load_context(args.handoff, expected_source_revision=args.source_revision,
                                                  expected_memory_revision=args.memory_revision,

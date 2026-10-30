@@ -347,6 +347,34 @@ application code against controlled records; preserve private backups and review
 controls explicitly before a rollback. No database-table migration is needed for
 this envelope opt-in alone; SQLite user_version remains 2 unless checkpoints are explicitly captured.
 
+## Narrow local pause/cancel command
+
+For an existing owner-private version-2 or version-3 context, the operator can use:
+
+```sh
+python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --database ledger.sqlite3 set-context-control --handoff YOUR-HANDOFF --state paused --actor local-controller --reason "Operator checkpoint before further export." --digest YOUR-CURRENT-CONTEXT-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --memory-revision 1
+```
+
+Use `--state cancelled` for terminal cancellation. There is no resume action in
+this command. Supply the actual current digest/source/memory values from an
+authorized private read, not the example's placeholders. The command loads only
+that context, requires all three exact guards, then uses the existing context
+revision compare-and-swap. A concurrent edit is rejected rather than overwritten.
+It changes only control state/actor/reason and increments memory revision on a
+changed edit; existing save rules invalidate context review. Repeating the same
+control with the current guards is a duplicate without a revision increment.
+Old guards are stale and rejected, not silently treated as successful retries.
+
+Version-1 profiles are refused; an operator must explicitly prepare/save the
+existing version-2 profile first. Public-candidate profiles and --read-only are
+refused; no implicit reclassification or new schema/table is added. Mission,
+destination, source, budgets, references, execution state/attempts and checkpoint
+are retained. Unknown-outcome holds are not cleared, cancellation cannot resume,
+and no lease, worker, retry or external action starts. The receipt is private
+metadata; the actor is a local label, not authentication or owner release approval.
+This command is not an authenticated shared-storage deployment. Keep secrets out
+of the reason, and retain an explicit checkpoint if historical controls are needed.
+
 ## Version-3 destination binding
 
 Version 3 retains all version-2 fields and adds one required opaque destination_id,
