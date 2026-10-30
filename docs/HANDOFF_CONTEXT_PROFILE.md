@@ -40,6 +40,14 @@ executor. These are integrity checks, not authentication, an adversarial-file
 security boundary or proof of approval. Retain the damaged source for investigation instead of editing
 raw records to bypass rejection. These read checks perform no automatic repair.
 
+Shared handoff reads also validate the saved local review binding. Pending
+handoffs have no reviewer/digest; reviewed, export-prepared and returned records
+require a valid reviewer label distinct from the author and a reviewed digest
+matching the current handoff. Damaged bindings reject before envelope export or
+checked-backup publication, including after restart. Valid old records and packet
+schemas remain unchanged. These consistency checks do not authenticate the label,
+grant owner approval, repair damaged records or release an execution hold.
+
 ## Writes, reviews and retrieval
 
 The CLI requires an existing database file for status, recovery, review and

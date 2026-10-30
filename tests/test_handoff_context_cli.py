@@ -815,6 +815,25 @@ class ContextCLITests(unittest.TestCase):
                 self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
                 self.assertEqual(self.db.read_bytes(), before)
 
+    def test_backup_rejects_inconsistent_review_bindings_without_publication(self):
+        checksum = self.profile["handoff_sha256"]
+        cases = [("reviewed", None, checksum), ("reviewed", "cli-pilot.builder", checksum),
+                 ("reviewed", "../reviewer", checksum), ("reviewed", "local-reviewer", "0" * 64),
+                 ("pending_review", "local-reviewer", checksum)]
+        for index, (state, reviewer, reviewed) in enumerate(cases):
+            with self.subTest(state=state, reviewer=reviewer, reviewed=reviewed):
+                with HandoffLedger(self.db) as ledger:
+                    ledger.db.execute("UPDATE handoffs SET state=?,reviewer_id=?,reviewed_digest=? WHERE id='cli-task'",
+                                      (state, reviewer, reviewed))
+                before = self.db.read_bytes()
+                output = f"invalid-review-{index}.sqlite3"
+                result = self.cli("backup-ledger", "--out", output)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertIn("review", result.stderr)
+                self.assertFalse((self.root / output).exists())
+                self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+                self.assertEqual(self.db.read_bytes(), before)
+
     def test_backup_rejects_rehashed_invalid_depth_without_publishing(self):
         for index, depth in enumerate((True, -1, 2, "0", None, 1)):
             with self.subTest(depth=depth):

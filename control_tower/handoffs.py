@@ -135,6 +135,13 @@ class HandoffLedger:
             or body["assistant_id"] not in {a["assistant_id"] for a in manifest["assistants"]}
             or draft["project_id"] != manifest["project_id"] or draft["target"] not in manifest["targets"]):
             raise ValueError("stored handoff is outside its registered swarm scope")
+        if row["state"] == "pending_review":
+            if row["reviewer_id"] is not None or row["reviewed_digest"] is not None:
+                raise ValueError("pending handoff has inconsistent stored review fields")
+        else:
+            require_identifier(row["reviewer_id"], "stored handoff reviewer label")
+            if row["reviewer_id"] == row["assistant_id"] or row["reviewed_digest"] != row["digest"]:
+                raise ValueError("stored handoff review binding mismatch")
         self._check_stored_return(row, body)
         return row, body
 
