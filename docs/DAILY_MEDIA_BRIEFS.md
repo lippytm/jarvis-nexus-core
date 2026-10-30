@@ -109,3 +109,5 @@ The four Facebook slots now have an [unpublished copy and illustration-specifica
 
 
 The four LinkedIn slots now have an [unpublished caption and four-slide script package](media/jarvis-linkedin-four-slots-20261029.md). Four captions, sixteen slide scripts and accessibility text are authored; rendering, exact destination, owner review and publication remain unfinished.
+
+The four Instagram slots now have an [unpublished caption and five-card carousel script package](media/jarvis-instagram-four-slots-20261029.md). Four captions, twenty card scripts and proposed alt text are authored; artwork, exact destination, owner review and publication remain unfinished.
