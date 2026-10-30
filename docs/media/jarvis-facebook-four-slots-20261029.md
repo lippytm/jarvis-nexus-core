@@ -1,7 +1,7 @@
 # Facebook four-slot copy package — October 29, 2026
 
 Status: **unpublished copy and media specifications, pending owner review**.
-The slot-1, slot-2 and slot-3 SVG candidates have been locally rendered and inspected. Slot 4 remains unrendered; final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
+All four SVG source candidates have been locally rendered and inspected. Final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
 
 ## Provenance and scope
 
@@ -128,12 +128,16 @@ Proposed alt text: “An example handoff checklist lists one task, starting vers
 
 Evidence note: suggested workflow only; no automatic dispatch, authenticated reviewer or release approval is established.
 
+### Slot-4 artwork candidate
+
+[Editable SVG](jarvis-facebook-slot4-20261029.svg) implements the saved checklist with all six boxes kept empty, including the separate owner-review box. Original neutral outlines and selectable DejaVu Sans text retain exact specification labels and the no-release-approval footer across line breaks. Existing captions and proposed alt texts remain unchanged. [Preparation receipt](../evidence/facebook-slot4-artwork-20261029.json) binds source and checked artifacts. The actual local 1200 × 1200 PNG was inspected as an intermediate layout preview, not a final upload file. Owner exact-art/caption review, rights, account/destination, final format and accessibility/platform checks remain pending; the empty boxes are not completion or approval receipts.
+
 ## Review and production checkpoint
 
-All four captions and alt-text drafts are authored; all four illustrations remain specifications.
+All four captions and alt-text drafts are authored; all four editable SVG source candidates have local rendering and assistant layout-inspection evidence. Final upload exports remain unprepared.
 The owner has not approved the copy, destination, final artwork or publication.
 No actual audience results, click attribution, costs or performance have been measured.
 
-Next bounded production step: review these exact captions and destination, then render one original illustration and check its final text, alternative text, rights and mobile legibility. Any later copy or asset edit needs review of the changed revision. An authorized publishing adapter or manual account action would require separate explicit release authorization.
+Next bounded production step: review one exact illustration/caption set and destination, then prepare and check its final upload format, alternative text, rights and mobile legibility. Local SVG rendering does not establish those acceptance checks. Any later copy or asset edit needs review of the changed revision. An authorized publishing adapter or manual account action would require separate explicit release authorization.
 
 These four Facebook drafts contribute to one channel's four-slot target. They do not complete the other five channels or establish a 24-post published day. Existing YouTube preparation remains a separate unfinished media package.
