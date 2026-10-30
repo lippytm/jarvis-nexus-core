@@ -44,9 +44,9 @@ def _response_bytes(path):
     return content
 
 
-def _write(path, record):
+def _write(path, record, *, packet_output=False):
     content = canonical(record) + b"\n"
-    if len(content) > MAX_PACKET_BYTES:
+    if packet_output and len(content) > MAX_PACKET_BYTES:
         raise ValueError("output exceeds packet limit")
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
@@ -371,7 +371,9 @@ def main(argv=None):
                 else:
                     result = ledger.status()
         if output:
-            _write(output, result)
+            # Only factory emits an input packet. Reports and combined envelopes
+            # may contain several independently bounded records; do not truncate.
+            _write(output, result, packet_output=args.command == "factory")
             print(json.dumps({"saved": str(output.relative_to(root)), "external_actions": 0}))
         else:
             print(json.dumps(result, indent=2, sort_keys=True))

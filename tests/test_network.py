@@ -306,12 +306,26 @@ class LedgerTests(unittest.TestCase):
 
 
 class IntegrationTests(unittest.TestCase):
+    def test_large_report_output_retains_all_records_without_expanding_input_limit(self):
+        record = {"rows": [{"index": i, "detail": "é" * 100} for i in range(400)]}
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            _write(path, record)
+            self.assertGreater(path.stat().st_size, MAX_PACKET_BYTES)
+            self.assertEqual(json.loads(path.read_bytes()), record)
+            with self.assertRaises(ValueError):
+                load_packet(path)
+            original = path.read_bytes()
+            with self.assertRaises(FileExistsError):
+                _write(path, {"changed": True})
+            self.assertEqual(path.read_bytes(), original)
+
     def test_packet_output_round_trip_avoids_formatting_overflow(self):
         record = {"items": ["é" * 51] * 600}
         self.assertGreater(len(json.dumps(record, indent=2, ensure_ascii=False).encode()), MAX_PACKET_BYTES)
         with TemporaryDirectory() as directory:
             path = Path(directory) / "packet.json"
-            _write(path, record)
+            _write(path, record, packet_output=True)
             self.assertLessEqual(path.stat().st_size, MAX_PACKET_BYTES)
             self.assertEqual(load_packet(path), record)
             before = path.read_bytes()
@@ -325,7 +339,7 @@ class IntegrationTests(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             path = root / "boundary.json"
-            _write(path, record)
+            _write(path, record, packet_output=True)
             self.assertEqual(path.stat().st_size, MAX_PACKET_BYTES)
             self.assertEqual(load_packet(path), record)
             for index, invalid in enumerate(({"text": record["text"] + "x"},
@@ -333,7 +347,7 @@ class IntegrationTests(unittest.TestCase):
                 with self.subTest(index=index):
                     parent = root / str(index)
                     with self.assertRaises(ValueError):
-                        _write(parent / "rejected.json", invalid)
+                        _write(parent / "rejected.json", invalid, packet_output=True)
                     self.assertFalse(parent.exists())
 
     @unittest.skipUnless(os.name == "posix", "directory fsync requires POSIX")

@@ -365,6 +365,49 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(packet["handoff"]["draft"]["target"], "codex")
         self.assertEqual(packet["external_actions"], 0)
 
+    def test_large_valid_context_envelope_saves_complete_after_review(self):
+        from control_tower.network_contract import MAX_PACKET_BYTES, canonical, load_packet
+        draft = dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                     target="codex", text="D" * 20000)
+        with HandoffLedger(self.db) as ledger:
+            manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="cli-pilot", source_revision=REVISION)
+            staged = ledger.stage(draft, manifest, assistant_id="cli-pilot.builder", handoff_id="large-task")
+        profile = deepcopy(self.profile)
+        profile.update(schema_version=2, handoff_id="large-task", mission_id="large-task",
+                       handoff_sha256=staged["handoff_sha256"])
+        profile["control"] = dict(state="active", actor_id="local-controller", reason="R" * 20000)
+        profile["execution"]["detail"] = "E" * 20000
+        profile["context_refs"] = [dict(url="https://example.invalid/" + str(i) + "x" * 1800,
+            revision=1, visibility="owner_private") for i in range(5)]
+        (self.root / "context.json").write_bytes(canonical(profile))
+        self.assertEqual(load_packet(self.root / "context.json"), profile)
+        saved = self.save()
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        args = ("export-context", "--handoff", "large-task", "--digest", checksum,
+                "--source-revision", REVISION, "--memory-revision", "1", "--out", "large-envelope.json")
+        self.assertNotEqual(self.cli(*args).returncode, 0)
+        self.assertFalse((self.root / "large-envelope.json").exists())
+        for command, value in (("review", staged["handoff_sha256"]), ("review-context", checksum)):
+            reviewed = self.cli(command, "--handoff", "large-task", "--digest", value,
+                                "--reviewer", "local-reviewer")
+            self.assertEqual(reviewed.returncode, 0, reviewed.stderr)
+        exported = self.cli(*args)
+        self.assertEqual(exported.returncode, 0, exported.stderr)
+        path = self.root / "large-envelope.json"
+        original = path.read_bytes()
+        self.assertGreater(len(original), MAX_PACKET_BYTES)
+        envelope = json.loads(original)
+        self.assertEqual(envelope["context"], profile)
+        self.assertEqual(envelope["handoff"]["draft"], draft)
+        self.assertEqual(envelope["context_sha256"], checksum)
+        self.assertEqual(envelope["external_actions"], 0)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            restored = ledger.load_context("large-task", expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertEqual(restored["profile"], profile)
+        self.assertNotEqual(self.cli(*args).returncode, 0)
+        self.assertEqual(path.read_bytes(), original)
+
     def test_context_review_cannot_replace_original_handoff_review(self):
         saved = self.save()
         checksum = json.loads(saved.stdout)["context_sha256"]

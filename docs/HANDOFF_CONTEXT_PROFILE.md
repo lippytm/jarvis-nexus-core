@@ -140,10 +140,14 @@ record, which may differ from current context. It writes a new owner-private JSO
 inside --root and refuses existing outputs, path escapes, missing ledgers and mismatches.
 Neither command dispatches work, retries a mission, accepts facts or restores approvals.
 
-JSON CLI outputs use compact UTF-8 JSON and reject a final output larger than
-64 KiB, including its trailing newline, before creating directories or files.
-This avoids formatting expansion producing a file the bounded packet loader
-cannot reload. Invalid canonical JSON also fails before filesystem creation.
+JSON CLI outputs use compact UTF-8 JSON. Factory manifests are packet outputs:
+their final bytes, including a trailing newline, must fit the 64-KiB input
+packet limit before creating directories or files. Reports and combined context
+envelopes can legitimately exceed one packet; they retain every selected record
+without this packet-size cap or truncation. Their contents remain subject to the
+existing ledger/schema bounds. Read these aggregate outputs as JSON reports;
+the single-packet loader still rejects inputs above 64 KiB. Invalid canonical
+JSON fails before filesystem creation for either output class.
 Record schemas, content digests and valid older JSON inputs are unchanged;
 previously saved evidence is not rewritten. This bound does not make a report
 an authenticated record or guarantee that its contents pass every packet schema.
