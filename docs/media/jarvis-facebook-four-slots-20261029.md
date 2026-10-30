@@ -1,7 +1,7 @@
 # Facebook four-slot copy package — October 29, 2026
 
 Status: **unpublished copy and media specifications, pending owner review**.
-No images have been rendered, posts scheduled or Facebook accounts accessed.
+The slot-1 SVG candidate has been locally rendered and inspected. Slots 2–4 remain unrendered; final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
 
 ## Provenance and scope
 
@@ -14,7 +14,7 @@ No images have been rendered, posts scheduled or Facebook accounts accessed.
 - These are proposed public-candidate copy blocks. This file contains no private chat, diary, billing data or credentials.
 - Candidate destination inherited from the source brief remains **unverified**: https://github.com/lippytm/jarvis-nexus-core?utm_source=facebook&utm_medium=organic&utm_campaign=jarvis-media-20261029.campaign . It is not included in the proposed public captions; confirm the destination and tracking policy before adding it.
 - Required review: factual claims/sources; exact account/audience/format/destination; accessibility and asset rights; applicable disclosures. Report actual outcomes separately from proposals. No funding or referral CTA applies here.
-- Local execution was blocked during preparation. This Markdown was prepared through the authorized GitHub development fallback; CI receipts belong to the resulting commit, not to Codex runtime availability.
+- Local execution was blocked during the original copy preparation, which used the authorized GitHub development fallback. A later actual command probe and local rendering succeeded for the slot-1 artwork at input revision dc54aeb6cbe49ed47f6cc831dc1d0e1dd713a48d; neither observation establishes continuous availability.
 
 ## Slot 1 — Explain
 
@@ -39,6 +39,10 @@ One proposed 1200 × 1200 illustration: three readable cards labelled “Code ve
 Proposed alt text: “Three cards group a code version, an exact review and a test receipt as evidence for one change. A footer says live services need separate verification.”
 
 Evidence note: this is an explanatory illustration, not a screenshot of an executed task.
+
+### Slot-1 artwork candidate
+
+[Editable SVG](jarvis-facebook-slot1-20261029.svg) follows the existing 1200 × 1200 specification: three separate cards with the exact labels and live-service footer, original outline icons and selectable DejaVu Sans text. The caption and proposed alt text above remain unchanged. No account screenshots, logos, stock assets or external resources are included. [Preparation receipt](../evidence/facebook-slot1-artwork-20261029.json) binds the source and checked files. The actual local PNG is an intermediate layout preview, not a final upload artifact. Assistant inspection does not establish screen-reader/mobile/platform compatibility or independent/owner approval. Review the exact art, caption, accessibility, rights and destination before any release.
 
 ## Slot 2 — Demonstrate
 
