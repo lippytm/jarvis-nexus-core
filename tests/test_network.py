@@ -306,6 +306,36 @@ class LedgerTests(unittest.TestCase):
 
 
 class IntegrationTests(unittest.TestCase):
+    def test_packet_output_round_trip_avoids_formatting_overflow(self):
+        record = {"items": ["é" * 51] * 600}
+        self.assertGreater(len(json.dumps(record, indent=2, ensure_ascii=False).encode()), MAX_PACKET_BYTES)
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "packet.json"
+            _write(path, record)
+            self.assertLessEqual(path.stat().st_size, MAX_PACKET_BYTES)
+            self.assertEqual(load_packet(path), record)
+            before = path.read_bytes()
+            with self.assertRaises(FileExistsError):
+                _write(path, {"changed": True})
+            self.assertEqual(path.read_bytes(), before)
+
+    def test_packet_output_byte_boundary_and_invalid_input_leave_no_artifact(self):
+        # Includes multibyte text and the final newline in the exact byte limit.
+        record = {"text": "é" + "x" * (MAX_PACKET_BYTES - 14)}
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "boundary.json"
+            _write(path, record)
+            self.assertEqual(path.stat().st_size, MAX_PACKET_BYTES)
+            self.assertEqual(load_packet(path), record)
+            for index, invalid in enumerate(({"text": record["text"] + "x"},
+                    {"text": "\ud800"}, {"number": float("nan")}, {"value": object()})):
+                with self.subTest(index=index):
+                    parent = root / str(index)
+                    with self.assertRaises(ValueError):
+                        _write(parent / "rejected.json", invalid)
+                    self.assertFalse(parent.exists())
+
     @unittest.skipUnless(os.name == "posix", "directory fsync requires POSIX")
     def test_json_publication_syncs_directory_and_preserves_uncertain_output(self):
         fsync = os.fsync
@@ -347,13 +377,10 @@ class IntegrationTests(unittest.TestCase):
                 "source": channel, "synthetic": True, "service_consent": True}])
             self.assertEqual(report["counts"]["accepted"], 1)
 
-    def test_failed_write_leaves_no_partial_output_and_can_retry(self):
-        def fail_dump(record, handle, **kwargs):
-            handle.write('{partial')
-            raise OSError("simulated disk error")
+    def test_failed_file_sync_leaves_no_partial_output_and_can_retry(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "evidence.json"
-            with patch("scripts.jarvis_network.json.dump", side_effect=fail_dump), self.assertRaises(OSError):
+            with patch("scripts.jarvis_network.os.fsync", side_effect=OSError("simulated file sync error")), self.assertRaises(OSError):
                 _write(path, {"safe": True})
             self.assertFalse(path.exists())
             self.assertEqual(list(Path(directory).iterdir()), [])

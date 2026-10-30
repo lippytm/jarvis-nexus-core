@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
 from control_tower.connections import verify_github_commit_response, validate_destination_registry
-from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, load_packet, digest, require_digest
+from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, canonical, load_packet, digest, require_digest
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
 from control_tower.swarm_factory import build_swarm
@@ -45,14 +45,16 @@ def _response_bytes(path):
 
 
 def _write(path, record):
+    content = canonical(record) + b"\n"
+    if len(content) > MAX_PACKET_BYTES:
+        raise ValueError("output exceeds packet limit")
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:
-        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+        with tempfile.NamedTemporaryFile(mode="wb", dir=path.parent,
                                          prefix=".jarvis-write-", delete=False) as handle:
             temporary = Path(handle.name)
-            json.dump(record, handle, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False)
-            handle.write("\n")
+            handle.write(content)
             handle.flush()
             os.fsync(handle.fileno())
         # A hard link publishes the complete same-filesystem file atomically and

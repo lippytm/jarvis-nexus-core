@@ -140,6 +140,13 @@ record, which may differ from current context. It writes a new owner-private JSO
 inside --root and refuses existing outputs, path escapes, missing ledgers and mismatches.
 Neither command dispatches work, retries a mission, accepts facts or restores approvals.
 
+JSON CLI outputs use compact UTF-8 JSON and reject a final output larger than
+64 KiB, including its trailing newline, before creating directories or files.
+This avoids formatting expansion producing a file the bounded packet loader
+cannot reload. Invalid canonical JSON also fails before filesystem creation.
+Record schemas, content digests and valid older JSON inputs are unchanged;
+previously saved evidence is not rewritten. This bound does not make a report
+an authenticated record or guarantee that its contents pass every packet schema.
 JSON CLI outputs flush file contents before atomic no-overwrite publication. On
 POSIX, the writer also synchronizes the containing directory before reporting
 success. A failure after publication can leave a complete output despite a CLI
