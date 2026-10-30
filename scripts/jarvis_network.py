@@ -103,11 +103,11 @@ def _set_context_control(ledger, *, handoff_id, state, actor_id, reason,
 
 
 def _check_backup_scopes(ledger):
-    """Check saved Fabric specifications and their handoff scope bindings."""
+    """Check saved Fabric scopes and bounded Hermes dependency chains."""
     for row in ledger.db.execute("SELECT id FROM swarms"):
         ledger._swarm(row["id"])
     for row in ledger.db.execute("SELECT id FROM handoffs"):
-        ledger._handoff(row["id"])
+        ledger._lineage(row["id"])
 
 
 def _backup(connection, path):

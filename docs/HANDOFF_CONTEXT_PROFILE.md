@@ -140,6 +140,16 @@ hashes are integrity checks, not an adversarial-file boundary or authenticated a
 Checked backups support SQLite versions 2 and 3, validate every retained profile
 and preserve history on restoration. Corrupt checkpoints prevent publication.
 
+Backup validation also walks each handoff's parent chain through the existing
+bounded lineage reader. A missing parent, cycle or excessive chain prevents
+publication of the checked backup even when individual row hashes match.
+This is dependency integrity checking, not an activity or release gate: a valid
+child of a paused or unknown-outcome parent can still be backed up with its holds,
+returns and history intact. The source is never repaired or unpaused by backup.
+Retain damaged input for investigation; a checked backup is not authentication,
+automatic recovery or authorization to retry. Existing valid ledgers and packet
+schemas are unchanged.
+
 For an existing staged handoff/context, the operator CLI exposes these same APIs:
 
 ```sh

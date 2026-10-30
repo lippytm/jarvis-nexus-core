@@ -798,6 +798,55 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertFalse((self.root / "bad-binding.sqlite3").exists())
 
+    def test_backup_rejects_missing_or_cyclic_parent_without_publishing(self):
+        # Recomputed row hashes alone cannot establish valid Hermes dependencies.
+        for parent in ("missing-parent", "cli-task"):
+            with self.subTest(parent=parent):
+                with HandoffLedger(self.db) as ledger:
+                    row, body = ledger._handoff("cli-task")
+                    body.update(parent_id=parent, depth=1)
+                    ledger.db.execute("UPDATE handoffs SET body=?,digest=? WHERE id=?",
+                        (json.dumps(body), digest(body), "cli-task"))
+                before = self.db.read_bytes()
+                output = parent + ".sqlite3"
+                result = self.cli("backup-ledger", "--out", output)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertFalse((self.root / output).exists())
+                self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+                self.assertEqual(self.db.read_bytes(), before)
+
+    def test_backup_retains_valid_child_with_held_parent_and_history(self):
+        with HandoffLedger(self.db) as ledger:
+            manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="cli-pilot", source_revision=REVISION)
+            parent_digest = self.profile["handoff_sha256"]
+            ledger.review("cli-task", reviewer_id="local-reviewer", expected_sha256=parent_digest)
+            ledger.export("cli-task", expected_sha256=parent_digest)
+            ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id="parent-return",
+                handoff_id="cli-task", handoff_sha256=parent_digest, source_provider="codex",
+                text="Synthetic unverified parent return.", evidence_urls=[]))
+            ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Synthetic bounded follow-up."), manifest,
+                assistant_id="cli-pilot.builder", handoff_id="child-task", parent_id="cli-task")
+            self.profile.update(schema_version=2,
+                control=dict(state="paused", actor_id="local-controller", reason="Retain parent hold."))
+            self.profile["execution"]["state"] = "outcome_unknown"
+            saved = ledger.save_context(self.profile, expected_revision=0)
+            ledger.checkpoint_context("cli-task", expected_sha256=saved["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=1)
+        before = self.db.read_bytes()
+        result = self.cli("backup-ledger", "--out", "valid-parent.sqlite3")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.root / "valid-parent.sqlite3", read_only=True) as restored:
+            self.assertEqual([row["id"] for row, _ in restored._lineage("child-task")],
+                             ["child-task", "cli-task"])
+            self.assertEqual(restored.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+            self.assertEqual(len(restored.list_checkpoints("cli-task")["checkpoints"]), 1)
+            self.assertEqual(restored.status()["return_count"], 1)
+            with self.assertRaisesRegex(ValueError, "unknown outcome"):
+                restored.export("child-task", expected_sha256=restored._handoff("child-task")[0]["digest"])
+
     def test_backup_rejects_rehashed_nonmanual_handoff_without_mutating_source(self):
         with HandoffLedger(self.db) as ledger:
             _, body = ledger._handoff("cli-task")
