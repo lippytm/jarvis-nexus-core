@@ -1,7 +1,7 @@
 # Facebook four-slot copy package — October 29, 2026
 
 Status: **unpublished copy and media specifications, pending owner review**.
-The slot-1 SVG candidate has been locally rendered and inspected. Slots 2–4 remain unrendered; final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
+The slot-1 and slot-2 SVG candidates have been locally rendered and inspected. Slots 3–4 remain unrendered; final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
 
 ## Provenance and scope
 
@@ -69,6 +69,10 @@ One proposed square illustration with two columns: “Example A: consent true �
 Proposed alt text: “Illustrative consent-check inputs: true is expected to be accepted and false is expected to be refused. The diagram asks for the code version and actual result, and says it is not a new test receipt.”
 
 Evidence note: synthetic demonstration specification; no supplied personal records or consent decisions.
+
+### Slot-2 artwork candidate
+
+[Editable SVG](jarvis-facebook-slot2-20261029.svg) implements the saved two-column consent example using original shapes and selectable DejaVu Sans text. Exact specification wording is retained across line breaks; arrows show expected outcomes, with no success badges or executed-test claims. The existing caption and proposed alt text remain unchanged. [Preparation receipt](../evidence/facebook-slot2-artwork-20261029.json) binds the saved source and checked artifacts. Actual local 1200 × 1200 PNG rendering was inspected as an intermediate layout preview; it is not a final upload artifact. Exact-art/caption owner review and destination, rights, accessibility and platform/format checks remain pending. No consent record was processed or account accessed.
 
 ## Slot 3 — Limits
 

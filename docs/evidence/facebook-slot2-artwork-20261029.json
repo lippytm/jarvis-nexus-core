@@ -1,0 +1,38 @@
+{
+  "account_access_verified": false,
+  "artifact_sha256": {
+    "docs/media/jarvis-facebook-four-slots-20261029.md": "35e2dbb03b0dd62ec82d088964f8475cbfaa116120a72195f3e39a99f65a4386",
+    "docs/media/jarvis-facebook-slot2-20261029.svg": "5e1fe45a9b87e1ad40496066bdf5129569826411c9fed4c9c850226e8c334fd6"
+  },
+  "channel": "facebook",
+  "checks": {
+    "exact_specification_labels_retained": true,
+    "font_and_column_bounds_passed": true,
+    "original_captions_and_alt_text_unchanged": true,
+    "preview_dimensions": [
+      1200,
+      1200
+    ],
+    "python_syntax_files": 73,
+    "rasterization_exit_code": 0,
+    "renderer": "Inkscape 1.2.2 (b0a8486541, 2022-12-01)",
+    "renderer_warning": "GtkRecentManager initialization warning; output produced and inspected",
+    "svg_external_resources": 0,
+    "svg_xml_valid": true,
+    "visual_review": "assistant_layout_inspection_not_independent_human_review"
+  },
+  "costs_measured": false,
+  "input_revision": "59d3333715ed593d43ba000c0518bb1da08e79b9",
+  "mission_id": "jarvis-media-20261029",
+  "post_id": "jarvis-media-20261029.facebook.2",
+  "preparing_target": "codex",
+  "preview_retention": "intermediate_not_committed_not_final_upload",
+  "preview_sha256": "2be220794b4ef55711195d7b964acbad56d762603ce77e5c3aba5584bc9142d9",
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "record_sha256": "49a5ec0b3e419b369343703c55cbdf05b8a02fad1d5ef37168ab92f177a51420",
+  "schema_version": 1,
+  "scope": "local_unpublished_media_preparation_checks",
+  "source_brief_sha256": "f869d14e447fb8cb5669442bd5068d371cc62f24019b49efc5684513c085c1b9"
+}
