@@ -105,6 +105,8 @@ The selected assignment now has an [unpublished script and shot plan](media/jarv
 proposed captions and an original SVG storyboard. These are review artifacts;
 narration recording, final caption timing, video rendering and release remain unfinished.
 
+YouTube slot 1 now has a separate [unpublished narration and six-shot plan](media/jarvis-youtube-slot1-20261029.md), with proposed SRT captions, title/description and thumbnail specification. No narration, artwork or video is rendered; owner review and channel/destination confirmation remain pending. Slots 3 and 4 remain unfinished. The existing slot-2 package and newsletter schedule are unchanged.
+
 The four Facebook slots now have an [unpublished copy and illustration-specification package](media/jarvis-facebook-four-slots-20261029.md). Captions and proposed alt text are authored; images, owner review, destination confirmation and publication remain unfinished.
 
 
