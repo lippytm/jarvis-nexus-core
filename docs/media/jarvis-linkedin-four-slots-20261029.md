@@ -1,8 +1,8 @@
 # LinkedIn four-slot copy package — October 29, 2026
 
 Status: **unpublished captions and slide specifications, pending owner review**.
-Four captions and sixteen slide scripts are authored below. Slot 1 now has four
-editable SVG review cards, locally rasterized and inspected. Slots 2–4 and the
+Four captions and sixteen slide scripts are authored below. Slots 1 and 2 have eight
+editable SVG review cards, locally rasterized and inspected. Slots 3–4 and the
 final upload/PDF package remain unrendered; no LinkedIn account was accessed
 and no posts were scheduled or published.
 
@@ -136,6 +136,28 @@ section “Writes, reviews and retrieval”; this source describes the developme
 implementation, not authenticated reviewer identity. The scenario above uses no
 actual private checkpoint and does not alter any paused mission.
 
+### Slot 2 artwork candidate
+
+The exact main text and plain-text equivalents above are retained in four original,
+editable 1200 × 1200 SVG cards: [problem](jarvis-linkedin-slot2-slide1-20261029.svg),
+[method](jarvis-linkedin-slot2-slide2-20261029.svg),
+[evidence](jarvis-linkedin-slot2-slide3-20261029.svg) and
+[next step](jarvis-linkedin-slot2-slide4-20261029.svg).
+Every card visibly labels the content “Synthetic example” and “Proposed exercise,”
+with an unpublished-review footer. The method card uses four numbered steps;
+its wording remains the exact source script. SVG title/description and selectable
+text retain the source meaning. Original shapes/type only; no embedded images,
+scripts or external resources. Canvas size is an editorial working choice.
+
+All four were locally rasterized with Inkscape 1.2.2 and individually inspected by
+the assistant. Source-text, XML/resource, font-bound and 1200 × 1200 preview checks
+passed. The [preparation receipt](../evidence/linkedin-slot2-artwork-20261029.json)
+retains exact input/source bindings and source/preview hashes. PNGs are intermediate
+layout previews, not retained final upload files. This does not perform the proposed
+ledger exercise or establish a new test result. Owner review of exact copy/art,
+destination, rights/accessibility review and final format remain pending; no PDF,
+screen-reader behavior, platform upload or publication was verified.
+
 ## Slot 3 — Limits
 
 Post ID: jarvis-media-20261029.linkedin.3
@@ -215,8 +237,8 @@ memory write, authenticated storage adapter or completed platform handoff.
 ## Review and continuation
 
 All four captions, sixteen slide scripts, plain-text equivalents and four
-proposed visual descriptions are authored. Slot 1 SVG cards are prepared and locally
-rendered for review. Slots 2–4, final upload exports, final accessibility
+proposed visual descriptions are authored. Slot 1 and slot 2 SVG cards are prepared and locally
+rendered for review. Slots 3–4, final upload exports, final accessibility
 checks, rights review, owner approval, destination confirmation and publication
 remain unfinished. Editorial source links above are reviewer references; do not
 automatically append internal review notes or the unverified candidate URL to a post.
