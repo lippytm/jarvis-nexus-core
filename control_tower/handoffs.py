@@ -441,6 +441,9 @@ class HandoffLedger:
                 raise ValueError("invalid or excessive handoff ancestry")
             seen.add(current)
             row, body = self._handoff(current)
+            if records and any(body[field] != records[-1][1][field]
+                               for field in ("swarm_id", "manifest_sha256", "source_revision")):
+                raise ValueError("stored handoff ancestry scope mismatch")
             records.append((row, body))
             current = body["parent_id"]
         return records

@@ -847,6 +847,30 @@ class ContextCLITests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unknown outcome"):
                 restored.export("child-task", expected_sha256=restored._handoff("child-task")[0]["digest"])
 
+    def test_backup_rejects_parent_from_another_swarm_or_source(self):
+        for index, revision in enumerate((REVISION, "f" * 40)):
+            with self.subTest(source=revision):
+                with HandoffLedger(self.db) as ledger:
+                    swarm = f"unrelated-{index}"
+                    parent = f"unrelated-parent-{index}"
+                    manifest = build_swarm("ai-jarvis", ["codex"], swarm_id=swarm,
+                                           source_revision=revision)
+                    ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                        target="codex", text="Independent synthetic mission."), manifest,
+                        assistant_id=swarm + ".builder", handoff_id=parent)
+                    _, body = ledger._handoff("cli-task")
+                    body.update(parent_id=parent, depth=1)
+                    ledger.db.execute("UPDATE handoffs SET body=?,digest=? WHERE id=?",
+                        (json.dumps(body), digest(body), "cli-task"))
+                before = self.db.read_bytes()
+                output = f"wrong-scope-{index}.sqlite3"
+                result = self.cli("backup-ledger", "--out", output)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertIn("ancestry scope", result.stderr)
+                self.assertFalse((self.root / output).exists())
+                self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+                self.assertEqual(self.db.read_bytes(), before)
+
     def test_backup_rejects_rehashed_nonmanual_handoff_without_mutating_source(self):
         with HandoffLedger(self.db) as ledger:
             _, body = ledger._handoff("cli-task")

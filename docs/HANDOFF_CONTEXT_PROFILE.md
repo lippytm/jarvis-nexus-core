@@ -150,6 +150,13 @@ Retain damaged input for investigation; a checked backup is not authentication,
 automatic recovery or authorization to retry. Existing valid ledgers and packet
 schemas are unchanged.
 
+The shared lineage reader also requires every parent edge to retain the same
+registered swarm, manifest digest and source revision, matching the existing
+staging rule. Individually valid records from unrelated swarms cannot be linked
+into a checked backup or lineage-based export/recovery view by recomputing row
+hashes. This detects inconsistent stored provenance; it does not authenticate
+the database, repair records or change any valid existing packet.
+
 For an existing staged handoff/context, the operator CLI exposes these same APIs:
 
 ```sh
