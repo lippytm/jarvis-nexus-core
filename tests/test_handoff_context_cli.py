@@ -815,6 +815,24 @@ class ContextCLITests(unittest.TestCase):
                 self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
                 self.assertEqual(self.db.read_bytes(), before)
 
+    def test_backup_rejects_rehashed_invalid_depth_without_publishing(self):
+        for index, depth in enumerate((True, -1, 2, "0", None, 1)):
+            with self.subTest(depth=depth):
+                with HandoffLedger(self.db) as ledger:
+                    row = ledger.db.execute("SELECT body FROM handoffs WHERE id='cli-task'").fetchone()
+                    body = json.loads(row["body"])
+                    body["depth"] = depth
+                    ledger.db.execute("UPDATE handoffs SET body=?,digest=? WHERE id=?",
+                        (json.dumps(body), digest(body), "cli-task"))
+                before = self.db.read_bytes()
+                output = f"invalid-depth-{index}.sqlite3"
+                result = self.cli("backup-ledger", "--out", output)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertIn("depth", result.stderr)
+                self.assertFalse((self.root / output).exists())
+                self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+                self.assertEqual(self.db.read_bytes(), before)
+
     def test_backup_retains_valid_child_with_held_parent_and_history(self):
         with HandoffLedger(self.db) as ledger:
             manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="cli-pilot", source_revision=REVISION)

@@ -587,6 +587,52 @@ class ContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "ancestry"):
             self.ledger.export("mission-one", expected_sha256=checksum)
 
+    def test_rehashed_child_depth_cannot_reopen_the_dependency_budget(self):
+        self.returned_parent()
+        child = self.stage_followup()
+        self.ledger.review("followup-one", reviewer_id="local-evaluator",
+                           expected_sha256=child["handoff_sha256"])
+        self.ledger.export("followup-one", expected_sha256=child["handoff_sha256"])
+        _, body = self.ledger._handoff("followup-one")
+        body["depth"] = 0
+        checksum = digest(body)
+        self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=? WHERE id=?",
+                              (json.dumps(body), checksum, checksum, "followup-one"))
+        self.ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id="child-return",
+            handoff_id="followup-one", handoff_sha256=checksum, source_provider="codex",
+            text="Synthetic unverified child result.", evidence_urls=[]))
+        before = tuple(self.ledger.db.iterdump())
+        with self.assertRaisesRegex(ValueError, "depth"):
+            self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Must not exceed the original depth-one budget."), self.manifest,
+                assistant_id="memory-pilot.evaluator", handoff_id="excess-child", parent_id="followup-one")
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
+    def test_valid_depth_two_chain_survives_restart_and_keeps_its_budget(self):
+        manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="depth-pilot",
+                               source_revision=REVISION, max_depth=2, max_handoffs_per_assistant=5)
+        parent = None
+        for index in range(3):
+            identifier = f"depth-task-{index}"
+            saved = self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Synthetic bounded depth task."), manifest,
+                assistant_id="depth-pilot.builder", handoff_id=identifier, parent_id=parent)
+            self.ledger.review(identifier, reviewer_id="local-evaluator", expected_sha256=saved["handoff_sha256"])
+            self.ledger.export(identifier, expected_sha256=saved["handoff_sha256"])
+            self.ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id=f"depth-return-{index}",
+                handoff_id=identifier, handoff_sha256=saved["handoff_sha256"], source_provider="codex",
+                text="Synthetic unverified depth result.", evidence_urls=[]))
+            parent = identifier
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual([body["depth"] for _, body in self.ledger._lineage(parent)], [2, 1, 0])
+        before = tuple(self.ledger.db.iterdump())
+        with self.assertRaisesRegex(ValueError, "depth budget"):
+            self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Must not exceed depth two."), manifest,
+                assistant_id="depth-pilot.builder", handoff_id="depth-task-3", parent_id=parent)
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
     def test_existing_child_exports_observe_parent_pause_and_resume_review(self):
         self.profile = self.control_profile("active")
         self.returned_parent()

@@ -157,6 +157,14 @@ into a checked backup or lineage-based export/recovery view by recomputing row
 hashes. This detects inconsistent stored provenance; it does not authenticate
 the database, repair records or change any valid existing packet.
 
+Stored depth must be an integer within the registered swarm's depth budget.
+Lineage reads also require root depth zero and each child depth exactly one
+greater than its parent. A recomputed hash cannot turn a child into depth zero
+to reopen the dependency budget, or make an inconsistent chain a checked backup.
+Rejection preserves saved records; no raw-record repair or automatic retry is
+performed. Valid depth-zero, depth-one and depth-two chains keep their existing
+schemas and limits across restart.
+
 For an existing staged handoff/context, the operator CLI exposes these same APIs:
 
 ```sh

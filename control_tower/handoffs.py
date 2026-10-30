@@ -127,6 +127,8 @@ class HandoffLedger:
         if digest(body) != row["digest"] or body["handoff_id"] != row["id"] or body["assistant_id"] != row["assistant_id"] or body["swarm_id"] != row["swarm_id"]:
             raise ValueError("stored handoff integrity mismatch")
         manifest = self._swarm(body["swarm_id"])
+        if type(body["depth"]) is not int or not 0 <= body["depth"] <= manifest["max_depth"]:
+            raise ValueError("stored handoff depth is outside its registered budget")
         draft = validate_draft(body["draft"])
         if (body["manifest_sha256"] != manifest["manifest_sha256"]
             or body["source_revision"] != manifest["source_revision"]
@@ -444,6 +446,9 @@ class HandoffLedger:
             if records and any(body[field] != records[-1][1][field]
                                for field in ("swarm_id", "manifest_sha256", "source_revision")):
                 raise ValueError("stored handoff ancestry scope mismatch")
+            if (records and records[-1][1]["depth"] != body["depth"] + 1
+                or body["parent_id"] is None and body["depth"] != 0):
+                raise ValueError("stored handoff ancestry depth mismatch")
             records.append((row, body))
             current = body["parent_id"]
         return records
