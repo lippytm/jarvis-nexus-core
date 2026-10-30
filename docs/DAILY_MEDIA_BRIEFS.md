@@ -113,3 +113,5 @@ The four LinkedIn slots now have an [unpublished caption and four-slide script p
 The four Instagram slots now have an [unpublished caption and five-card carousel script package](media/jarvis-instagram-four-slots-20261029.md). Four captions, twenty card scripts and proposed alt text are authored; artwork, exact destination, owner review and publication remain unfinished.
 
 The four Threads slots now have an [unpublished three-part discussion package](media/jarvis-threads-four-slots-20261029.md). Twelve text units and optional visual specifications are authored; account/destination, exact-copy review and publication remain unfinished. No audience replies are invented or sent.
+
+The four Substack slots now have an [unpublished Note-copy package](media/jarvis-substack-four-slots-20261029.md). Four complete Note drafts and optional visual/alt-text specifications are authored; artwork, account/destination, exact-copy owner review and publication remain unfinished. These are editorial slots, not scheduled newsletter editions or subscriber emails; the existing Daily Newsletter schedule is unchanged.
