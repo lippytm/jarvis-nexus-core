@@ -92,6 +92,25 @@ an imported unverified return is not verified mission completion. Report checksu
 bind this metadata observation, not full review/lineage eligibility or authentication.
 The report grants no dispatch authority and is not a lease or public export.
 
+Both queue-report and destination-status accept optional --out to retain their
+complete existing report as a private JSON file under --root. For example:
+
+```sh
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read-only queue-report --project ai-jarvis --out private/queue-001.json
+python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read-only destination-status --project ai-jarvis --platform codex --destination repository-one --out private/destination-001.json
+```
+
+Choose a fresh filename for each observation. Without --out, the same report is
+printed as before. With --out, stdout acknowledges only the saved relative path
+and zero external actions. The existing atomic writer creates files with private
+permissions (0600 on POSIX), refuses overwrite and root escapes, and flushes the
+file and containing directory before success. On a post-publication sync failure,
+retain and reconcile the complete file rather than overwrite it. Use --read-only
+to avoid ledger writes; saving a report still writes the requested output file.
+No report schema, packet, review or ledger state is changed by the output option.
+These are local point-in-time metadata receipts, not authenticated identity,
+accepted registry configurations, dispatch eligibility or live completion proof.
+
 ## Opt-in retained context checkpoints
 
 The local API checkpoint_context(handoff_id, expected_sha256=..., expected_source_revision=...,

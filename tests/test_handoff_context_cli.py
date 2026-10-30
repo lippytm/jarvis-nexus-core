@@ -274,6 +274,59 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli("queue-report", "--project", "ai-jarvis", database="absent.sqlite3").returncode, 1)
         self.assertFalse((self.root / "absent.sqlite3").exists())
 
+    def test_report_files_retain_exact_private_metadata_without_ledger_writes(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        self.assertEqual(self.control(checksum).returncode, 0)
+        before = self.db.read_bytes()
+        commands = [("queue-report", "--project", "ai-jarvis"),
+            ("destination-status", "--project", "ai-jarvis", "--platform", "codex",
+             "--destination", "synthetic-codex-workspace")]
+        for index, command in enumerate(commands):
+            with self.subTest(command=command[0]):
+                observed = self.cli("--read-only", *command)
+                self.assertEqual(observed.returncode, 0, observed.stderr)
+                output = f"private/report-{index}.json"
+                saved = self.cli("--read-only", *command, "--out", output)
+                self.assertEqual(saved.returncode, 0, saved.stderr)
+                self.assertEqual(json.loads(saved.stdout), {"saved": output, "external_actions": 0})
+                path = self.root / output
+                packet = json.loads(path.read_text())
+                self.assertEqual(packet, json.loads(observed.stdout))
+                self.assertEqual(packet["visibility"], "owner_private")
+                self.assertFalse(packet["dispatch_authorized"])
+                self.assertNotIn("https://", path.read_text())
+                self.assertNotIn(self.profile["execution"]["detail"], path.read_text())
+                if os.name == "posix":
+                    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+                if command[0] == "queue-report":
+                    self.assertEqual(packet["execution_states"]["outcome_unknown"], 1)
+                    self.assertEqual(packet["control_states"]["paused"], 1)
+                else:
+                    self.assertEqual(packet["records"][0]["execution_state"], "outcome_unknown")
+                    self.assertEqual(packet["records"][0]["control_state"], "paused")
+                self.assertEqual(self.db.read_bytes(), before)
+
+    def test_report_file_guards_preserve_existing_evidence_and_missing_ledger(self):
+        self.controlled()
+        before = self.db.read_bytes()
+        for command in [("queue-report", "--project", "ai-jarvis"),
+            ("destination-status", "--project", "ai-jarvis", "--platform", "codex",
+             "--destination", "synthetic-codex-workspace")]:
+            with self.subTest(command=command[0]):
+                existing = self.root / "keep.json"
+                existing.write_text("Retained earlier evidence.")
+                rejected = self.cli("--read-only", *command, "--out", "keep.json")
+                self.assertEqual(rejected.returncode, 1, rejected.stderr)
+                self.assertEqual(existing.read_text(), "Retained earlier evidence.")
+                escaped = self.cli("--read-only", *command, "--out", "../escape.json")
+                self.assertEqual(escaped.returncode, 1, escaped.stderr)
+                missing = self.cli("--read-only", *command, "--out", "absent/report.json",
+                                   database="missing.sqlite3")
+                self.assertEqual(missing.returncode, 1, missing.stderr)
+                self.assertFalse((self.root / "missing.sqlite3").exists())
+                self.assertFalse((self.root / "absent").exists())
+                self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_checkpoint_capture_and_historical_read_preserve_current_holds(self):
         checksum = self.prepare_reviews()
         self.assertEqual(self.review_context(checksum).returncode, 0)

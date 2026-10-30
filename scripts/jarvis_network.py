@@ -270,10 +270,12 @@ def main(argv=None):
     commands.add_parser("status")
     queue = commands.add_parser("queue-report")
     queue.add_argument("--project", choices=sorted(PROJECTS), required=True)
+    queue.add_argument("--out", help="Save private report to a fresh file instead of printing its contents")
     destination_status = commands.add_parser("destination-status")
     destination_status.add_argument("--project", choices=sorted(PROJECTS), required=True)
     destination_status.add_argument("--platform", choices=sorted(TARGETS), required=True)
     destination_status.add_argument("--destination", required=True)
+    destination_status.add_argument("--out", help="Save private report to a fresh file instead of printing its contents")
     observation = commands.add_parser("bind-observation")
     observation.add_argument("--handoff", required=True)
     observation.add_argument("--file", required=True)
@@ -296,7 +298,7 @@ def main(argv=None):
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
             raise ValueError("root must be an existing directory")
-        output = _local(root, args.out) if hasattr(args, "out") else None
+        output = _local(root, args.out) if getattr(args, "out", None) is not None else None
         if output and output.exists():
             raise ValueError("output already exists; use a fresh filename")
         if args.command == "factory":
