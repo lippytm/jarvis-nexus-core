@@ -1,7 +1,7 @@
 # Facebook four-slot copy package — October 29, 2026
 
 Status: **unpublished copy and media specifications, pending owner review**.
-The slot-1 and slot-2 SVG candidates have been locally rendered and inspected. Slots 3–4 remain unrendered; final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
+The slot-1, slot-2 and slot-3 SVG candidates have been locally rendered and inspected. Slot 4 remains unrendered; final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
 
 ## Provenance and scope
 
@@ -97,6 +97,10 @@ One proposed square illustration with three separate rows: “Saved: artifact re
 Proposed alt text: “Separate rows define saved as a retained artifact, tested as observed named checks, and running as an observed runtime. Account access has a separate verification requirement.”
 
 Evidence note: conceptual distinctions; no measured availability, reliability, customer or revenue claim.
+
+### Slot-3 artwork candidate
+
+[Editable SVG](jarvis-facebook-slot3-20261029.svg) implements the saved independent evidence rows and account-access footer using original outline icons and selectable DejaVu Sans text. No arrows, progress connectors or online indicators imply a transition or current live service. Exact definition wording is retained across line breaks; the existing caption and proposed alt text are unchanged. [Preparation receipt](../evidence/facebook-slot3-artwork-20261029.json) binds source and checked artifacts. Actual local 1200 × 1200 PNG rendering was inspected as an intermediate layout preview, not a final upload file. Owner exact-art/caption review, final format, rights, destination and accessibility/platform checks remain pending. Definitions are explanatory, not a status receipt.
 
 ## Slot 4 — Bounded next step
 
