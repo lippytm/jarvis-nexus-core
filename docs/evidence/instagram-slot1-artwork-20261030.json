@@ -1,0 +1,96 @@
+{
+  "account_access_verified": false,
+  "canvas": [
+    1080,
+    1080
+  ],
+  "canvas_status": "creative_choice_not_verified_platform_requirement",
+  "cards": [
+    {
+      "alt_text": "An opening card asks what evidence would let another person inspect an AI-assisted code change.",
+      "card": 1,
+      "main_text": "What would make an AI coding update inspectable?",
+      "preview_sha256": "cc3d18628efc4bc6ed0a281fb8419ed20f17aafd5cfb9c8ecb9cc39c9a0fa75f",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:7): WARNING **: 21:48:23.258: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot1-card1-20261030.svg",
+      "source_sha256": "fead4961fb9e0f37c13728002117d8316f6c9fa8276b50b2578cc3b16e9eae39"
+    },
+    {
+      "alt_text": "A proposed evidence bundle contains the starting code version, resulting artifact and results of checks actually performed.",
+      "card": 2,
+      "main_text": "Keep three things together: source version, changed artifact, actual checks.",
+      "preview_sha256": "f91527f769cbdc40c444f01374434ec3277bc2d80f4309b3aed810c232dd32c0",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:15): WARNING **: 21:48:23.471: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot1-card2-20261030.svg",
+      "source_sha256": "35e747eff4eaef131f0c2ad18c5364c489cb1c546b075522e683bfcb63e3485a"
+    },
+    {
+      "alt_text": "A conceptual handoff links a source revision to a changed artifact and a check result. It is an illustration, not an actual new receipt.",
+      "card": 3,
+      "main_text": "Example handoff: starting revision → change → check result.",
+      "preview_sha256": "e2719a8911f7ada6d00e2f993b67441e0da8de0595f17c7bd85d674066184c09",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:23): WARNING **: 21:48:23.675: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot1-card3-20261030.svg",
+      "source_sha256": "85d5fa0971f96f47abf1b60070a0ed8bc943bef91b18bc37838086b4f928bed4"
+    },
+    {
+      "alt_text": "The card distinguishes a retained development result from evidence that a service is currently running.",
+      "card": 4,
+      "main_text": "A development receipt does not establish a running service.",
+      "preview_sha256": "8cecb134275a7c0c20d0631f1ae68e5e7af4e287594749374490244f52fb9a6f",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:31): WARNING **: 21:48:23.900: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot1-card4-20261030.svg",
+      "source_sha256": "41055530c242e3ced389a893e6a7dec45eaaaab253535e1672019088798806c7"
+    },
+    {
+      "alt_text": "A closing question offers three review starting points: changed artifact, check result and unfinished work.",
+      "card": 5,
+      "main_text": "Which would you inspect first: the change, the check or the unfinished work?",
+      "preview_sha256": "84ad65f9172f2d5f91134092d21ee52e049b08a1deb5888b3830f1cdf37c9821",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:39): WARNING **: 21:48:24.129: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot1-card5-20261030.svg",
+      "source_sha256": "9a0d57cd0c04b218bcec98c6854932d2bb2582160e391a111d87ddf7221b6f26"
+    }
+  ],
+  "channel": "instagram",
+  "checks": [
+    "Exact visible main text/plain-text equivalents and SVG title/description match source.",
+    "No scripts/images/foreignObject/use/links/events/external assets.",
+    "Main/support text wrapping checked against actual DejaVu Sans font widths.",
+    "All five PNG previews fully decoded at 1080x1080.",
+    "All five previews individually visually inspected by assistant; no clipping/overlap observed."
+  ],
+  "copy_unchanged": true,
+  "costs_measured": false,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "guide_sha256": "f2653d245add0d7c7b76f4eaf3c826f4231d6003222e85e7a74233f90d4b2ece",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "692540ee0bff78c5fd3720de0856a6d3e093f2b5",
+  "mission_id": "jarvis-media-20261029",
+  "mobile_or_screen_reader_checks": "not_performed",
+  "next_task": "Exact slot-1 caption/art/alt-text owner review and destination/accessibility/export confirmation; other slot artwork unfinished.",
+  "owner_approval": "not_granted",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.instagram.1",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "3c9f1188c47ff640f9a41f540c5bb4570a01faf6722fef10e03c2acf42982be1",
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "schema_version": 1,
+  "scope": "local_unpublished_svg_artwork_candidates",
+  "slot_1_copy_sha256": "fc15c50b38e2c1aec3035270f99543fd87fafd4df830de0a0393bea911c38059",
+  "source_brief_sha256": "10750233ecfa3f212fd1acf25fdabc2b4220a075caf5b45492440cbde7cd58bc"
+}

@@ -1,0 +1,57 @@
+{
+  "external_agents_started": 0,
+  "model_calls": 0,
+  "projects": [
+    {
+      "assistant_count": 5,
+      "file": "ai-jarvis.swarm.json",
+      "manifest_sha256": "500e87ceb747816cf3ab28d2c20155581509b6163b6665fe7732ddf518bd4e8b",
+      "project_id": "ai-jarvis",
+      "purpose": "AI Jarvis engineering and coordination"
+    },
+    {
+      "assistant_count": 5,
+      "file": "ai-evolutionary-evolutions.swarm.json",
+      "manifest_sha256": "87a2a51d0ed073198fd5d63bee81b01f110c1997d8dee0484ab29aca6f10dd87",
+      "project_id": "ai-evolutionary-evolutions",
+      "purpose": "Hostinger education and membership inquiries"
+    },
+    {
+      "assistant_count": 5,
+      "file": "funding-affiliates.swarm.json",
+      "manifest_sha256": "62f40f8c6bb0570853af22a3b03c1b24f14cc740225bdfe63d1296ca62fb1e71",
+      "project_id": "funding-affiliates",
+      "purpose": "Separate funding-customer and referral-partner journeys"
+    },
+    {
+      "assistant_count": 5,
+      "file": "publishing-studio.swarm.json",
+      "manifest_sha256": "10ea51d5f44296ae556253bcfb6955eac0570bf5d69d3dd7610f88cfa2f9af39",
+      "project_id": "publishing-studio",
+      "purpose": "Source-backed books, audio, video and social drafts"
+    },
+    {
+      "assistant_count": 5,
+      "file": "linux-education.swarm.json",
+      "manifest_sha256": "52d5c3c8beb5c267e8b5d5c90e72611c0a06db8845c1b896cf2bb8d652d2065d",
+      "project_id": "linux-education",
+      "purpose": "Programming and Linux learning materials"
+    },
+    {
+      "assistant_count": 5,
+      "file": "robotics-research.swarm.json",
+      "manifest_sha256": "9641c31e6db3aea2153c43c8d1f56c5b1cf04c3910b7d0d5151166e27f6dd257",
+      "project_id": "robotics-research",
+      "purpose": "Simulation-first robotics research and education"
+    },
+    {
+      "assistant_count": 5,
+      "file": "business-operations.swarm.json",
+      "manifest_sha256": "f7b8bc2a1f938abc8f10d40b3a62811ff2e30c65c02162b10cb660827a21d080",
+      "project_id": "business-operations",
+      "purpose": "Business project records and operating checklists"
+    }
+  ],
+  "source_context_revision": "575ebc777fae0165c93247e8c6da44c440539c4d",
+  "state": "inactive_specifications"
+}

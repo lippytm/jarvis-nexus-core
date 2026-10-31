@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "kind": "jarvis.diary_workbench_validation",
+  "baseline_commit": "e645c64975dc05f3b0a0f9e06d7cc903d70031b0",
+  "validated_at_utc": "2026-10-22T22:01:11.141410+00:00",
+  "scope": "Offline local diary authoring, bounded JSON import/export, pure helper tests and static structure; no publication or live integration",
+  "runtime": {
+    "node": "v24.19.0",
+    "python": "3.12.14"
+  },
+  "commands": [
+    {
+      "command": "node --test --test-reporter=tap tests/test_diary_workbench.mjs",
+      "exit_code": 0
+    },
+    {
+      "command": "node tests/test_diary_workbench.mjs",
+      "exit_code": 0
+    },
+    {
+      "check": "validate_diary_entry on all shared valid_entries and rejected_entries",
+      "exit_code": 0
+    },
+    {
+      "check": "load_packet then validate_diary_entry on all shared rejected_json strings via temporary regular files",
+      "exit_code": 0
+    },
+    {
+      "check": "bounded HTMLParser structure and references; existing composer/workbench source, test and documentation parity; git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "results": {
+    "node_cases": 48,
+    "node_passed": 48,
+    "node_failed": 0,
+    "node_skipped": 0,
+    "valid_entries_accepted_unchanged": 12,
+    "invalid_records_rejected": 39,
+    "invalid_serialized_imports_rejected": 7,
+    "unique_static_ids": 57,
+    "resolved_label_and_aria_references": 36,
+    "static_buttons_with_explicit_type": 5,
+    "inline_scripts": 2,
+    "balanced_markup": true,
+    "local_hrefs": [
+      "#diary-form",
+      "jarvis-workbench.html",
+      "jarvis-composer.html",
+      "#preview-heading"
+    ],
+    "prior_composer_and_workbench_unchanged": true
+  },
+  "fixture_path": "docs/evidence/diary-workbench-fixtures.json",
+  "actual_test_output": "docs/evidence/diary-workbench-node-tests.txt",
+  "source_and_dependency_sha256": {
+    "web/jarvis-diary.html": "38b4689efa045c489778c8dd7e351cc2627913dcca57eb4e6d63c4d5647a2798",
+    "tests/test_diary_workbench.mjs": "0092ed07f2df868b444b8ecf728d3887520345a9b65ff0b736b0057af29aad88",
+    "docs/JARVIS_DIARY_WORKBENCH.md": "f677fdb95c65d1d3afd840faa99df31b6803863c19f4c2bff44eca2c9916b66e",
+    "docs/evidence/diary-workbench-fixtures.json": "5d5fab011c5fb86c92990590b2ea40a94f9fab382b1cfcca4edce2f79599a9c9",
+    "docs/evidence/diary-workbench-node-tests.txt": "88a8abd6852b6acd9ce9fda25b17e7f2759e55cac9e9b882cff5a0ac698c9188",
+    "control_tower/diary.py": "54618070ccfbe724d5cdecea77093f87b1f1cb9d840f9ca7b07acd7c68993b19",
+    "control_tower/network_contract.py": "204e482a82cd700a47f15275e949200a2d1f9c26b22c8559402c485c0757fee2",
+    "control_tower/validation.py": "d36e33036d889694e1715688f5a325aeedb0488e43747f31f032578238323677",
+    "examples/portfolio/catalog.json": "99c661ce7d2405e4ce251c968e67b4f3a282a9c02c4de892028c4c5ae0de6ed8"
+  },
+  "independent_review": {
+    "status": "passed bounded offline review",
+    "reviewer": "/root/verify_news",
+    "concrete_blockers": [],
+    "scope": [
+      "Read shipped core and app for safe text/value DOM sinks, no application networking or persistent storage, explicit private default and evidence/visibility labels.",
+      "Actual-core probes: literal closing-script text round-trip; Unicode whitespace and surrogate rejection; FEFF preservation matching Python; fractional/exponent schema tokens and duplicate-key imports reject while retaining the prior draft object.",
+      "Asynchronous import ticket/revision guards inspected in source, without browser execution."
+    ],
+    "unverified": [
+      "Browser rendering",
+      "Native date and spellcheck behavior",
+      "Clipboard and download integration",
+      "Assistive-technology interaction"
+    ]
+  },
+  "limits": [
+    "No browser installation or rendering attempted in this milestone; the prior headless Chromium download failed.",
+    "Rendered desktop/mobile layouts, native date/spelling, actual clipboard/download interactions and assistive-technology behavior remain unverified.",
+    "Static app-path checks and pure helper tests do not establish native browser behavior.",
+    "Native URL parsing may reject malformed hosts that Python URL splitting parses; valid shared exports have been checked against the Python consumer.",
+    "The workbench uses no storage, analytics, application network calls, provider calls or account connection. Browser spellcheck may use its own service.",
+    "No commits, remote changes, deployment, source fetching or external messages were performed by the diary workbench implementation or its validation."
+  ]
+}

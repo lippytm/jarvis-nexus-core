@@ -1,0 +1,19 @@
+services:
+  jarvis:
+    build: .
+    image: jarvis-nexus-local:development
+    command: ["python", "scripts/jarvis_network.py", "--root", "/data", "--database", "handoffs.sqlite3", "status"]
+    user: "10001:10001"
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - jarvis-ledger:/data
+    restart: "no"
+volumes:
+  jarvis-ledger:

@@ -1,0 +1,53 @@
+{
+  "account_access_verified": false,
+  "artifact_sha256": {
+    "docs/media/jarvis-linkedin-four-slots-20261029.md": "9e59708d7baf232bdf2ae0cc6ebb758d9390226f2d7a798f8e797546111a0dac",
+    "docs/media/jarvis-linkedin-slot4-slide1-20261029.svg": "058fba9ccdac8750dc1527f62e60ea115aacb78d530533295046db06cfc9f7ca",
+    "docs/media/jarvis-linkedin-slot4-slide2-20261029.svg": "38ca7c1d00e6e8ab7dee6bafdf5e0fa72b6ca942ddfabc72080e2e374bbecf0e",
+    "docs/media/jarvis-linkedin-slot4-slide3-20261029.svg": "082c0e0c989692f79fdff8d59a6df32aedba78dcbdf039d55c39f8719ae7803d",
+    "docs/media/jarvis-linkedin-slot4-slide4-20261029.svg": "4023cbfc64bb771b84b40f8d4cd92aaa6d841ee4621ea6bdd061d10841a94380"
+  },
+  "channel": "linkedin",
+  "checks": {
+    "allowed_main_right_px": 1104,
+    "exact_source_text_retained": true,
+    "font": "DejaVu Sans; main text DejaVu Sans Bold",
+    "layout_revision": 1,
+    "max_main_right_px": 1073.06,
+    "preview_dimensions": [
+      1200,
+      1200
+    ],
+    "rasterization_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "renderer": "Inkscape 1.2.2 (b0a8486541, 2022-12-01)",
+    "svg_cards": 4,
+    "svg_external_resources": 0,
+    "svg_xml_valid": true,
+    "visual_review": "assistant_individual_layout_inspection_not_independent_human_review"
+  },
+  "costs_measured": false,
+  "input_revision": "1fc35b2152aec9fc23db3eb4273ae0fb35574903",
+  "mission_id": "jarvis-media-20261029",
+  "pdf_rendered": false,
+  "post_id": "jarvis-media-20261029.linkedin.4",
+  "preparing_target": "codex",
+  "preview_retention": "intermediate_not_committed_not_final_uploads",
+  "preview_sha256": {
+    "slide1": "725d551eaed592ce94a1d454b4202e09d4e795ba1466b8120134a86fafadf9ed",
+    "slide2": "179a549338fd247ee7fbb2b52daf54b53f7ee837a464cc193cebb544517be82a",
+    "slide3": "318cd8ffef1f1e79b7ed8c225033579cc9357535cf15ac8d6b3563d2f59a4218",
+    "slide4": "4fa7b18ceabc66ad9f0b0df836e33a85e6591e8acb46354f1d61f6c194e8b52b"
+  },
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "record_sha256": "88ae61099743455437dd9abddc78d57bbe6a9e74133de0fc1cdf6c9652104aae",
+  "schema_version": 1,
+  "scope": "local_unpublished_media_preparation_checks",
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a"
+}

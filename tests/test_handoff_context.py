@@ -1,0 +1,1436 @@
+"""Synthetic local recovery fixtures; no provider call or hosted service."""
+from copy import deepcopy
+from contextlib import contextmanager
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import sqlite3
+import subprocess
+import sys
+from tempfile import TemporaryDirectory
+import unittest
+from unittest.mock import patch
+
+from control_tower.handoffs import HandoffLedger
+from control_tower.network_contract import TARGETS, digest, validate_draft
+from control_tower.swarm_factory import build_swarm
+from control_tower.connections import read_observation
+
+REVISION = "0825e98c5cd148f0cf708e81dbe77fe462164ac2"
+
+
+class ContextTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = TemporaryDirectory()
+        self.path = Path(self.directory.name) / "handoffs.sqlite3"
+        self.ledger = HandoffLedger(self.path)
+        self.manifest = build_swarm("ai-jarvis", sorted(TARGETS),
+                                   swarm_id="memory-pilot", source_revision=REVISION)
+        self.receipt = self.stage("mission-one")
+        self.profile = self.context("mission-one")
+
+    def tearDown(self):
+        self.ledger.close()
+        self.directory.cleanup()
+
+    def stage(self, identifier, target="codex"):
+        return self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft",
+            "project_id": "ai-jarvis", "target": target, "text": "Synthetic local draft."},
+            self.manifest, assistant_id="memory-pilot.builder", handoff_id=identifier)
+
+    def context(self, identifier):
+        _, handoff = self.ledger._handoff(identifier)
+        return {"schema_version": 1, "kind": "jarvis.handoff_context",
+            "handoff_id": identifier, "handoff_sha256": digest(handoff),
+            "project_id": "ai-jarvis", "mission_id": identifier,
+            "source_revision": REVISION, "asset_id": "memory-pilot.builder",
+            "platform": handoff["draft"]["target"], "configuration_version": "codex-draft.v1",
+            "memory_revision": 1, "visibility": "owner_private", "allowed_actions": ["prepare_draft"],
+            "context_refs": [{"url": "https://example.invalid/context", "revision": 1, "visibility": "owner_private"}],
+            "evidence_refs": [], "budget": {"max_attempts": 2, "time_limit_seconds": 120,
+            "paid_execution_authorized": False}, "execution": {"state": "execution_blocked",
+            "context_id": "synthetic-offline-context", "attempts": 1,
+            "checkpoint_ref": "https://example.invalid/checkpoint", "detail": "Synthetic failed command; retain unfinished work."}}
+
+    def load(self, identifier="mission-one", **changes):
+        args = {"expected_source_revision": REVISION, "expected_memory_revision": 1, **changes}
+        return self.ledger.load_context(identifier, **args)
+
+    def save(self):
+        return self.ledger.save_context(self.profile, expected_revision=0)
+
+    def approve(self):
+        saved = self.save()
+        self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        return saved
+
+    def export(self, checksum, **changes):
+        return self.ledger.export_context("mission-one", expected_sha256=checksum,
+            expected_source_revision=REVISION, expected_memory_revision=1, **changes)
+
+    def test_restart_retains_blocked_checkpoint_and_original_packet(self):
+        saved = self.approve()
+        first = self.export(saved["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        resumed = self.load()
+        self.assertEqual(resumed["profile"], self.profile)
+        self.assertEqual(resumed["profile"]["execution"]["state"], "execution_blocked")
+        self.assertEqual(self.export(saved["context_sha256"]), first)
+        self.assertEqual(digest(first["handoff"]), self.receipt["handoff_sha256"])
+        self.assertEqual(first["external_actions"], 0)
+        self.assertEqual(resumed["sender_authentication"], "not_established")
+
+    def test_read_only_inspection_preserves_checkpoint_and_database_bytes(self):
+        self.save()
+        expected = self.load()
+        self.ledger.close()
+        before = self.path.read_bytes()
+        try:
+            with HandoffLedger(self.path, read_only=True) as inspected:
+                self.assertEqual(inspected.load_context("mission-one", expected_source_revision=REVISION,
+                    expected_memory_revision=1), expected)
+                with self.assertRaises(sqlite3.OperationalError):
+                    inspected.db.execute("DELETE FROM handoff_contexts")
+            self.assertEqual(self.path.read_bytes(), before)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+
+    def test_read_only_requires_current_existing_schema_without_migrating(self):
+        absent = Path(self.directory.name) / "absent" / "ledger.sqlite3"
+        with self.assertRaises(sqlite3.OperationalError):
+            HandoffLedger(absent, read_only=True)
+        self.assertFalse(absent.parent.exists())
+        self.ledger.db.execute("DROP TABLE handoff_contexts")
+        self.ledger.db.execute("PRAGMA user_version=1")
+        self.ledger.close()
+        before = self.path.read_bytes()
+        try:
+            with self.assertRaisesRegex(ValueError, "read-only.*version-2"):
+                HandoffLedger(self.path, read_only=True)
+            self.assertEqual(self.path.read_bytes(), before)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+
+    def test_read_only_reads_committed_wal_checkpoint_and_unknown_hold(self):
+        self.ledger.db.execute("PRAGMA journal_mode=WAL")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.assertTrue(Path(str(self.path) + "-wal").is_file())
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            loaded = inspected.load_context("mission-one", expected_source_revision=REVISION,
+                                            expected_memory_revision=1)
+            self.assertEqual(loaded["profile"], self.profile)
+            snapshot = inspected.inspect_recovery("mission-one", expected_sha256=saved["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertIn("outcome_unknown", snapshot["lineage"][0]["holds"])
+            self.assertFalse(snapshot["retry_authorized"])
+
+    def test_status_snapshot_does_not_mix_late_return_with_old_handoff_state(self):
+        self.ledger.db.execute("PRAGMA journal_mode=WAL")
+        self.ledger.review("mission-one", reviewer_id="local-evaluator",
+                           expected_sha256=self.receipt["handoff_sha256"])
+        self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        packet = dict(schema_version=1, kind="jarvis.return", return_id="late-return",
+            handoff_id="mission-one", handoff_sha256=self.receipt["handoff_sha256"],
+            source_provider="codex", text="Synthetic concurrent return.", evidence_urls=[])
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            summarize = inspected._summary
+            def commit_return(row, **kwargs):
+                self.ledger.import_return(packet)
+                return summarize(row, **kwargs)
+            with patch.object(inspected, "_summary", side_effect=commit_return):
+                snapshot = inspected.status()
+            self.assertEqual(snapshot["handoffs"][0]["state"], "export_prepared")
+            self.assertEqual(snapshot["return_count"], 0)
+            current = inspected.status()
+            self.assertEqual(current["handoffs"][0]["state"], "returned_unverified")
+            self.assertEqual(current["return_count"], 1)
+
+    def test_status_validation_failure_closes_snapshot_transaction(self):
+        self.ledger.db.execute("UPDATE handoffs SET body='{}'")
+        with self.assertRaises(ValueError):
+            self.ledger.status()
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_opt_in_checkpoint_retains_old_context_without_rewinding_current_holds(self):
+        saved = self.approve()
+        original = deepcopy(self.profile)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts")
+        rows = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
+        captured = self.ledger.checkpoint_context("mission-one", **args)
+        self.assertFalse(captured["duplicate"])
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 3)
+        self.assertEqual(rows, {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables})
+        self.assertTrue(self.ledger.checkpoint_context("mission-one", **args)["duplicate"])
+        self.profile = self.control_profile("cancelled")
+        self.profile["memory_revision"] = 2
+        self.profile["execution"]["state"] = "outcome_unknown"
+        current = self.ledger.save_context(self.profile, expected_revision=1)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        before = list(self.ledger.db.iterdump())
+        history = self.ledger.load_checkpoint("mission-one", 1, **args)
+        self.assertEqual(history["profile"], original)
+        self.assertEqual(history["visibility"], "owner_private")
+        self.assertFalse(history["retry_authorized"])
+        history["profile"]["execution"]["detail"] = "Changed returned copy."
+        self.assertEqual(self.ledger.load_checkpoint("mission-one", 1, **args)["profile"], original)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], self.profile)
+        self.assertEqual(self.load(expected_memory_revision=2)["review_state"], "proposed")
+        self.assert_exports_blocked(current["context_sha256"])
+        with self.assertRaisesRegex(ValueError, "unknown outcome"):
+            self.ledger.export_context("mission-one", expected_sha256=current["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=2)
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(original, expected_revision=2)
+
+    def test_overlapping_open_preserves_first_checkpoint_upgrade(self):
+        saved = self.approve()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts")
+        before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+        transaction = HandoffLedger._transaction
+        captures = []
+
+        @contextmanager
+        def capture_before_open_lock(opening):
+            # A real second connection upgrades immediately before the opener's
+            # transaction begins, after any unsafe pre-lock schema observations.
+            if opening is not self.ledger:
+                captures.append(self.ledger.checkpoint_context("mission-one", **args))
+            with transaction(opening):
+                yield
+
+        with patch.object(HandoffLedger, "_transaction", capture_before_open_lock):
+            opened = HandoffLedger(self.path)
+        try:
+            self.assertEqual(len(captures), 1)
+            self.assertFalse(captures[0]["duplicate"])
+            self.assertEqual(opened.db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertFalse(opened.db.in_transaction)
+        finally:
+            opened.close()
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+            self.assertEqual(before, {t: [tuple(r) for r in restarted.db.execute("SELECT * FROM " + t)] for t in tables})
+
+    def test_read_only_open_uses_one_schema_snapshot_during_upgrade(self):
+        self.ledger.db.execute("PRAGMA journal_mode=WAL")
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        writer = self.ledger
+        captures = []
+
+        class UpgradeBetweenSchemaReads(sqlite3.Connection):
+            def execute(connection, sql, *parameters):
+                if sql.startswith("SELECT name FROM sqlite_master"):
+                    captures.append(writer.checkpoint_context("mission-one", **args))
+                return super().execute(sql, *parameters)
+
+        connect = sqlite3.connect
+        def instrumented_connect(*args, **kwargs):
+            return connect(*args, factory=UpgradeBetweenSchemaReads, **kwargs)
+
+        with patch("control_tower.handoffs.sqlite3.connect", instrumented_connect):
+            opened = HandoffLedger(self.path, read_only=True)
+        try:
+            self.assertEqual(len(captures), 1)
+            self.assertFalse(captures[0]["duplicate"])
+            self.assertFalse(opened.db.in_transaction)
+            self.assertEqual(opened.db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(opened.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+        finally:
+            opened.close()
+
+    def test_checkpoint_index_is_selective_validated_and_retained_after_restart(self):
+        self.assertEqual(self.ledger.list_checkpoints("mission-one")["checkpoints"], [])
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        self.stage("separate-task")
+        other = self.context("separate-task")
+        second = self.ledger.save_context(other, expected_revision=0)
+        self.ledger.checkpoint_context("separate-task", **{**args, "expected_sha256": second["context_sha256"]})
+        self.profile["memory_revision"] = 2
+        current = self.ledger.save_context(self.profile, expected_revision=1)
+        self.ledger.checkpoint_context("mission-one", **{**args, "expected_sha256": current["context_sha256"], "expected_memory_revision": 2})
+        first = self.ledger.list_checkpoints("mission-one")
+        self.assertEqual([r["checkpoint_revision"] for r in first["checkpoints"]], [1, 2])
+        self.assertEqual([r["memory_revision"] for r in first["checkpoints"]], [1, 2])
+        self.assertEqual(first["checkpoints"][0]["context_sha256"], saved["context_sha256"])
+        self.assertNotIn("separate-task", json.dumps(first))
+        self.assertNotIn("https://", json.dumps(first))
+        self.assertNotIn("detail", json.dumps(first))
+        self.assertFalse(first["retry_authorized"])
+        self.assertEqual(first["visibility"], "owner_private")
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.list_checkpoints("mission-one"), first)
+            first["checkpoints"].clear()
+            self.assertEqual(len(restarted.list_checkpoints("mission-one")["checkpoints"]), 2)
+            with self.assertRaises(ValueError):
+                restarted.list_checkpoints("unknown-task")
+        self.ledger.db.execute("UPDATE context_checkpoints SET digest=? WHERE handoff_id=? AND revision=1", ("0" * 64, "mission-one"))
+        with self.assertRaises(ValueError):
+            self.ledger.list_checkpoints("mission-one")
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_historical_checkpoint_cannot_change_immutable_mission_after_restart(self):
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        current["execution"]["detail"] = "Later blocked checkpoint; retain hold."
+        self.ledger.save_context(current, expected_revision=1)
+        # Simulate damaged retained history with a self-consistent new digest.
+        damaged = {**self.profile, "mission_id": "different-mission"}
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+            (json.dumps(damaged), digest(damaged), "mission-one"))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        for operation in (lambda: self.ledger.list_checkpoints("mission-one"),
+                lambda: self.ledger.load_checkpoint("mission-one", 1,
+                    **{**args, "expected_sha256": digest(damaged)})):
+            with self.subTest(operation=operation), self.assertRaises(ValueError):
+                operation()
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
+        before = list(self.ledger.db.iterdump())
+        for change in (dict(expected_sha256="0" * 64), dict(expected_source_revision="0" * 40),
+                       dict(expected_memory_revision=True)):
+            with self.assertRaises(ValueError):
+                self.ledger.checkpoint_context("mission-one", **{**args, **change})
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        with patch("control_tower.handoffs.MAX_CONTEXT_CHECKPOINTS", 0), self.assertRaises(ValueError):
+            self.ledger.checkpoint_context("mission-one", **args)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.ledger.checkpoint_context("mission-one", **args)
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        second = self.ledger.save_context(independent, expected_revision=0)
+        second_args = {**args, "expected_sha256": second["context_sha256"]}
+        self.ledger.checkpoint_context("independent-task", **second_args)
+        self.assertEqual(self.ledger.load_checkpoint("independent-task", 1, **second_args)["profile"], independent)
+        self.assertEqual(self.ledger.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            self.assertEqual(inspected.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+            with self.assertRaises(ValueError):
+                inspected.checkpoint_context("mission-one", **args)
+            with self.assertRaises(ValueError):
+                inspected.load_checkpoint("mission-one", 1, **{**args, "expected_memory_revision": 2})
+        self.ledger.db.execute("UPDATE context_checkpoints SET body='{}'")
+        with self.assertRaises(ValueError):
+            self.ledger.load_checkpoint("mission-one", 1, **args)
+
+    def test_queue_report_retains_recorded_blocks_after_restart_without_private_text(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("contextless-task")
+        before = list(self.ledger.db.iterdump())
+        first = self.ledger.queue_report(project_id="ai-jarvis")
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis"), first)
+        self.assertEqual(first["handoff_count"], 2)
+        self.assertEqual(first["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(first["execution_states"]["without_context"], 1)
+        self.assertEqual(first["control_states"]["paused"], 1)
+        self.assertEqual(first["recorded_attempts"], 1)
+        self.assertEqual(first["completion_verification"], "not_established")
+        self.assertEqual(first["duplicate_attempts"], "not_recorded")
+        self.assertFalse(first["dispatch_authorized"])
+        self.assertNotIn("Synthetic", json.dumps(first))
+        self.assertNotIn("https://", json.dumps(first))
+        checksum = first.pop("report_sha256")
+        self.assertEqual(digest(first), checksum)
+        first["execution_states"]["outcome_unknown"] = 99
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis")["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_queue_report_is_project_scoped_and_tracks_context_revision_changes(self):
+        self.save()
+        manifest = build_swarm("publishing-studio", ["github"], swarm_id="other-project", source_revision=REVISION)
+        self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="publishing-studio",
+            target="github", text="Unrelated private publishing draft."), manifest,
+            assistant_id="other-project.builder", handoff_id="other-project-task")
+        first = self.ledger.queue_report(project_id="ai-jarvis")
+        other = self.ledger.queue_report(project_id="publishing-studio")
+        self.assertEqual(other["handoff_count"], 1)
+        self.assertEqual([r["handoff_id"] for r in first["bindings"]], ["mission-one"])
+        self.assertEqual([r["handoff_id"] for r in other["bindings"]], ["other-project-task"])
+        self.assertEqual(first["bindings"][0]["source_revision"], REVISION)
+        self.assertEqual(first["bindings"][0]["memory_revision"], 1)
+        self.profile["execution"]["detail"] = "Updated private checkpoint."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        changed = self.ledger.queue_report(project_id="ai-jarvis")
+        self.assertNotEqual(changed["report_sha256"], first["report_sha256"])
+        self.assertEqual(changed["bindings"][0]["context_revision"], 2)
+        with self.assertRaises(ValueError):
+            self.ledger.queue_report(project_id="unknown")
+
+    def test_v1_migration_preserves_existing_rows_reviews_and_returns(self):
+        self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
+        self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        self.ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": "result-one",
+            "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+            "source_provider": "codex", "text": "Synthetic unverified return.", "evidence_urls": []})
+        tables = ("handoffs", "swarms", "returns")
+        before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+        self.ledger.db.execute("DROP TABLE handoff_contexts")
+        self.ledger.db.execute("PRAGMA user_version=1")
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        for table in tables:
+            self.assertEqual([tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + table)], before[table])
+        self.assertTrue(self.stage("mission-one")["duplicate"])
+        self.save()
+        self.assertEqual(self.ledger.status()["return_count"], 1)
+
+    def test_independent_records_and_defensive_retrieval(self):
+        self.save()
+        self.stage("mission-two")
+        other = self.context("mission-two")
+        self.ledger.save_context(other, expected_revision=0)
+        self.profile["execution"]["detail"] = "Changed after write."
+        retrieved = self.load()
+        retrieved["profile"]["execution"]["detail"] = "Changed after read."
+        self.assertNotEqual(self.load()["profile"]["execution"]["detail"], self.profile["execution"]["detail"])
+        self.assertEqual(self.load("mission-two")["profile"], other)
+
+    def test_stale_writer_and_duplicate_after_reopen(self):
+        saved = self.save()
+        with HandoffLedger(self.path) as second:
+            self.assertTrue(second.save_context(self.profile, expected_revision=1)["duplicate"])
+            changed = deepcopy(self.profile)
+            changed["execution"]["detail"] = "Fresh observation."
+            second.save_context(changed, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(self.profile, expected_revision=saved["revision"])
+        self.assertEqual(self.load()["revision"], 2)
+
+    def test_source_and_memory_mismatch_rejected_without_overwrite(self):
+        self.save()
+        for change in ({"expected_source_revision": "f" * 40}, {"expected_memory_revision": 2},
+                       {"expected_memory_revision": True}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.load(**change)
+        self.assertEqual(self.load()["profile"], self.profile)
+
+    def test_private_reference_and_detail_do_not_enter_public_bundle(self):
+        self.save()
+        with self.assertRaises(ValueError):
+            self.load(audience="public_candidate")
+        public = deepcopy(self.profile)
+        public["visibility"] = "public_candidate"
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(public, expected_revision=1)
+        public["context_refs"][0]["visibility"] = "public_candidate"
+        self.ledger.save_context(public, expected_revision=1)
+        self.assertEqual(self.load(audience="public_candidate")["profile"], public)
+
+    def test_public_profile_cannot_declassify_unlabelled_v1_draft_text(self):
+        self.profile["visibility"] = "public_candidate"
+        self.profile["context_refs"] = []
+        saved = self.approve()
+        with self.assertRaises(ValueError):
+            self.export(saved["context_sha256"], audience="public_candidate")
+        self.assertEqual(self.ledger.status()["handoffs"][0]["state"], "reviewed")
+
+    def test_every_edit_invalidates_context_review(self):
+        saved = self.approve()
+        self.profile["execution"]["detail"] = "New checkpoint; review again."
+        updated = self.ledger.save_context(self.profile, expected_revision=1)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        for checksum in (saved["context_sha256"], updated["context_sha256"]):
+            with self.assertRaises(ValueError):
+                self.export(checksum)
+        # The old strict handoff and its review are still valid on their own.
+        self.assertEqual(self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])["handoff_sha256"], self.receipt["handoff_sha256"])
+
+    def test_context_cannot_bypass_handoff_review_or_self_review(self):
+        saved = self.save()
+        with self.assertRaises(ValueError):
+            self.ledger.review_context("mission-one", reviewer_id="memory-pilot.builder", expected_sha256=saved["context_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.export(saved["context_sha256"])
+
+    def test_unknown_outcome_preserved_and_not_automatically_requeued(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        for _ in range(2):
+            self.assertEqual(self.load()["profile"]["execution"], self.profile["execution"])
+
+    def test_return_binding_is_not_replaced_by_context(self):
+        saved = self.approve()
+        envelope = self.export(saved["context_sha256"])
+        self.ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": "result-one",
+            "handoff_id": "mission-one", "handoff_sha256": envelope["handoff_sha256"],
+            "source_provider": "codex", "text": "Synthetic reply.", "evidence_urls": []})
+        self.assertEqual(self.ledger.status()["return_count"], 1)
+        self.assertEqual(self.load()["profile"]["execution"]["state"], "execution_blocked")
+
+    def test_strict_v1_packets_reject_silently_added_context(self):
+        with self.assertRaises(ValueError):
+            validate_draft({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+                "target": "codex", "text": "Fixture", "context": self.profile})
+
+    def test_all_seventeen_targets_use_the_same_profile(self):
+        with TemporaryDirectory() as directory, HandoffLedger(Path(directory) / "all.sqlite3") as ledger:
+            for i, target in enumerate(sorted(TARGETS)):
+                manifest = build_swarm("ai-jarvis", [target], swarm_id=f"target-{i}", source_revision=REVISION)
+                staged = ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+                    "target": target, "text": "Synthetic profile fixture."}, manifest,
+                    assistant_id=f"target-{i}.builder", handoff_id=f"task-{i}")
+                profile = deepcopy(self.profile)
+                profile.update(handoff_id=f"task-{i}", handoff_sha256=staged["handoff_sha256"],
+                               platform=target, asset_id=f"target-{i}.builder")
+                ledger.save_context(profile, expected_revision=0)
+                self.assertEqual(ledger.load_context(f"task-{i}", expected_source_revision=REVISION,
+                    expected_memory_revision=1)["profile"]["platform"], target)
+
+    def test_tampered_binding_permissions_and_bounds_rejected(self):
+        changes = [{"schema_version": True}, {"platform": "openai"}, {"handoff_sha256": "0" * 64},
+            {"source_revision": "f" * 40}, {"asset_id": "someone-else"}, {"project_id": "linux-education"},
+            {"memory_revision": True}, {"allowed_actions": ["publish"]}, {"extra": True}]
+        for change in changes:
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.save_context({**self.profile, **change}, expected_revision=0)
+        for key, value in (("attempts", 3), ("state", "running"), ("checkpoint_ref", "http://example.invalid")):
+            changed = deepcopy(self.profile)
+            changed["execution"][key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.ledger.save_context(changed, expected_revision=0)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM handoff_contexts").fetchone()[0], 0)
+
+    def test_memory_attempts_and_mission_history_cannot_regress(self):
+        self.profile["memory_revision"] = 2
+        self.save()
+        for changed in ({"memory_revision": 1}, {"mission_id": "replacement-mission"}):
+            with self.subTest(changed=changed), self.assertRaises(ValueError):
+                self.ledger.save_context({**self.profile, **changed}, expected_revision=1)
+        decreased = deepcopy(self.profile)
+        decreased["execution"]["attempts"] = 0
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(decreased, expected_revision=1)
+
+    def test_unknown_outcome_blocks_both_export_paths_after_reopen(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.assertEqual(self.load()["profile"], self.profile)
+        controlled = self.control_profile("active")
+        updated = self.ledger.save_context(controlled, expected_revision=1)
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=updated["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assert_exports_blocked(updated["context_sha256"])
+        self.assertEqual(self.load()["profile"], controlled)
+
+    def test_unknown_outcome_cannot_be_cleared_or_retried_by_context_edit(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        for change in ({"state": "pending"}, {"state": "execution_blocked"},
+                       {"attempts": 2}, {"context_id": "replacement-worker"}):
+            changed = deepcopy(self.profile)
+            changed["execution"].update(change)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.save_context(changed, expected_revision=1)
+        loaded = self.load()
+        self.assertEqual(loaded["profile"], self.profile)
+        self.assertEqual(loaded["context_sha256"], saved["context_sha256"])
+        self.assertEqual(loaded["review_state"], "locally_reviewed")
+        self.assertTrue(self.ledger.save_context(self.profile, expected_revision=1)["duplicate"])
+
+    def test_unknown_outcome_accepts_evidence_and_cancel_but_stays_held(self):
+        self.profile = self.control_profile("active")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.approve()
+        changed = deepcopy(self.profile)
+        changed["control"]["state"] = "cancelled"
+        changed["execution"]["detail"] = "Synthetic observation retained for reconciliation."
+        changed["evidence_refs"] = [{"url": "https://example.invalid/observation", "revision": 1,
+                                     "visibility": "owner_private"}]
+        saved = self.ledger.save_context(changed, expected_revision=1)
+        self.assertEqual(self.load()["profile"], changed)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def returned_parent(self):
+        saved = self.approve()
+        self.export(saved["context_sha256"])
+        self.ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": "parent-return",
+            "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+            "source_provider": "codex", "text": "Synthetic unverified parent result.", "evidence_urls": []})
+
+    def stage_followup(self):
+        return self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+            "target": "codex", "text": "Synthetic follow-up draft."}, self.manifest,
+            assistant_id="memory-pilot.builder", handoff_id="followup-one", parent_id="mission-one")
+
+    def test_parent_hold_blocks_new_child_without_consuming_budget(self):
+        self.returned_parent()
+        held = deepcopy(self.profile)
+        held["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(held, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.stage_followup()
+        self.assertEqual(len(self.ledger.status()["handoffs"]), 1)
+        self.assertEqual(self.ledger.status()["return_count"], 1)
+
+    def test_context_export_rejects_damaged_context_reviewer_after_restart(self):
+        saved = self.approve()
+        for reviewer in (None, "memory-pilot.builder", "../reviewer"):
+            with self.subTest(reviewer=reviewer):
+                self.ledger.db.execute("UPDATE handoff_contexts SET reviewer_id=? WHERE handoff_id='mission-one'", (reviewer,))
+                self.ledger.close()
+                self.ledger = HandoffLedger(self.path)
+                before = tuple(self.ledger.db.iterdump())
+                with self.assertRaisesRegex(ValueError, "review"):
+                    self.export(saved["context_sha256"])
+                self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
+    def test_context_export_rejects_damaged_original_reviewer_after_restart(self):
+        saved = self.approve()
+        for reviewer in (None, "memory-pilot.builder", "../reviewer"):
+            with self.subTest(reviewer=reviewer):
+                self.ledger.db.execute("UPDATE handoffs SET reviewer_id=? WHERE id='mission-one'", (reviewer,))
+                self.ledger.close()
+                self.ledger = HandoffLedger(self.path)
+                before = tuple(self.ledger.db.iterdump())
+                with self.assertRaisesRegex(ValueError, "review"):
+                    self.export(saved["context_sha256"])
+                self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
+    def test_cyclic_stored_ancestry_fails_closed(self):
+        self.ledger.review("mission-one", reviewer_id="local-evaluator",
+                           expected_sha256=self.receipt["handoff_sha256"])
+        _, body = self.ledger._handoff("mission-one")
+        body["parent_id"] = "mission-one"
+        checksum = digest(body)
+        self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=?,state='reviewed' WHERE id=?",
+                              (json.dumps(body), checksum, checksum, "mission-one"))
+        with self.assertRaisesRegex(ValueError, "ancestry"):
+            self.ledger.export("mission-one", expected_sha256=checksum)
+
+    def test_rehashed_child_depth_cannot_reopen_the_dependency_budget(self):
+        self.returned_parent()
+        child = self.stage_followup()
+        self.ledger.review("followup-one", reviewer_id="local-evaluator",
+                           expected_sha256=child["handoff_sha256"])
+        self.ledger.export("followup-one", expected_sha256=child["handoff_sha256"])
+        _, body = self.ledger._handoff("followup-one")
+        body["depth"] = 0
+        checksum = digest(body)
+        self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=? WHERE id=?",
+                              (json.dumps(body), checksum, checksum, "followup-one"))
+        self.ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id="child-return",
+            handoff_id="followup-one", handoff_sha256=checksum, source_provider="codex",
+            text="Synthetic unverified child result.", evidence_urls=[]))
+        before = tuple(self.ledger.db.iterdump())
+        with self.assertRaisesRegex(ValueError, "depth"):
+            self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Must not exceed the original depth-one budget."), self.manifest,
+                assistant_id="memory-pilot.evaluator", handoff_id="excess-child", parent_id="followup-one")
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
+    def test_valid_depth_two_chain_survives_restart_and_keeps_its_budget(self):
+        manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="depth-pilot",
+                               source_revision=REVISION, max_depth=2, max_handoffs_per_assistant=5)
+        parent = None
+        for index in range(3):
+            identifier = f"depth-task-{index}"
+            saved = self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Synthetic bounded depth task."), manifest,
+                assistant_id="depth-pilot.builder", handoff_id=identifier, parent_id=parent)
+            self.ledger.review(identifier, reviewer_id="local-evaluator", expected_sha256=saved["handoff_sha256"])
+            self.ledger.export(identifier, expected_sha256=saved["handoff_sha256"])
+            self.ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id=f"depth-return-{index}",
+                handoff_id=identifier, handoff_sha256=saved["handoff_sha256"], source_provider="codex",
+                text="Synthetic unverified depth result.", evidence_urls=[]))
+            parent = identifier
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual([body["depth"] for _, body in self.ledger._lineage(parent)], [2, 1, 0])
+        before = tuple(self.ledger.db.iterdump())
+        with self.assertRaisesRegex(ValueError, "depth budget"):
+            self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target="codex", text="Must not exceed depth two."), manifest,
+                assistant_id="depth-pilot.builder", handoff_id="depth-task-3", parent_id=parent)
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
+    def test_existing_child_exports_observe_parent_pause_and_resume_review(self):
+        self.profile = self.control_profile("active")
+        self.returned_parent()
+        child = self.stage_followup()
+        profile = self.context("followup-one")
+        saved = self.ledger.save_context(profile, expected_revision=0)
+        self.ledger.review("followup-one", reviewer_id="local-evaluator", expected_sha256=child["handoff_sha256"])
+        self.ledger.review_context("followup-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        paused = self.control_profile("paused")
+        self.ledger.save_context(paused, expected_revision=1)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        def export_child():
+            return self.ledger.export_context("followup-one", expected_sha256=saved["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=1)
+        for export in (lambda: self.ledger.export("followup-one", expected_sha256=child["handoff_sha256"]), export_child):
+            with self.assertRaises(ValueError):
+                export()
+        active = self.control_profile("active")
+        resumed = self.ledger.save_context(active, expected_revision=2)
+        with self.assertRaises(ValueError):
+            export_child()
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=resumed["context_sha256"])
+        self.assertEqual(export_child()["handoff_sha256"], child["handoff_sha256"])
+        self.assertEqual(self.load("followup-one")["profile"], profile)
+
+    def test_cancelled_ancestor_blocks_depth_two_legacy_export(self):
+        with TemporaryDirectory() as directory, HandoffLedger(Path(directory) / "chain.sqlite3") as ledger:
+            swarm = build_swarm("ai-jarvis", ["codex"], swarm_id="chain-pilot", source_revision=REVISION,
+                                max_depth=2, max_handoffs_per_assistant=3)
+            parent = None
+            records = []
+            for i in range(3):
+                identifier = f"chain-{i}"
+                item = ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+                    "target": "codex", "text": "Synthetic chain."}, swarm, assistant_id="chain-pilot.builder",
+                    handoff_id=identifier, parent_id=parent)
+                ledger.review(identifier, reviewer_id="local-evaluator", expected_sha256=item["handoff_sha256"])
+                ledger.export(identifier, expected_sha256=item["handoff_sha256"])
+                ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": f"chain-return-{i}",
+                    "handoff_id": identifier, "handoff_sha256": item["handoff_sha256"], "source_provider": "codex",
+                    "text": "Synthetic returned evidence.", "evidence_urls": []})
+                records.append(item)
+                parent = identifier
+            cancelled = self.control_profile("cancelled")
+            cancelled.update(handoff_id="chain-0", handoff_sha256=records[0]["handoff_sha256"], asset_id="chain-pilot.builder")
+            ledger.save_context(cancelled, expected_revision=0)
+            with self.assertRaises(ValueError):
+                ledger.export("chain-2", expected_sha256=records[2]["handoff_sha256"])
+            self.assertEqual(ledger.status()["return_count"], 3)
+
+    def test_corrupt_context_fails_closed(self):
+        self.save()
+        self.ledger.db.execute("UPDATE handoff_contexts SET body=?", (json.dumps({**self.profile, "memory_revision": 2}),))
+        with self.assertRaises(ValueError):
+            self.load()
+
+    def inspect(self, identifier="mission-one", **changes):
+        context = self.load(identifier)
+        return self.ledger.inspect_recovery(identifier, **{
+            "expected_sha256": context["context_sha256"], "expected_source_revision": REVISION,
+            "expected_memory_revision": 1, **changes})
+
+    def test_recovery_inspection_survives_restart_without_releasing_unknown_hold(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        before = list(self.ledger.db.iterdump())
+        first = self.inspect()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.inspect(), first)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(first["lineage"][0]["holds"], ["outcome_unknown"])
+        self.assertEqual(first["lineage"][0]["context"]["attempts"], 1)
+        self.assertFalse(first["retry_authorized"])
+        checksum = first.pop("inspection_sha256")
+        self.assertEqual(digest(first), checksum)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_recovery_inspection_retains_parent_bindings_without_other_missions_or_text(self):
+        self.returned_parent()
+        child = self.stage_followup()
+        self.ledger.save_context(self.context("followup-one"), expected_revision=0)
+        held = self.control_profile("paused")
+        held["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(held, expected_revision=1)
+        self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+            "target": "github", "text": "Unrelated synthetic mission."}, self.manifest,
+            assistant_id="memory-pilot.evaluator", handoff_id="unrelated-mission")
+        packet = self.inspect("followup-one")
+        self.assertEqual([r["handoff_id"] for r in packet["lineage"]], ["followup-one", "mission-one"])
+        leaf, parent = packet["lineage"]
+        self.assertEqual(leaf["handoff_sha256"], child["handoff_sha256"])
+        self.assertEqual(parent["holds"], ["outcome_unknown", "paused", "context_review_required"])
+        self.assertEqual(parent["context"]["revision"], 2)
+        self.assertEqual(parent["returned_evidence"]["return_id"], "parent-return")
+        self.assertEqual(parent["returned_evidence"]["state"], "returned_unverified")
+        text = json.dumps(packet)
+        for private_text in ("Synthetic", "https://", "unrelated-mission"):
+            self.assertNotIn(private_text, text)
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertEqual(packet["sender_authentication"], "not_established")
+        parent["context"]["revision"] = 999
+        self.assertEqual(self.inspect("followup-one")["lineage"][1]["context"]["revision"], 2)
+
+    def test_recovery_inspection_rejects_stale_content_and_revisions(self):
+        saved = self.save()
+        first = self.inspect()
+        self.profile["execution"]["detail"] = "New observation without changing memory revision."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        for change in ({"expected_sha256": saved["context_sha256"]},
+                       {"expected_source_revision": "f" * 40}, {"expected_memory_revision": 2},
+                       {"expected_memory_revision": True}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.inspect(**change)
+        self.assertNotEqual(self.inspect()["inspection_sha256"], first["inspection_sha256"])
+        self.assertEqual(self.load()["revision"], 2)
+
+    def test_recovery_inspection_keeps_legacy_parent_without_context(self):
+        self.returned_parent()
+        self.ledger.db.execute("DELETE FROM handoff_contexts WHERE handoff_id='mission-one'")
+        self.stage_followup()
+        public = self.context("followup-one")
+        public.update(visibility="public_candidate", context_refs=[])
+        self.ledger.save_context(public, expected_revision=0)
+        packet = self.inspect("followup-one")
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertFalse(packet["retry_authorized"])
+        parent = packet["lineage"][1]
+        self.assertIsNone(parent["context"])
+        self.assertEqual(parent["returned_evidence"]["state"], "returned_unverified")
+
+    def test_recovery_inspection_rejects_corrupt_ancestor_evidence(self):
+        self.returned_parent()
+        self.stage_followup()
+        self.ledger.save_context(self.context("followup-one"), expected_revision=0)
+        self.ledger.db.execute("UPDATE returns SET digest=?", ("0" * 64,))
+        with self.assertRaisesRegex(ValueError, "return integrity"):
+            self.inspect("followup-one")
+
+    def check_inspection(self, packet):
+        leaf = packet["lineage"][0]
+        return self.ledger.check_recovery(packet["handoff_id"],
+            expected_inspection_sha256=packet["inspection_sha256"],
+            expected_sha256=leaf["context"]["context_sha256"],
+            expected_source_revision=leaf["source_revision"],
+            expected_memory_revision=leaf["context"]["memory_revision"])
+
+    def test_checked_inspection_survives_restart_but_never_releases_hold(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.approve()
+        packet = self.inspect()
+        before = list(self.ledger.db.iterdump())
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        checked = self.check_inspection(packet)
+        self.assertEqual(checked["state"], "current_local_observation_only")
+        self.assertFalse(checked["retry_authorized"])
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assert_exports_blocked(saved["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.check_inspection({**packet, "inspection_sha256": "0" * 64})
+
+    def test_parent_context_and_review_changes_invalidate_child_inspection(self):
+        self.returned_parent()
+        self.stage_followup()
+        self.ledger.save_context(self.context("followup-one"), expected_revision=0)
+        original = self.inspect("followup-one")
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "New ancestor observation."
+        saved = self.ledger.save_context(changed, expected_revision=1)
+        with self.assertRaisesRegex(ValueError, "inspection is stale"):
+            self.check_inspection(original)
+        refreshed = self.inspect("followup-one")
+        self.assertEqual(original["lineage"][0], refreshed["lineage"][0])
+        self.check_inspection(refreshed)
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        with self.assertRaisesRegex(ValueError, "inspection is stale"):
+            self.check_inspection(refreshed)
+
+    def test_late_return_invalidates_inspection_without_clearing_unknown_outcome(self):
+        saved = self.approve()
+        self.export(saved["context_sha256"])
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(self.profile, expected_revision=1)
+        original = self.inspect()
+        self.ledger.import_return({"schema_version": 1, "kind": "jarvis.return", "return_id": "late-evidence",
+            "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+            "source_provider": "codex", "text": "Synthetic late return, still unverified.", "evidence_urls": []})
+        with self.assertRaisesRegex(ValueError, "inspection is stale"):
+            self.check_inspection(original)
+        refreshed = self.inspect()
+        self.assertEqual(original["lineage"][0]["context"], refreshed["lineage"][0]["context"])
+        self.assertFalse(self.check_inspection(refreshed)["retry_authorized"])
+        self.assert_exports_blocked(refreshed["lineage"][0]["context"]["context_sha256"])
+
+    def proposal(self, inspection=None, **changes):
+        packet = inspection or self.inspect()
+        return self.ledger.prepare_reconciliation("mission-one", **{
+            "expected_inspection_sha256": packet["inspection_sha256"],
+            "expected_sha256": packet["lineage"][0]["context"]["context_sha256"],
+            "expected_source_revision": REVISION, "expected_memory_revision": 1, **changes})
+
+    def proposal_fixture(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["evidence_refs"] = [{"url": "https://example.invalid/observation", "revision": 2,
+                                         "visibility": "owner_private"}]
+        return self.approve()
+
+    def test_reconciliation_proposal_retains_evidence_after_restart_without_state_change(self):
+        saved = self.proposal_fixture()
+        before = list(self.ledger.db.iterdump())
+        first = self.proposal()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.proposal(), first)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(first["evidence_refs"], self.profile["evidence_refs"])
+        self.assertEqual(first["execution"], self.profile["execution"])
+        self.assertEqual(first["visibility"], "owner_private")
+        self.assertEqual(first["review_state"], "proposed_unverified")
+        self.assertEqual(first["proposed_resolution"], "retain_hold")
+        self.assertEqual(first["schema_version"], 1)
+        self.assertNotIn("destination_id", first)
+        self.assertFalse(first["retry_authorized"])
+        self.assertNotIn("context_refs", first)
+        checksum = first.pop("proposal_sha256")
+        self.assertEqual(digest(first), checksum)
+        first["evidence_refs"].clear()
+        self.assertEqual(len(self.proposal()["evidence_refs"]), 1)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_destination_reconciliation_preserves_exact_destination_after_restart(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "cancelled"
+        saved = self.proposal_fixture()
+        before = list(self.ledger.db.iterdump())
+        first = self.proposal()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.proposal(), first)
+        self.assertEqual(first["schema_version"], 2)
+        self.assertEqual(first["destination_id"], "repository-one")
+        self.assertEqual(first["platform"], "codex")
+        self.assertEqual(first["context_sha256"], saved["context_sha256"])
+        self.assertEqual(first["control_state"], "cancelled")
+        self.assertEqual(first["execution"]["state"], "outcome_unknown")
+        self.assertEqual(first["visibility"], "owner_private")
+        self.assertFalse(first["retry_authorized"])
+        checksum = first.pop("proposal_sha256")
+        self.assertEqual(digest(first), checksum)
+        first["destination_id"] = "repository-two"
+        self.assertNotEqual(digest(first), checksum)
+        self.assertEqual(self.proposal()["destination_id"], "repository-one")
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_controlled_legacy_reconciliation_preserves_version_one_shape(self):
+        self.profile = self.control_profile("paused")
+        self.proposal_fixture()
+        proposal = self.proposal()
+        self.assertEqual(proposal["schema_version"], 1)
+        self.assertNotIn("destination_id", proposal)
+        self.assertEqual(set(proposal), {"project_id", "mission_id", "asset_id", "platform",
+            "source_revision", "memory_revision", "configuration_version", "allowed_actions",
+            "budget", "execution", "evidence_refs", "schema_version", "kind", "handoff_id",
+            "handoff_sha256", "context_sha256", "context_revision", "inspection_sha256",
+            "visibility", "control_state", "review_state", "proposed_resolution",
+            "evidence_verification", "retry_authorized", "external_actions", "proposal_sha256"})
+
+    def test_reconciliation_proposal_rejects_missing_evidence_and_known_outcomes(self):
+        self.save()
+        with self.assertRaises(ValueError):
+            self.proposal()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(self.profile, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.proposal()
+
+    def test_reconciliation_proposal_rejects_stale_review_and_context(self):
+        self.proposal_fixture()
+        old = self.inspect()
+        changed = deepcopy(self.profile)
+        changed["evidence_refs"][0]["revision"] = 3
+        self.ledger.save_context(changed, expected_revision=1)
+        with self.assertRaises(ValueError):
+            self.proposal(old)
+        refreshed = self.inspect()
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=refreshed["lineage"][0]["context"]["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.proposal(refreshed)
+        with self.assertRaises(ValueError):
+            self.proposal(expected_memory_revision=2)
+
+    def destination_profile(self, destination="repository-one"):
+        return {**self.control_profile("active"), "schema_version": 3, "destination_id": destination}
+
+    def test_destination_round_trip_requires_both_reviews_and_survives_restart(self):
+        self.profile = self.destination_profile()
+        saved = self.save()
+        self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.load()["profile"], self.profile)
+        packet = self.export(saved["context_sha256"])
+        self.assertEqual(packet["context"]["destination_id"], "repository-one")
+        self.assertEqual(packet["handoff_sha256"], self.receipt["handoff_sha256"])
+        self.assertNotIn("destination_id", packet["handoff"])
+
+    def test_destination_cannot_be_silently_added_or_changed_or_downgraded(self):
+        for version in (1, 2):
+            bad = self.destination_profile()
+            bad["schema_version"] = version
+            if version == 1:
+                del bad["control"]
+            with self.assertRaises(ValueError):
+                self.ledger.save_context(bad, expected_revision=0)
+        self.profile = self.destination_profile()
+        self.save()
+        downgrade = self.control_profile("active")
+        downgrade.pop("destination_id")
+        for changed in (self.destination_profile("repository-two"), downgrade):
+            with self.assertRaises(ValueError):
+                self.ledger.save_context(changed, expected_revision=1)
+        self.assertEqual(self.load()["profile"], self.profile)
+
+    def test_destination_bound_handoff_cannot_export_without_its_context(self):
+        self.profile = self.destination_profile()
+        saved = self.approve()
+        with self.assertRaisesRegex(ValueError, "context envelope"):
+            self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        self.assertEqual(self.ledger.status()["handoffs"][0]["state"], "reviewed")
+        packet = self.export(saved["context_sha256"])
+        self.assertEqual(packet["context"]["destination_id"], "repository-one")
+        self.assertEqual(packet["handoff_sha256"], self.receipt["handoff_sha256"])
+
+    def test_destination_requires_a_bounded_opaque_identifier(self):
+        for value in ("", "../outside", "https://example.invalid/channel", "a" * 129, None):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.ledger.save_context(self.destination_profile(value), expected_revision=0)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM handoff_contexts").fetchone()[0], 0)
+
+    def test_destination_opt_in_only_before_original_review(self):
+        self.save()
+        self.profile = self.destination_profile()
+        self.ledger.save_context(self.profile, expected_revision=1)
+        self.stage("mission-two")
+        other = self.context("mission-two")
+        self.ledger.save_context(other, expected_revision=0)
+        _, handoff = self.ledger._handoff("mission-two")
+        self.ledger.review("mission-two", reviewer_id="local-evaluator", expected_sha256=digest(handoff))
+        other.update(schema_version=3, destination_id="repository-two", control=self.profile["control"])
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(other, expected_revision=1)
+        self.assertEqual(self.load("mission-two")["profile"]["schema_version"], 1)
+
+    def test_destination_records_are_independent_and_unknown_cancelled_state_is_retained(self):
+        self.profile = self.destination_profile()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["control"]["state"] = "cancelled"
+        saved = self.approve()
+        self.stage("mission-two")
+        other = {**self.context("mission-two"), "schema_version": 3, "destination_id": "repository-two",
+                 "control": self.control_profile("active")["control"]}
+        other["control"]["state"] = "active"
+        self.ledger.save_context(other, expected_revision=0)
+        self.assertEqual(self.load()["profile"]["destination_id"], "repository-one")
+        self.assertEqual(self.load("mission-two")["profile"]["destination_id"], "repository-two")
+        self.assert_exports_blocked(saved["context_sha256"])
+        with self.assertRaises(ValueError):
+            self.export(saved["context_sha256"], audience="public_candidate")
+        self.assertEqual(self.load()["profile"]["execution"]["state"], "outcome_unknown")
+
+    def test_destination_status_selects_exact_platform_and_destination_without_private_text(self):
+        self.profile = self.destination_profile()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("mission-two", target="github")
+        other = {**self.context("mission-two"), "schema_version": 3, "destination_id": "repository-one",
+                 "control": self.profile["control"]}
+        self.ledger.save_context(other, expected_revision=0)
+        for name, destination in (("third", "repository-two"), ("legacy", None)):
+            staged = self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft", "project_id": "ai-jarvis",
+                "target": "codex", "text": "Unrelated private fixture."}, self.manifest,
+                assistant_id="memory-pilot.evaluator", handoff_id=name)
+            profile = self.context(name)
+            profile["asset_id"] = "memory-pilot.evaluator"
+            if destination:
+                profile.update(schema_version=3, destination_id=destination, control=self.profile["control"])
+            self.ledger.save_context(profile, expected_revision=0)
+        before = list(self.ledger.db.iterdump())
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        query = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        result = self.ledger.destination_status(**query)
+        self.assertEqual([r["handoff_id"] for r in result["records"]], ["mission-one"])
+        self.assertEqual(result["records"][0]["execution_state"], "outcome_unknown")
+        self.assertFalse(result["dispatch_authorized"])
+        self.assertEqual(result["visibility"], "owner_private")
+        self.assertEqual(result["sender_authentication"], "not_established")
+        for text in ("https://", "Synthetic", "Unrelated", "mission-two"):
+            self.assertNotIn(text, json.dumps(result))
+        result["records"].clear()
+        self.assertEqual(len(self.ledger.destination_status(**query)["records"]), 1)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_destination_status_project_isolation_and_empty_results(self):
+        self.profile = self.destination_profile()
+        self.save()
+        for change in ({"project_id": "publishing-studio"}, {"platform": "github"},
+                       {"destination_id": "repository-two"}):
+            query = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+            query.update(change)
+            self.assertEqual(self.ledger.destination_status(**query)["records"], [])
+
+    def test_destination_status_rejects_invalid_scope_and_corrupt_context(self):
+        query = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        for change in ({"project_id": "unknown"}, {"platform": []}, {"destination_id": "../outside"}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.destination_status(**{**query, **change})
+        self.profile = self.destination_profile()
+        self.save()
+        self.ledger.db.execute("UPDATE handoff_contexts SET body='{}'")
+        with self.assertRaises(ValueError):
+            self.ledger.destination_status(**query)
+
+    def test_exports_reject_changed_registered_configuration_after_reopen(self):
+        saved = self.approve()
+        row = self.ledger.db.execute("SELECT * FROM swarms").fetchone()
+        manifest = json.loads(row["body"])
+        manifest["assistants"][0]["max_handoffs"] = 99
+        self.ledger.db.execute("UPDATE swarms SET body=?", (json.dumps(manifest),))
+        before = list(self.ledger.db.iterdump())
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        for export in (lambda: self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"]),
+                       lambda: self.export(saved["context_sha256"])):
+            with self.subTest(export=export), self.assertRaises(ValueError):
+                export()
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_exports_reject_registered_manifest_digest_mismatch(self):
+        saved = self.approve()
+        self.ledger.db.execute("UPDATE swarms SET digest=?", ("0" * 64,))
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_legacy_export_rejects_rehashed_handoff_outside_its_registered_project(self):
+        _, handoff = self.ledger._handoff("mission-one")
+        handoff["draft"]["project_id"] = "publishing-studio"
+        checksum = digest(handoff)
+        self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=?,reviewer_id='local-evaluator',state='reviewed' WHERE id=?",
+            (json.dumps(handoff), checksum, checksum, "mission-one"))
+        before = list(self.ledger.db.iterdump())
+        with self.assertRaises(ValueError):
+            self.ledger.export("mission-one", expected_sha256=checksum)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def observation(self, provider="codex", **changes):
+        values = dict(observed_at="2026-10-28T00:00:00Z", evidence_url="https://example.invalid/read",
+                      response_sha256="a" * 64, scope="Synthetic metadata read", source_revision=REVISION)
+        return read_observation(provider, **{**values, **changes})
+
+    def test_shared_reads_reject_rehashed_handoff_contract_changes(self):
+        _, original = self.ledger._handoff("mission-one")
+        for field, value in (("schema_version", 2), ("schema_version", True),
+                             ("kind", "jarvis.return"), ("mode", "automatic_dispatch"),
+                             ("external_actions", 1), ("external_actions", False)):
+            with self.subTest(field=field, value=value):
+                body = {**original, field: value}
+                checksum = digest(body)
+                self.ledger.db.execute("UPDATE handoffs SET body=?,digest=?,reviewed_digest=?,reviewer_id='local-evaluator',state='reviewed' WHERE id=?",
+                    (json.dumps(body), checksum, checksum, "mission-one"))
+                before = list(self.ledger.db.iterdump())
+                for read in (self.ledger.status,
+                             lambda: self.ledger.export("mission-one", expected_sha256=checksum)):
+                    with self.assertRaisesRegex(ValueError, "stored handoff contract"):
+                        read()
+                self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+
+    def bind_observation(self, observation, checksum=None):
+        return self.ledger.bind_destination_observation("mission-one", observation,
+            expected_sha256=checksum or self.load()["context_sha256"], expected_source_revision=REVISION,
+            expected_memory_revision=1, now=datetime(2026, 10, 28, 1, tzinfo=timezone.utc))
+
+    def test_destination_observation_retains_bindings_without_changing_holds_or_records(self):
+        self.profile = self.destination_profile()
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.profile["control"]["state"] = "cancelled"
+        saved = self.approve()
+        original = self.observation()
+        before = list(self.ledger.db.iterdump())
+        bound = self.bind_observation(original)
+        self.assertEqual(bound["destination_id"], "repository-one")
+        self.assertEqual(bound["observation"], original)
+        self.assertEqual(bound["observation_status"], "read_observed")
+        self.assertEqual(bound["runtime_available"], "unknown")
+        self.assertFalse(bound["dispatch_authorized"])
+        self.assertNotIn("execution", bound)
+        self.assertNotIn("context_refs", bound)
+        self.assertEqual(bound["visibility"], "owner_private")
+        checksum = bound.pop("receipt_sha256")
+        self.assertEqual(digest(bound), checksum)
+        bound["observation"]["scope"] = "Changed returned metadata."
+        self.assertEqual(self.observation(), original)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assert_exports_blocked(saved["context_sha256"])
+
+    def test_destination_observation_rejects_mismatch_tampering_and_legacy_context(self):
+        self.save()
+        with self.assertRaises(ValueError):
+            self.bind_observation(self.observation())
+        self.profile = self.destination_profile()
+        saved = self.ledger.save_context(self.profile, expected_revision=1)
+        tampered = self.observation()
+        tampered["response_sha256"] = "b" * 64
+        for record in (tampered, self.observation("github"), self.observation(source_revision="f" * 40)):
+            with self.subTest(record=record), self.assertRaises(ValueError):
+                self.bind_observation(record)
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "New selected context."
+        self.ledger.save_context(changed, expected_revision=2)
+        with self.assertRaises(ValueError):
+            self.bind_observation(self.observation(), saved["context_sha256"])
+
+    def test_destination_observation_preserves_stale_status_and_rejects_future_time(self):
+        self.profile = self.destination_profile()
+        self.save()
+        old = self.bind_observation(self.observation(observed_at="2026-10-20T00:00:00Z"))
+        self.assertEqual(old["observation_status"], "unverified")
+        with self.assertRaises(ValueError):
+            self.bind_observation(self.observation(observed_at="2026-10-29T00:00:00Z"))
+
+    def configured_read(self):
+        self.stage("github-read", target="github")
+        profile = {**self.context("github-read"), "schema_version": 3, "destination_id": "repository-one",
+            "control": {"state": "paused", "actor_id": "local-owner", "reason": "Keep the failed task paused."}}
+        profile["execution"]["state"] = "outcome_unknown"
+        saved = self.ledger.save_context(profile, expected_revision=0)
+        url = f"https://api.github.com/repos/owner/repository/git/commits/{REVISION}"
+        raw = json.dumps(dict(sha=REVISION, url=url)).encode()
+        from hashlib import sha256
+        observation = read_observation("github", observed_at="2026-10-28T00:00:00Z", evidence_url=url,
+            response_sha256=sha256(raw).hexdigest(), scope="Synthetic commit read", source_revision=REVISION)
+        registry = {"schema_version": 1, "kind": "jarvis.destination_registry", "registry_id": "local-test",
+            "revision": 2, "source_revision": "a" * 40, "configuration_version": "read-config.v1",
+            "visibility": "owner_private", "entries": [{"project_id": "ai-jarvis", "platform": "github",
+                "destination_id": "repository-one", "resource_id": "owner/repository", "allowed_actions": ["read"]},
+                {"project_id": "ai-jarvis", "platform": "github", "destination_id": "repository-two",
+                 "resource_id": "other/private-repository", "allowed_actions": ["read"]}]}
+        args = dict(expected_registry_sha256=digest(registry), expected_registry_revision=2,
+            expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+            expected_memory_revision=1, now=datetime(2026, 10, 28, 1, tzinfo=timezone.utc))
+        return raw, observation, registry, args
+
+    def test_configured_read_preserves_legacy_receipt_and_holds_across_read_only_restart(self):
+        raw, observation, registry, args = self.configured_read()
+        before = list(self.ledger.db.iterdump())
+        envelope = self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args)
+        legacy = self.ledger.bind_destination_observation("github-read", observation,
+            **{k: v for k, v in args.items() if not k.startswith("expected_registry")})
+        self.assertEqual(envelope["destination_observation"], legacy)
+        self.assertEqual(envelope["registry_binding"]["entry"], registry["entries"][0])
+        self.assertNotIn("private-repository", json.dumps(envelope))
+        self.assertNotIn("context_refs", json.dumps(envelope))
+        self.assertFalse(envelope["dispatch_authorized"])
+        self.assertEqual(envelope["sender_authentication"], "not_established")
+        self.assertEqual(envelope["mapping_verification"], "supplied_configuration_only")
+        self.assertEqual(digest({k: v for k, v in envelope.items() if k != "receipt_sha256"}), envelope["receipt_sha256"])
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.ledger.close()
+        original_bytes = self.path.read_bytes()
+        try:
+            with HandoffLedger(self.path, read_only=True) as ledger:
+                self.assertEqual(ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args), envelope)
+                context = ledger.load_context("github-read", expected_source_revision=REVISION, expected_memory_revision=1)
+                self.assertEqual(context["profile"]["execution"]["state"], "outcome_unknown")
+                self.assertEqual(context["profile"]["control"]["state"], "paused")
+                self.assertEqual(context["review_state"], "proposed")
+            self.assertEqual(self.path.read_bytes(), original_bytes)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+        envelope["registry_binding"]["entry"]["resource_id"] = "changed/repository"
+        self.assertEqual(registry["entries"][0]["resource_id"], "owner/repository")
+
+    def test_configured_read_rejects_stale_registry_and_wrong_resource_or_destination(self):
+        raw, observation, registry, args = self.configured_read()
+        before = list(self.ledger.db.iterdump())
+        for changes in ({"expected_registry_sha256": "0" * 64}, {"expected_registry_revision": 1},
+                        {"expected_registry_revision": True}, {"expected_sha256": "0" * 64},
+                        {"expected_source_revision": "b" * 40}, {"expected_memory_revision": 2}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **{**args, **changes})
+        for field, value in (("project_id", "ai-evolutionary-evolutions"), ("platform", "codex"),
+                             ("destination_id", "repository-other"), ("resource_id", "other/repository")):
+            changed = deepcopy(registry)
+            changed["entries"][0][field] = value
+            if field == "platform":
+                changed["entries"][0]["resource_id"] = "opaque-repository"
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                self.ledger.bind_configured_github_observation("github-read", observation, raw, changed,
+                    **{**args, "expected_registry_sha256": digest(changed)})
+        with self.assertRaises(ValueError):
+            self.ledger.bind_configured_github_observation("github-read", observation, raw + b" ", registry, **args)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
+    def test_configured_read_requires_current_context_after_review_invalidation(self):
+        raw, observation, registry, args = self.configured_read()
+        self.ledger.review_context("github-read", reviewer_id="local-evaluator", expected_sha256=args["expected_sha256"])
+        self.assertEqual(self.ledger.bind_configured_github_observation("github-read", observation, raw, registry,
+            **args)["destination_observation"]["review_state"], "locally_reviewed")
+        loaded = self.ledger.load_context("github-read", expected_source_revision=REVISION, expected_memory_revision=1)
+        changed = loaded["profile"]
+        changed["memory_revision"] = 2
+        changed["execution"]["detail"] = "Retain uncertain outcome after a context revision."
+        saved = self.ledger.save_context(changed, expected_revision=loaded["revision"])
+        with self.assertRaises(ValueError):
+            self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args)
+        result = self.ledger.bind_configured_github_observation("github-read", observation, raw, registry,
+            **{**args, "expected_sha256": saved["context_sha256"], "expected_memory_revision": 2})
+        self.assertEqual(result["destination_observation"]["review_state"], "proposed")
+        self.assertFalse(result["dispatch_authorized"])
+
+    def test_fresh_process_reads_checkpoint_without_retry(self):
+        self.save()
+        self.ledger.close()
+        command = """import json, sys
+from control_tower.handoffs import HandoffLedger
+with HandoffLedger(sys.argv[1]) as ledger:
+    print(json.dumps(ledger.load_context('mission-one',
+        expected_source_revision=sys.argv[2], expected_memory_revision=1)))
+"""
+        try:
+            result = subprocess.run([sys.executable, "-c", command, str(self.path), REVISION],
+                cwd=Path(__file__).resolve().parents[1], capture_output=True, text=True, timeout=10)
+        finally:
+            self.ledger = HandoffLedger(self.path)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["profile"]["execution"], self.profile["execution"])
+
+    def test_sqlite_backup_restores_original_and_context_together(self):
+        self.save()
+        backup_path = Path(self.directory.name) / "backup.sqlite3"
+        with sqlite3.connect(backup_path) as destination:
+            self.ledger.db.backup(destination)
+        self.profile["execution"]["detail"] = "Later observation."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        with HandoffLedger(backup_path) as restored:
+            previous = restored.load_context("mission-one", expected_source_revision=REVISION,
+                                              expected_memory_revision=1)
+            self.assertEqual(previous["revision"], 1)
+            self.assertNotEqual(previous["profile"]["execution"]["detail"], self.profile["execution"]["detail"])
+            self.assertEqual(restored.status()["handoffs"][0]["handoff_sha256"], self.receipt["handoff_sha256"])
+
+
+    def control_profile(self, state):
+        return {**deepcopy(self.profile), "schema_version": 2,
+                "control": {"state": state, "actor_id": "local-owner-label",
+                            "reason": "Synthetic bounded control fixture."}}
+
+    def assert_exports_blocked(self, checksum):
+        with self.assertRaises(ValueError):
+            self.ledger.export("mission-one", expected_sha256=self.receipt["handoff_sha256"])
+        with self.assertRaises(ValueError):
+            self.export(checksum)
+
+    def test_v1_is_unchanged_and_control_requires_explicit_v2(self):
+        self.save()
+        self.assertEqual(self.load()["profile"], self.profile)
+        with self.assertRaises(ValueError):
+            self.ledger.save_context({**self.profile, "control": self.control_profile("paused")["control"]}, expected_revision=1)
+        self.assertEqual(self.load()["revision"], 1)
+
+    def test_paused_and_cancelled_block_both_exports_after_reopen(self):
+        for state in ("paused", "cancelled"):
+            with self.subTest(state=state):
+                self.profile = self.control_profile(state)
+                # Reset just this test fixture between independent cases.
+                self.ledger.db.execute("DELETE FROM handoff_contexts")
+                saved = self.approve()
+                self.ledger.close()
+                self.ledger = HandoffLedger(self.path)
+                self.assert_exports_blocked(saved["context_sha256"])
+                self.assertEqual(self.load()["profile"]["control"]["state"], state)
+                self.assertEqual(self.load()["profile"]["execution"]["state"], "execution_blocked")
+
+    def test_resume_requires_fresh_context_review_and_cannot_downgrade(self):
+        self.profile = self.control_profile("paused")
+        self.approve()
+        legacy = {k: v for k, v in self.profile.items() if k != "control"}
+        legacy["schema_version"] = 1
+        with self.assertRaises(ValueError):
+            self.ledger.save_context(legacy, expected_revision=1)
+        active = self.control_profile("active")
+        updated = self.ledger.save_context(active, expected_revision=1)
+        self.assert_exports_blocked(updated["context_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=updated["context_sha256"])
+        self.assertEqual(self.export(updated["context_sha256"])["context"]["control"]["state"], "active")
+
+    def test_cancel_is_terminal_but_allows_unverified_late_return(self):
+        saved = self.approve()
+        self.export(saved["context_sha256"])
+        cancelled = self.control_profile("cancelled")
+        cancelled["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(cancelled, expected_revision=1)
+        for state in ("active", "paused"):
+            with self.subTest(state=state), self.assertRaises(ValueError):
+                self.ledger.save_context({**cancelled, "control": {**cancelled["control"], "state": state}}, expected_revision=2)
+        packet = {"schema_version": 1, "kind": "jarvis.return", "return_id": "late-result",
+                  "handoff_id": "mission-one", "handoff_sha256": self.receipt["handoff_sha256"],
+                  "source_provider": "codex", "text": "Synthetic late evidence.", "evidence_urls": []}
+        self.assertEqual(self.ledger.import_return(packet)["state"], "returned_unverified")
+        loaded = self.load()
+        self.assertEqual(loaded["profile"]["execution"]["state"], "outcome_unknown")
+        self.assertEqual(loaded["profile"]["control"]["state"], "cancelled")
+        self.assert_exports_blocked(loaded["context_sha256"])
+
+    def test_control_duplicate_stale_writer_and_independent_handoff(self):
+        self.profile = self.control_profile("paused")
+        self.approve()
+        with HandoffLedger(self.path) as other:
+            self.assertTrue(other.save_context(self.profile, expected_revision=1)["duplicate"])
+            with self.assertRaises(ValueError):
+                other.save_context(self.control_profile("active"), expected_revision=0)
+        self.stage("mission-two")
+        other_profile = self.context("mission-two")
+        self.ledger.save_context(other_profile, expected_revision=0)
+        self.assertNotIn("control", self.load("mission-two")["profile"])
+        self.assertEqual(self.load()["profile"]["control"]["state"], "paused")
+
+    def test_control_schema_rejects_unknown_or_authority_fields(self):
+        for change in ({"state": "running"}, {"state": True}, {"actor_id": "../outside"},
+                       {"reason": ""}, {"authenticated": True}):
+            bad = self.control_profile("paused")
+            bad["control"].update(change)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.ledger.save_context(bad, expected_revision=0)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM handoff_contexts").fetchone()[0], 0)
+
+    def test_corrupt_control_blocks_legacy_export(self):
+        self.profile = self.control_profile("active")
+        self.approve()
+        self.ledger.db.execute("UPDATE handoff_contexts SET body='{}'")
+        self.assert_exports_blocked("0" * 64)
+
+
+if __name__ == "__main__":
+    unittest.main()

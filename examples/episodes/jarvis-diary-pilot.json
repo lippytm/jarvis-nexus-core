@@ -1,0 +1,147 @@
+{
+  "audience": "public",
+  "date": "2026-10-22",
+  "episode_id": "rpg-20261022-jarvis-pilot",
+  "episode_sha256": "19a7eaba577ef0914ed5a5a6f65dfaeab37ae4f7d9bf5837b3a7b3274bfea230",
+  "external_actions": 0,
+  "fictional_framing": "Original fictional setting; project records and plans retain their labels.",
+  "kind": "jarvis.rpg_episode",
+  "model_calls": 0,
+  "news_status": "not_included_in_this_project_pilot",
+  "observations_omitted": 0,
+  "publication_approval": "not_granted",
+  "quests": [
+    {
+      "evidence_state": "planned",
+      "objective": "Confirm the site's Hostinger product and available read-only access; review a supported route before any live connection attempt.",
+      "quest_id": "hostinger-connection",
+      "source_ids": [],
+      "status": "planned",
+      "title": "Inspect the connection route",
+      "world_id": "observatory"
+    },
+    {
+      "evidence_state": "planned",
+      "objective": "Choose one bounded assistant or tool change, run its checks, and retain a human review before considering a release.",
+      "quest_id": "ai-building-cycle",
+      "source_ids": [],
+      "status": "planned",
+      "title": "Review one building cycle",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "planned",
+      "objective": "Review source labels, original asset rights, narration, captions and accessibility before considering any media publication.",
+      "quest_id": "media-review",
+      "source_ids": [],
+      "status": "planned",
+      "title": "Review the media draft",
+      "world_id": "archive"
+    }
+  ],
+  "scenes": [
+    {
+      "evidence_state": "fictional",
+      "scene_id": "opening",
+      "screen_text": "FICTIONAL SETTING · Archive / Forge / Observatory\nSelected project: Jarvis tools and assistant building",
+      "source_ids": [],
+      "title": "The command library opens",
+      "voiceover": "Original fictional setting; project records and plans retain their labels. Welcome. I'm Luma, your guide through the Lantern Archive, Copper Forge and Sky Observatory. Our selected project is Jarvis tools and assistant building. Come with me; we'll read the records, then choose the next page.",
+      "world_id": "archive"
+    },
+    {
+      "evidence_state": "source_linked",
+      "scene_id": "record-01",
+      "screen_text": "SOURCE-LINKED RECORD\nThe public diary milestone includes a browser workbench, local revision history and a compiler for local multimedia drafts.",
+      "source_ids": [
+        "milestone-commit"
+      ],
+      "title": "Diary record: diary-milestone",
+      "voiceover": "Source-linked record. From the diary: The public diary milestone includes a browser workbench, local revision history and a compiler for local multimedia drafts.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "source_linked",
+      "scene_id": "record-02",
+      "screen_text": "SOURCE-LINKED RECORD\nThe retained milestone checks record 232 passing Python tests and 123 passing JavaScript helper tests. The linked CI run completed successfully.",
+      "source_ids": [
+        "milestone-commit",
+        "milestone-ci"
+      ],
+      "title": "Diary record: retained-checks",
+      "voiceover": "Source-linked record. From the diary: The retained milestone checks record 232 passing Python tests and 123 passing JavaScript helper tests. The linked CI run completed successfully.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "planned",
+      "scene_id": "briefing",
+      "screen_text": "PLANNED · Attach the record to a dated review.\nCurrent news is not included.",
+      "source_ids": [],
+      "title": "Plan the dated briefing",
+      "voiceover": "Proposed briefing step. At the Observatory, place this dated record beside its sources and keep the labels in view. The project diary is our focus here; current news is not included in this pilot.",
+      "world_id": "observatory"
+    },
+    {
+      "evidence_state": "planned",
+      "scene_id": "revenue-experiment",
+      "screen_text": "PLANNED · Define one offer and a way to test interest.\nNo revenue result is claimed.",
+      "source_ids": [],
+      "title": "Plan one offer experiment",
+      "voiceover": "Proposed offer experiment. In the Forge, sketch one small learning or media offer. Who is it for, how would it be delivered, and what would help you judge interest? Keep the result open until you have evidence.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "planned",
+      "scene_id": "next-quests",
+      "screen_text": "PLANNED · Hostinger connection / AI-building cycle / media review\nNext: Review one small assistant-building change, confirm the permitted Hostinger connection route, and review t…",
+      "source_ids": [],
+      "title": "Three proposed quests",
+      "voiceover": "Three proposed quests await: inspect the Hostinger connection route, review one AI-building cycle, and review the media draft. The diary's next action is: Review one small assistant-building change, confirm the permitted Hostinger connection route, and review the next media draft.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "fictional",
+      "scene_id": "closing",
+      "screen_text": "FICTIONAL CLOSING · Keep the record. Review the plan.\nNo quest completion or publication is granted.",
+      "source_ids": [],
+      "title": "Leave a lantern for the next visit",
+      "voiceover": "In our fictional library, Luma places a lantern beside the unfinished page. The quests are still proposals; you choose what to try next. Bring back a reviewed record, and we'll open the next chapter together.",
+      "world_id": "archive"
+    }
+  ],
+  "schema_version": 1,
+  "source_context_revision": "76e7a538d7c1a3a113d57727f025a2c6b27ccf13",
+  "source_entry_sha256": "ff580d4fd8b08b477848315f342bbfeebbc05820f00909288663552045b822bd",
+  "source_visibility": "public_candidate",
+  "sources": [
+    {
+      "source_id": "milestone-commit",
+      "title": "Public diary and multimedia milestone source context",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/commit/76e7a538d7c1a3a113d57727f025a2c6b27ccf13"
+    },
+    {
+      "source_id": "milestone-ci",
+      "title": "Successful diary milestone CI run",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/actions/runs/39862842245"
+    }
+  ],
+  "timezone": "America/Los_Angeles",
+  "title": "Jarvis Diary: Lanterns for the Next Cycle",
+  "worlds": [
+    {
+      "description": "An original fictional command library for diary records, source references and creative editions.",
+      "title": "The Lantern Archive",
+      "world_id": "archive"
+    },
+    {
+      "description": "An original fictional workshop for proposed tools, learning projects and small experiments.",
+      "title": "The Copper Forge",
+      "world_id": "forge"
+    },
+    {
+      "description": "An original fictional lookout for reviewing access, evidence gaps and the next planned step.",
+      "title": "The Sky Observatory",
+      "world_id": "observatory"
+    }
+  ]
+}
