@@ -56,6 +56,14 @@ metadata after restart without changing the profile or its execution holds.
 Historical checkpoints still carry context only, never restored review authority.
 This adds no schema fields, authentication, automatic repair or release grant.
 
+Historical checkpoint reads also require the same immutable mission ID as the
+current context, including older revisions with otherwise valid bodies/digests.
+The save path already forbids changing that identity. Indexing, historical loads
+and checked backups reject drift after restart without rewriting the damaged
+history, changing current holds or publishing a backup. Valid older checkpoints
+remain readable; retain damaged source for investigation. This is consistency
+validation, not authentication or protection against rewriting the whole database.
+
 ## Writes, reviews and retrieval
 
 The CLI requires an existing database file for status, recovery, review and

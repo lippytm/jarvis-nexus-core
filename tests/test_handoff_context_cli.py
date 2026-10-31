@@ -485,6 +485,27 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "absent").exists())
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_backup_rejects_historical_mission_drift_without_repair_or_publication(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", "--handoff", "cli-task",
+            "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1").returncode, 0)
+        self.assertEqual(self.control(checksum).returncode, 0)
+        damaged = {**self.profile, "mission_id": "different-mission"}
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+                (json.dumps(damaged), digest(damaged), "cli-task"))
+        before = self.db.read_bytes()
+        result = self.cli("--read-only", "backup-ledger", "--out", "private/rejected.sqlite3")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertFalse((self.root / "private/rejected.sqlite3").exists())
+        self.assertFalse(list((self.root / "private").glob(".jarvis-backup-*")))
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            retained = ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=2, audience="owner_private")["profile"]
+        self.assertEqual(retained["control"]["state"], "paused")
+        self.assertEqual(retained["execution"]["state"], "outcome_unknown")
+
     def test_backup_preserves_opt_in_history_and_rejects_corrupt_checkpoint(self):
         checksum = json.loads(self.save().stdout)["context_sha256"]
         args = dict(expected_sha256=checksum, expected_source_revision=REVISION, expected_memory_revision=1)

@@ -281,6 +281,30 @@ class ContextTests(unittest.TestCase):
             self.ledger.list_checkpoints("mission-one")
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_historical_checkpoint_cannot_change_immutable_mission_after_restart(self):
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        current["execution"]["detail"] = "Later blocked checkpoint; retain hold."
+        self.ledger.save_context(current, expected_revision=1)
+        # Simulate damaged retained history with a self-consistent new digest.
+        damaged = {**self.profile, "mission_id": "different-mission"}
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+            (json.dumps(damaged), digest(damaged), "mission-one"))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        for operation in (lambda: self.ledger.list_checkpoints("mission-one"),
+                lambda: self.ledger.load_checkpoint("mission-one", 1,
+                    **{**args, "expected_sha256": digest(damaged)})):
+            with self.subTest(operation=operation), self.assertRaises(ValueError):
+                operation()
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
         saved = self.save()
         args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
