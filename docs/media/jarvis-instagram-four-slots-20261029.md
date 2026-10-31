@@ -2,8 +2,8 @@
 
 Status: **unpublished captions, card scripts and media specifications; owner review pending**.
 Four captions, twenty card scripts and twenty proposed alt descriptions are authored.
-Slots 1–2 now have ten editable SVG artwork candidates, locally rendered and inspected.
-Slots 3–4 artwork, final upload exports and videos remain unprepared. No Instagram
+Slots 1–3 now have fifteen editable SVG artwork candidates, locally rendered and inspected.
+Slot 4 artwork, final upload exports and videos remain unprepared. No Instagram
 account was accessed, no post scheduled and no content published.
 
 ## Provenance and scope
@@ -188,6 +188,27 @@ example”; no current availability or uptime value is shown.
 Reviewer source: [operational preflight and fallback](../CODEX_JARVIS_READINESS.md).
 This is an evidence distinction, not a claim about today's service status or reliability.
 
+### Slot 3 artwork candidates
+
+Five editable 1080 × 1080 SVG review cards retain the exact card text and proposed
+alt descriptions above: [opening](jarvis-instagram-slot3-card1-20261031.svg),
+[explanation](jarvis-instagram-slot3-card2-20261031.svg),
+[example](jarvis-instagram-slot3-card3-20261031.svg),
+[limitation](jarvis-instagram-slot3-card4-20261031.svg) and
+[question](jarvis-instagram-slot3-card5-20261031.svg).
+File, check runner and intended runtime appear as independent neutral rows, with
+no connecting arrows, online lights or automatic success progression. Card 3 is
+visibly labelled “Conceptual example.” SVG titles/descriptions, visible plain-text
+equivalents and unpublished-review labels retain the source limits.
+
+All five were locally rasterized with Inkscape 1.2.2 and individually inspected.
+Exact-text/required-label, XML/resource, font-wrap, PNG decode/dimension and 73 Python
+syntax checks passed. The [preparation receipt](../evidence/instagram-slot3-artwork-20261031.json)
+retains source/artifact/preview hashes and renderer warnings. PNGs are intermediate
+layout previews. This is no new service-status, outage, recovery or reliability
+observation. Final exports/mobile crop/accessibility/platform/account/destination/
+rights checks and owner exact-art/caption approval remain unfinished; no publication.
+
 ## Slot 4 — Bounded next step
 
 Post ID: jarvis-media-20261029.instagram.4
@@ -227,14 +248,14 @@ write, connected social account or owner release is established by this copy.
 
 ## Review and continuation
 
-All four captions and twenty text/alt-text pairs are authored. Slots 1–2 have ten locally
-rendered SVG review candidates. Slots 3–4 artwork, final exports/accessibility checks,
+All four captions and twenty text/alt-text pairs are authored. Slots 1–3 have fifteen locally
+rendered SVG review candidates. Slot 4 artwork, final exports/accessibility checks,
 asset-rights review, exact account/destination, owner
 approval and publication remain unfinished. Source links and the unverified candidate
 URL above are editorial review metadata, not instructions to append them to a post.
 
-Next bounded production step: review one exact slot-1 or slot-2 caption, five-card set
-and alt text, then confirm the destination and accessible export format. Slots 3–4
+Next bounded production step: review one exact slot-1, slot-2 or slot-3 caption, five-card
+set and alt text, then confirm the destination and accessible export format. Slot 4
 artwork remains unfinished. Any changed copy/art needs
 review of that revision. No engagement, attribution, cost or performance measurements
 exist for these drafts. This advances one channel's four-slot preparation target;
