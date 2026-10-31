@@ -236,6 +236,7 @@ def main(argv=None):
     checkpoint_load.add_argument("--out", required=True)
     checkpoint_index = commands.add_parser("list-checkpoints", help="Read one handoff's private history index without context text")
     checkpoint_index.add_argument("--handoff", required=True)
+    checkpoint_index.add_argument("--out", help="Save the private index without overwriting an existing file")
     context_review = commands.add_parser("review-context")
     context_review.add_argument("--handoff", required=True)
     context_review.add_argument("--reviewer", required=True)

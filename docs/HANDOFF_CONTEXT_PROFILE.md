@@ -238,6 +238,14 @@ a current observation, not a trusted digest source against a malicious database,
 an approval, a retry grant or a public export. Use its selectors with load-checkpoint
 and review the private historical record before any further action.
 
+To retain these selectors across an operator restart, append `--out private/index.json`.
+The optional output uses the existing private atomic no-overwrite JSON writer;
+without it, terminal output is unchanged. The command still opens the ledger read-only,
+does not migrate version 2 or release a paused/unknown-outcome hold, and saves only
+the same handoff-scoped metadata index, not context text or approval. Keep the file
+private and use a fresh filename; on an uncertain save outcome, inspect the existing
+file before retrying. These local files do not establish authenticated shared storage.
+
 `save_context(profile, expected_revision=0)` creates context for an existing
 handoff; later writes require the exact current local context revision.
 SQLite `BEGIN IMMEDIATE` serializes the compare-and-swap and update. Identical

@@ -431,6 +431,60 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli("list-checkpoints", "--handoff", "cli-task", database="absent/ledger.sqlite3").returncode, 1)
         self.assertFalse((self.root / "absent").exists())
 
+    def test_checkpoint_index_file_survives_restart_without_copying_private_context(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", "--handoff", "cli-task",
+            "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1").returncode, 0)
+        self.assertEqual(self.control(checksum).returncode, 0)
+        before = self.db.read_bytes()
+        observed = self.cli("list-checkpoints", "--handoff", "cli-task")
+        saved = self.cli("list-checkpoints", "--handoff", "cli-task", "--out", "private/index.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        self.assertEqual(json.loads(saved.stdout), {"saved": "private/index.json", "external_actions": 0})
+        path = self.root / "private/index.json"
+        index = json.loads(path.read_text())
+        self.assertEqual(index, json.loads(observed.stdout))
+        self.assertEqual(index["visibility"], "owner_private")
+        self.assertFalse(index["retry_authorized"])
+        self.assertEqual(index["checkpoints"][0]["execution_state"], "outcome_unknown")
+        self.assertNotIn("https://", path.read_text())
+        self.assertNotIn(self.profile["execution"]["detail"], path.read_text())
+        if os.name == "posix":
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        checkpoint = index["checkpoints"][0]
+        restored = self.cli("load-checkpoint", "--handoff", "cli-task", "--checkpoint-revision",
+            str(checkpoint["checkpoint_revision"]), "--digest", checkpoint["context_sha256"],
+            "--source-revision", checkpoint["source_revision"], "--memory-revision",
+            str(checkpoint["memory_revision"]), "--out", "private/history.json")
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            current = ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=2, audience="owner_private")
+        self.assertEqual(current["profile"]["control"]["state"], "paused")
+        self.assertEqual(current["profile"]["execution"]["state"], "outcome_unknown")
+
+    def test_checkpoint_index_file_guards_and_empty_legacy_history(self):
+        before = self.db.read_bytes()
+        empty = self.cli("--read-only", "list-checkpoints", "--handoff", "cli-task", "--out", "empty.json")
+        self.assertEqual(empty.returncode, 0, empty.stderr)
+        path = self.root / "empty.json"
+        original = path.read_bytes()
+        self.assertEqual(json.loads(original)["checkpoints"], [])
+        for extra in [("--out", "empty.json"), ("--out", "../escape.json")]:
+            rejected = self.cli("list-checkpoints", "--handoff", "cli-task", *extra)
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+        self.assertEqual(path.read_bytes(), original)
+        unknown = self.cli("list-checkpoints", "--handoff", "unknown-task", "--out", "unknown.json")
+        self.assertEqual(unknown.returncode, 1, unknown.stderr)
+        self.assertFalse((self.root / "unknown.json").exists())
+        missing = self.cli("list-checkpoints", "--handoff", "cli-task", "--out", "absent/index.json",
+            database="missing.sqlite3")
+        self.assertEqual(missing.returncode, 1, missing.stderr)
+        self.assertFalse((self.root / "missing.sqlite3").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_backup_preserves_opt_in_history_and_rejects_corrupt_checkpoint(self):
         checksum = json.loads(self.save().stdout)["context_sha256"]
         args = dict(expected_sha256=checksum, expected_source_revision=REVISION, expected_memory_revision=1)
