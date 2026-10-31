@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title description">
+<title id="title">Expected behavior is not an observed result. Retain the actual run before claiming success.</title><desc id="description">The expected behavior is retained edited text and an invalidated old review. An actual check and its receipt are still required.</desc>
+<rect width="1080" height="1080" fill="#edf2f5"/><rect width="1080" height="164" fill="#10283f"/>
+<g font-family="DejaVu Sans" fill="#10283f">
+<text x="72" y="61" font-size="23" fill="#b5dbe3" letter-spacing="2">AI JARVIS • REVIEW EXERCISE</text>
+<text x="72" y="121" font-size="37" fill="white">4 — Limitation</text>
+<text x="72" y="207" font-size="25">Synthetic example</text>
+<text x="72" y="280" font-size="50" font-weight="bold"><tspan x="72" dy="0">Expected behavior is not an</tspan><tspan x="72" dy="62">observed result. Retain the</tspan><tspan x="72" dy="62">actual run before claiming</tspan><tspan x="72" dy="62">success.</tspan></text>
+<rect x="72" y="525" width="936" height="120" rx="12" fill="#e4eef2"/><text x="96" y="572" font-size="27">Actual run receipt</text><path d="M96 606 H984" stroke="#7b98aa" stroke-width="3" stroke-dasharray="8 8"/><text x="72" y="690" font-size="28">Proposed exercise — not a new test receipt</text>
+<path d="M72 720 H1008" stroke="#b7c8d4" stroke-width="2"/>
+<text x="72" y="771" font-size="27" font-weight="normal"><tspan x="72" dy="0">The expected behavior is retained edited text and an invalidated old</tspan><tspan x="72" dy="38">review. An actual check and its receipt are still required.</tspan></text>
+<text x="72" y="970" font-size="25">REVIEW CANDIDATE • UNPUBLISHED</text>
+<text x="72" y="1020" font-size="22">Intergalactic Corporate Services LLC</text>
+<text x="940" y="1020" font-size="22">4 / 5</text>
+</g></svg>
