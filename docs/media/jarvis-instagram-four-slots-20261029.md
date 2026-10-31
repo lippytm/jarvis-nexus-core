@@ -2,7 +2,8 @@
 
 Status: **unpublished captions, card scripts and media specifications; owner review pending**.
 Four captions, twenty card scripts and twenty proposed alt descriptions are authored.
-No artwork, carousel upload or video has been rendered for this package. No Instagram
+Slot 1 now has five editable SVG artwork candidates, locally rendered and inspected.
+Slots 2–4 artwork, final upload exports and videos remain unprepared. No Instagram
 account was accessed, no post scheduled and no content published.
 
 ## Provenance and scope
@@ -70,6 +71,25 @@ not completed checkmarks. The last card has three equal-weight text choices.
 
 Reviewer source: [Codex readiness](../CODEX_JARVIS_READINESS.md). No current runtime
 availability, measured productivity gain or newly executed check is asserted here.
+
+### Slot 1 artwork candidates
+
+Five editable 1080 × 1080 SVG review cards retain the exact card text and proposed
+alt descriptions above: [opening](jarvis-instagram-slot1-card1-20261030.svg),
+[explanation](jarvis-instagram-slot1-card2-20261030.svg),
+[example](jarvis-instagram-slot1-card3-20261030.svg),
+[limitation](jarvis-instagram-slot1-card4-20261030.svg) and
+[question](jarvis-instagram-slot1-card5-20261030.svg).
+The original document/tab motifs use text and simple shapes; card 3 visibly says
+“Conceptual example.” Each includes an SVG title/description, visible plain-text
+equivalent and unpublished-review label, with no external assets or scripts.
+
+All five were rasterized with Inkscape 1.2.2 and individually inspected. Exact-text,
+XML/resource, font-width, PNG decode/dimension and 73 Python syntax checks passed.
+The [preparation receipt](../evidence/instagram-slot1-artwork-20261030.json) retains
+source/artifact/preview hashes and actual renderer warnings. PNGs are intermediate
+layout previews; no final upload package, mobile crop, screen-reader/alt-field
+support, account/destination, owner approval or publication has been verified.
 
 ## Slot 2 — Demonstrate
 
@@ -186,14 +206,15 @@ write, connected social account or owner release is established by this copy.
 
 ## Review and continuation
 
-All four captions and twenty text/alt-text pairs are authored. All carousel artwork,
-final accessibility checks, asset-rights review, exact account/destination, owner
+All four captions and twenty text/alt-text pairs are authored. Slot 1 has five locally
+rendered SVG review candidates. Slots 2–4 artwork, final exports/accessibility checks,
+asset-rights review, exact account/destination, owner
 approval and publication remain unfinished. Source links and the unverified candidate
 URL above are editorial review metadata, not instructions to append them to a post.
 
-Next bounded production step: review one exact caption and five-card set, then prepare
-an original visual candidate with retained source text, inspect its final layout and
-alt text, and keep its artifact for exact-revision review. Any changed copy/art needs
+Next bounded production step: review slot 1’s exact caption, five SVG candidates and
+alt text, then confirm the destination and accessible export format. Other slot artwork
+remains unfinished. Any changed copy/art needs
 review of that revision. No engagement, attribution, cost or performance measurements
 exist for these drafts. This advances one channel's four-slot preparation target;
 it does not establish 24 published posts, finished videos or a changed newsletter schedule.
