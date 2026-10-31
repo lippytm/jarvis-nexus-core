@@ -1,7 +1,7 @@
 # Facebook four-slot copy package — October 29, 2026
 
 Status: **unpublished copy and media specifications, pending owner review**.
-All four SVG source candidates have been locally rendered and inspected. Final upload files, owner review and destination/format checks remain unfinished. No posts scheduled or Facebook accounts accessed.
+All four SVG source candidates have been locally rendered and inspected. Four PNG export candidates are now retained for review; final accepted uploads, owner review and destination/platform checks remain unfinished. No posts scheduled or Facebook accounts accessed.
 
 ## Provenance and scope
 
@@ -15,6 +15,17 @@ All four SVG source candidates have been locally rendered and inspected. Final u
 - Candidate destination inherited from the source brief remains **unverified**: https://github.com/lippytm/jarvis-nexus-core?utm_source=facebook&utm_medium=organic&utm_campaign=jarvis-media-20261029.campaign . It is not included in the proposed public captions; confirm the destination and tracking policy before adding it.
 - Required review: factual claims/sources; exact account/audience/format/destination; accessibility and asset rights; applicable disclosures. Report actual outcomes separately from proposals. No funding or referral CTA applies here.
 - Local execution was blocked during the original copy preparation, which used the authorized GitHub development fallback. A later actual command probe and local rendering succeeded for the slot-1 artwork at input revision dc54aeb6cbe49ed47f6cc831dc1d0e1dd713a48d; neither observation establishes continuous availability.
+
+## PNG export candidates
+
+These four opaque 1200 × 1200 PNG files are retained derivatives of the unchanged SVG sources at input revision 099cae013b7152c082d99e4ce16a58af41576b7a. They are review candidates, not approved uploads or platform-acceptance evidence. Full PNG decode, dimensions, opacity, metadata and assistant visual checks passed. The only PNG text metadata is `Software=www.inkscape.org`; no animation chunk is present. [Export receipt](../evidence/facebook-png-exports-20261030.json) binds each source/output hash, caption and proposed alt-text hash. No caption, alt text or source art was changed. Assign the reviewed alt text through an authorized platform flow if publication is later approved; the PNG alone does not establish accessible publication.
+
+| Slot | Retained PNG candidate | Editable source |
+|---|---|---|
+| 1 — Explain | [PNG](exports/facebook-20261029/slot-1.png) | [SVG](jarvis-facebook-slot1-20261029.svg) |
+| 2 — Demonstrate | [PNG](exports/facebook-20261029/slot-2.png) | [SVG](jarvis-facebook-slot2-20261029.svg) |
+| 3 — Limits | [PNG](exports/facebook-20261029/slot-3.png) | [SVG](jarvis-facebook-slot3-20261029.svg) |
+| 4 — Bounded next step | [PNG](exports/facebook-20261029/slot-4.png) | [SVG](jarvis-facebook-slot4-20261029.svg) |
 
 ## Slot 1 — Explain
 
@@ -134,10 +145,10 @@ Evidence note: suggested workflow only; no automatic dispatch, authenticated rev
 
 ## Review and production checkpoint
 
-All four captions and alt-text drafts are authored; all four editable SVG source candidates have local rendering and assistant layout-inspection evidence. Final upload exports remain unprepared.
+All four captions and alt-text drafts are authored; all four editable SVG sources and PNG export candidates have local rendering and assistant layout-inspection evidence. Final accepted upload files remain unverified.
 The owner has not approved the copy, destination, final artwork or publication.
 No actual audience results, click attribution, costs or performance have been measured.
 
-Next bounded production step: review one exact illustration/caption set and destination, then prepare and check its final upload format, alternative text, rights and mobile legibility. Local SVG rendering does not establish those acceptance checks. Any later copy or asset edit needs review of the changed revision. An authorized publishing adapter or manual account action would require separate explicit release authorization.
+Next bounded production step: review one exact PNG/caption/alt-text set and destination, then verify applicable account/format, rights, accessibility and mobile-legibility requirements before any release. Local decoding and rendering do not establish platform acceptance. Any later copy or asset edit needs review of the changed revision. An authorized publishing adapter or manual account action would require separate explicit release authorization.
 
 These four Facebook drafts contribute to one channel's four-slot target. They do not complete the other five channels or establish a 24-post published day. Existing YouTube preparation remains a separate unfinished media package.
