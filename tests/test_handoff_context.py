@@ -578,6 +578,18 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(len(self.ledger.status()["handoffs"]), 1)
         self.assertEqual(self.ledger.status()["return_count"], 1)
 
+    def test_context_export_rejects_damaged_context_reviewer_after_restart(self):
+        saved = self.approve()
+        for reviewer in (None, "memory-pilot.builder", "../reviewer"):
+            with self.subTest(reviewer=reviewer):
+                self.ledger.db.execute("UPDATE handoff_contexts SET reviewer_id=? WHERE handoff_id='mission-one'", (reviewer,))
+                self.ledger.close()
+                self.ledger = HandoffLedger(self.path)
+                before = tuple(self.ledger.db.iterdump())
+                with self.assertRaisesRegex(ValueError, "review"):
+                    self.export(saved["context_sha256"])
+                self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
     def test_context_export_rejects_damaged_original_reviewer_after_restart(self):
         saved = self.approve()
         for reviewer in (None, "memory-pilot.builder", "../reviewer"):

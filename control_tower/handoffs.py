@@ -358,6 +358,13 @@ class HandoffLedger:
             raise ValueError("stored context is invalid") from None
         if digest(profile) != row["digest"] or type(row["revision"]) is not int or row["revision"] < 1:
             raise ValueError("stored context integrity mismatch")
+        if row["reviewer_id"] is None:
+            if row["reviewed_digest"] is not None:
+                raise ValueError("stored context has incomplete review binding")
+        else:
+            require_identifier(row["reviewer_id"], "stored context reviewer label")
+            if row["reviewer_id"] == profile["asset_id"] or row["reviewed_digest"] != row["digest"]:
+                raise ValueError("stored context review binding mismatch")
         return row, profile
 
     def _checkpoint(self, handoff_id, revision):

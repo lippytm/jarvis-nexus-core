@@ -48,6 +48,14 @@ checked-backup publication, including after restart. Valid old records and packe
 schemas remain unchanged. These consistency checks do not authenticate the label,
 grant owner approval, repair damaged records or release an execution hold.
 
+The separate current context review has the same consistency boundary: reviewer
+and reviewed digest are both absent for a proposal, or a valid label distinct
+from the context asset reviews its exact current digest. Shared context reads,
+envelope exports and checked backups reject partial, stale or same-asset review
+metadata after restart without changing the profile or its execution holds.
+Historical checkpoints still carry context only, never restored review authority.
+This adds no schema fields, authentication, automatic repair or release grant.
+
 ## Writes, reviews and retrieval
 
 The CLI requires an existing database file for status, recovery, review and

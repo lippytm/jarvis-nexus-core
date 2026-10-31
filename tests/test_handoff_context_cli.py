@@ -815,6 +815,26 @@ class ContextCLITests(unittest.TestCase):
                 self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
                 self.assertEqual(self.db.read_bytes(), before)
 
+    def test_backup_rejects_inconsistent_context_review_bindings_without_publication(self):
+        self.controlled(execution="outcome_unknown")
+        with HandoffLedger(self.db) as ledger:
+            checksum = ledger._context("cli-task")[0]["digest"]
+        cases = [(None, checksum), ("cli-pilot.builder", checksum), ("../reviewer", checksum),
+                 ("local-reviewer", "0" * 64), ("local-reviewer", None)]
+        for index, (reviewer, reviewed) in enumerate(cases):
+            with self.subTest(reviewer=reviewer, reviewed=reviewed):
+                with HandoffLedger(self.db) as ledger:
+                    ledger.db.execute("UPDATE handoff_contexts SET reviewer_id=?,reviewed_digest=? WHERE handoff_id='cli-task'",
+                                      (reviewer, reviewed))
+                before = self.db.read_bytes()
+                output = f"invalid-context-review-{index}.sqlite3"
+                result = self.cli("backup-ledger", "--out", output)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertIn("review", result.stderr)
+                self.assertFalse((self.root / output).exists())
+                self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+                self.assertEqual(self.db.read_bytes(), before)
+
     def test_backup_rejects_inconsistent_review_bindings_without_publication(self):
         checksum = self.profile["handoff_sha256"]
         cases = [("reviewed", None, checksum), ("reviewed", "cli-pilot.builder", checksum),
