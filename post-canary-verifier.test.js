@@ -10,11 +10,32 @@ function base() {
     security_or_privacy_violation: false,
     rollback_verified: true,
     post_canary_verification_complete: true,
-    evidence_completeness: 95
+    evidence_completeness: 95,
+    drift_class: 'NO_DRIFT'
   };
 }
 
 assert.strictEqual(recommendPostCanaryAction(base()).recommendation, 'CONTINUE');
+assert.strictEqual(
+  recommendPostCanaryAction({ ...base(), drift_class: 'IMPROVEMENT' }).recommendation,
+  'CONTINUE'
+);
+assert.strictEqual(
+  recommendPostCanaryAction({ ...base(), drift_class: 'ACCEPTABLE_DRIFT' }).recommendation,
+  'CONTINUE'
+);
+assert.strictEqual(
+  recommendPostCanaryAction({ ...base(), drift_class: 'MATERIAL_DRIFT' }).recommendation,
+  'ROLLBACK'
+);
+assert.strictEqual(
+  recommendPostCanaryAction({ ...base(), drift_class: 'CRITICAL_DRIFT' }).recommendation,
+  'ROLLBACK'
+);
+assert.strictEqual(
+  recommendPostCanaryAction({ ...base(), drift_class: 'INSUFFICIENT_DATA' }).recommendation,
+  'HOLD'
+);
 assert.strictEqual(
   recommendPostCanaryAction({ ...base(), security_or_privacy_violation: true }).recommendation,
   'ESCALATE'
