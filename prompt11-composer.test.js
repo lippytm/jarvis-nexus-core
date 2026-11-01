@@ -73,4 +73,26 @@ assert.throws(
   /at least one/
 );
 
+const sparse = new Array(1);
+assert.throws(
+  () => composePrompt11Package({
+    composition_id: 'CMP-TEST-005',
+    task_class: 'software-engineering',
+    target_role: 'jarvis',
+    modules: sparse
+  }),
+  /index 0 is missing/
+);
+
+const partlySparse = [modules[0], , modules[1]];
+assert.throws(
+  () => composePrompt11Package({
+    composition_id: 'CMP-TEST-006',
+    task_class: 'software-engineering',
+    target_role: 'jarvis',
+    modules: partlySparse
+  }),
+  /index 1 is missing/
+);
+
 console.log('Prompt #11 composer tests passed');
