@@ -1,0 +1,13 @@
+{
+  "policy_id": "P11-PEE-001-JARVIS-ADAPTER-v0.1",
+  "canonical_repository": "lippytm/Prompt-11-",
+  "allowed_states": ["approved"],
+  "require_human_approval": true,
+  "reference_only": true,
+  "production_injection_enabled": false,
+  "notes": [
+    "Fail closed when Prompt #11 approval metadata is absent or incomplete.",
+    "Do not fetch or inject remote prompt content in v0.1.",
+    "Do not change Jarvis-Hub or Jarvis-Flow runtime behavior until tests, evidence, and owner review are complete."
+  ]
+}
