@@ -1,6 +1,7 @@
 'use strict';
 
 const SEVERITY_RANK = Object.freeze({ low: 1, medium: 2, high: 3, critical: 4 });
+const ERROR_STATES = Object.freeze(new Set(['PASS','WARN','BLOCK','ESCALATE']));
 
 function requireObject(value, field) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -51,6 +52,11 @@ function scoreControlTower(packet) {
     throw new Error('Control Tower evidence completeness must be an integer from 0 to 100');
   }
 
+  const errorBarrierState = packet.error_barrier_state || 'PASS';
+  if (!ERROR_STATES.has(errorBarrierState)) {
+    throw new Error('Unknown error barrier state');
+  }
+
   const failedGate = hasFailedCriticalGate(packet.critical_gates);
   const maxRisk = unresolvedMaxSeverity(packet.risks);
   const failedRegression = hasFailedRequiredRegression(packet.regressions);
@@ -60,18 +66,24 @@ function scoreControlTower(packet) {
 
   let state = 'GREEN';
 
-  if (failedGate || maxRisk >= SEVERITY_RANK.critical) {
+  if (
+    failedGate ||
+    maxRisk >= SEVERITY_RANK.critical ||
+    errorBarrierState === 'ESCALATE'
+  ) {
     state = 'RED';
   } else if (
     maxRisk >= SEVERITY_RANK.high ||
     failedRegression ||
     rollbackMissing ||
-    bestPracticeBlocked
+    bestPracticeBlocked ||
+    errorBarrierState === 'BLOCK'
   ) {
     state = 'ORANGE';
   } else if (
     evidence < 90 ||
     numericScore < 90 ||
+    errorBarrierState === 'WARN' ||
     (Array.isArray(packet.model_disagreements) && packet.model_disagreements.length > 0)
   ) {
     state = 'YELLOW';
@@ -86,6 +98,7 @@ function scoreControlTower(packet) {
     traffic_light: state,
     best_practice_score: numericScore,
     evidence_completeness: evidence,
+    error_barrier_state: errorBarrierState,
     failed_critical_gate: failedGate,
     unresolved_max_risk_rank: maxRisk,
     failed_required_regression: failedRegression,
