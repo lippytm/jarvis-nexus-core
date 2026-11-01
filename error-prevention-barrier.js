@@ -6,7 +6,7 @@ const SENSITIVE_CLASSES = new Set([
   'RECOVERY_ERROR'
 ]);
 
-function evaluateBarrier(check) {
+function evaluateErrorBarrier(check) {
   if (!check || typeof check !== 'object' || Array.isArray(check)) {
     throw new Error('check object required');
   }
@@ -68,4 +68,6 @@ function evaluateBarrier(check) {
   });
 }
 
-module.exports = { evaluateBarrier };
+const evaluateBarrier = evaluateErrorBarrier;
+
+module.exports = { evaluateErrorBarrier, evaluateBarrier };
