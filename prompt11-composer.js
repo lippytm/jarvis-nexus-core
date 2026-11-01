@@ -27,6 +27,11 @@ function composePrompt11Package({ composition_id, task_class, target_role, modul
   if (!Array.isArray(modules) || modules.length === 0) {
     throw new Error('Prompt #11 composition requires at least one validated module');
   }
+  for (let i = 0; i < modules.length; i += 1) {
+    if (!Object.prototype.hasOwnProperty.call(modules, i)) {
+      throw new Error(`Prompt #11 composition module at index ${i} is missing`);
+    }
+  }
 
   const seen = new Set();
   const frozenModules = modules.map((module, index) => {
