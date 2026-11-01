@@ -25,6 +25,11 @@ function recommendPostCanaryAction(input) {
     throw new Error('evidence_completeness must be an integer from 0 to 100');
   }
 
+  const drift = input.drift_class || 'NO_DRIFT';
+  if (!['NO_DRIFT','IMPROVEMENT','ACCEPTABLE_DRIFT','MATERIAL_DRIFT','CRITICAL_DRIFT','INSUFFICIENT_DATA'].includes(drift)) {
+    throw new Error('invalid drift_class');
+  }
+
   let recommendation = 'HOLD';
   let rationale = 'Further evidence or verification is required.';
 
@@ -34,23 +39,30 @@ function recommendPostCanaryAction(input) {
   } else if (!rollbackVerified) {
     recommendation = 'ESCALATE';
     rationale = 'Rollback verification failed or is unavailable.';
-  } else if (criticalErrors > 0) {
+  } else if (criticalErrors > 0 || drift === 'CRITICAL_DRIFT') {
     recommendation = 'ROLLBACK';
-    rationale = 'Critical errors require rollback recommendation.';
-  } else if (highRegressions > 0) {
+    rationale = 'Critical error or critical drift requires rollback recommendation.';
+  } else if (highRegressions > 0 || drift === 'MATERIAL_DRIFT') {
     recommendation = 'ROLLBACK';
-    rationale = 'High-severity regression requires rollback recommendation.';
-  } else if (!verificationComplete || input.evidence_completeness < 90) {
+    rationale = 'High-severity regression or material drift requires rollback recommendation.';
+  } else if (
+    !verificationComplete ||
+    input.evidence_completeness < 90 ||
+    drift === 'INSUFFICIENT_DATA'
+  ) {
     recommendation = 'HOLD';
-    rationale = 'Post-canary verification or evidence is incomplete.';
+    rationale = 'Post-canary verification, evidence, or telemetry data is incomplete.';
   } else {
     recommendation = 'CONTINUE';
-    rationale = 'Required post-canary checks pass.';
+    rationale = drift === 'IMPROVEMENT'
+      ? 'Verified candidate improvement with required checks passing.'
+      : 'Required post-canary checks pass without blocking drift.';
   }
 
   return Object.freeze({
     recommendation,
     rationale,
+    drift_class: drift,
     owner_review_required: true,
     executes_rollback: false,
     production_activation: false
