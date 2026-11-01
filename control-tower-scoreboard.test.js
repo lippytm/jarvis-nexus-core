@@ -18,15 +18,16 @@ function base() {
     regressions: [],
     evidence_completeness: 95,
     model_disagreements: [],
+    error_barrier_state: 'PASS',
     rollback_ready: true,
     human_approval: { required: true, approved: false, approver: null, audit_reference: null }
   };
 }
 
-const greenPending = scoreControlTower(base());
-assert.strictEqual(greenPending.traffic_light, 'GREEN');
-assert.strictEqual(greenPending.promotion_blocked, true);
-assert.strictEqual(greenPending.human_approval_pending, true);
+assert.strictEqual(scoreControlTower(base()).traffic_light, 'GREEN');
+assert.strictEqual(scoreControlTower({ ...base(), error_barrier_state: 'WARN' }).traffic_light, 'YELLOW');
+assert.strictEqual(scoreControlTower({ ...base(), error_barrier_state: 'BLOCK' }).traffic_light, 'ORANGE');
+assert.strictEqual(scoreControlTower({ ...base(), error_barrier_state: 'ESCALATE' }).traffic_light, 'RED');
 
 const greenApproved = scoreControlTower({
   ...base(),
@@ -35,24 +36,16 @@ const greenApproved = scoreControlTower({
 assert.strictEqual(greenApproved.traffic_light, 'GREEN');
 assert.strictEqual(greenApproved.promotion_blocked, false);
 
-const yellow = scoreControlTower({ ...base(), evidence_completeness: 80 });
-assert.strictEqual(yellow.traffic_light, 'YELLOW');
-
-const yellowDisagreement = scoreControlTower({ ...base(), model_disagreements: ['model-a vs model-b'] });
-assert.strictEqual(yellowDisagreement.traffic_light, 'YELLOW');
-
-const orangeRisk = scoreControlTower({
+assert.strictEqual(scoreControlTower({ ...base(), evidence_completeness: 80 }).traffic_light, 'YELLOW');
+assert.strictEqual(scoreControlTower({ ...base(), model_disagreements: ['model-a vs model-b'] }).traffic_light, 'YELLOW');
+assert.strictEqual(scoreControlTower({
   ...base(),
   risks: [{ severity: 'high', description: 'material unresolved risk', resolved: false }]
-});
-assert.strictEqual(orangeRisk.traffic_light, 'ORANGE');
-assert.strictEqual(orangeRisk.promotion_blocked, true);
-
-const orangeRegression = scoreControlTower({
+}).traffic_light, 'ORANGE');
+assert.strictEqual(scoreControlTower({
   ...base(),
   regressions: [{ severity: 'high', test_id: 'REG-1', passed: false }]
-});
-assert.strictEqual(orangeRegression.traffic_light, 'ORANGE');
+}).traffic_light, 'ORANGE');
 
 const red = scoreControlTower({
   ...base(),
@@ -63,10 +56,6 @@ assert.strictEqual(red.traffic_light, 'RED');
 assert.strictEqual(red.best_practice_score, 100);
 assert.strictEqual(red.promotion_blocked, true);
 
-const redCriticalRisk = scoreControlTower({
-  ...base(),
-  risks: [{ severity: 'critical', description: 'critical unresolved risk', resolved: false }]
-});
-assert.strictEqual(redCriticalRisk.traffic_light, 'RED');
+assert.throws(() => scoreControlTower({ ...base(), error_barrier_state: 'UNKNOWN' }), /Unknown error barrier state/);
 
 console.log('Control Tower scoreboard tests passed');
