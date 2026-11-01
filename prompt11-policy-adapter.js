@@ -10,8 +10,15 @@ function loadPolicy(policyPath = DEFAULT_POLICY_PATH) {
   return JSON.parse(raw);
 }
 
+function requireNonEmptyString(value, field) {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    throw new Error(`Prompt #11 module field must be a nonempty string: ${field}`);
+  }
+  return value.trim();
+}
+
 function validatePrompt11Module(moduleRecord, policy = loadPolicy()) {
-  if (!moduleRecord || typeof moduleRecord !== 'object') {
+  if (!moduleRecord || typeof moduleRecord !== 'object' || Array.isArray(moduleRecord)) {
     throw new Error('Prompt #11 module record is required');
   }
 
@@ -22,30 +29,48 @@ function validatePrompt11Module(moduleRecord, policy = loadPolicy()) {
     }
   }
 
-  if (moduleRecord.source_repo !== policy.canonical_repository) {
+  const moduleId = requireNonEmptyString(moduleRecord.module_id, 'module_id');
+  const version = requireNonEmptyString(moduleRecord.version, 'version');
+  const state = requireNonEmptyString(moduleRecord.state, 'state');
+  const sourceRepo = requireNonEmptyString(moduleRecord.source_repo, 'source_repo');
+  const sourcePath = requireNonEmptyString(moduleRecord.source_path, 'source_path');
+
+  let sourceRef = null;
+  if (moduleRecord.source_ref !== undefined && moduleRecord.source_ref !== null) {
+    sourceRef = requireNonEmptyString(moduleRecord.source_ref, 'source_ref');
+  }
+
+  if (sourceRepo !== policy.canonical_repository) {
     throw new Error('Prompt #11 module source repository is not canonical');
   }
 
-  if (!policy.allowed_states.includes(moduleRecord.state)) {
-    throw new Error(`Prompt #11 module state is not consumable: ${moduleRecord.state}`);
+  if (!Array.isArray(policy.allowed_states) || !policy.allowed_states.includes(state)) {
+    throw new Error(`Prompt #11 module state is not consumable: ${state}`);
   }
 
+  if (!moduleRecord.human_approval || typeof moduleRecord.human_approval !== 'object' || Array.isArray(moduleRecord.human_approval)) {
+    throw new Error('Prompt #11 human approval record is required');
+  }
+
+  let approver = null;
+  let auditReference = null;
+
   if (policy.require_human_approval) {
-    if (!moduleRecord.human_approval || moduleRecord.human_approval.approved !== true) {
+    if (moduleRecord.human_approval.approved !== true) {
       throw new Error('Prompt #11 module has not passed HumanApprovalGate');
     }
-    if (!moduleRecord.human_approval.approver || !moduleRecord.human_approval.audit_reference) {
-      throw new Error('Prompt #11 human approval evidence is incomplete');
-    }
+    approver = requireNonEmptyString(moduleRecord.human_approval.approver, 'human_approval.approver');
+    auditReference = requireNonEmptyString(moduleRecord.human_approval.audit_reference, 'human_approval.audit_reference');
   }
 
   return Object.freeze({
-    module_id: moduleRecord.module_id,
-    version: moduleRecord.version,
-    source_repo: moduleRecord.source_repo,
-    source_path: moduleRecord.source_path,
-    source_ref: moduleRecord.source_ref || null,
-    approval_audit_reference: moduleRecord.human_approval.audit_reference
+    module_id: moduleId,
+    version,
+    source_repo: sourceRepo,
+    source_path: sourcePath,
+    source_ref: sourceRef,
+    approval_audit_reference: auditReference,
+    approver
   });
 }
 
