@@ -109,3 +109,34 @@ Prompt #11 composer tests passed
 ## Next bounded engineering step
 
 Build P11-PEE-004 as five isolated Quantum Question AI sandboxes, each with its own objective, allowed operations, evidence outputs, stop conditions, and handoff contract. Keep all five inactive and non-deploying until deterministic validation is complete.
+
+
+## P11-PEE-004 Quantum Sandbox validation
+
+Source:
+- `quantum-sandbox-router.js`
+- `quantum-sandbox-router.test.js`
+
+Combined local validation:
+- Node syntax check: adapter — PASS
+- Node syntax check: composer — PASS
+- Node syntax check: Quantum sandbox router — PASS
+- Prompt #11 adapter tests — PASS
+- Prompt #11 composer tests — PASS
+- Quantum sandbox router tests — PASS
+
+Quantum sandbox behaviors verified:
+- exactly five canonical sandboxes are registered;
+- IF hands off to MAYBE;
+- MAYBE, WHY_NOT, and DONT_DO_THAT remain non-production;
+- unknown sandbox names are rejected;
+- the I_TOLD_YOU_NOT_TO_DO_THAT sandbox requires an explicit incident/failure-review flag;
+- failure packets require a regression response;
+- sandbox packets remain inactive and require human approval for later activation.
+
+Local SHA-256:
+- adapter source: `eecad6d2cf0d69b9b5d0cc9ca97e479f28d9f5d4f71309db83e7d04774b1b9d7`
+- composer source: `a9464b18d09ddb94566de19fd6544f7de0b460afb12e379e1d2ebd7b7dd82f19`
+- Quantum sandbox router source: `e56019ef407248460178397d3fa812c11ab865098b0baeb97212461cd276f0fb`
+
+These local hashes describe the tested materialized sources. They do not establish authorship, deployment, or production activation.
