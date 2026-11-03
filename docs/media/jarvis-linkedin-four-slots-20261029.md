@@ -3,7 +3,7 @@
 Status: **unpublished captions and slide specifications, pending owner review**.
 Four captions and sixteen slide scripts are authored below. All four slots have sixteen
 editable SVG review cards, locally rasterized and inspected. The
-slot-1, slot-2 and slot-3 PDF export candidates are retained; slot 4 export remains unprepared.
+all four PDF export candidates are retained for review.
 No LinkedIn account was accessed
 and no posts were scheduled or published.
 
@@ -34,7 +34,7 @@ the equivalent explains the entire slide without relying on its appearance.
 The per-post visual description is proposed accessibility copy for the final
 artwork. Review it against the rendered result. Decide the actual accessible
 upload format only after checking the authorized destination's capabilities.
-Three PDF candidates (slots 1–3) have passed local page/text/font/render checks. All are
+Four PDF candidates (slots 1–4) have passed local page/text/font/render checks. All are
 untagged; alternative-text field support, screen-reader behavior and platform
 acceptance remain unverified.
 
@@ -321,12 +321,27 @@ not retained final upload files. No operational mission was executed, released o
 retried. Owner review, destination and final accessibility/format checks remain
 pending; no final PDF, platform upload or screen-reader behavior was verified.
 
+### Slot 4 PDF export candidate
+
+The [four-page PDF](exports/linkedin-20261029/slot-4.pdf) retains the unchanged SVG
+cards in order, including draft-only/unpublished labels and the empty review-decision
+field. Four 900 × 900-point pages have embedded fonts and selectable text. All four
+1200 × 1200 page renders were individually inspected. The
+[export receipt](../evidence/linkedin-slot4-pdf-export-20261103.json) records exact
+source/PDF/preview hashes and actual checks. No source card or copy was changed.
+
+The PDF is **untagged**. Text, font and visual checks do not establish accessible
+reading order, screen-reader behavior or LinkedIn acceptance. Exact caption/art
+owner review, destination, rights and accessible upload format remain pending.
+This export does not perform the proposed exercise or an operational handoff;
+no platform account was accessed and no content was published.
+
 ## Review and continuation
 
 All four captions, sixteen slide scripts, plain-text equivalents and four
 proposed visual descriptions are authored. All sixteen SVG cards are prepared and locally
-rendered for review. Slots 1–3 also have locally checked PDF export candidates;
-slot 4 export remains unprepared. Final accessibility
+rendered for review. All four slots also have locally checked PDF export candidates.
+Final accessibility
 checks, rights review, owner approval, destination confirmation and publication
 remain unfinished. Editorial source links above are reviewer references; do not
 automatically append internal review notes or the unverified candidate URL to a post.
@@ -338,7 +353,7 @@ audience, attribution, cost or time-saving measurements exist for these drafts.
 
 Next bounded production step: review one exact PDF candidate and its unchanged caption,
 confirm the destination and accessible upload format, and resolve the untagged-PDF
-limitation before release. Other slot exports remain separate unfinished work.
+limitation before release. Other channels retain their separate unfinished work.
 That step remains separate from authorizing publication. This package advances
 LinkedIn's four-slot preparation target; it does not complete the remaining
 channels, establish 24 published posts, or change a newsletter schedule.

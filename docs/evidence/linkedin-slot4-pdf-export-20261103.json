@@ -1,0 +1,109 @@
+{
+  "account_access_verified": false,
+  "assembler": "pypdf 6.10.0",
+  "channel": "linkedin",
+  "checks": {
+    "bytes": 78689,
+    "checks": [
+      {
+        "all_extracted_word_bounds_inside_page": true,
+        "extracted_text_sha256": "b2a3db8f1b9cbef1e4ef7bcc99741cd0942700657f40943b093d0db1cbbf11ea",
+        "preview_sha256": "d7a628e397929c406cabc3283bee65905ceb7c0561d072a545f6e2a2bad33742",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:8): WARNING **: 16:34:19.223: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 1,
+        "source": "docs/media/jarvis-linkedin-slot4-slide1-20261029.svg",
+        "source_sha256": "058fba9ccdac8750dc1527f62e60ea115aacb78d530533295046db06cfc9f7ca"
+      },
+      {
+        "all_extracted_word_bounds_inside_page": true,
+        "extracted_text_sha256": "a44591808b5f63157462f8dc73ae086aac36f9ed8ba96bbb6827c02b85e2c546",
+        "preview_sha256": "1d43ee21cbdc7f0ba65298cce815da73d053bd6a17bcdce0fa59124d9fec01e7",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:16): WARNING **: 16:34:19.567: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 2,
+        "source": "docs/media/jarvis-linkedin-slot4-slide2-20261029.svg",
+        "source_sha256": "38ca7c1d00e6e8ab7dee6bafdf5e0fa72b6ca942ddfabc72080e2e374bbecf0e"
+      },
+      {
+        "all_extracted_word_bounds_inside_page": true,
+        "extracted_text_sha256": "ab4abc267a28466fda5f5d01fa15ae379c2d6d2f3a87a3f44c580a212f00582c",
+        "preview_sha256": "cfcfc4aa0d3bd663a4bcf64a2ff633c94972bf1075736bbd5dc48d2a7cc55c33",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:24): WARNING **: 16:34:19.955: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 3,
+        "source": "docs/media/jarvis-linkedin-slot4-slide3-20261029.svg",
+        "source_sha256": "082c0e0c989692f79fdff8d59a6df32aedba78dcbdf039d55c39f8719ae7803d"
+      },
+      {
+        "all_extracted_word_bounds_inside_page": true,
+        "extracted_text_sha256": "c24fac115b9cc86d737d769d99c0699933204016185c5522c2bd03027812df1b",
+        "preview_sha256": "2337a2698d4453b662b9f431963382ec5181816baf504bb2d069fbe68c114d59",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:32): WARNING **: 16:34:20.287: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 4,
+        "source": "docs/media/jarvis-linkedin-slot4-slide4-20261029.svg",
+        "source_sha256": "4023cbfc64bb771b84b40f8d4cd92aaa6d841ee4621ea6bdd061d10841a94380"
+      }
+    ],
+    "font_report": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nSUFONI+DejaVuSans                    TrueType          WinAnsi          yes yes yes      7  0\nWBEBSM+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     11  0\nILKJZY+DejaVuSans-Bold               CID TrueType      Identity-H       yes yes yes     15  0\nVYJTSO+DejaVuSans                    CID TrueType      Identity-H       yes yes yes     20  0\nWDINZS+DejaVuSans                    TrueType          WinAnsi          yes yes yes     28  0\nHSLYVM+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     32  0\nDFYSZE+DejaVuSans                    TrueType          WinAnsi          yes yes yes     39  0\nFFYIBK+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     43  0\nKJTCEK+DejaVuSans                    TrueType          WinAnsi          yes yes yes     50  0\nMWIAER+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     54  0\n",
+    "language": "en-US",
+    "page_size_points": [
+      900,
+      900
+    ],
+    "pages": 4,
+    "pdf": "docs/media/exports/linkedin-20261029/slot-4.pdf",
+    "pdf_sha256": "eacb00fd35982a217fc0f69ccedd27b65c4436bb9e8b178efeb91a34fa0627b3",
+    "render_exit_code": 0,
+    "screen_reader_or_platform_compatibility": "not_verified",
+    "tagged": false,
+    "text_comparison": "Every visible source SVG text span retained after NFKC/whitespace normalization; all draft/unpublished labels and empty review-decision field retained."
+  },
+  "costs_measured": false,
+  "duplicate_final_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "export_method": "Each unchanged SVG exported once; pypdf assembled pages in order 1..4 with review metadata and en-US language.",
+  "failed_preparation_attempts": 1,
+  "guide_sha256": "0e6442eec59ef231832b763353077600ce760d84bd2303581625ac8266f064f0",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "ad38022c1a05e1836664c9b9686b7377518e2f62",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Review an exact PDF/caption and confirm accessible destination/format before any release; authenticated private configuration requires a real scoped save/read receipt.",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.linkedin.4",
+  "preparation_note": "Initial guide/receipt script imported the wrong module path and stopped before writing files. Corrected to existing control_tower.network_contract; original PDF retained without regeneration.",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "cc6cc7a84c9516739d5b2df0da206dcf97bd2f877dfd32eeb2a0075e5aef3fda",
+  "recovery_time_measured": false,
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "repository_delivery": {
+    "attempted_operation": "create_blob",
+    "branch_update_attempted": false,
+    "commit_created": false,
+    "expected_blob_sha": "909228d9b1e9800aecf19ca3410dca209b70d393",
+    "new_ci_claimed": false,
+    "next_action": "Reconcile approval/write receipt and current branch before any new write; reuse exact retained candidate instead of regenerating.",
+    "reconciliation": "fetch_blob with blob_sha returned HTTP 404; first read used incorrect sha parameter and was rejected by schema",
+    "response_retention_error": "structuredContent absent or unusable; store rejected undefined value, original response not retained",
+    "state": "write_outcome_unconfirmed"
+  },
+  "review_effort_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "local_unpublished_pdf_export_candidate_checks",
+  "slot_4_copy_sha256": "88cbac7e59d76cb99e5b7f30d6c4b8b13981c2b230e4dd8233aeb00d4e96d3b8",
+  "source_art_captions_plain_text_visual_descriptions_unchanged": true,
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a",
+  "visual_review": "Assistant individually inspected all four final page renders: legible text, no observed clipping or overlaps; empty review-decision field retained. Not independent human review."
+}
