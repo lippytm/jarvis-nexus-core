@@ -1,0 +1,94 @@
+{
+  "account_access_verified": false,
+  "assembler": "pypdf 6.10.0",
+  "channel": "linkedin",
+  "checks": {
+    "bytes": 79948,
+    "checks": [
+      {
+        "all_extracted_glyph_bounds_inside_page": true,
+        "extracted_text_sha256": "07b88b76f81437fae7f38a243fb6f436553d883f992135bba69a4b988b0f9089",
+        "preview_sha256": "bf47c08df3fa491934f104e81f1a44e8f476e8a66dc1f4c3b02feb2441029779",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:7): WARNING **: 23:15:51.018: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 1,
+        "source": "docs/media/jarvis-linkedin-slot3-slide1-20261029.svg",
+        "source_sha256": "b7635ecc6f96557769c7c66d7eb8a5fb06301789cbee0f1d6369ee1a9c3e8698"
+      },
+      {
+        "all_extracted_glyph_bounds_inside_page": true,
+        "extracted_text_sha256": "ff066fd34871b26b32a0de3e041884335b6f92f8f47eae8fb6958f04ac0c3abb",
+        "preview_sha256": "ee2125aee8ec8a6fecf5fb1a141f8f9eae90dc9b2007fcbbad4a8b07374a5973",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:16): WARNING **: 23:15:51.233: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 2,
+        "source": "docs/media/jarvis-linkedin-slot3-slide2-20261029.svg",
+        "source_sha256": "6767de0bdbd0a49b8a9921e6da8602892f8f0fb9cd9e8ec11dcd3205b92c85a8"
+      },
+      {
+        "all_extracted_glyph_bounds_inside_page": true,
+        "extracted_text_sha256": "b8af3bca2c02cdb2813a4a1ed55f596de14bad663b5e30a7f3d3faa614bf383c",
+        "preview_sha256": "b7287e684e07f8cb2295d84b0ace741440a3b37a33425cf1b0a7e4a3f223ecd8",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:25): WARNING **: 23:15:51.423: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 3,
+        "source": "docs/media/jarvis-linkedin-slot3-slide3-20261029.svg",
+        "source_sha256": "cef729f57da0b5fd31be09699893d4e36a4daaebb3a8141a1c8ef351de1b4299"
+      },
+      {
+        "all_extracted_glyph_bounds_inside_page": true,
+        "extracted_text_sha256": "083af298ef54318790b2cebdf9b2a6619d0680ec286d1f8bcb3afde3d86357ca",
+        "preview_sha256": "5b8ca4e8b3ee733b3b97c8729e3eccd3f5537cbdc77c2aec509b4e235fcb6563",
+        "renderer_exit_code": 0,
+        "renderer_stderr": "** (inkscape:34): WARNING **: 23:15:51.609: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+        "slide": 4,
+        "source": "docs/media/jarvis-linkedin-slot3-slide4-20261029.svg",
+        "source_sha256": "312888552dd8786bd70ac0c02191f50dfa8e9f4b32cd167dabb6104bedba4a69"
+      }
+    ],
+    "font_report": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nVKRLLP+DejaVuSans                    TrueType          WinAnsi          yes yes yes      7  0\nCKLOHO+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     11  0\nPBRVQW+DejaVuSans                    TrueType          WinAnsi          yes yes yes     18  0\nNYSGYC+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     22  0\nNKWLLM+DejaVuSans                    TrueType          WinAnsi          yes yes yes     29  0\nODOAEM+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     33  0\nILKJZY+DejaVuSans-Bold               CID TrueType      Identity-H       yes yes yes     37  0\nHXDREZ+DejaVuSans                    TrueType          WinAnsi          yes yes yes     45  0\nQOJBEF+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     49  0\nVYJTSO+DejaVuSans                    CID TrueType      Identity-H       yes yes yes     53  0\n",
+    "language": "en-US",
+    "page_size_points": [
+      900,
+      900
+    ],
+    "pages": 4,
+    "pdf": "docs/media/exports/linkedin-20261029/slot-3.pdf",
+    "pdf_sha256": "99d45a193e054feec304ca7147a5543c3ff4ac198584acf5087109f8eee63a3c",
+    "preparation_note": "Initial visual clipping flag was disproved by actual glyph bounds (slide 3 first line x=72..742.992 points, within intended x<=828). Temporary SVG rewrap was reverted byte-for-byte to source; original PDF restored, no regeneration/duplicate final candidate.",
+    "render_exit_code": 0,
+    "screen_reader_or_platform_compatibility": "not_verified",
+    "tagged": false,
+    "text_comparison": "Each visible source SVG text span present on corresponding Poppler-extracted page after NFKC/whitespace normalization; four distinct evidence-row labels retained on every page."
+  },
+  "costs_measured": false,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "export_method": "Each unchanged SVG exported once; pypdf added pages in order 1..4 with review metadata/en-US language.",
+  "guide_sha256": "652e90f209b5b8c3f8a999ffd705182d23a20cfabe81488838d986b1ceccc613",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "1ae73a2dd5c80785a2f7980e3539a1925e7aeae3",
+  "mission_id": "jarvis-media-20261029",
+  "new_runtime_or_recovery_observation": false,
+  "next_task": "Exact PDF/caption owner review and accessible destination/format confirmation; slot-4 PDF export unfinished.",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.linkedin.3",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "80b1ac89b11cc90143286df8c689ec71317d62f54bfcef3e10906b70449acc55",
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "schema_version": 1,
+  "scope": "local_unpublished_pdf_export_candidate_checks",
+  "slot_3_copy_sha256": "ca40d10b99e36305f7e66bfac674bb7758ce0be47e313f5cdda640b8d25ebc78",
+  "source_art_captions_plain_text_visual_descriptions_unchanged": true,
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a",
+  "visual_review": "Assistant individually inspected all four original rendered pages; initial slide-3 clipping flag disproved by actual word bounds. Original SVG/PDF restored; all word bounds inside page. Not independent human review."
+}

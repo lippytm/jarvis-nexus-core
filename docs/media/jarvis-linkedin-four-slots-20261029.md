@@ -3,7 +3,7 @@
 Status: **unpublished captions and slide specifications, pending owner review**.
 Four captions and sixteen slide scripts are authored below. All four slots have sixteen
 editable SVG review cards, locally rasterized and inspected. The
-slot-1 and slot-2 PDF export candidates are retained; slots 3–4 exports remain unprepared.
+slot-1, slot-2 and slot-3 PDF export candidates are retained; slot 4 export remains unprepared.
 No LinkedIn account was accessed
 and no posts were scheduled or published.
 
@@ -34,7 +34,7 @@ the equivalent explains the entire slide without relying on its appearance.
 The per-post visual description is proposed accessibility copy for the final
 artwork. Review it against the rendered result. Decide the actual accessible
 upload format only after checking the authorized destination's capabilities.
-Two PDF candidates (slots 1–2) have passed local page/text/font/render checks. Both are
+Three PDF candidates (slots 1–3) have passed local page/text/font/render checks. All are
 untagged; alternative-text field support, screen-reader behavior and platform
 acceptance remain unverified.
 
@@ -248,6 +248,21 @@ not retained final upload files. No actual runtime/connection/recovery observati
 is asserted. Owner review, destination and final accessibility/format checks remain
 pending; no final PDF, platform upload or screen-reader behavior was verified.
 
+### Slot 3 PDF export candidate
+
+The [four-page PDF](exports/linkedin-20261029/slot-3.pdf) retains the unchanged SVG
+cards in order, including the four separate blank evidence rows. Four 900 × 900-point
+pages have embedded fonts and selectable text. Source-span text, extracted word
+bounds and four 1200 × 1200 page renders were checked; all pages visually inspected.
+The [export receipt](../evidence/linkedin-slot3-pdf-export-20261103.json) records
+source/PDF/preview hashes and a visual clipping flag disproved by actual glyph bounds.
+The temporary rewrap was reverted; original source and PDF retained unchanged.
+
+This PDF is **untagged**. Text/layout checks do not establish reading order,
+screen-reader behavior or LinkedIn acceptance. Exact caption/art owner review,
+destination, rights and accessible upload format remain pending. This is no new
+runtime, account-access or recovery observation; no upload/publication occurred.
+
 ## Slot 4 — Bounded next step
 
 Post ID: jarvis-media-20261029.linkedin.4
@@ -310,8 +325,8 @@ pending; no final PDF, platform upload or screen-reader behavior was verified.
 
 All four captions, sixteen slide scripts, plain-text equivalents and four
 proposed visual descriptions are authored. All sixteen SVG cards are prepared and locally
-rendered for review. Slots 1–2 also have locally checked PDF export candidates;
-slots 3–4 exports remain unprepared. Final accessibility
+rendered for review. Slots 1–3 also have locally checked PDF export candidates;
+slot 4 export remains unprepared. Final accessibility
 checks, rights review, owner approval, destination confirmation and publication
 remain unfinished. Editorial source links above are reviewer references; do not
 automatically append internal review notes or the unverified candidate URL to a post.
