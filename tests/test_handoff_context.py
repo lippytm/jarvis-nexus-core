@@ -281,6 +281,52 @@ class ContextTests(unittest.TestCase):
             self.ledger.list_checkpoints("mission-one")
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_historical_attempt_count_cannot_exceed_current_after_restart(self):
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = self.control_profile("paused")
+        current["memory_revision"] = 2
+        current["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(current, expected_revision=1)
+        damaged = deepcopy(self.profile)
+        damaged["execution"]["attempts"] = 2
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+            (json.dumps(damaged), digest(damaged), "mission-one"))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        for operation in (lambda: self.ledger.list_checkpoints("mission-one"),
+                lambda: self.ledger.load_checkpoint("mission-one", 1,
+                    **{**args, "expected_sha256": digest(damaged)})):
+            with self.subTest(operation=operation), self.assertRaises(ValueError):
+                operation()
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_lower_historical_attempt_count_survives_later_unknown_hold(self):
+        saved = self.save()
+        original = deepcopy(self.profile)
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = self.control_profile("paused")
+        current["memory_revision"] = 2
+        current["execution"].update(state="outcome_unknown", attempts=2)
+        self.ledger.save_context(current, expected_revision=1)
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            before = self.path.read_bytes()
+            history = restarted.load_checkpoint("mission-one", 1, **args)
+            self.assertEqual(history["profile"], original)
+            self.assertFalse(history["retry_authorized"])
+            self.assertEqual(len(restarted.list_checkpoints("mission-one")["checkpoints"]), 1)
+            retained = restarted.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=2)["profile"]
+            self.assertEqual(retained, current)
+            self.assertEqual(self.path.read_bytes(), before)
+
     def test_historical_checkpoint_cannot_change_immutable_mission_after_restart(self):
         saved = self.save()
         args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
