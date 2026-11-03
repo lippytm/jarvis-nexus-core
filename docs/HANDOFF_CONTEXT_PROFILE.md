@@ -64,6 +64,13 @@ history, changing current holds or publishing a backup. Valid older checkpoints
 remain readable; retain damaged source for investigation. This is consistency
 validation, not authentication or protection against rewriting the whole database.
 
+For version-3 historical context, the bound destination must also match the current
+context's immutable destination. Indexing, historical loads and checked backups
+reject a changed destination even with a recalculated digest. Version-1/2 history
+captured before destination binding remains valid and retains its original schema;
+it acquires no destination or review authority from the later version-3 context.
+These checks preserve current pause/unknown holds and never repair source records.
+
 ## Writes, reviews and retrieval
 
 The CLI requires an existing database file for status, recovery, review and

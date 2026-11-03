@@ -305,6 +305,61 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_historical_bound_destination_drift_rejects_after_restart(self):
+        self.profile = self.destination_profile()
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        current["control"]["state"] = "paused"
+        self.ledger.save_context(current, expected_revision=1)
+        damaged = {**self.profile, "destination_id": "different-destination"}
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+            (json.dumps(damaged), digest(damaged), "mission-one"))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        for operation in (lambda: self.ledger.list_checkpoints("mission-one"),
+                lambda: self.ledger.load_checkpoint("mission-one", 1,
+                    **{**args, "expected_sha256": digest(damaged)})):
+            with self.subTest(operation=operation), self.assertRaises(ValueError):
+                operation()
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_pre_destination_history_survives_binding_and_later_hold(self):
+        for version in (1, 2):
+            identifier = "mission-one" if version == 1 else "legacy-history-2"
+            if version == 2:
+                self.stage(identifier)
+            old = self.context(identifier)
+            if version == 2:
+                old.update(schema_version=2, control=dict(state="active", actor_id="local-owner",
+                    reason="Synthetic pre-binding history."))
+            saved = self.ledger.save_context(old, expected_revision=0)
+            args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                        expected_memory_revision=1)
+            self.ledger.checkpoint_context(identifier, **args)
+            bound = {**old, "schema_version": 3, "memory_revision": 2,
+                "destination_id": "destination-" + str(version),
+                "control": dict(state="active", actor_id="local-owner", reason="Synthetic binding.")}
+            saved_bound = self.ledger.save_context(bound, expected_revision=1)
+            bound_args = {**args, "expected_sha256": saved_bound["context_sha256"], "expected_memory_revision": 2}
+            self.ledger.checkpoint_context(identifier, **bound_args)
+            held = deepcopy(bound)
+            held.update(memory_revision=3, control=dict(state="paused", actor_id="local-owner",
+                reason="Synthetic later hold."))
+            self.ledger.save_context(held, expected_revision=2)
+            with HandoffLedger(self.path, read_only=True) as restarted:
+                self.assertEqual(restarted.load_checkpoint(identifier, 1, **args)["profile"], old)
+                self.assertEqual(restarted.load_checkpoint(identifier, 2, **bound_args)["profile"], bound)
+                self.assertEqual(len(restarted.list_checkpoints(identifier)["checkpoints"]), 2)
+                current = restarted.load_context(identifier, expected_source_revision=REVISION,
+                    expected_memory_revision=3, audience="owner_private")["profile"]
+                self.assertEqual(current, held)
+
     def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
         saved = self.save()
         args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)

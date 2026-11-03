@@ -384,6 +384,8 @@ class HandoffLedger:
             raise ValueError("stored context checkpoint is invalid") from None
         if (digest(profile) != row["digest"] or revision > current["revision"]
             or profile["mission_id"] != current_profile["mission_id"]
+            or (profile["schema_version"] == 3
+                and profile["destination_id"] != current_profile.get("destination_id"))
             or profile["memory_revision"] > current_profile["memory_revision"]
             or (revision == current["revision"] and row["digest"] != current["digest"])):
             raise ValueError("stored context checkpoint integrity mismatch")
