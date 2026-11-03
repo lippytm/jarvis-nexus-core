@@ -64,6 +64,11 @@ history, changing current holds or publishing a backup. Valid older checkpoints
 remain readable; retain damaged source for investigation. This is consistency
 validation, not authentication or protection against rewriting the whole database.
 
+Historical attempt counters must not exceed the current context's recorded count,
+because ordinary saves cannot decrease attempts. Indexing, historical retrieval
+and checked backups reject impossible higher-count history, including a rehashed
+record; valid lower/equal-count history remains readable without changing holds.
+
 For version-3 historical context, the bound destination must also match the current
 context's immutable destination. Indexing, historical loads and checked backups
 reject a changed destination even with a recalculated digest. Version-1/2 history

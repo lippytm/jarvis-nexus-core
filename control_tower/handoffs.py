@@ -387,6 +387,7 @@ class HandoffLedger:
             or (profile["schema_version"] == 3
                 and profile["destination_id"] != current_profile.get("destination_id"))
             or profile["memory_revision"] > current_profile["memory_revision"]
+            or profile["execution"]["attempts"] > current_profile["execution"]["attempts"]
             or (revision == current["revision"] and row["digest"] != current["digest"])):
             raise ValueError("stored context checkpoint integrity mismatch")
         return row, profile
