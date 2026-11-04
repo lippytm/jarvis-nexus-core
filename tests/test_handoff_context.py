@@ -220,6 +220,76 @@ class ContextTests(unittest.TestCase):
             self.assertEqual(restarted.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
             self.assertEqual(before, {t: [tuple(r) for r in restarted.db.execute("SELECT * FROM " + t)] for t in tables})
 
+    @unittest.skipIf(sys.platform == "win32", "pipe readiness barrier requires POSIX")
+    def test_separate_process_open_waits_for_uncommitted_checkpoint_upgrade(self):
+        import select
+
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts")
+        before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+        db, children = self.ledger.db, []
+        owner = self
+        worker = '''
+import json, sqlite3, sys
+from control_tower.handoffs import HandoffLedger
+connect = sqlite3.connect
+announced = False
+def trace(sql):
+    global announced
+    if sql == "BEGIN IMMEDIATE" and not announced:
+        announced = True
+        print("lock-request", flush=True)
+def instrumented_connect(*args, **kwargs):
+    connection = connect(*args, **kwargs)
+    connection.set_trace_callback(trace)
+    return connection
+sqlite3.connect = instrumented_connect
+with HandoffLedger(sys.argv[1]) as ledger:
+    history = ledger.load_checkpoint("mission-one", 1, **json.loads(sys.argv[2]))
+    print(json.dumps({"version": ledger.db.execute("PRAGMA user_version").fetchone()[0],
+        "profile": history["profile"], "retry_authorized": history["retry_authorized"]}))
+'''
+
+        class CommitBarrier:
+            def __getattr__(self, name):
+                return getattr(db, name)
+
+            def commit(self):
+                # Capture's real transaction has changed schema to 3 but has
+                # not committed. The separate opener must wait on SQLite.
+                child = subprocess.Popen([sys.executable, "-u", "-c", worker,
+                    str(owner.path), json.dumps(args)], cwd=Path(__file__).resolve().parents[1],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                children.append(child)
+                ready, _, _ = select.select([child.stdout], [], [], 5)
+                owner.assertTrue(ready, "opener did not reach its bounded lock barrier")
+                owner.assertEqual(child.stdout.readline().strip(), "lock-request")
+                owner.assertIsNone(child.poll())
+                return db.commit()
+
+        try:
+            with patch.object(self.ledger, "db", CommitBarrier()):
+                captured = self.ledger.checkpoint_context("mission-one", **args)
+            self.assertFalse(captured["duplicate"])
+            output, errors = children[0].communicate(timeout=10)
+            self.assertEqual(children[0].returncode, 0, errors)
+            observed = json.loads(output)
+            self.assertEqual(observed, dict(version=3, profile=self.profile, retry_authorized=False))
+            with HandoffLedger(self.path, read_only=True) as restarted:
+                self.assertEqual(restarted.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+                self.assertEqual(before, {t: [tuple(r) for r in restarted.db.execute("SELECT * FROM " + t)] for t in tables})
+                self.assertEqual(restarted.load_context("mission-one", expected_source_revision=REVISION,
+                    expected_memory_revision=1)["profile"], self.profile)
+        finally:
+            for child in children:
+                if child.poll() is None:
+                    child.kill()
+                child.communicate(timeout=5)
+
     def test_read_only_open_uses_one_schema_snapshot_during_upgrade(self):
         self.ledger.db.execute("PRAGMA journal_mode=WAL")
         saved = self.save()
