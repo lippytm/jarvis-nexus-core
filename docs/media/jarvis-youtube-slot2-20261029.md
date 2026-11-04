@@ -54,6 +54,21 @@ The SVG was locally rasterized and its six-panel layout inspected by the assista
 Check typography and caption placement on the actual output canvas before
 recording or rendering. This was not independent human or owner release review.
 
+## Slot-2 PNG review candidate
+
+[Retained PNG preview](exports/youtube-20261029/slot-2-storyboard.png),
+1200×1540, copied byte for byte from the existing locally inspected preview.
+The SVG, narration, shot plan, upload copy and captions are unchanged. This
+six-panel reference preserves illustrative labels, unverified service status and
+owner review requirements. It is not a finished video, thumbnail or approval.
+
+The PNG was decoded and visually inspected again on November 4, 2026. Source
+XML/resource, six-panel timing, dimensions, opacity and metadata checks passed.
+Device, accessibility, rights, exact destination and owner release review remain
+pending. The original preparation receipt did not record a PNG digest; the
+[new retention receipt](../evidence/youtube-slot2-png-retention-20261104.json)
+records the bytes observed in this cycle, not a historical hash attestation.
+
 ## Provenance and restart bookmark
 
 This is a proposed creative artifact, not accepted project memory or a new
