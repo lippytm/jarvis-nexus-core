@@ -282,10 +282,12 @@ class HandoffLedger:
                     "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
                     "model_calls": 0, "external_actions": 0}
 
-    def queue_report(self, *, project_id):
+    def queue_report(self, *, project_id, mission_id=None):
         """Private counts of recorded states, never live worker/completion metrics."""
         if not isinstance(project_id, str) or project_id not in PROJECTS:
             raise ValueError("unknown project")
+        if mission_id is not None:
+            require_identifier(mission_id, "mission ID")
         with self._transaction():
             handoffs = dict.fromkeys(("pending_review", "reviewed", "export_prepared", "returned_unverified"), 0)
             execution = dict.fromkeys(("pending", "execution_blocked", "outcome_unknown", "without_context"), 0)
@@ -295,14 +297,18 @@ class HandoffLedger:
                 row, body = self._handoff(item["id"])
                 if body["draft"]["project_id"] != project_id:
                     continue
+                has_context = self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone()
+                selected = self._context(row["id"]) if has_context else None
+                if mission_id is not None and (selected is None or selected[1]["mission_id"] != mission_id):
+                    continue
                 handoffs[row["state"]] += 1
                 binding = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
                            "state": row["state"], "source_revision": body["source_revision"],
                            "asset_id": body["assistant_id"], "platform": body["draft"]["target"],
                            "mission_id": None, "memory_revision": None, "destination_id": None,
                            "context_sha256": None, "context_revision": None}
-                if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone():
-                    context, profile = self._context(row["id"])
+                if selected is not None:
+                    context, profile = selected
                     execution[profile["execution"]["state"]] += 1
                     controls[profile["control"]["state"] if profile["schema_version"] >= 2 else "legacy_uncontrolled"] += 1
                     attempts += profile["execution"]["attempts"]
@@ -318,6 +324,8 @@ class HandoffLedger:
                 "control_states": controls, "recorded_attempts": attempts, "bindings": bindings,
                 "visibility": "owner_private", "completion_verification": "not_established",
                 "duplicate_attempts": "not_recorded", "dispatch_authorized": False, "external_actions": 0}
+            if mission_id is not None:
+                result.update(schema_version=2, mission_id=mission_id)
             return {**result, "report_sha256": digest(result)}
 
     def destination_status(self, *, project_id, platform, destination_id):

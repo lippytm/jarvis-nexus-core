@@ -567,6 +567,64 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ledger.load_checkpoint("mission-one", 1, **args)
 
+    def test_mission_queue_report_selects_all_portable_targets_after_restart(self):
+        for index, target in enumerate(sorted(TARGETS)):
+            identifier = "selected-" + target
+            manifest = build_swarm("ai-jarvis", [target], swarm_id="queue-" + target,
+                                   source_revision=REVISION)
+            self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target=target, text="Synthetic selective queue fixture."), manifest,
+                assistant_id=manifest["swarm_id"] + ".builder", handoff_id=identifier)
+            profile = self.context(identifier)
+            profile.update(asset_id=manifest["swarm_id"] + ".builder",
+                schema_version=3, mission_id="shared-mission", destination_id="destination-" + target,
+                control={"state": ("active", "paused", "cancelled")[index % 3],
+                         "actor_id": "local-controller", "reason": "Private control detail."})
+            profile["execution"]["state"] = "outcome_unknown" if index % 2 else "execution_blocked"
+            self.ledger.save_context(profile, expected_revision=0)
+        self.save()  # Another mission; the original contextless case is separate.
+        self.stage("contextless-task")
+        first = self.ledger.queue_report(project_id="ai-jarvis", mission_id="shared-mission")
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="shared-mission"), first)
+        self.assertEqual(first["schema_version"], 2)
+        self.assertEqual(first["mission_id"], "shared-mission")
+        self.assertEqual(first["handoff_count"], len(TARGETS))
+        self.assertEqual({r["platform"] for r in first["bindings"]}, set(TARGETS))
+        self.assertEqual({r["mission_id"] for r in first["bindings"]}, {"shared-mission"})
+        self.assertEqual(first["recorded_attempts"], len(TARGETS))
+        self.assertEqual(sum(first["execution_states"].values()), len(TARGETS))
+        self.assertEqual(sum(first["control_states"].values()), len(TARGETS))
+        self.assertEqual(first["execution_states"]["without_context"], 0)
+        for omitted in ("mission-one", "contextless-task", "Private control detail", "Synthetic", "https://"):
+            self.assertNotIn(omitted, json.dumps(first))
+        self.assertEqual(first["visibility"], "owner_private")
+        self.assertEqual(first["completion_verification"], "not_established")
+        self.assertFalse(first["dispatch_authorized"])
+        self.assertEqual(first["report_sha256"], digest({k: v for k, v in first.items() if k != "report_sha256"}))
+        first["bindings"].clear()
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="shared-mission")["handoff_count"], len(TARGETS))
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_mission_queue_report_empty_scope_and_legacy_contract(self):
+        self.save()
+        legacy = self.ledger.queue_report(project_id="ai-jarvis")
+        self.assertEqual(legacy["schema_version"], 1)
+        self.assertNotIn("mission_id", legacy)
+        before = list(self.ledger.db.iterdump())
+        empty = self.ledger.queue_report(project_id="ai-jarvis", mission_id="absent-mission")
+        self.assertEqual(empty["schema_version"], 2)
+        self.assertEqual(empty["bindings"], [])
+        self.assertEqual(empty["handoff_count"], 0)
+        self.assertEqual(empty["recorded_attempts"], 0)
+        for invalid in ("", "../mission", True, [], 1):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.queue_report(project_id="ai-jarvis", mission_id=invalid)
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis"), legacy)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
     def test_queue_report_retains_recorded_blocks_after_restart_without_private_text(self):
         self.profile = self.control_profile("paused")
         self.profile["execution"]["state"] = "outcome_unknown"

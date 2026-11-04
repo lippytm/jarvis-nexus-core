@@ -121,6 +121,14 @@ mission/memory/destination identities plus exact context/handoff digests bind th
 selected metadata. Draft text, execution detail and reference URLs are omitted.
 The report is always owner_private and changes no holds, reviews or attempts.
 
+Add `--mission existing-mission-id` to select only that mission's contextual
+records within the project. This explicitly emits a version-2 `jarvis.queue_report`
+with a top-level `mission_id`; without the option, the version-1 result is unchanged.
+Contextless and other-mission records are excluded from filtered counts/bindings.
+An unknown mission returns an empty report, not proof that the mission completed.
+The same private-file, no-overwrite and read-only rules apply. This is selective
+local retrieval, not authentication, dispatch or a future revision/release gate.
+
 recorded_attempts sums current context attempt counters. It does not measure
 actual worker runs, retries or failures; contexts are proposed records. Duplicate
 attempts are marked not_recorded, and completion_verification is not_established:

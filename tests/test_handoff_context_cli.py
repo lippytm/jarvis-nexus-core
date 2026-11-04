@@ -320,6 +320,33 @@ class ContextCLITests(unittest.TestCase):
         self.assertIn("read-only", json.loads(refused.stderr)["error"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_mission_queue_report_private_file_round_trip(self):
+        self.assertEqual(self.save().returncode, 0)
+        before = self.db.read_bytes()
+        args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "cli-task")
+        first = self.cli(*args)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        record = json.loads(first.stdout)
+        self.assertEqual(record["schema_version"], 2)
+        self.assertEqual(record["handoff_count"], 1)
+        self.assertEqual(record["mission_id"], "cli-task")
+        self.assertEqual(record["execution_states"]["execution_blocked"], 1)
+        saved = self.cli(*args, "--out", "private/mission.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/mission.json"
+        self.assertEqual(json.loads(output.read_text()), record)
+        if os.name == "posix":
+            self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(json.loads(self.cli(*args).stdout), record)
+        self.assertEqual(self.cli(*args, "--out", "private/mission.json").returncode, 1)
+        self.assertEqual(json.loads(output.read_text()), record)
+        empty = self.cli("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "absent-mission")
+        self.assertEqual(json.loads(empty.stdout)["handoff_count"], 0)
+        self.assertEqual(self.cli("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "../bad").returncode, 1)
+        self.assertEqual(self.cli(*args, database="absent/ledger.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_queue_report_is_read_only_and_rejects_missing_database(self):
         self.assertEqual(self.save().returncode, 0)
         before = self.db.read_bytes()
