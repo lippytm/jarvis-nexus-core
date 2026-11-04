@@ -172,7 +172,9 @@ fs.writeFileSync('${JARVIS_DIR}/ecosystem.config.js',
 # ── Phase 7: Start all services ──────────────────────────────
 echo "▶ Phase 7: Starting all Jarvis services with PM2..."
 cd "${JARVIS_DIR}"
-pm2 delete all 2>/dev/null || true
+for SERVICE in jarvis-flow jarvis-hub jarvis-nexus jarvis-blast; do
+  pm2 delete "${SERVICE}" 2>/dev/null || true
+done
 pm2 start ecosystem.config.js
 pm2 save
 pm2 startup 2>/dev/null || true
