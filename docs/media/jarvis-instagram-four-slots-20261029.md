@@ -3,8 +3,8 @@
 Status: **unpublished captions, card scripts and media specifications; owner review pending**.
 Four captions, twenty card scripts and twenty proposed alt descriptions are authored.
 All four slots now have twenty editable SVG artwork candidates, locally rendered
-and inspected. Five slot-1 PNG review export candidates are retained; other slot
-exports and finished videos remain unprepared. No Instagram
+and inspected. Ten PNG review export candidates (slots 1–2) are retained; slots
+3–4 exports and finished videos remain unprepared. No Instagram
 account was accessed, no post scheduled and no content published.
 
 ## Provenance and scope
@@ -171,6 +171,27 @@ layout previews. No demonstration was executed for this post; final exports/mobi
 crop/screen-reader/alt-field/platform/account/destination/rights checks and owner
 exact-art/caption approval remain unfinished. No post was scheduled or published.
 
+### Slot 2 PNG export candidates
+
+Five 1080 × 1080 PNG review exports retain the exact earlier preview bytes:
+[opening](exports/instagram-20261029/slot-2/card-1.png),
+[explanation](exports/instagram-20261029/slot-2/card-2.png),
+[example](exports/instagram-20261029/slot-2/card-3.png),
+[limitation](exports/instagram-20261029/slot-2/card-4.png) and
+[question](exports/instagram-20261029/slot-2/card-5.png).
+All synthetic-example labels are retained, including card 4's visible proposed,
+unrun-exercise limitation and empty run-receipt field. No source/caption/alt text
+was edited, and no PNG was rerendered or recompressed. Fresh hash/decode/dimension/
+opacity/chunk/metadata checks passed and all five images were individually inspected.
+The [export receipt](../evidence/instagram-slot2-png-exports-20261103.json) records
+exact source/PNG hashes and limits; original renderer evidence remains unchanged.
+
+These are unpublished review candidates, not approved upload files. Account and
+destination, crop/mobile layout, alt-field/screen-reader behavior, platform format,
+rights and exact owner approval remain unverified. PNGs do not supply platform alt
+text by themselves; the proposed text above remains for review and later authorized
+entry. Export preparation does not execute the proposed demonstration or publish it.
+
 ## Slot 3 — Limits
 
 Post ID: jarvis-media-20261029.instagram.3
@@ -291,8 +312,8 @@ and owner exact-art/caption approval remain unfinished. No publication or live t
 ## Review and continuation
 
 All four captions and twenty text/alt-text pairs are authored. All twenty SVG source
-cards are prepared and locally rendered for review. Slot-1 PNG candidates are retained;
-other exports and final accessibility checks,
+cards are prepared and locally rendered for review. Slot-1/2 PNG candidates are retained;
+slot-3/4 exports and final accessibility checks,
 asset-rights review, exact account/destination, owner
 approval and publication remain unfinished. Source links and the unverified candidate
 URL above are editorial review metadata, not instructions to append them to a post.
