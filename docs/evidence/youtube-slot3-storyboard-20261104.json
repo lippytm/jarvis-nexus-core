@@ -1,0 +1,59 @@
+{
+  "artifacts": {
+    "docs/media/exports/youtube-20261029/slot-3-storyboard.png": {
+      "bytes": 268841,
+      "sha256": "ad292c1fd6de3841ae7eb2fb7caa4c028d4b558f04101b1b32fb21011b2ec459"
+    },
+    "docs/media/jarvis-youtube-slot3-20261029.md": {
+      "bytes": 9016,
+      "sha256": "f2c17a41a57317cb3f466a877d4403ac0688c958b18c64b05cb725df3a9dc444"
+    },
+    "docs/media/jarvis-youtube-slot3-storyboard-20261104.svg": {
+      "bytes": 6385,
+      "sha256": "d799134403210e7233412f6ab78f9a96d9322963ee01a1bf3bd470bb5626775d"
+    }
+  },
+  "checks": [
+    "Six planned intervals and source on-screen claims match. Exact narration/shot table/upload copy and SRT unchanged.",
+    "Hypothetical comparison labels retained in panels 2 and 3; separate blank source fields, conceptual blocked task and no retry-dispatched statement.",
+    "No scripts/external images/resources/links/events; title/description present; actual DejaVu Sans regular/bold widths fit panel/canvas.",
+    "Full PNG decode 1200x1800 opaque RGBA, only IHDR/pHYs/tEXt/IDAT/IEND, Inkscape Software/DPI metadata.",
+    "Full preview visually inspected; no clipping/overlap observed.",
+    "Prior slot-1 SVG/PNG, slot-2 SVG and campaign unchanged. 73 AST and whitespace checks passed."
+  ],
+  "configuration_version": "codex.media-draft.v1",
+  "contrast_scope": "source colors only; no device/accessibility acceptance claim",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_final_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "independent_review": "not_performed",
+  "input_revision": "ac92bb845a8b426dc6836900d401d66f5d3b10ca",
+  "memory_source": "master Page sequence 124",
+  "minimum_calculated_text_background_contrast": 5.791,
+  "mission_id": "jarvis-media-20261029",
+  "mobile_screen_reader_checks": "not_performed",
+  "new_runtime_status_or_recovery_observation": false,
+  "next_task": "Exact narration/caption/storyboard review, then separately authorized recording/retiming/local video preview and destination/accessibility confirmation.",
+  "owner_approval": "not_granted",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.youtube.3",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "0249534a9c1abe30a080ffb938850b21fe9f9355635c495244eb766c648c6acd",
+  "recorded_voice_or_finished_video": false,
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "renderer_exit_code": 0,
+  "renderer_warning": "Failed to wrap GtkRecentManager; PNG decoded and visually inspected.",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "unpublished_original_storyboard_review_candidate",
+  "source_brief_sha256": "e5c3c1605b3841f8d5d50fb120ec7ed32e2b5e0e0719b07f6f697431a9be314d"
+}

@@ -2,8 +2,9 @@
 
 Unpublished YouTube slot-3 script package, prepared October 30, 2026 for the
 existing October 29 editorial batch. Audience: Charles and future Jarvis
-collaborators. Proposed duration: 60 seconds. Copy and production specifications
-only; no narration recorded, artwork rendered, video produced or content uploaded.
+collaborators. Proposed duration: 60 seconds. Narration and production specifications
+are authored; a six-panel storyboard and PNG review preview are now prepared.
+No narration is recorded, video produced or content uploaded.
 
 ## Narration and shot plan
 
@@ -19,7 +20,8 @@ only; no narration recorded, artwork rendered, video produced or content uploade
 The [SRT draft](jarvis-youtube-slot3-20261029.srt) contains this exact narration
 with proposed timing. Retime against a real recording before any final export.
 The runner/local comparison is hypothetical, not a new command receipt, outage
-report or recovery claim. These shot directions are unrendered specifications.
+report or recovery claim. The storyboard below renders these shot directions as a review reference, not
+finished video frames.
 
 ## Draft upload copy
 
@@ -65,8 +67,7 @@ caption wrapping and safe placement on the eventual canvas and target device.
 The two-line/42-character working caption budget is an editorial choice, not a
 verified platform rule or evidence of final readability. No voice, music, footage,
 logos or third-party artwork is supplied. Do not display private diaries, chats,
-customer data or actual operational ledgers. Recording, retiming, visual creation
-and preview inspection remain unfinished.
+customer data or actual operational ledgers. Recording, retiming and final-video preview/device inspection remain unfinished.
 
 ## Provenance and restart checkpoint
 
@@ -84,13 +85,32 @@ and preview inspection remain unfinished.
 | Visibility / action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One package; no paid service, provider call or external action; no automatic retry |
 | Return binding / checkpoint | These sibling Markdown/SRT files, original campaign slot/digests and resulting development commit; local artifact association only |
-| Review / execution | Copy self-check only; independent/owner exact-content review pending; no recording/rendering/upload/publication |
+| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard rendered; no recording/upload/publication |
 
 This creative candidate is not accepted project memory or a change to any strict
 packet. No operational mission was staged, dispatched or retried. Existing slot-1
-and slot-2 packages remain unchanged; slot 4 remains unfinished. The editorial
+and slot-2 packages remain unchanged; recording/finished video for all slots
+remains unfinished. The editorial
 date is not a publishing schedule. The Daily Newsletter schedule and paused
 Studio Work Cycle are unchanged.
 
-Next: review this exact copy and caption/shot specification, then prepare original
-visuals and a recorded, retimed local preview under a separate bounded task.
+## Slot 3 storyboard review candidate
+
+The [original six-panel SVG](jarvis-youtube-slot3-storyboard-20261104.svg) and
+[1200 × 1800 PNG review preview](exports/youtube-20261029/slot-3-storyboard.png)
+follow the six planned intervals above. This is a working review canvas, not a
+verified upload requirement. The hypothetical label stays visible in both runner/
+local comparison panels; the source fields remain empty and the observations stay
+separate. The conceptual blocked-task label says no retry was dispatched. Availability,
+access and delivery fields, and the closing worksheet, remain unfilled.
+
+Narration, shot-plan text, upload copy and SRT are unchanged. XML/resource/font-width,
+source-claim/interval and PNG decode/dimension/opacity/metadata checks passed; the
+full preview was visually inspected. The [preparation receipt](../evidence/youtube-slot3-storyboard-20261104.json)
+retains hashes and the renderer warning. Source-color contrast calculations do not
+establish device readability or screen-reader accessibility. This is no new outage,
+recovery, uptime or test receipt. No voice, animation, final thumbnail or finished video.
+
+Next: exact narration/caption/storyboard owner review, then authorized recording,
+retiming and a local video preview. Channel/destination, device/accessibility,
+rights and upload acceptance remain unverified; nothing published.
