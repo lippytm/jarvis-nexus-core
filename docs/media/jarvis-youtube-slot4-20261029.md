@@ -2,8 +2,9 @@
 
 Unpublished YouTube slot-4 script package, prepared October 30, 2026 for the
 existing October 29 editorial batch. Audience: Charles and future Jarvis
-collaborators. Proposed duration: 60 seconds. Copy and production specifications
-only; no narration recorded, artwork rendered, video produced or content uploaded.
+collaborators. Proposed duration: 60 seconds. Narration and production specifications
+are authored; a six-panel storyboard and PNG review preview are now prepared.
+No narration is recorded, video produced or content uploaded.
 
 ## Narration and shot plan
 
@@ -19,7 +20,8 @@ only; no narration recorded, artwork rendered, video produced or content uploade
 The [SRT draft](jarvis-youtube-slot4-20261029.srt) contains the exact narration
 with proposed timing. Retime against a real recording before final export.
 The example is a suggested draft-preparation exercise, not a newly dispatched
-mission or an executed demonstration. Shot directions are unrendered specifications.
+mission or an executed demonstration. The storyboard below renders the shot directions as a review reference, not
+finished video frames.
 
 ## Draft upload copy
 
@@ -64,8 +66,8 @@ plain-text transcript. Inspect caption wrapping and safe placement on the eventu
 canvas and target device. The two-line/42-character working caption budget is an
 editorial choice, not a verified platform rule or proof of final readability.
 No voice, music, footage, logos or third-party artwork is supplied. Avoid private
-records and mock screens that resemble real account actions. Recording, retiming,
-original visuals, preview inspection and channel compatibility remain unfinished.
+records and mock screens that resemble real account actions. Recording, retiming, final-video preview/device inspection and channel
+compatibility remain unfinished.
 
 ## Provenance and restart checkpoint
 
@@ -83,15 +85,33 @@ original visuals, preview inspection and channel compatibility remain unfinished
 | Visibility / action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One package; no paid service, provider call or external action; no automatic retry |
 | Return binding / checkpoint | These sibling Markdown/SRT files, original campaign slot/digests and resulting development commit; local artifact association only |
-| Review / execution | Copy self-check only; independent/owner exact-content review pending; no recording/rendering/upload/publication |
+| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard rendered; no recording/upload/publication |
 
 This is a creative candidate, not accepted project memory or a change to any
 strict packet. No operational mission was staged, dispatched, retried or released.
 The existing slot-1/2/3 packages remain unchanged. All four YouTube slots now have
-script/caption/shot specifications; that does not complete recorded videos,
-rendered artwork, platform access, owner review or publication. The editorial
+script/caption/shot specifications and SVG storyboard candidates; that does not
+complete recorded videos, platform access, owner review or publication. The editorial
 date is not a schedule; the Daily Newsletter schedule and paused Studio Work
 Cycle are unchanged.
 
-Next: review the exact narration/caption/shot package, then prepare original
-visuals and a recorded, retimed local preview under a separate bounded task.
+## Slot 4 storyboard review candidate
+
+The [original six-panel SVG](jarvis-youtube-slot4-storyboard-20261104.svg) and
+[1200 × 1800 PNG review preview](exports/youtube-20261029/slot-4-storyboard.png)
+follow the six planned intervals above. This is a working review canvas, not a
+verified upload requirement. Synthetic/example labels, unassigned destination,
+empty evidence and owner-review fields, a conceptual blocked task and a visibly
+closed release gate preserve the source's limits. No action is depicted as approved.
+
+Narration, shot-plan text, upload copy and SRT are unchanged. XML/resource/font-width,
+source-claim/interval and PNG decode/dimension/opacity/metadata checks passed; the
+full preview was visually inspected. The [preparation receipt](../evidence/youtube-slot4-storyboard-20261104.json)
+retains hashes, empty-review-region check and renderer warning. Source-color
+contrast checks do not establish device readability or screen-reader accessibility.
+This is an unperformed synthetic exercise, not a new dispatch, accepted memory
+write or owner release. No voice, animation, final thumbnail or finished video.
+
+Next: exact narration/caption/storyboard owner review, then authorized recording,
+retiming and local video preview. Channel/destination, device/accessibility, rights
+and upload acceptance remain unverified; nothing published.
