@@ -3,7 +3,8 @@
 Unpublished YouTube slot-1 script package, prepared October 30, 2026 for the
 existing October 29 editorial batch. Audience: Charles and future Jarvis
 collaborators. Proposed duration: 60 seconds. Narration, captions and shot
-directions are authored; no voice recorded, artwork rendered or video produced.
+directions are authored; a six-panel storyboard and PNG review preview are now
+prepared. No voice is recorded and no video is produced.
 
 ## Narration and shot plan
 
@@ -18,8 +19,8 @@ directions are authored; no voice recorded, artwork rendered or video produced.
 
 The [caption file](jarvis-youtube-slot1-20261029.srt) contains the exact narration
 with proposed cue times. Timing must be checked and retimed against an actual
-recording. These shot directions are production specifications, not rendered
-storyboard panels or finished video frames. No new demonstration or test result
+recording. These shot directions are production specifications. The storyboard below is a
+review reference, not finished video frames. No new demonstration or test result
 is reported by the narration.
 
 ## Draft upload copy
@@ -90,13 +91,31 @@ platform compatibility remain unverified until a real preview exists.
 | Visibility / permitted action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One script package; no paid service/provider call/external action; no automatic retry |
 | Return binding / checkpoint | These sibling Markdown/SRT files, original campaign slot/digests and resulting development commit; local artifact association only |
-| Review / execution | Copy self-check only; independent/owner exact-content review pending; no recording, rendering, upload or publication |
+| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard rendered; no recording, upload or publication |
 
 This is a creative candidate, not accepted project memory or a changed strict
 packet. No operational handoff was staged, reviewed, dispatched or cancelled.
-The existing slot-2 package is separate and remains unchanged. Slots 3 and 4
+The existing slot-2 package is separate and remains unchanged. Recording and finished video production for all four slots
 remain unfinished. The editorial date is not a schedule; the Daily Newsletter
 schedule and paused Studio Work Cycle are unchanged.
 
-Next: review this exact narration/caption/shot package, then prepare original
-visuals and a recorded, retimed local preview under a separate bounded task.
+## Slot 1 storyboard review candidate
+
+The [original six-panel SVG](jarvis-youtube-slot1-storyboard-20261104.svg) and
+[1200 × 1800 PNG review preview](exports/youtube-20261029/slot-1-storyboard.png)
+follow the six planned shot intervals above. These dimensions are a working review
+canvas, not a verified upload requirement. Conceptual placeholders, empty source/
+artifact/check fields, separate service/account/delivery rows and the remaining-gap
+field retain the evidence distinctions. The changed example sentence is underlined;
+no completed approval, fake terminal, private record or live status is depicted.
+
+Narration, shot-plan text, upload copy and SRT are unchanged. SVG text/resource/font-
+width and PNG decode/dimension/opacity/metadata checks passed, and the full preview
+was visually inspected. The [preparation receipt](../evidence/youtube-slot1-storyboard-20261104.json)
+retains hashes, observed checks and renderer warnings. Calculated text/background
+contrast is a source-color check, not a mobile or screen-reader accessibility test.
+This is a storyboard only: no voice, animation, final thumbnail or finished video.
+
+Next: exact narration/caption/storyboard owner review, then authorized recording,
+retiming and a local video preview. Channel/destination, device readability,
+accessibility, rights and upload acceptance remain unverified; nothing published.
