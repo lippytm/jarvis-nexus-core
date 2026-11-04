@@ -451,7 +451,14 @@ class HandoffLedger:
             earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
             if (type(neighbor["revision"]) is not int or neighbor["revision"] < 1
                 or digest(adjacent) != neighbor["digest"]
-                or earlier["memory_revision"] > later["memory_revision"]):
+                or earlier["memory_revision"] > later["memory_revision"]
+                or earlier["execution"]["attempts"] > later["execution"]["attempts"]
+                or earlier["schema_version"] > later["schema_version"]
+                or (earlier.get("control", {}).get("state") == "cancelled"
+                    and later.get("control", {}).get("state") != "cancelled")
+                or (earlier["execution"]["state"] == "outcome_unknown"
+                    and any(earlier["execution"][field] != later["execution"][field]
+                            for field in ("state", "attempts", "context_id")))):
                 raise ValueError("stored context checkpoint integrity mismatch")
         return row, profile
 
