@@ -423,6 +423,81 @@ with HandoffLedger(sys.argv[1]) as ledger:
                 expected_memory_revision=2)["profile"], current)
             self.assertEqual(self.path.read_bytes(), before)
 
+    def test_retained_memory_revisions_cannot_regress_between_checkpoints(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.control_profile("paused")
+        first = self.save()
+        args = dict(expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=first["context_sha256"], **args)
+        later = deepcopy(self.profile)
+        later["memory_revision"] = 2
+        second = self.ledger.save_context(later, expected_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=second["context_sha256"],
+            **{**args, "expected_memory_revision": 2})
+        current = deepcopy(later)
+        current["memory_revision"] = 3
+        current["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(current, expected_revision=2)
+        self.stage("independent-task")
+        self.ledger.save_context(self.context("independent-task"), expected_revision=0)
+        damaged = {**self.profile, "memory_revision": 3}
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=1",
+            (json.dumps(damaged), digest(damaged), "mission-one"))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        output = self.path.parent / "out-of-order-backup.sqlite3"
+        operations = {
+            "index": lambda: self.ledger.list_checkpoints("mission-one"),
+            "older-load": lambda: self.ledger.load_checkpoint("mission-one", 1,
+                expected_sha256=digest(damaged), expected_source_revision=REVISION, expected_memory_revision=3),
+            "newer-load": lambda: self.ledger.load_checkpoint("mission-one", 2,
+                expected_sha256=second["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=2),
+            "backup": lambda: _backup(self.ledger.db, output),
+        }
+        for name, operation in operations.items():
+            with self.subTest(operation=name), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                operation()
+        self.assertFalse(output.exists())
+        self.assertFalse(list(output.parent.glob(".jarvis-backup-*")))
+        self.assertEqual(self.load(expected_memory_revision=3)["profile"], current)
+        self.assertEqual(self.load("independent-task")["profile"], self.context("independent-task"))
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_equal_retained_memory_revisions_remain_valid_after_restart(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.control_profile("paused")
+        saved = self.save()
+        args = dict(expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"], **args)
+        edited = deepcopy(self.profile)
+        edited["execution"]["detail"] = "Synthetic detail edit with unchanged memory revision."
+        second = self.ledger.save_context(edited, expected_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=second["context_sha256"], **args)
+        current = deepcopy(edited)
+        current["memory_revision"] = 2
+        current["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(current, expected_revision=2)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        self.assertEqual(len(self.ledger.list_checkpoints("mission-one")["checkpoints"]), 2)
+        for revision, checksum, profile in ((1, saved["context_sha256"], self.profile),
+                                            (2, second["context_sha256"], edited)):
+            loaded = self.ledger.load_checkpoint("mission-one", revision, expected_sha256=checksum, **args)
+            self.assertEqual(loaded["profile"], profile)
+            self.assertFalse(loaded["retry_authorized"])
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.path.read_bytes(), before)
+        backup = self.path.parent / "equal-memory-backup.sqlite3"
+        _backup(self.ledger.db, backup)
+        with HandoffLedger(backup, read_only=True) as restored:
+            self.assertEqual(len(restored.list_checkpoints("mission-one")["checkpoints"]), 2)
+            self.assertEqual(restored.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_historical_control_schema_cannot_exceed_current_after_restart(self):
         from scripts.jarvis_network import _backup
         saved = self.save()

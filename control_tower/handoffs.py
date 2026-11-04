@@ -434,6 +434,25 @@ class HandoffLedger:
             or profile["execution"]["attempts"] > current_profile["execution"]["attempts"]
             or (revision == current["revision"] and row["digest"] != current["digest"])):
             raise ValueError("stored context checkpoint integrity mismatch")
+        # Current-state bounds alone cannot detect a regression between two
+        # retained checkpoints. Read at most the two indexed neighbors; do not
+        # recurse through history or infer that memory revisions strictly grow.
+        for operator, order in (("<", "DESC"), (">", "ASC")):
+            neighbor = self.db.execute(
+                "SELECT * FROM context_checkpoints WHERE handoff_id=? AND revision "
+                + operator + " ? ORDER BY revision " + order + " LIMIT 1",
+                (handoff_id, revision)).fetchone()
+            if neighbor is None:
+                continue
+            try:
+                adjacent = validate_context(json.loads(neighbor["body"]), handoff)
+            except (ValueError, TypeError, RecursionError):
+                raise ValueError("stored context checkpoint integrity mismatch") from None
+            earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
+            if (type(neighbor["revision"]) is not int or neighbor["revision"] < 1
+                or digest(adjacent) != neighbor["digest"]
+                or earlier["memory_revision"] > later["memory_revision"]):
+                raise ValueError("stored context checkpoint integrity mismatch")
         return row, profile
 
     def checkpoint_context(self, handoff_id, *, expected_sha256, expected_source_revision, expected_memory_revision):
