@@ -341,8 +341,13 @@ class HandoffLedger:
                 raise ValueError("queue report is stale; retrieve current metadata again")
             return report
 
-    def destination_status(self, *, project_id, platform, destination_id):
+    def destination_status(self, *, project_id, platform, destination_id,
+                           include_digest=False, expected_sha256=None):
         """Selective private metadata discovery, never connection/dispatch proof."""
+        if type(include_digest) is not bool:
+            raise ValueError("include-digest must be boolean")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
         if not isinstance(project_id, str) or project_id not in PROJECTS:
             raise ValueError("unknown project")
         if not isinstance(platform, str) or platform not in TARGETS:
@@ -363,10 +368,16 @@ class HandoffLedger:
                     "context_sha256": row["digest"], "handoff_state": original["state"],
                     "execution_state": profile["execution"]["state"], "control_state": profile["control"]["state"],
                     "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed"})
-            return {"schema_version": 1, "kind": "jarvis.destination_status", "project_id": project_id,
+            result = {"schema_version": 1, "kind": "jarvis.destination_status", "project_id": project_id,
                     "platform": platform, "destination_id": destination_id, "records": matches,
                     "visibility": "owner_private", "sender_authentication": "not_established",
                     "dispatch_authorized": False, "external_actions": 0}
+            if include_digest or expected_sha256 is not None:
+                result["schema_version"] = 2
+                result["report_sha256"] = digest(result)
+                if expected_sha256 is not None and result["report_sha256"] != expected_sha256:
+                    raise ValueError("destination report is stale; retrieve current metadata again")
+            return result
 
     def _context(self, handoff_id):
         _, handoff = self._handoff(handoff_id)

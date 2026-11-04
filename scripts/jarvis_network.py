@@ -279,6 +279,8 @@ def main(argv=None):
     destination_status.add_argument("--project", choices=sorted(PROJECTS), required=True)
     destination_status.add_argument("--platform", choices=sorted(TARGETS), required=True)
     destination_status.add_argument("--destination", required=True)
+    destination_status.add_argument("--include-digest", action="store_true", help="Include a version-2 destination snapshot digest")
+    destination_status.add_argument("--expected-report-digest", help="Refuse a changed destination snapshot before saving output")
     destination_status.add_argument("--out", help="Save private report to a fresh file instead of printing its contents")
     registry_inspect = commands.add_parser("inspect-registry", help="Private proposed registry summary without opening a ledger")
     registry_inspect.add_argument("--file", required=True)
@@ -416,7 +418,8 @@ def main(argv=None):
                         expected_sha256=args.expected_report_digest, include_review_state=args.include_review_state)
                 elif args.command == "destination-status":
                     result = ledger.destination_status(project_id=args.project, platform=args.platform,
-                                                       destination_id=args.destination)
+                        destination_id=args.destination, include_digest=args.include_digest,
+                        expected_sha256=args.expected_report_digest)
                 elif args.command == "bind-observation":
                     guards = dict(expected_sha256=args.digest, expected_source_revision=args.source_revision,
                                   expected_memory_revision=args.memory_revision)

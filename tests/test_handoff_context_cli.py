@@ -1285,6 +1285,38 @@ class ContextCLITests(unittest.TestCase):
         packet = json.loads((self.root / "envelope.json").read_text())
         self.assertEqual(packet["context"]["destination_id"], "repo-one")
 
+    def test_destination_snapshot_cli_rejects_before_output_and_preserves_holds(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic private hold."))
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.write(self.profile)
+        self.assertEqual(self.save().returncode, 0)
+        args = ("--read-only", "destination-status", "--project", "ai-jarvis", "--platform", "codex", "--destination", "repo-one")
+        observed = self.cli(*args, "--include-digest")
+        self.assertEqual(observed.returncode, 0, observed.stderr)
+        first = json.loads(observed.stdout)
+        self.profile["execution"]["detail"] = "Changed private evidence; retain unknown outcome."
+        self.write(self.profile)
+        self.assertEqual(self.save(1).returncode, 0)
+        before = self.db.read_bytes()
+        stale = self.cli(*args, "--expected-report-digest", first["report_sha256"], "--out", "stale/destination.json")
+        self.assertEqual(stale.returncode, 1)
+        self.assertIn("destination report is stale", stale.stderr)
+        self.assertFalse((self.root / "stale").exists())
+        fresh = json.loads(self.cli(*args, "--include-digest").stdout)
+        written = self.cli(*args, "--expected-report-digest", fresh["report_sha256"], "--out", "private/destination.json")
+        self.assertEqual(written.returncode, 0, written.stderr)
+        output = self.root / "private/destination.json"
+        self.assertEqual(json.loads(output.read_text()), fresh)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        retained = output.read_bytes()
+        self.assertEqual(self.cli(*args, "--expected-report-digest", fresh["report_sha256"], "--out", "private/destination.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), retained)
+        self.assertEqual(fresh["records"][0]["execution_state"], "outcome_unknown")
+        self.assertEqual(fresh["records"][0]["control_state"], "paused")
+        self.assertFalse(fresh["dispatch_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_destination_status_cli_reads_existing_private_metadata_only(self):
         args = ("destination-status", "--project", "ai-jarvis", "--platform", "codex", "--destination", "repo-one")
         missing = self.cli(*args, database="missing.sqlite3")

@@ -545,6 +545,16 @@ draft text, execution detail, evidence/context URLs and unrelated records.
 Version-1/2 records are not assigned an inferred destination and remain available
 through the existing status/load commands. Invalid stored context stops the query.
 
+The default destination report remains version 1. Opt in with `--include-digest`
+(API `include_digest=True`) for a version-2 report with `report_sha256`, computed
+over its other fields. `--expected-report-digest SHA256` (API `expected_sha256`)
+selects the same version-2 format and checks the exact snapshot inside the read
+transaction, before any output file is created. Changed matching context,
+membership or local review state invalidates it; unrelated destinations do not.
+Project, platform and destination selectors are part of the digest. Refresh a
+stale report and review the changed evidence. This checks one observation only;
+it grants no authentication, lease, release approval or future-write protection.
+
 This read-only view changes no records or holds. Use its exact revisions for a
 subsequent load-context and fresh inspection; it is not a lease or dispatch
 eligibility check. Dispatch authorization is always false. A matching record,

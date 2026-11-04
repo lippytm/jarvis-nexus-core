@@ -1380,6 +1380,68 @@ class ContextTests(unittest.TestCase):
     def destination_profile(self, destination="repository-one"):
         return {**self.control_profile("active"), "schema_version": 3, "destination_id": destination}
 
+    def test_destination_snapshot_rejects_changed_evidence_after_restart(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        legacy = self.ledger.destination_status(**args)
+        first = self.ledger.destination_status(**args, include_digest=True)
+        self.assertEqual(legacy["schema_version"], 1)
+        self.assertNotIn("report_sha256", legacy)
+        self.assertEqual(first["schema_version"], 2)
+        self.assertEqual(first["report_sha256"], digest({k: v for k, v in first.items() if k != "report_sha256"}))
+        self.stage("unrelated-task")
+        other = {**self.context("unrelated-task"), "schema_version": 3,
+            "destination_id": "repository-two", "control": deepcopy(self.profile["control"])}
+        self.ledger.save_context(other, expected_revision=0)
+        self.assertEqual(self.ledger.destination_status(**args, expected_sha256=first["report_sha256"]), first)
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, expected_sha256=first["report_sha256"])
+        fresh = self.ledger.destination_status(**args, include_digest=True)
+        self.assertEqual(self.ledger.destination_status(**args, expected_sha256=fresh["report_sha256"]), fresh)
+        self.assertEqual(fresh["records"][0]["review_state"], "locally_reviewed")
+        self.assertEqual(fresh["records"][0]["control_state"], "paused")
+        self.assertEqual(fresh["records"][0]["execution_state"], "outcome_unknown")
+        self.assertFalse(fresh["dispatch_authorized"])
+        for omitted in ("https://", "Synthetic", "local-evaluator", "unrelated-task"):
+            self.assertNotIn(omitted, json.dumps(fresh))
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_destination_snapshot_binds_scope_membership_and_validates_options(self):
+        self.profile = self.destination_profile()
+        self.save()
+        args = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        first = self.ledger.destination_status(**args, include_digest=True)
+        before = list(self.ledger.db.iterdump())
+        for change in (dict(project_id="publishing-studio"), dict(platform="github"),
+                       dict(destination_id="repository-two")):
+            with self.subTest(change=change), self.assertRaisesRegex(ValueError, "destination report is stale"):
+                self.ledger.destination_status(**{**args, **change}, expected_sha256=first["report_sha256"])
+        for invalid in (None, 0, 1, "true", []):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.destination_status(**args, include_digest=invalid)
+        for invalid in ("", "bad", True, [], "A" * 64):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.destination_status(**args, expected_sha256=invalid)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        first["records"].clear()
+        self.assertEqual(len(self.ledger.destination_status(**args, include_digest=True)["records"]), 1)
+        self.stage("new-member")
+        member = {**self.context("new-member"), "schema_version": 3,
+            "destination_id": "repository-one", "control": deepcopy(self.profile["control"])}
+        self.ledger.save_context(member, expected_revision=0)
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, expected_sha256=first["report_sha256"])
+        self.assertEqual(len(self.ledger.destination_status(**args)["records"]), 2)
+
     def test_destination_round_trip_requires_both_reviews_and_survives_restart(self):
         self.profile = self.destination_profile()
         saved = self.save()
