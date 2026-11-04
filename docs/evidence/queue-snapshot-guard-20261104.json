@@ -1,0 +1,47 @@
+{
+  "authentication_or_live_dispatch": "not_established",
+  "change": "Optional queue_report expected_sha256 and queue-report --expected-report-digest. Validate and compare against metadata computed in the same read transaction; stale or wrong-scope snapshot rejects before file creation. No report/packet/ledger schema changes.",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "8d5a66c1b0bb4551a09bb24e7c85e65dd767f054",
+  "limitations": "Check holds only at the read transaction; not a lease, eligibility check or future write/release gate. Counts summarize proposed local state, not authenticated mission completion or actual worker metrics. No authenticating adapter or hold resolution added.",
+  "local_verification": {
+    "errors": 0,
+    "failures": 0,
+    "record_sha256": "5433af7383f7e6ee7adfae4525b134a12e9a65a7f86c07eec534dbaaa7520682",
+    "syntax_files": 73,
+    "tests": 514
+  },
+  "memory_source": "master Page sequence 120",
+  "mission_id": "queue-snapshot-guard-20261104",
+  "next_task": "Exact-content independent review; use selected snapshot checks before continuation observations. Separately verify audience/access policy and owner acceptance of the single saved registry proposal before operational ingestion.",
+  "observed_gap": "Existing report checksums could be compared manually but API/CLI could not require a previously observed queue snapshot before returning or saving a report.",
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "aaff082b27cd617584198840bdbda814053072fc811d594056095d929960ce83",
+  "regressions": [
+    "Unrelated mission changes preserve filtered snapshot; whole-project snapshot invalidates. Selected context memory/detail changes reject after read-only restart; matching fresh snapshot returns identical report, source bytes and paused/unknown holds unchanged.",
+    "Project/mission/report-version scope, malformed digests and newly selected membership invalidate/reject correctly.",
+    "CLI subprocess matching private-file round trip/0600 retention; stale output and its directory absent; existing evidence bytes/database unchanged; fresh observation matches after restart."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_private_queue_snapshot_guard",
+  "source_sha256": {
+    "control_tower/handoffs.py": "b8837a667f423094692140cca67e2f597a08d49b49b207b246ca08575507c8ee",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "42aa0532e7d65589789d057eabb709c85bddc242fb18dd9c72b2481b4c4bd473",
+    "scripts/jarvis_network.py": "30ddc68958486571285317aff981a0c07467ee84b2670cc1cfb2ebc80f5b8e7d",
+    "tests/test_handoff_context.py": "081e7cfc10ac610a6fe4c4fc315ad964e7abecc1fdc25cbbbc8c7813d6e84d47",
+    "tests/test_handoff_context_cli.py": "cd1c35b395d77ed64d51f5c7d92a53d9bde3e02ce65b85221f3d9e92e6711e10"
+  }
+}

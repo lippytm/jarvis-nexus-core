@@ -320,6 +320,34 @@ class ContextCLITests(unittest.TestCase):
         self.assertIn("read-only", json.loads(refused.stderr)["error"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_queue_snapshot_guard_refuses_stale_file_without_writes(self):
+        self.assertEqual(self.save().returncode, 0)
+        args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "cli-task")
+        first = json.loads(self.cli(*args).stdout)
+        guarded = (*args, "--expected-report-digest", first["report_sha256"])
+        self.assertEqual(json.loads(self.cli(*guarded).stdout), first)
+        saved = self.cli(*guarded, "--out", "private/current.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/current.json"
+        retained = output.read_bytes()
+        if os.name == "posix":
+            self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.profile["memory_revision"] = 2
+        self.profile["execution"]["detail"] = "New private checkpoint detail."
+        self.write(self.profile)
+        self.assertEqual(self.save(revision=1).returncode, 0)
+        before = self.db.read_bytes()
+        stale = self.cli(*guarded, "--out", "stale/should-not-exist.json")
+        self.assertEqual(stale.returncode, 1)
+        self.assertIn("queue report is stale", json.loads(stale.stderr)["error"])
+        self.assertFalse((self.root / "stale").exists())
+        self.assertEqual(output.read_bytes(), retained)
+        self.assertEqual(self.db.read_bytes(), before)
+        fresh = json.loads(self.cli(*args).stdout)
+        self.assertNotEqual(fresh["report_sha256"], first["report_sha256"])
+        self.assertEqual(json.loads(self.cli(*args, "--expected-report-digest", fresh["report_sha256"]).stdout), fresh)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_mission_queue_report_private_file_round_trip(self):
         self.assertEqual(self.save().returncode, 0)
         before = self.db.read_bytes()

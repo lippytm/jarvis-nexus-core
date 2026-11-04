@@ -608,6 +608,57 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="shared-mission")["handoff_count"], len(TARGETS))
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_queue_snapshot_guard_detects_selected_changes_after_restart(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        selected = self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one")
+        whole = self.ledger.queue_report(project_id="ai-jarvis")
+        self.stage("unrelated-task")
+        self.ledger.save_context(self.context("unrelated-task"), expected_revision=0)
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one",
+            expected_sha256=selected["report_sha256"]), selected)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(project_id="ai-jarvis", expected_sha256=whole["report_sha256"])
+        changed = deepcopy(self.profile)
+        changed["memory_revision"] = 2
+        changed["execution"]["detail"] = "Updated private evidence; retain unknown hold."
+        self.ledger.save_context(changed, expected_revision=1)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one",
+                expected_sha256=selected["report_sha256"])
+        current = self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one")
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one",
+            expected_sha256=current["report_sha256"]), current)
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], changed)
+        self.assertEqual(current["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(current["control_states"]["paused"], 1)
+        self.assertFalse(current["dispatch_authorized"])
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_queue_snapshot_guard_binds_scope_and_new_mission_membership(self):
+        self.save()
+        selected = self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one")
+        for scope in ({}, {"mission_id": "other-mission"}, {"project_id": "publishing-studio"}):
+            with self.subTest(scope=scope), self.assertRaisesRegex(ValueError, "queue report is stale"):
+                self.ledger.queue_report(**{**{"project_id": "ai-jarvis"}, **scope},
+                    expected_sha256=selected["report_sha256"])
+        for invalid in ("", "bad", True, [], "A" * 64):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.queue_report(project_id="ai-jarvis", expected_sha256=invalid)
+        self.stage("new-member")
+        member = self.context("new-member")
+        member["mission_id"] = "mission-one"
+        self.ledger.save_context(member, expected_revision=0)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one",
+                expected_sha256=selected["report_sha256"])
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one")["handoff_count"], 2)
+
     def test_mission_queue_report_empty_scope_and_legacy_contract(self):
         self.save()
         legacy = self.ledger.queue_report(project_id="ai-jarvis")

@@ -282,12 +282,14 @@ class HandoffLedger:
                     "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
                     "model_calls": 0, "external_actions": 0}
 
-    def queue_report(self, *, project_id, mission_id=None):
+    def queue_report(self, *, project_id, mission_id=None, expected_sha256=None):
         """Private counts of recorded states, never live worker/completion metrics."""
         if not isinstance(project_id, str) or project_id not in PROJECTS:
             raise ValueError("unknown project")
         if mission_id is not None:
             require_identifier(mission_id, "mission ID")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
         with self._transaction():
             handoffs = dict.fromkeys(("pending_review", "reviewed", "export_prepared", "returned_unverified"), 0)
             execution = dict.fromkeys(("pending", "execution_blocked", "outcome_unknown", "without_context"), 0)
@@ -326,7 +328,10 @@ class HandoffLedger:
                 "duplicate_attempts": "not_recorded", "dispatch_authorized": False, "external_actions": 0}
             if mission_id is not None:
                 result.update(schema_version=2, mission_id=mission_id)
-            return {**result, "report_sha256": digest(result)}
+            report = {**result, "report_sha256": digest(result)}
+            if expected_sha256 is not None and report["report_sha256"] != expected_sha256:
+                raise ValueError("queue report is stale; retrieve current metadata again")
+            return report
 
     def destination_status(self, *, project_id, platform, destination_id):
         """Selective private metadata discovery, never connection/dispatch proof."""

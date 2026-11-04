@@ -129,6 +129,15 @@ An unknown mission returns an empty report, not proof that the mission completed
 The same private-file, no-overwrite and read-only rules apply. This is selective
 local retrieval, not authentication, dispatch or a future revision/release gate.
 
+Optional `--expected-report-digest SHA256` requires the exact previously observed
+report checksum for the same project/mission scope. A mismatch refuses output
+before a report file is created. The API equivalent is `expected_sha256` on
+`queue_report`. Context revisions, changed selected membership and recorded states
+invalidate a snapshot; unrelated missions do not invalidate a filtered report.
+Matching returns the same report schema/content as an ordinary read. This check
+holds only at its read transaction: it is not a lease, authentication, an eligibility
+check or a gate for a later release/write. Refresh and review changed evidence.
+
 recorded_attempts sums current context attempt counters. It does not measure
 actual worker runs, retries or failures; contexts are proposed records. Duplicate
 attempts are marked not_recorded, and completion_verification is not_established:
