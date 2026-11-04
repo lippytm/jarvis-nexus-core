@@ -1380,6 +1380,80 @@ class ContextTests(unittest.TestCase):
     def destination_profile(self, destination="repository-one"):
         return {**self.control_profile("active"), "schema_version": 3, "destination_id": destination}
 
+    def test_destination_mission_selection_retains_all_target_holds_after_restart(self):
+        for target in sorted(TARGETS):
+            identifier = "selected-" + target
+            manifest = build_swarm("ai-jarvis", [target], swarm_id="destination-" + target, source_revision=REVISION)
+            self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                target=target, text="Synthetic selective destination fixture."), manifest,
+                assistant_id=manifest["swarm_id"] + ".builder", handoff_id=identifier)
+            profile = self.context(identifier)
+            profile.update(asset_id=manifest["swarm_id"] + ".builder",
+                schema_version=3, mission_id="shared-mission", destination_id="shared-destination",
+                control=dict(state="paused", actor_id="local-owner", reason="Synthetic private hold."))
+            profile["execution"]["state"] = "outcome_unknown"
+            self.ledger.save_context(profile, expected_revision=0)
+        self.profile = self.destination_profile("shared-destination")
+        self.save()  # Different mission at the same Codex destination.
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        for target in sorted(TARGETS):
+            args = dict(project_id="ai-jarvis", platform=target, destination_id="shared-destination",
+                        mission_id="shared-mission")
+            report = self.ledger.destination_status(**args)
+            self.assertEqual(report["schema_version"], 3)
+            self.assertEqual(report["mission_id"], "shared-mission")
+            self.assertEqual(len(report["records"]), 1)
+            self.assertEqual(report["platform"], target)
+            self.assertEqual(report["records"][0]["handoff_id"], "selected-" + target)
+            self.assertEqual(report["records"][0]["control_state"], "paused")
+            self.assertEqual(report["records"][0]["execution_state"], "outcome_unknown")
+            self.assertFalse(report["dispatch_authorized"])
+            self.assertEqual(report["report_sha256"], digest({k: v for k, v in report.items() if k != "report_sha256"}))
+            self.assertEqual(self.ledger.destination_status(**args, expected_sha256=report["report_sha256"]), report)
+            self.assertNotIn("https://", json.dumps(report))
+            self.assertNotIn("Synthetic", json.dumps(report))
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+
+    def test_destination_mission_snapshot_isolates_unrelated_edits_and_binds_membership(self):
+        self.profile = self.destination_profile()
+        self.save()
+        args = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        legacy = self.ledger.destination_status(**args)
+        unfiltered = self.ledger.destination_status(**args, include_digest=True)
+        selected = self.ledger.destination_status(**args, mission_id="mission-one")
+        self.assertEqual((legacy["schema_version"], unfiltered["schema_version"]), (1, 2))
+        self.assertNotIn("mission_id", legacy)
+        self.assertNotIn("mission_id", unfiltered)
+        for invalid in ("", "../mission", True, [], 1):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.destination_status(**args, mission_id=invalid)
+        empty = self.ledger.destination_status(**args, mission_id="absent-mission")
+        self.assertEqual(empty["records"], [])
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, mission_id="absent-mission", expected_sha256=selected["report_sha256"])
+        self.stage("new-member")
+        other = {**self.context("new-member"), "schema_version": 3, "destination_id": "repository-one",
+            "control": deepcopy(self.profile["control"])}
+        self.ledger.save_context(other, expected_revision=0)
+        self.assertEqual(self.ledger.destination_status(**args, mission_id="mission-one",
+            expected_sha256=selected["report_sha256"]), selected)
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, expected_sha256=unfiltered["report_sha256"])
+        # Mission identity cannot change: stage a distinct matching member.
+        manifest = build_swarm("ai-jarvis", ["codex"], swarm_id="second-pilot", source_revision=REVISION)
+        self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+            target="codex", text="Synthetic matching member."), manifest,
+            assistant_id="second-pilot.builder", handoff_id="matching-member")
+        member = {**self.context("matching-member"), "asset_id": "second-pilot.builder",
+            "schema_version": 3, "mission_id": "mission-one",
+            "destination_id": "repository-one", "control": deepcopy(self.profile["control"])}
+        self.ledger.save_context(member, expected_revision=0)
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, mission_id="mission-one", expected_sha256=selected["report_sha256"])
+
     def test_destination_snapshot_rejects_changed_evidence_after_restart(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"

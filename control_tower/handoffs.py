@@ -342,7 +342,7 @@ class HandoffLedger:
             return report
 
     def destination_status(self, *, project_id, platform, destination_id,
-                           include_digest=False, expected_sha256=None):
+                           include_digest=False, expected_sha256=None, mission_id=None):
         """Selective private metadata discovery, never connection/dispatch proof."""
         if type(include_digest) is not bool:
             raise ValueError("include-digest must be boolean")
@@ -353,13 +353,16 @@ class HandoffLedger:
         if not isinstance(platform, str) or platform not in TARGETS:
             raise ValueError("unknown platform")
         require_identifier(destination_id, "destination ID")
+        if mission_id is not None:
+            require_identifier(mission_id, "mission ID")
         with self._transaction():
             matches = []
             rows = self.db.execute("SELECT handoff_id FROM handoff_contexts ORDER BY handoff_id").fetchall()
             for item in rows:
                 row, profile = self._context(item["handoff_id"])
                 if (profile["schema_version"] != 3 or profile["project_id"] != project_id
-                    or profile["platform"] != platform or profile["destination_id"] != destination_id):
+                    or profile["platform"] != platform or profile["destination_id"] != destination_id
+                    or mission_id is not None and profile["mission_id"] != mission_id):
                     continue
                 original, _ = self._handoff(item["handoff_id"])
                 matches.append({"handoff_id": item["handoff_id"], "mission_id": profile["mission_id"],
@@ -372,8 +375,11 @@ class HandoffLedger:
                     "platform": platform, "destination_id": destination_id, "records": matches,
                     "visibility": "owner_private", "sender_authentication": "not_established",
                     "dispatch_authorized": False, "external_actions": 0}
-            if include_digest or expected_sha256 is not None:
-                result["schema_version"] = 2
+            if mission_id is not None:
+                result.update(schema_version=3, mission_id=mission_id)
+            if include_digest or expected_sha256 is not None or mission_id is not None:
+                if mission_id is None:
+                    result["schema_version"] = 2
                 result["report_sha256"] = digest(result)
                 if expected_sha256 is not None and result["report_sha256"] != expected_sha256:
                     raise ValueError("destination report is stale; retrieve current metadata again")

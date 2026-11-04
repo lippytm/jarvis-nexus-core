@@ -1285,6 +1285,32 @@ class ContextCLITests(unittest.TestCase):
         packet = json.loads((self.root / "envelope.json").read_text())
         self.assertEqual(packet["context"]["destination_id"], "repo-one")
 
+    def test_destination_mission_cli_retains_private_selection_and_rejects_stale_scope(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic private hold."))
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.write(self.profile)
+        self.assertEqual(self.save().returncode, 0)
+        args = ("--read-only", "destination-status", "--project", "ai-jarvis", "--platform", "codex", "--destination", "repo-one")
+        first = self.cli(*args, "--mission", "cli-task")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        report = json.loads(first.stdout)
+        self.assertEqual((report["schema_version"], report["mission_id"]), (3, "cli-task"))
+        before = self.db.read_bytes()
+        for suffix in (("--mission", "other-task"), (), ("--mission", "../bad")):
+            rejected = self.cli(*args, *suffix, "--expected-report-digest", report["report_sha256"], "--out", "stale/mission.json")
+            self.assertEqual(rejected.returncode, 1)
+            self.assertFalse((self.root / "stale").exists())
+        saved = self.cli(*args, "--mission", "cli-task", "--expected-report-digest", report["report_sha256"], "--out", "private/mission.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/mission.json"
+        self.assertEqual(json.loads(output.read_text()), report)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(report["records"][0]["control_state"], "paused")
+        self.assertEqual(report["records"][0]["execution_state"], "outcome_unknown")
+        self.assertFalse(report["dispatch_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_destination_snapshot_cli_rejects_before_output_and_preserves_holds(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic private hold."))

@@ -279,6 +279,7 @@ def main(argv=None):
     destination_status.add_argument("--project", choices=sorted(PROJECTS), required=True)
     destination_status.add_argument("--platform", choices=sorted(TARGETS), required=True)
     destination_status.add_argument("--destination", required=True)
+    destination_status.add_argument("--mission", help="Select one mission at this destination (version-3 report)")
     destination_status.add_argument("--include-digest", action="store_true", help="Include a version-2 destination snapshot digest")
     destination_status.add_argument("--expected-report-digest", help="Refuse a changed destination snapshot before saving output")
     destination_status.add_argument("--out", help="Save private report to a fresh file instead of printing its contents")
@@ -419,7 +420,7 @@ def main(argv=None):
                 elif args.command == "destination-status":
                     result = ledger.destination_status(project_id=args.project, platform=args.platform,
                         destination_id=args.destination, include_digest=args.include_digest,
-                        expected_sha256=args.expected_report_digest)
+                        expected_sha256=args.expected_report_digest, mission_id=args.mission)
                 elif args.command == "bind-observation":
                     guards = dict(expected_sha256=args.digest, expected_source_revision=args.source_revision,
                                   expected_memory_revision=args.memory_revision)

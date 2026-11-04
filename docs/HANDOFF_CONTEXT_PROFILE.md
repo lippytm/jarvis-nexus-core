@@ -555,6 +555,14 @@ Project, platform and destination selectors are part of the digest. Refresh a
 stale report and review the changed evidence. This checks one observation only;
 it grants no authentication, lease, release approval or future-write protection.
 
+Use destination-status `--mission ID` (API `mission_id`) to retrieve only one
+mission within the exact project/platform/destination scope. This explicitly
+selects report version 3, including `mission_id` and `report_sha256`; existing
+unfiltered version-1/2 reports retain their formats. Unknown missions return an
+empty selection, not a completion claim. Expected snapshot checks bind all four
+selectors and matching records; changes in another mission do not invalidate a
+selected snapshot. All records remain subject to stored-integrity validation.
+
 This read-only view changes no records or holds. Use its exact revisions for a
 subsequent load-context and fresh inspection; it is not a lease or dispatch
 eligibility check. Dispatch authorization is always false. A matching record,
