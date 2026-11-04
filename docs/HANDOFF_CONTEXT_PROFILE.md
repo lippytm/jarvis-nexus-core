@@ -129,6 +129,15 @@ An unknown mission returns an empty report, not proof that the mission completed
 The same private-file, no-overwrite and read-only rules apply. This is selective
 local retrieval, not authentication, dispatch or a future revision/release gate.
 
+Opt in to `--include-review-state` (API `include_review_state=True`) for a
+version-3 report with `handoff_review_current` and `context_review_current` on each
+binding. A contextless record has a null context-review value. Review labels and
+private text are omitted; `review_authority` explicitly says these are local records,
+not identity authentication. Version-1/2 output remains unchanged without this flag.
+Review-state changes invalidate a version-3 snapshot even when context content is
+unchanged. These booleans do not establish owner approval, lineage eligibility or
+release authority; holds and dispatch restrictions remain in force.
+
 Optional `--expected-report-digest SHA256` requires the exact previously observed
 report checksum for the same project/mission scope. A mismatch refuses output
 before a report file is created. The API equivalent is `expected_sha256` on

@@ -608,6 +608,66 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis", mission_id="shared-mission")["handoff_count"], len(TARGETS))
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_queue_review_state_binds_exact_local_review_after_restart(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
+        args = dict(project_id="ai-jarvis", mission_id="mission-one")
+        legacy = self.ledger.queue_report(**args)
+        first = self.ledger.queue_report(**args, include_review_state=True)
+        self.assertEqual(first["schema_version"], 3)
+        self.assertTrue(first["bindings"][0]["handoff_review_current"])
+        self.assertFalse(first["bindings"][0]["context_review_current"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.assertEqual(self.ledger.queue_report(**args), legacy)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**args, include_review_state=True, expected_sha256=first["report_sha256"])
+        reviewed = self.ledger.queue_report(**args, include_review_state=True)
+        self.assertTrue(reviewed["bindings"][0]["context_review_current"])
+        self.assertEqual(reviewed["review_authority"], "local_record_only_not_identity_authentication")
+        self.assertFalse(reviewed["dispatch_authorized"])
+        self.assertNotIn("local-evaluator", json.dumps(reviewed))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        self.assertEqual(self.ledger.queue_report(**args, include_review_state=True,
+            expected_sha256=reviewed["report_sha256"]), reviewed)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.path.read_bytes(), before)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Edited private evidence; review again."
+        self.ledger.save_context(changed, expected_revision=1)
+        edited = self.ledger.queue_report(**args, include_review_state=True)
+        self.assertFalse(edited["bindings"][0]["context_review_current"])
+        self.assertTrue(edited["bindings"][0]["handoff_review_current"])
+        self.assertEqual(edited["control_states"]["paused"], 1)
+        self.assertEqual(edited["execution_states"]["outcome_unknown"], 1)
+
+    def test_queue_review_state_is_opt_in_and_contextless_is_unknown(self):
+        self.save()
+        self.stage("contextless-task")
+        original = self.ledger.queue_report(project_id="ai-jarvis")
+        selected = self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one")
+        before = list(self.ledger.db.iterdump())
+        result = self.ledger.queue_report(project_id="ai-jarvis", include_review_state=True)
+        self.assertEqual(result["schema_version"], 3)
+        row = next(x for x in result["bindings"] if x["handoff_id"] == "contextless-task")
+        self.assertIsNone(row["context_review_current"])
+        self.assertFalse(row["handoff_review_current"])
+        for old in (original, selected):
+            self.assertNotIn("review_authority", old)
+            self.assertNotIn("context_review_current", json.dumps(old))
+        self.assertEqual((original["schema_version"], selected["schema_version"]), (1, 2))
+        for invalid in (None, 0, 1, "true", []):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.queue_report(project_id="ai-jarvis", include_review_state=invalid)
+        result["bindings"][0]["handoff_review_current"] = True
+        self.assertEqual(self.ledger.queue_report(project_id="ai-jarvis"), original)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+
     def test_queue_snapshot_guard_detects_selected_changes_after_restart(self):
         self.profile = self.control_profile("paused")
         self.profile["execution"]["state"] = "outcome_unknown"

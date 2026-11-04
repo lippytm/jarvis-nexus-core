@@ -320,6 +320,32 @@ class ContextCLITests(unittest.TestCase):
         self.assertIn("read-only", json.loads(refused.stderr)["error"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_queue_review_state_private_snapshot_invalidates_on_review(self):
+        saved = json.loads(self.save().stdout)
+        args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "cli-task", "--include-review-state")
+        first = json.loads(self.cli(*args).stdout)
+        self.assertEqual(first["schema_version"], 3)
+        self.assertFalse(first["bindings"][0]["context_review_current"])
+        review = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-evaluator",
+                          "--digest", saved["context_sha256"])
+        self.assertEqual(review.returncode, 0, review.stderr)
+        before = self.db.read_bytes()
+        stale = self.cli(*args, "--expected-report-digest", first["report_sha256"], "--out", "stale/review.json")
+        self.assertEqual(stale.returncode, 1)
+        self.assertFalse((self.root / "stale").exists())
+        fresh = json.loads(self.cli(*args).stdout)
+        self.assertTrue(fresh["bindings"][0]["context_review_current"])
+        self.assertFalse(fresh["bindings"][0]["handoff_review_current"])
+        written = self.cli(*args, "--expected-report-digest", fresh["report_sha256"], "--out", "private/review.json")
+        self.assertEqual(written.returncode, 0, written.stderr)
+        output = self.root / "private/review.json"
+        self.assertEqual(json.loads(output.read_text()), fresh)
+        if os.name == "posix":
+            self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertNotIn("local-evaluator", output.read_text())
+        self.assertFalse(fresh["dispatch_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_queue_snapshot_guard_refuses_stale_file_without_writes(self):
         self.assertEqual(self.save().returncode, 0)
         args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "cli-task")

@@ -282,8 +282,10 @@ class HandoffLedger:
                     "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
                     "model_calls": 0, "external_actions": 0}
 
-    def queue_report(self, *, project_id, mission_id=None, expected_sha256=None):
+    def queue_report(self, *, project_id, mission_id=None, expected_sha256=None, include_review_state=False):
         """Private counts of recorded states, never live worker/completion metrics."""
+        if type(include_review_state) is not bool:
+            raise ValueError("include-review-state must be boolean")
         if not isinstance(project_id, str) or project_id not in PROJECTS:
             raise ValueError("unknown project")
         if mission_id is not None:
@@ -320,6 +322,10 @@ class HandoffLedger:
                 else:
                     execution["without_context"] += 1
                     controls["without_context"] += 1
+                if include_review_state:
+                    binding.update(handoff_review_current=row["reviewed_digest"] == row["digest"],
+                        context_review_current=(selected[0]["reviewed_digest"] == selected[0]["digest"]
+                                                if selected is not None else None))
                 bindings.append(binding)
             result = {"schema_version": 1, "kind": "jarvis.queue_report", "project_id": project_id,
                 "handoff_count": len(bindings), "handoff_states": handoffs, "execution_states": execution,
@@ -328,6 +334,8 @@ class HandoffLedger:
                 "duplicate_attempts": "not_recorded", "dispatch_authorized": False, "external_actions": 0}
             if mission_id is not None:
                 result.update(schema_version=2, mission_id=mission_id)
+            if include_review_state:
+                result.update(schema_version=3, review_authority="local_record_only_not_identity_authentication")
             report = {**result, "report_sha256": digest(result)}
             if expected_sha256 is not None and report["report_sha256"] != expected_sha256:
                 raise ValueError("queue report is stale; retrieve current metadata again")
