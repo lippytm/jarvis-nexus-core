@@ -3,7 +3,8 @@
 Status: **unpublished captions, card scripts and media specifications; owner review pending**.
 Four captions, twenty card scripts and twenty proposed alt descriptions are authored.
 All four slots now have twenty editable SVG artwork candidates, locally rendered
-and inspected. Final upload exports and videos remain unprepared. No Instagram
+and inspected. Five slot-1 PNG review export candidates are retained; other slot
+exports and finished videos remain unprepared. No Instagram
 account was accessed, no post scheduled and no content published.
 
 ## Provenance and scope
@@ -90,6 +91,26 @@ The [preparation receipt](../evidence/instagram-slot1-artwork-20261030.json) ret
 source/artifact/preview hashes and actual renderer warnings. PNGs are intermediate
 layout previews; no final upload package, mobile crop, screen-reader/alt-field
 support, account/destination, owner approval or publication has been verified.
+
+### Slot 1 PNG export candidates
+
+Five 1080 × 1080 PNG review exports retain the exact earlier preview bytes:
+[opening](exports/instagram-20261029/slot-1/card-1.png),
+[explanation](exports/instagram-20261029/slot-1/card-2.png),
+[example](exports/instagram-20261029/slot-1/card-3.png),
+[limitation](exports/instagram-20261029/slot-1/card-4.png) and
+[question](exports/instagram-20261029/slot-1/card-5.png).
+They were retained without rerendering or changing any source SVG, caption or alt
+text. All five files match the hashes in the original artwork receipt. Fresh PNG
+decode/dimension/opacity/metadata checks passed; each image was visually inspected.
+The [export receipt](../evidence/instagram-slot1-png-exports-20261103.json) retains
+exact PNG/source hashes, checks and remaining limits.
+
+These are unpublished review candidates, not an approved upload package. Canvas
+size remains an editorial choice; actual account/destination, crop, mobile layout,
+alt-field/screen-reader behavior, rights and exact owner approval are unverified.
+PNG files do not supply platform alt text by themselves; the proposed text remains
+above for review and later authorized entry. No account was accessed or post made.
 
 ## Slot 2 — Demonstrate
 
@@ -270,13 +291,14 @@ and owner exact-art/caption approval remain unfinished. No publication or live t
 ## Review and continuation
 
 All four captions and twenty text/alt-text pairs are authored. All twenty SVG source
-cards are prepared and locally rendered for review. Final exports/accessibility checks,
+cards are prepared and locally rendered for review. Slot-1 PNG candidates are retained;
+other exports and final accessibility checks,
 asset-rights review, exact account/destination, owner
 approval and publication remain unfinished. Source links and the unverified candidate
 URL above are editorial review metadata, not instructions to append them to a post.
 
 Next bounded production step: review one exact caption, five-card set and alt text,
-then confirm the destination and accessible export format before preparing final files. Any changed copy/art needs
+then confirm the destination and accessible upload format before treating files as final. Any changed copy/art needs
 review of that revision. No engagement, attribution, cost or performance measurements
 exist for these drafts. This advances one channel's four-slot preparation target;
 it does not establish 24 published posts, finished videos or a changed newsletter schedule.
