@@ -385,6 +385,11 @@ class HandoffLedger:
         if (digest(profile) != row["digest"] or revision > current["revision"]
             or profile["schema_version"] > current_profile["schema_version"]
             or profile["mission_id"] != current_profile["mission_id"]
+            or (profile.get("control", {}).get("state") == "cancelled"
+                and current_profile.get("control", {}).get("state") != "cancelled")
+            or (profile["execution"]["state"] == "outcome_unknown"
+                and any(profile["execution"][field] != current_profile["execution"][field]
+                        for field in ("state", "attempts", "context_id")))
             or (profile["schema_version"] == 3
                 and profile["destination_id"] != current_profile.get("destination_id"))
             or profile["memory_revision"] > current_profile["memory_revision"]

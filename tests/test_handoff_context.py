@@ -281,6 +281,78 @@ class ContextTests(unittest.TestCase):
             self.ledger.list_checkpoints("mission-one")
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def assert_damaged_hold_history_rejects(self, damaged, current, suffix):
+        from scripts.jarvis_network import _backup
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+            (json.dumps(damaged), digest(damaged), "mission-one"))
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        output = self.path.parent / (suffix + "-backup.sqlite3")
+        operations = {
+            "index": lambda: self.ledger.list_checkpoints("mission-one"),
+            "load": lambda: self.ledger.load_checkpoint("mission-one", 1,
+                expected_sha256=digest(damaged), expected_source_revision=REVISION,
+                expected_memory_revision=1),
+            "backup": lambda: _backup(self.ledger.db, output),
+        }
+        for name, operation in operations.items():
+            with self.subTest(case=suffix, operation=name), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                operation()
+        with self.subTest(case=suffix, operation="no-published-backup"):
+            self.assertFalse(output.exists())
+        self.assertFalse(list(output.parent.glob(".jarvis-backup-*")))
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.load("independent-task")["profile"], self.context("independent-task"))
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+
+    def hold_history_fixture(self, unknown=False):
+        self.profile = self.control_profile("paused")
+        saved = self.save()
+        self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"],
+            expected_source_revision=REVISION, expected_memory_revision=1)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        current["control"]["state"] = "active"
+        if unknown:
+            current["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(current, expected_revision=1)
+        self.stage("independent-task")
+        self.ledger.save_context(self.context("independent-task"), expected_revision=0)
+        return current
+
+    def test_historical_terminal_holds_cannot_disappear_after_restart(self):
+        current = self.hold_history_fixture()
+        cancelled = deepcopy(self.profile)
+        cancelled["control"]["state"] = "cancelled"
+        self.assert_damaged_hold_history_rejects(cancelled, current, "cancelled")
+        unknown = deepcopy(self.profile)
+        unknown["execution"]["state"] = "outcome_unknown"
+        self.assert_damaged_hold_history_rejects(unknown, current, "unknown")
+
+    def test_historical_unknown_execution_binding_cannot_change_after_restart(self):
+        current = self.hold_history_fixture(unknown=True)
+        for field, value in (("attempts", 0), ("context_id", "different-context")):
+            damaged = deepcopy(self.profile)
+            damaged["execution"].update(state="outcome_unknown", **{field: value})
+            self.assert_damaged_hold_history_rejects(damaged, current, field)
+
+    def test_paused_history_can_precede_active_unknown_hold_without_releasing_it(self):
+        current = self.hold_history_fixture(unknown=True)
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            before = self.path.read_bytes()
+            history = restarted.load_checkpoint("mission-one", 1, expected_sha256=digest(self.profile),
+                expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertEqual(history["profile"], self.profile)
+            self.assertFalse(history["retry_authorized"])
+            self.assertEqual(len(restarted.list_checkpoints("mission-one")["checkpoints"]), 1)
+            self.assertEqual(restarted.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=2)["profile"], current)
+            self.assertEqual(self.path.read_bytes(), before)
+
     def test_historical_control_schema_cannot_exceed_current_after_restart(self):
         from scripts.jarvis_network import _backup
         saved = self.save()
