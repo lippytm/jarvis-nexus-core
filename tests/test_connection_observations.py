@@ -4,8 +4,8 @@ import json
 from copy import deepcopy
 from hashlib import sha256
 from control_tower.connections import (read_observation, connector_report,
-    verify_github_commit_response, validate_destination_registry)
-from control_tower.network_contract import TARGETS
+    verify_github_commit_response, validate_destination_registry, inspect_destination_registry)
+from control_tower.network_contract import TARGETS, digest
 
 NOW = datetime(2026, 10, 22, 20, tzinfo=timezone.utc)
 
@@ -55,6 +55,44 @@ class ConnectionObservationTests(unittest.TestCase):
         for registry in invalid:
             with self.subTest(registry=registry), self.assertRaises(ValueError):
                 validate_destination_registry(registry)
+
+    def test_registry_inspection_retains_exact_identity_without_resource_mappings(self):
+        registry = self.registry()
+        args = dict(expected_sha256=digest(registry), expected_revision=1,
+                    expected_source_revision=registry["source_revision"])
+        result = inspect_destination_registry(registry, **args)
+        self.assertEqual(result["registry_sha256"], digest(registry))
+        self.assertEqual(result["platform_counts"], {target: 1 for target in TARGETS})
+        self.assertEqual(result["entry_count"], len(TARGETS))
+        self.assertEqual(result["visibility"], "owner_private")
+        self.assertEqual(result["acceptance_state"], "proposed_unverified")
+        self.assertFalse(result["dispatch_authorized"])
+        self.assertEqual(result["sender_authentication"], "not_established")
+        self.assertEqual(result["receipt_sha256"], digest({k: v for k, v in result.items() if k != "receipt_sha256"}))
+        for private in ("owner/repository", "resource-one", "opaque-resource", "entries", "allowed_actions"):
+            self.assertNotIn(private, json.dumps(result))
+        result["platform_counts"].clear()
+        self.assertEqual(len(inspect_destination_registry(registry, **args)["platform_counts"]), len(TARGETS))
+        other = deepcopy(registry)
+        other["registry_id"] = "independent-registry"
+        self.assertNotEqual(inspect_destination_registry(other,
+            **{**args, "expected_sha256": digest(other)})["receipt_sha256"],
+            inspect_destination_registry(registry, **args)["receipt_sha256"])
+
+    def test_registry_inspection_rejects_stale_digest_source_and_revision(self):
+        registry = self.registry()
+        before = deepcopy(registry)
+        args = dict(expected_sha256=digest(registry), expected_revision=1,
+                    expected_source_revision=registry["source_revision"])
+        for change in (dict(expected_sha256="0" * 64), dict(expected_sha256="bad"),
+                       dict(expected_revision=True), dict(expected_revision=2),
+                       dict(expected_source_revision="b" * 40)):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                inspect_destination_registry(registry, **{**args, **change})
+        self.assertEqual(registry, before)
+        public = {**registry, "visibility": "public_candidate"}
+        with self.assertRaises(ValueError):
+            inspect_destination_registry(public, **{**args, "expected_sha256": digest(public)})
 
     def test_github_commit_repository_names_preserve_resource_boundaries(self):
         source = "a" * 40

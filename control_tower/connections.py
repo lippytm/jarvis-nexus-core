@@ -10,7 +10,7 @@ from hashlib import sha256
 import json
 import re
 from control_tower.validation import json_record_errors, valid_https_url
-from control_tower.network_contract import PROJECTS, TARGETS, require_identifier, require_record
+from control_tower.network_contract import PROJECTS, TARGETS, require_identifier, require_record, require_digest, digest
 
 CONNECTORS = {
     "chatgpt": {"purpose": "reviewed manual assistant handoffs", "status": "unverified", "write_gate": "owner_review"},
@@ -115,6 +115,26 @@ def validate_destination_registry(registry):
             raise ValueError("duplicate registry destination scope")
         seen.add(key)
     return deepcopy(registry)
+
+
+def inspect_destination_registry(registry, *, expected_sha256, expected_revision, expected_source_revision):
+    """Private metadata-only preflight; no storage, acceptance or authentication."""
+    require_digest(expected_sha256)
+    registry = validate_destination_registry(registry)
+    if (type(expected_revision) is not int or registry["revision"] != expected_revision
+        or registry["source_revision"] != expected_source_revision
+        or digest(registry) != expected_sha256):
+        raise ValueError("registry digest, source or revision mismatch")
+    counts = {}
+    for entry in registry["entries"]:
+        counts[entry["platform"]] = counts.get(entry["platform"], 0) + 1
+    result = {"schema_version": 1, "kind": "jarvis.destination_registry_inspection",
+        **{key: registry[key] for key in ("registry_id", "revision", "source_revision", "configuration_version")},
+        "registry_sha256": expected_sha256, "entry_count": len(registry["entries"]),
+        "platform_counts": dict(sorted(counts.items())), "visibility": "owner_private",
+        "acceptance_state": "proposed_unverified", "sender_authentication": "not_established",
+        "dispatch_authorized": False, "external_actions": 0}
+    return {**result, "receipt_sha256": digest(result)}
 
 
 def verify_github_commit_response(content, observation, repository):

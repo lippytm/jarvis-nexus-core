@@ -1,0 +1,60 @@
+{
+  "accepted_storage": "not_implemented",
+  "artifacts_sha256": {
+    "control_tower/connections.py": "0e50185438e62aa9ae6e137c5203ba8e2adbf46c992b5e71ccadc937da14b168",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "6c28d28ed2f3bdfa4227e413d92f0f5b20a90c85e988836c45db6b042b4b352e",
+    "scripts/jarvis_network.py": "8d152cefdff5d5b9f01ff7b5b884cd93ed9e151cf228c0d6c09142e2242ca67d",
+    "tests/test_connection_observations.py": "33e7d43f02e6d91400887e33a8923e634f4608796a7905e63ebebefcacfbf548",
+    "tests/test_handoff_context_cli.py": "95291155ecdc9a258e9e1a7d49cac6da03d0a1c3b23aa260f1330c109d0130f4"
+  },
+  "authentication": "not_established",
+  "change": "Add inspect_destination_registry API and inspect-registry CLI using existing validator and private writer, with digest/source/revision guards and a separate version-1 inspection receipt.",
+  "checks": {
+    "behavior": [
+      "all 17 target IDs retained in counts",
+      "independent records and result mutation isolation",
+      "exact digest/source/integer revision required",
+      "private summary omits destination/resource mappings",
+      "fresh processes produce identical receipts",
+      "mode-600 no-overwrite output",
+      "no absent database creation or existing ledger/input changes",
+      "duplicate JSON and escaping paths rejected before publication"
+    ],
+    "changed_python_syntax_files": 4,
+    "errors": 0,
+    "failures": 0,
+    "focused_failures": 0,
+    "focused_tests": 5,
+    "git_diff_check_exit_code": 0,
+    "python_tests": 503,
+    "syntax_files": 73,
+    "verifier_record_sha256": "7747fd23de41ed0e528ed1fc557ef84e4864d98f765eaf878b1751603710540a"
+  },
+  "compatibility": "No existing strict packet, registry snapshot or database schema changed. New receipt kind has explicit version 1.",
+  "configuration": "existing bounded Codex readiness and Jarvis build contract",
+  "costs_measured": false,
+  "dispatch_authorized": false,
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "memory_source": "master Page sequence 111",
+  "mission_id": "registry-preflight-20261103",
+  "next_task": "Advance authenticated accepted registry storage only with an actual scoped authorized save/read receipt; preflight summaries remain proposed facts and cannot establish connections or running agents.",
+  "observed_gap": "CLI registry checking previously required bind-observation, an existing handoff and retained response. No standalone exact-revision metadata preflight existed.",
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "99988630f0d07e881ee80ea569745b90fdb44fb5d108466685cb9d7c143b7900",
+  "recovery_time_measured": false,
+  "review_effort_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "standalone private proposed-registry inspection before ledger access",
+  "source_revision": "06c25d491580c4a71e8dba34ea29e460b7e5cfd3"
+}

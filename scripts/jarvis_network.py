@@ -17,7 +17,7 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
-from control_tower.connections import verify_github_commit_response, validate_destination_registry
+from control_tower.connections import verify_github_commit_response, validate_destination_registry, inspect_destination_registry
 from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, canonical, load_packet, digest, require_digest, require_identifier, require_text
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
@@ -277,6 +277,12 @@ def main(argv=None):
     destination_status.add_argument("--platform", choices=sorted(TARGETS), required=True)
     destination_status.add_argument("--destination", required=True)
     destination_status.add_argument("--out", help="Save private report to a fresh file instead of printing its contents")
+    registry_inspect = commands.add_parser("inspect-registry", help="Private proposed registry summary without opening a ledger")
+    registry_inspect.add_argument("--file", required=True)
+    registry_inspect.add_argument("--digest", required=True)
+    registry_inspect.add_argument("--registry-revision", type=int, required=True)
+    registry_inspect.add_argument("--source-revision", required=True)
+    registry_inspect.add_argument("--out", help="Save private summary to a fresh file instead of stdout")
     observation = commands.add_parser("bind-observation")
     observation.add_argument("--handoff", required=True)
     observation.add_argument("--file", required=True)
@@ -294,7 +300,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report", "load-checkpoint", "list-checkpoints"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -307,6 +313,10 @@ def main(argv=None):
                                  source_revision=args.source_revision)
         elif args.command == "catalog":
             result = {"projects": PROJECTS, "providers": provider_catalog(), "external_actions": 0}
+        elif args.command == "inspect-registry":
+            result = inspect_destination_registry(load_packet(_local(root, args.file)),
+                expected_sha256=args.digest, expected_revision=args.registry_revision,
+                expected_source_revision=args.source_revision)
         elif args.command == "demo":
             result = demonstrate_network()
         elif args.command == "init-ledger":

@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 from control_tower.handoffs import HandoffLedger
 from control_tower.swarm_factory import build_swarm
-from control_tower.network_contract import digest
+from control_tower.network_contract import digest, TARGETS
 from control_tower.connections import read_observation
 from scripts.jarvis_network import _backup, _set_context_control
 
@@ -58,6 +58,65 @@ class ContextCLITests(unittest.TestCase):
     def load(self, out="resumed.json", revision=REVISION, memory=1):
         return self.cli("load-context", "--handoff", "cli-task", "--source-revision", revision,
                         "--memory-revision", str(memory), "--out", out)
+
+    def registry_input(self):
+        record = dict(schema_version=1, kind="jarvis.destination_registry", registry_id="private-registry",
+            revision=1, source_revision=REVISION, configuration_version="read.v1", visibility="owner_private",
+            entries=[dict(project_id="ai-jarvis", platform=target, destination_id="private-destination",
+                resource_id="owner/private-repository" if target == "github" else "opaque-private-resource",
+                allowed_actions=["read"]) for target in sorted(TARGETS)])
+        path = self.root / "registry.json"
+        path.write_text(json.dumps(record), encoding="utf-8")
+        return ["inspect-registry", "--file", "registry.json", "--digest", digest(record),
+                "--registry-revision", "1", "--source-revision", REVISION]
+
+    def test_registry_preflight_without_ledger_survives_process_restart(self):
+        args = self.registry_input()
+        before = self.db.read_bytes(), (self.root / "registry.json").read_bytes()
+        first = self.cli("--read-only", *args, database="absent/ledger.sqlite3")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        result = json.loads(first.stdout)
+        self.assertEqual(set(result["platform_counts"]), set(TARGETS))
+        self.assertEqual(result["acceptance_state"], "proposed_unverified")
+        self.assertFalse(result["dispatch_authorized"])
+        self.assertEqual(result["visibility"], "owner_private")
+        second = self.cli("--read-only", *args, "--out", "private/inspection.json",
+                          database="absent/ledger.sqlite3")
+        self.assertEqual(second.returncode, 0, second.stderr)
+        output = self.root / "private/inspection.json"
+        self.assertEqual(json.loads(output.read_text()), result)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        for private in ("private-destination", "owner/private-repository", "opaque-private-resource"):
+            self.assertNotIn(private, output.read_text())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual((self.db.read_bytes(), (self.root / "registry.json").read_bytes()), before)
+        third = self.cli(*args, "--out", "private/inspection.json")
+        self.assertEqual(third.returncode, 1)
+        self.assertEqual(json.loads(output.read_text()), result)
+
+    def test_registry_preflight_stale_guards_leave_no_output_or_database(self):
+        args = self.registry_input()
+        before = self.db.read_bytes()
+        for flag, value in (("--digest", "0" * 64), ("--registry-revision", "2"),
+                            ("--source-revision", "0" * 40)):
+            changed = list(args)
+            changed[changed.index(flag) + 1] = value
+            result = self.cli(*changed, "--out", "rejected/summary.json", database="absent/ledger.sqlite3")
+            self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertFalse((self.root / "rejected").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_registry_preflight_rejects_duplicate_json_and_escaping_input(self):
+        args = self.registry_input()
+        path = self.root / "registry.json"
+        path.write_text('{"revision":1,' + path.read_text()[1:], encoding="utf-8")
+        result = self.cli(*args, "--out", "rejected/summary.json", database="absent/ledger.sqlite3")
+        self.assertEqual(result.returncode, 1)
+        args[args.index("--file") + 1] = "../outside.json"
+        self.assertEqual(self.cli(*args, database="absent/ledger.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "rejected").exists())
+        self.assertFalse((self.root / "absent").exists())
 
     def controlled(self, execution="execution_blocked"):
         self.profile.update(schema_version=3, destination_id="synthetic-codex-workspace",

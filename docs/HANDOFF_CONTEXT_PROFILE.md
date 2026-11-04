@@ -603,6 +603,30 @@ API. The output is the explicit configured-observation envelope described above;
 without registry options, earlier receipt formats and behavior remain unchanged.
 This does not load a trusted registry automatically or accept the proposed mapping.
 
+## Private registry preflight
+
+`inspect-registry` validates a supplied version-1 destination registry before any
+ledger is opened. Require its exact SHA-256, source revision and integer registry
+revision. The separate version-1 `jarvis.destination_registry_inspection` receipt
+retains that identity, configuration version, entry count and per-platform counts;
+it omits entries, destination/resource IDs and resource-to-destination mappings.
+It supports all seventeen existing portable target IDs through the existing
+validator. Earlier packets, registry snapshots and database schemas are unchanged.
+
+```sh
+python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --read-only inspect-registry --file registry.json --digest YOUR-REGISTRY-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --registry-revision 1 --out private/registry-inspection-001.json
+```
+
+Without `--out`, print the private metadata summary. File output uses the existing
+atomic, mode-600, no-overwrite writer. No database is required, opened, created or
+migrated, including when `--database` names an absent path. Stale guards, duplicate
+JSON keys, invalid registries and escaping paths reject before output publication.
+The receipt is always owner-private and proposed/unverified. Counts are supplied
+specifications, not running agents, accepted project facts, authenticated storage
+or connection evidence. This command performs no network request, acceptance,
+dispatch, retry, review or hold change. A real scoped authenticated save/read
+receipt is still required before treating a registry as operational shared storage.
+
 ## Destination-bound read observations
 
 bind-observation wraps the existing strict connector read-observation format in
