@@ -281,6 +281,63 @@ class ContextTests(unittest.TestCase):
             self.ledger.list_checkpoints("mission-one")
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_historical_control_schema_cannot_exceed_current_after_restart(self):
+        from scripts.jarvis_network import _backup
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        self.ledger.save_context(current, expected_revision=1)
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        self.ledger.save_context(independent, expected_revision=0)
+        for state in ("paused", "cancelled"):
+            damaged = self.control_profile(state)
+            self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+                (json.dumps(damaged), digest(damaged), "mission-one"))
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path, read_only=True)
+            before = self.path.read_bytes()
+            output = self.path.parent / (state + "-backup.sqlite3")
+            operations = {
+                "index": lambda: self.ledger.list_checkpoints("mission-one"),
+                "load": lambda: self.ledger.load_checkpoint("mission-one", 1,
+                    **{**args, "expected_sha256": digest(damaged)}),
+                "backup": lambda: _backup(self.ledger.db, output),
+            }
+            for name, operation in operations.items():
+                with self.subTest(state=state, operation=name), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                    operation()
+            self.assertFalse(output.exists())
+            self.assertFalse(list(output.parent.glob(".jarvis-backup-*")))
+            self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+            self.assertEqual(self.load("independent-task")["profile"], independent)
+            self.assertEqual(self.path.read_bytes(), before)
+            self.assertFalse(self.ledger.db.in_transaction)
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path)
+
+    def test_legacy_checkpoint_survives_control_upgrade_with_unknown_cancelled_hold(self):
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = self.control_profile("cancelled")
+        current["memory_revision"] = 2
+        current["execution"]["state"] = "outcome_unknown"
+        self.ledger.save_context(current, expected_revision=1)
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            before = self.path.read_bytes()
+            history = restarted.load_checkpoint("mission-one", 1, **args)
+            self.assertEqual(history["profile"], self.profile)
+            self.assertFalse(history["retry_authorized"])
+            self.assertEqual(len(restarted.list_checkpoints("mission-one")["checkpoints"]), 1)
+            self.assertEqual(restarted.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=2)["profile"], current)
+            self.assertEqual(self.path.read_bytes(), before)
+
     def test_historical_attempt_count_cannot_exceed_current_after_restart(self):
         saved = self.save()
         args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,

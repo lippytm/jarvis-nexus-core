@@ -383,6 +383,7 @@ class HandoffLedger:
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored context checkpoint is invalid") from None
         if (digest(profile) != row["digest"] or revision > current["revision"]
+            or profile["schema_version"] > current_profile["schema_version"]
             or profile["mission_id"] != current_profile["mission_id"]
             or (profile["schema_version"] == 3
                 and profile["destination_id"] != current_profile.get("destination_id"))

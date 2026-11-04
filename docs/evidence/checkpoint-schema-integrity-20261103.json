@@ -1,0 +1,49 @@
+{
+  "authentication_or_live_dispatch": "not_established",
+  "baseline": {
+    "errors": 0,
+    "failures": 4,
+    "notes": "Three operation rejection assertions and the no-backup-artifact assertion failed in paused subcase; cancelled subcase was not reached before repair.",
+    "tests_run": 1
+  },
+  "baseline_command": "python3 -m unittest discover -s tests -p test_handoff_context.py -k historical_control_schema",
+  "change": "One shared _checkpoint guard rejects historical schema_version greater than current. No schema migration or silent repair.",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "e726ad1d45e7151c3345bb55328f3ef189f42994",
+  "local_verification": {
+    "errors": 0,
+    "failures": 0,
+    "record_sha256": "4ea135fe475454fde7b679fc622bf0e4b1d55424944d9d5eb5dc2ab274f7e1ce",
+    "syntax_files": 73,
+    "tests": 505
+  },
+  "memory_source": "master Page sequence 117",
+  "mission_id": "checkpoint-schema-integrity-20261103",
+  "next_task": "Exact-content independent review and separately gated acceptance/access-policy verification of the single saved registry proposal. No leases/failover/authenticated ingestion is implemented.",
+  "observed_problem": "Rehashed older schema-2 paused checkpoint was accepted against later schema-1 current context, despite save_context prohibiting control schema downgrade. Index/load accepted and backup published synthetic damaged history.",
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "fda2143e8ce59a36ae61f42ab11dbbc2f94e5712442ceb52e71d6551469331e8",
+  "regressions": [
+    "Paused and cancelled rehashed version-2 history against version-1 current rejects indexing, exact load and backup after read-only restart. No output/temp backup, source bytes/independent context/current blocked profile unchanged.",
+    "Valid version-1 history survives version-2 upgrade; cancelled and outcome_unknown current context remains unchanged and retry is false."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_checkpoint_integrity_repair",
+  "source_sha256": {
+    "control_tower/handoffs.py": "51f9dac6f6df5cfb1d7062362b2b63df067962a2f5fd8d4d5987da3dcc52ae95",
+    "tests/test_handoff_context.py": "2e0a9bed1a6827418e0225fa8d36da2d5e7e2168597678f162f470dc26db6d9d"
+  }
+}
