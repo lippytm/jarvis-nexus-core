@@ -28,7 +28,7 @@ Each unit uses a working editing budget of at most 380 characters; this is a cre
 constraint, not a verified platform limit or upload-compatibility test. Current
 destination/format capabilities must be checked separately. Plain text carries all
 essential meaning; no image, audio or video is needed for these drafts. Optional
-visuals for slots 3–4 remain unrendered specifications; slots 1–2 now have local SVG/PNG review candidates. No hashtags, profile-link promises or
+visual for slot 4 remains an unrendered specification; slots 1–3 now have local SVG/PNG review candidates. No hashtags, profile-link promises or
 claims about today's service status are added.
 
 ## Slot 1 — Explain
@@ -139,6 +139,26 @@ intended runtime; no automatic success arrows, online dots or uptime charts.
 Proposed alt text: “Separate rows distinguish a retained artifact, a CI check and
 the intended runtime; each needs its own evidence.” No actual availability claim.
 
+### Slot 3 artwork candidate
+
+The [original SVG](jarvis-threads-slot3-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-3.png) implement the independent
+artifact, CI-runner and intended-runtime rows above. The 1080×1080 canvas is an
+editorial choice, not verified Threads upload guidance. Each row has a separate,
+empty evidence-reference field; owner review is also empty. Conceptual/unpublished
+labels, unassigned destination and the absence of actual check/availability/release
+claims remain explicit. No automatic success arrows, online indicators or uptime
+charts connect the rows.
+
+The SVG was rendered locally and the PNG decoded and visually inspected.
+XML/resource restrictions, text-width, image/opacity/metadata and four empty-field
+pixel checks passed. [Preparation evidence](../evidence/threads-slot3-artwork-20261104.json)
+retains hashes, actual renderer/check receipts and limits. All twelve discussion
+units, proposed alt text, other artwork and campaign remain unchanged.
+Owner/independent, rights, destination, device/accessibility and platform-format
+review remain pending. No upload, publication or message was sent; the image does
+not supply a platform alt-text field or establish a running service/connection.
+
 ## Slot 4 — Bounded next step
 
 Post ID: jarvis-media-20261029.threads.4
@@ -164,8 +184,8 @@ Empty boxes do not imply completion or approval.” No asset rendered.
 
 ## Review and continuation
 
-All twelve text units are authored. Slots 1–2 have SVG/PNG artwork candidates;
-slots 3–4 remain optional unrendered visual specifications. Account access, destination, current platform constraints, exact-copy
+All twelve text units are authored. Slots 1–3 have SVG/PNG artwork candidates;
+slot 4 remains an optional unrendered visual specification. Account access, destination, current platform constraints, exact-copy
 owner approval and publication remain unverified/unfinished. The reviewer references
 above are editorial metadata, not instructions to append links to the public copy.
 
