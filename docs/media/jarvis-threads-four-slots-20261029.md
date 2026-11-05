@@ -27,8 +27,8 @@ reviewing whether its remaining copy still supplies the necessary context.
 Each unit uses a working editing budget of at most 380 characters; this is a creative
 constraint, not a verified platform limit or upload-compatibility test. Current
 destination/format capabilities must be checked separately. Plain text carries all
-essential meaning; no image, audio or video is needed for these drafts. Optional
-visual for slot 4 remains an unrendered specification; slots 1–3 now have local SVG/PNG review candidates. No hashtags, profile-link promises or
+essential meaning; no image, audio or video is needed for these drafts. All four optional
+visuals now have local SVG/PNG review candidates. No hashtags, profile-link promises or
 claims about today's service status are added.
 
 ## Slot 1 — Explain
@@ -180,12 +180,31 @@ Reviewer references: [shared context profile](../HANDOFF_CONTEXT_PROFILE.md) and
 Optional visual specification: an original four-item return checklist with empty
 boxes for artifact, checks, limits and checkpoint. Proposed alt text: “An example
 return checklist lists an artifact, actual checks, unresolved limits and a checkpoint.
-Empty boxes do not imply completion or approval.” No asset rendered.
+Empty boxes do not imply completion or approval.”
+
+### Slot 4 artwork candidate
+
+The [original SVG](jarvis-threads-slot4-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-4.png) implement the four-item
+return checklist above. Artifact, Actual checks, Unresolved limits and Continuation
+checkpoint each have an empty checkbox; owner review is also empty. Conceptual and
+unpublished labels, unassigned destination and the statement that empty boxes imply
+neither completion nor approval remain visible. The artwork depicts no completed
+return and grants no dispatch, purchase or publication authority. The 1080×1080
+canvas is an editorial choice, not verified Threads upload guidance.
+
+The SVG was rendered locally and the PNG decoded and visually inspected.
+XML/resource restrictions, text-width, image/opacity/metadata and five empty-field
+pixel checks passed. [Preparation evidence](../evidence/threads-slot4-artwork-20261104.json)
+retains exact hashes, renderer/check receipts and limits. All twelve discussion
+units, proposed alt text, other artwork and campaign remain unchanged.
+Owner/independent, rights, destination, device/accessibility and platform-format
+review remain pending. Nothing was uploaded, published or sent; the image does not
+supply a platform alt-text field or establish a running service/connection.
 
 ## Review and continuation
 
-All twelve text units are authored. Slots 1–3 have SVG/PNG artwork candidates;
-slot 4 remains an optional unrendered visual specification. Account access, destination, current platform constraints, exact-copy
+All twelve text units are authored. All four slots have SVG/PNG artwork candidates. Account access, destination, current platform constraints, exact-copy
 owner approval and publication remain unverified/unfinished. The reviewer references
 above are editorial metadata, not instructions to append links to the public copy.
 
