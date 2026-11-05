@@ -773,6 +773,64 @@ with HandoffLedger(sys.argv[1]) as ledger:
         self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_neighbor_checkpoint_current_bounds_reject_after_restart(self):
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        self.ledger.save_context(independent, expected_revision=0)
+        for case in ("memory", "attempts", "cancelled", "unknown-context", "schema"):
+            identifier = "mission-one"
+            if self.ledger.db.execute("PRAGMA user_version").fetchone()[0] == 3:
+                self.ledger.db.execute("DELETE FROM context_checkpoints WHERE handoff_id=?", (identifier,))
+            self.ledger.db.execute("DELETE FROM handoff_contexts WHERE handoff_id=?", (identifier,))
+            original = self.context(identifier)
+            if case != "schema":
+                original.update(schema_version=3, destination_id="repository-one",
+                    control=dict(state="active", actor_id="local-owner", reason="Synthetic scope."))
+            saved = self.ledger.save_context(original, expected_revision=0)
+            args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                        expected_memory_revision=1)
+            self.ledger.checkpoint_context(identifier, **args)
+            middle = deepcopy(original)
+            middle["memory_revision"] = 2
+            self.ledger.save_context(middle, expected_revision=1)
+            current = deepcopy(middle)
+            current["memory_revision"] = 3
+            if case != "schema":
+                current["control"]["state"] = "paused"
+                current["execution"]["state"] = "outcome_unknown"
+            self.ledger.save_context(current, expected_revision=2)
+            damaged = deepcopy(middle)
+            if case == "memory":
+                damaged["memory_revision"] = 4
+            elif case == "attempts":
+                damaged["execution"]["attempts"] = 2
+            elif case == "cancelled":
+                damaged["control"]["state"] = "cancelled"
+            elif case == "unknown-context":
+                damaged["execution"].update(state="outcome_unknown", context_id="other-synthetic-context")
+            else:
+                damaged.update(schema_version=2,
+                    control=dict(state="active", actor_id="local-owner", reason="Synthetic upgrade."))
+            self.ledger.db.execute("INSERT INTO context_checkpoints VALUES (?,?,?,?)",
+                (identifier, 2, digest(damaged), json.dumps(damaged)))
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path, read_only=True)
+            before = self.path.read_bytes()
+            with self.subTest(case=case), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                self.ledger.load_checkpoint(identifier, 1, **args)
+            self.assertEqual(self.path.read_bytes(), before)
+            self.assertFalse(self.ledger.db.in_transaction)
+            self.assertEqual(self.load(identifier, expected_memory_revision=3)["profile"], current)
+            self.assertEqual(self.load("independent-task")["profile"], independent)
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path)
+            # A valid, lower/equal-count historical neighbor remains readable.
+            self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=2",
+                (json.dumps(middle), digest(middle), identifier))
+            with HandoffLedger(self.path, read_only=True) as restarted:
+                self.assertEqual(restarted.load_checkpoint(identifier, 1, **args)["profile"], original)
+                self.assertEqual(len(restarted.list_checkpoints(identifier)["checkpoints"]), 2)
+
     def test_neighbor_checkpoint_revision_bounds_reject_after_restart_without_mutation(self):
         self.profile = self.destination_profile()
         first = self.save()

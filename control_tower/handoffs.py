@@ -429,19 +429,22 @@ class HandoffLedger:
             profile = validate_context(json.loads(row["body"]), handoff)
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored context checkpoint is invalid") from None
-        if (digest(profile) != row["digest"] or revision > current["revision"]
-            or profile["schema_version"] > current_profile["schema_version"]
-            or profile["mission_id"] != current_profile["mission_id"]
-            or (profile.get("control", {}).get("state") == "cancelled"
-                and current_profile.get("control", {}).get("state") != "cancelled")
-            or (profile["execution"]["state"] == "outcome_unknown"
-                and any(profile["execution"][field] != current_profile["execution"][field]
-                        for field in ("state", "attempts", "context_id")))
-            or (profile["schema_version"] == 3
-                and profile["destination_id"] != current_profile.get("destination_id"))
-            or profile["memory_revision"] > current_profile["memory_revision"]
-            or profile["execution"]["attempts"] > current_profile["execution"]["attempts"]
-            or (revision == current["revision"] and row["digest"] != current["digest"])):
+        def outside_current(profile, revision, checksum):
+            return (revision > current["revision"]
+                or profile["schema_version"] > current_profile["schema_version"]
+                or profile["mission_id"] != current_profile["mission_id"]
+                or (profile.get("control", {}).get("state") == "cancelled"
+                    and current_profile.get("control", {}).get("state") != "cancelled")
+                or (profile["execution"]["state"] == "outcome_unknown"
+                    and any(profile["execution"][field] != current_profile["execution"][field]
+                            for field in ("state", "attempts", "context_id")))
+                or (profile["schema_version"] == 3
+                    and profile["destination_id"] != current_profile.get("destination_id"))
+                or profile["memory_revision"] > current_profile["memory_revision"]
+                or profile["execution"]["attempts"] > current_profile["execution"]["attempts"]
+                or (revision == current["revision"] and checksum != current["digest"]))
+
+        if digest(profile) != row["digest"] or outside_current(profile, revision, row["digest"]):
             raise ValueError("stored context checkpoint integrity mismatch")
         # Current-state bounds alone cannot detect a regression between two
         # retained checkpoints. Read at most the two indexed neighbors; do not
@@ -459,12 +462,8 @@ class HandoffLedger:
                 raise ValueError("stored context checkpoint integrity mismatch") from None
             earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
             if (type(neighbor["revision"]) is not int or neighbor["revision"] < 1
-                or neighbor["revision"] > current["revision"]
-                or (neighbor["revision"] == current["revision"] and neighbor["digest"] != current["digest"])
                 or digest(adjacent) != neighbor["digest"]
-                or adjacent["mission_id"] != current_profile["mission_id"]
-                or (adjacent["schema_version"] == 3
-                    and adjacent["destination_id"] != current_profile.get("destination_id"))
+                or outside_current(adjacent, neighbor["revision"], neighbor["digest"])
                 or earlier["memory_revision"] > later["memory_revision"]
                 or earlier["execution"]["attempts"] > later["execution"]["attempts"]
                 or earlier["schema_version"] > later["schema_version"]

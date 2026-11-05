@@ -193,7 +193,11 @@ Historical profiles retain their original profile schema and provenance.
 Selective reads and captures also bound each immediate retained neighbor by the
 current context revision. A neighbor at that revision must have the current
 context digest; a future revision or conflicting current body rejects without
-committing a capture. This adds no query, schema field or automatic repair.
+committing a capture. Selected and neighboring profiles now share the same
+current-state bound check, including schema/memory/attempt ceilings, immutable
+scope, cancellation and unknown-outcome execution bindings. A later neighbor may
+not contradict current holds just because its transition from the selected older
+checkpoint looks valid. This adds no query, schema field or automatic repair.
 
 load_checkpoint(handoff_id, revision, expected_sha256=..., expected_source_revision=...,
 expected_memory_revision=...) retrieves an independent, always owner-private copy
