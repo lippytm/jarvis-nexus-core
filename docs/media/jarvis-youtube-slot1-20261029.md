@@ -36,7 +36,7 @@ practice; service availability and delivery require separate evidence.
 **Thumbnail copy:** “SOURCE. ARTIFACT. CHECKS.” Use three original labelled cards
 with an unfilled review field. Proposed alt text for the thumbnail source image:
 “Three conceptual cards show a source revision, a changed artifact and actual
-checks; the review field remains blank.” Thumbnail not rendered.
+checks; the review field remains blank.” SVG/PNG thumbnail review candidates are retained below.
 
 **Viewer question:** Which record would help you resume an unfinished task first?
 
@@ -91,7 +91,7 @@ platform compatibility remain unverified until a real preview exists.
 | Visibility / permitted action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One script package; no paid service/provider call/external action; no automatic retry |
 | Return binding / checkpoint | These sibling Markdown/SRT files, original campaign slot/digests and resulting development commit; local artifact association only |
-| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard rendered; no recording, upload or publication |
+| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard and thumbnail candidate rendered; no recording, upload or publication |
 
 This is a creative candidate, not accepted project memory or a changed strict
 packet. No operational handoff was staged, reviewed, dispatched or cancelled.
@@ -114,8 +114,31 @@ width and PNG decode/dimension/opacity/metadata checks passed, and the full prev
 was visually inspected. The [preparation receipt](../evidence/youtube-slot1-storyboard-20261104.json)
 retains hashes, observed checks and renderer warnings. Calculated text/background
 contrast is a source-color check, not a mobile or screen-reader accessibility test.
-This is a storyboard only: no voice, animation, final thumbnail or finished video.
+This is a storyboard only: no voice, animation or finished video. A separate thumbnail review candidate is retained below.
 
 Next: exact narration/caption/storyboard owner review, then authorized recording,
 retiming and a local video preview. Channel/destination, device readability,
 accessibility, rights and upload acceptance remain unverified; nothing published.
+
+## Slot 1 thumbnail review candidate
+
+The [original thumbnail SVG](jarvis-youtube-slot1-thumbnail-20261105.svg) and
+[PNG review candidate](exports/youtube-20261029/slot-1-thumbnail.png) implement
+the specified “SOURCE. ARTIFACT. CHECKS.” copy with three original labelled cards
+and an empty review field. Review pending, conceptual/unpublished labels and an
+unassigned destination remain explicit; no execution result or release approval
+is depicted. The 1200×675 canvas is an editorial choice, not verified YouTube
+upload guidance or accepted platform formatting.
+
+Eight text-width checks, XML/resource restrictions, PNG decode/dimensions/opacity/
+metadata, an empty-review-field pixel check and full assistant visual inspection
+passed. [Preparation evidence](../evidence/youtube-slot1-thumbnail-20261105.json)
+retains input revision, source/output hashes and actual renderer/check receipts.
+Narration, shot plan, SRT, title/description, specified thumbnail copy/alt text,
+original campaign and storyboard artwork remain unchanged.
+
+This is a thumbnail candidate, not an accepted upload or a finished video. Exact
+art/copy owner review, rights, channel/destination, mobile readability, accessibility
+and platform acceptance remain pending. No voice, animation/video, upload or
+publication was produced. The PNG does not populate a platform alt-text field.
+The Daily Newsletter schedule and paused Studio Work Cycle remain unchanged.
