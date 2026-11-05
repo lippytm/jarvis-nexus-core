@@ -21,8 +21,8 @@ scheduled newsletter editions. No Substack account was accessed or content sent.
 The text between each “Note copy” and “Reviewer reference” heading is the complete
 candidate body. References and production notes are editorial metadata; do not
 automatically append them to public copy. Keep the evidence limits with each body.
-Plain text carries all essential meaning. Slots 1–3 now have local SVG/PNG artwork
-candidates; optional artwork for slot 4 remains unrendered. No image, audio or
+Plain text carries all essential meaning. All four slots now have local SVG/PNG artwork
+candidates. No image, audio or
 video is required for these text drafts.
 There is no publishing schedule, email subject line or subscriber-send instruction.
 
@@ -203,12 +203,30 @@ Optional visual: an original blank return checklist for “Artifact,” “Actua
 “Unresolved limits” and “Next action,” with “Draft only” above it.
 Proposed alt text: “An example return checklist lists an artifact, actual checks,
 unresolved limits and a next action; blank boxes do not imply approval.”
-No asset rendered.
+
+### Slot 4 artwork candidate
+
+The [original SVG](jarvis-substack-slot4-20261105.svg) and
+[PNG review preview](exports/substack-20261029/slot-4.png) implement the blank
+return checklist above. Four empty boxes are labelled Artifact, Actual checks,
+Unresolved limits and Next action, with “Draft only” above and “Review pending”
+below. Conceptual/unpublished labels and unassigned destination remain visible;
+no mission dispatch, completion or release decision is depicted. The 1400×1000
+canvas is an editorial choice, not verified Substack upload guidance.
+
+The SVG was locally rendered and the PNG decoded and visually inspected.
+Ten text-width, XML/resource, image/opacity/metadata and four empty-box pixel
+checks passed. [Preparation evidence](../evidence/substack-slot4-artwork-20261105.json)
+retains source/output hashes and actual checks. All four Note bodies, proposed alt
+text, earlier artwork and campaign remain unchanged. Owner/independent, rights,
+destination, device/accessibility and platform-format review remain pending.
+Nothing was uploaded, published or emailed; the image does not establish an accepted
+upload or provide a platform alt-text field. Newsletter/Studio settings unchanged.
 
 ## Review and continuation
 
 Four Note bodies and four optional visual/alt-text specifications are authored.
-Slots 1–3 have SVG/PNG artwork candidates; slot 4 remains an unrendered specification.
+All four slots have SVG/PNG artwork candidates.
 Current platform capabilities, account/destination confirmation,
 exact-copy owner approval and publication remain unfinished. No subscriber email,
 paid subscription offer, automatic cadence or performance result is represented.
