@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">One reviewable task with a blank owner-review field</title>
+<desc id="desc">Unpublished conceptual YouTube thumbnail candidate. A task card has empty Artifact and Check fields beside a separate empty Owner review field. Draft only, Review pending and destination unassigned remain visible. No completion, dispatch or approval is depicted.</desc>
+<rect width="1200" height="675" fill="#101d2c"/>
+<g font-family="DejaVu Sans" fill="#f5f8fc">
+<rect x="64" y="214" width="520" height="300" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="616" y="214" width="520" height="300" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="240" y="304" width="320" height="48" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="240" y="410" width="320" height="48" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="640" y="310" width="472" height="152" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<text x="64" y="100" font-size="52" font-weight="bold">ONE REVIEWABLE TASK</text>
+<text x="64" y="160" font-size="25">CONCEPTUAL EXAMPLE • UNPUBLISHED</text>
+<text x="88" y="268" font-size="34" font-weight="bold">Task</text>
+<text x="88" y="338" font-size="27">Artifact</text>
+<text x="88" y="444" font-size="27">Check</text>
+<text x="640" y="268" font-size="32" font-weight="bold">Owner review</text>
+<text x="64" y="574" font-size="28" font-weight="bold">Draft only • Review pending</text>
+<text x="64" y="630" font-size="22">Destination: unassigned • No completion or approval depicted.</text>
+</g>
+</svg>

@@ -37,7 +37,7 @@ prepares a reviewable exercise; it reports no new dispatch or completed mission.
 **Thumbnail copy:** “ONE REVIEWABLE TASK” — use an original blank task card
 beside a review field. Proposed alt text: “A conceptual task card asks for one
 artifact and one meaningful check; its owner-review field is still blank.”
-Thumbnail not rendered.
+SVG/PNG thumbnail review candidates are retained below.
 
 **Viewer question:** Which existing unfinished task could you make reviewable
 without expanding its permissions?
@@ -85,7 +85,7 @@ compatibility remain unfinished.
 | Visibility / action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One package; no paid service, provider call or external action; no automatic retry |
 | Return binding / checkpoint | These sibling Markdown/SRT files, original campaign slot/digests and resulting development commit; local artifact association only |
-| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard rendered; no recording/upload/publication |
+| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard and thumbnail candidate rendered; no recording/upload/publication |
 
 This is a creative candidate, not accepted project memory or a change to any
 strict packet. No operational mission was staged, dispatched, retried or released.
@@ -110,8 +110,32 @@ full preview was visually inspected. The [preparation receipt](../evidence/youtu
 retains hashes, empty-review-region check and renderer warning. Source-color
 contrast checks do not establish device readability or screen-reader accessibility.
 This is an unperformed synthetic exercise, not a new dispatch, accepted memory
-write or owner release. No voice, animation, final thumbnail or finished video.
+write or owner release. No voice, animation or finished video. A separate thumbnail review candidate is retained below.
 
 Next: exact narration/caption/storyboard owner review, then authorized recording,
 retiming and local video preview. Channel/destination, device/accessibility, rights
 and upload acceptance remain unverified; nothing published.
+
+## Slot 4 thumbnail review candidate
+
+The [original thumbnail SVG](jarvis-youtube-slot4-thumbnail-20261105.svg) and
+[PNG review candidate](exports/youtube-20261029/slot-4-thumbnail.png) implement
+the specified “ONE REVIEWABLE TASK” copy. An original task card has empty Artifact
+and Check fields beside a separate empty Owner review field. Draft only, Review
+pending, conceptual/unpublished and unassigned-destination labels remain visible;
+no completion, dispatch or approval is depicted. The 1200×675 canvas is an editorial
+choice, not verified YouTube upload guidance or accepted platform formatting.
+
+Eight text-width checks, XML/resource restrictions, PNG decode/dimensions/opacity/
+metadata, three empty-field pixel checks and full assistant visual inspection
+passed. [Preparation evidence](../evidence/youtube-slot4-thumbnail-20261105.json)
+retains input revision, source/output hashes and actual renderer/check receipts.
+Narration, shot plan, SRT, title/description, specified thumbnail copy/alt text,
+campaign, storyboard and earlier thumbnail candidates remain unchanged.
+
+All four YouTube slots now have thumbnail SVG/PNG review candidates. Exact
+art/copy owner review, rights, channel/destination, device/accessibility and platform
+acceptance remain pending. These are not accepted uploads or finished videos.
+No voice, animation/video, upload or publication was produced. The PNG does not
+populate a platform alt-text field. The Daily Newsletter schedule and paused Studio
+Work Cycle remain unchanged.
