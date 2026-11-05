@@ -28,7 +28,7 @@ Each unit uses a working editing budget of at most 380 characters; this is a cre
 constraint, not a verified platform limit or upload-compatibility test. Current
 destination/format capabilities must be checked separately. Plain text carries all
 essential meaning; no image, audio or video is needed for these drafts. Optional
-visuals below are unrendered specifications. No hashtags, profile-link promises or
+visuals for slots 2–4 remain unrendered specifications; slot 1 now has a local SVG/PNG review candidate. No hashtags, profile-link promises or
 claims about today's service status are added.
 
 ## Slot 1 — Explain
@@ -51,7 +51,26 @@ Reviewer reference: [Codex role and preflight](../CODEX_JARVIS_READINESS.md).
 Optional visual specification: one original three-row text diagram labelled
 “Starting revision,” “Changed artifact” and “Actual checks,” with an unfilled review
 field. Proposed alt text: “A conceptual handoff keeps a starting revision, changed
-artifact and actual checks together; review is still undecided.” No asset rendered.
+artifact and actual checks together; review is still undecided.”
+
+### Slot 1 artwork candidate
+
+The [original SVG](jarvis-threads-slot1-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-1.png) implement the three-row
+specification above. The 1080×1080 canvas is an editorial choice, not verified
+Threads upload guidance. Starting revision, Changed artifact and Actual checks
+reference fields are empty, as is Owner review. The image prominently retains
+Conceptual example, Unpublished draft, unassigned destination and evidence limits.
+It depicts no actual test result, completed exercise or owner approval.
+
+The SVG was rendered locally; the PNG was fully decoded and visually inspected.
+XML/resource restrictions, actual font widths, image dimensions/opacity/metadata
+and empty-field pixel checks passed. The renderer exited 0 with a GtkRecentManager
+warning. [Preparation evidence](../evidence/threads-slot1-artwork-20261104.json)
+records source/output hashes and limits. No text unit, proposed alt text or source
+packet changed. Independent owner/destination/rights/device/accessibility/platform
+review remains pending; the PNG does not supply a platform alt-text field or
+establish an accepted upload. Nothing was posted or sent.
 
 ## Slot 2 — Demonstrate
 
@@ -123,8 +142,8 @@ Empty boxes do not imply completion or approval.” No asset rendered.
 
 ## Review and continuation
 
-All twelve text units are authored; all four optional visual specifications remain
-unrendered. Account access, destination, current platform constraints, exact-copy
+All twelve text units are authored. Slot 1 has an SVG/PNG artwork candidate;
+slots 2–4 remain optional unrendered visual specifications. Account access, destination, current platform constraints, exact-copy
 owner approval and publication remain unverified/unfinished. The reviewer references
 above are editorial metadata, not instructions to append links to the public copy.
 
