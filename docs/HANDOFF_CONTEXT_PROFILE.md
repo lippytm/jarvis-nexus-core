@@ -190,6 +190,10 @@ deduplicates by handoff and context revision, and permits at most 1,000 retained
 contexts per ledger. Rejection rolls back the schema upgrade and insert together.
 Capture does not alter current context, reviews, attempts or execution/control state.
 Historical profiles retain their original profile schema and provenance.
+Selective reads and captures also bound each immediate retained neighbor by the
+current context revision. A neighbor at that revision must have the current
+context digest; a future revision or conflicting current body rejects without
+committing a capture. This adds no query, schema field or automatic repair.
 
 load_checkpoint(handoff_id, revision, expected_sha256=..., expected_source_revision=...,
 expected_memory_revision=...) retrieves an independent, always owner-private copy

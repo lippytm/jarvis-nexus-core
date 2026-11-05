@@ -459,6 +459,8 @@ class HandoffLedger:
                 raise ValueError("stored context checkpoint integrity mismatch") from None
             earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
             if (type(neighbor["revision"]) is not int or neighbor["revision"] < 1
+                or neighbor["revision"] > current["revision"]
+                or (neighbor["revision"] == current["revision"] and neighbor["digest"] != current["digest"])
                 or digest(adjacent) != neighbor["digest"]
                 or adjacent["mission_id"] != current_profile["mission_id"]
                 or (adjacent["schema_version"] == 3

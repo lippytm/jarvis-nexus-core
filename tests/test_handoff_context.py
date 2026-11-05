@@ -773,6 +773,58 @@ with HandoffLedger(sys.argv[1]) as ledger:
         self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_neighbor_checkpoint_revision_bounds_reject_after_restart_without_mutation(self):
+        self.profile = self.destination_profile()
+        first = self.save()
+        args = dict(expected_sha256=first["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", **args)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        current["control"]["state"] = "paused"
+        current["execution"]["state"] = "outcome_unknown"
+        saved = self.ledger.save_context(current, expected_revision=1)
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        self.ledger.save_context(independent, expected_revision=0)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts", "context_checkpoints")
+        for case in ("future-revision", "current-revision-different-body"):
+            self.ledger.db.execute("DELETE FROM context_checkpoints WHERE handoff_id=? AND revision>1",
+                                   ("mission-one",))
+            adjacent = deepcopy(current)
+            revision = 3 if case == "future-revision" else 2
+            if revision == 2:
+                adjacent["execution"]["detail"] = "Different synthetic current checkpoint body."
+            self.ledger.db.execute("INSERT INTO context_checkpoints VALUES (?,?,?,?)",
+                ("mission-one", revision, digest(adjacent), json.dumps(adjacent)))
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path, read_only=True)
+            before_bytes = self.path.read_bytes()
+            with self.subTest(case=case, check="selective-read"), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                self.ledger.load_checkpoint("mission-one", 1, **args)
+            self.assertEqual(self.path.read_bytes(), before_bytes)
+            self.assertFalse(self.ledger.db.in_transaction)
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path)
+            before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+            if case == "future-revision":
+                with self.subTest(case=case, check="capture"), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                    self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"],
+                        expected_source_revision=REVISION, expected_memory_revision=2)
+                with self.subTest(case=case, check="rollback"):
+                    self.assertEqual(before, {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables})
+            self.assertFalse(self.ledger.db.in_transaction)
+            self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+            self.assertEqual(self.load("independent-task")["profile"], independent)
+        # Restoring a valid neighbor restores selective reads and duplicate capture.
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=2",
+            (json.dumps(current), digest(current), "mission-one"))
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.load_checkpoint("mission-one", 1, **args)["profile"], self.profile)
+            self.assertEqual(len(restarted.list_checkpoints("mission-one")["checkpoints"]), 2)
+        self.assertTrue(self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"],
+            expected_source_revision=REVISION, expected_memory_revision=2)["duplicate"])
+
     def test_adjacent_checkpoint_identity_drift_blocks_selective_load_and_capture(self):
         self.profile = self.destination_profile()
         first = self.save()
