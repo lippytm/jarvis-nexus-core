@@ -37,7 +37,7 @@ status, recovery or reliability result is reported by this lesson.
 **Thumbnail copy:** “CHECK THE CONTEXT” — use two original labelled evidence
 cards and an empty observation field. Proposed alt text: “Two conceptual cards
 separate runner evidence from evidence about the intended execution environment;
-an empty field asks what remains unverified.” Thumbnail not rendered.
+an empty field asks what remains unverified.” SVG/PNG thumbnail review candidates are retained below.
 
 **Viewer question:** Which claim in your next project update needs a clearer
 execution context?
@@ -85,7 +85,7 @@ customer data or actual operational ledgers. Recording, retiming and final-video
 | Visibility / action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One package; no paid service, provider call or external action; no automatic retry |
 | Return binding / checkpoint | These sibling Markdown/SRT files, original campaign slot/digests and resulting development commit; local artifact association only |
-| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard rendered; no recording/upload/publication |
+| Review / execution | Copy self-check only; independent/owner exact-content review pending; storyboard and thumbnail candidate rendered; no recording/upload/publication |
 
 This creative candidate is not accepted project memory or a change to any strict
 packet. No operational mission was staged, dispatched or retried. Existing slot-1
@@ -109,8 +109,32 @@ source-claim/interval and PNG decode/dimension/opacity/metadata checks passed; t
 full preview was visually inspected. The [preparation receipt](../evidence/youtube-slot3-storyboard-20261104.json)
 retains hashes and the renderer warning. Source-color contrast calculations do not
 establish device readability or screen-reader accessibility. This is no new outage,
-recovery, uptime or test receipt. No voice, animation, final thumbnail or finished video.
+recovery, uptime or test receipt. No voice, animation or finished video. A separate thumbnail review candidate is retained below.
 
 Next: exact narration/caption/storyboard owner review, then authorized recording,
 retiming and a local video preview. Channel/destination, device/accessibility,
 rights and upload acceptance remain unverified; nothing published.
+
+## Slot 3 thumbnail review candidate
+
+The [original thumbnail SVG](jarvis-youtube-slot3-thumbnail-20261105.svg) and
+[PNG review candidate](exports/youtube-20261029/slot-3-thumbnail.png) implement
+the specified “CHECK THE CONTEXT” copy with two separate cards labelled Runner
+and Intended environment and an empty observation field. Hypothetical example,
+conceptual/unpublished, Review pending and unassigned-destination labels remain
+visible. No current outage/recovery/availability, test result, uptime number or
+release approval is depicted. The 1200×675 canvas is an editorial choice, not
+verified YouTube upload guidance or accepted platform formatting.
+
+Seven text-width checks, XML/resource restrictions, PNG decode/dimensions/opacity/
+metadata, an empty-observation-field pixel check and full assistant visual inspection
+passed. [Preparation evidence](../evidence/youtube-slot3-thumbnail-20261105.json)
+retains input revision, source/output hashes and actual renderer/check receipts.
+Narration, shot plan, SRT, title/description, specified thumbnail copy/alt text,
+original campaign and storyboard artwork remain unchanged.
+
+This is a thumbnail candidate, not an accepted upload or finished video. Exact
+art/copy owner review, rights, channel/destination, device/accessibility and platform
+acceptance remain pending. No voice, animation/video, upload or publication was
+produced. The PNG does not populate a platform alt-text field. The Daily Newsletter
+schedule and paused Studio Work Cycle remain unchanged.
