@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+  <title id="title">A conceptual engineering return with review pending</title>
+  <desc id="desc">Unpublished Substack Note artwork. Three rows labelled Starting revision, Changed artifact and Actual checks each have an empty reference field, followed by Review pending. No execution result, deployed service, connected account or release approval is depicted. Destination is unassigned.</desc>
+  <rect width="1400" height="1000" fill="#101d2c"/>
+  <g font-family="DejaVu Sans" fill="#f5f8fc">
+    <text x="64" y="84" font-size="40" font-weight="bold">AN UPDATE WORTH PICKING UP</text>
+    <text x="64" y="138" font-size="26" fill="#a9e0df">CONCEPTUAL EXAMPLE • UNPUBLISHED NOTE</text>
+    <text x="64" y="192" font-size="25" fill="#b8d9e8">Keep the starting version, changed artifact and actual checks together.</text>
+    <rect x="64" y="236" width="1272" height="116" rx="16" fill="#20354c"/>
+    <text x="88" y="309" font-size="30" font-weight="bold">Starting revision</text>
+    <rect x="568" y="270" width="744" height="48" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <rect x="64" y="380" width="1272" height="116" rx="16" fill="#20354c"/>
+    <text x="88" y="453" font-size="30" font-weight="bold">Changed artifact</text>
+    <rect x="568" y="414" width="744" height="48" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <rect x="64" y="524" width="1272" height="116" rx="16" fill="#20354c"/>
+    <text x="88" y="597" font-size="30" font-weight="bold">Actual checks</text>
+    <rect x="568" y="558" width="744" height="48" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="64" y="732" font-size="36" font-weight="bold">Review pending</text>
+    <text x="64" y="790" font-size="26" fill="#b8d9e8">Reference fields are empty. No execution result is depicted.</text>
+    <text x="64" y="844" font-size="25" fill="#b8d9e8">A retained change does not establish a deployed service or connected account.</text>
+    <text x="64" y="898" font-size="24" fill="#b8d9e8">Destination: unassigned</text>
+    <text x="64" y="952" font-size="24" fill="#b8d9e8">Draft only • No publication or subscriber email authorized.</text>
+  </g>
+</svg>
