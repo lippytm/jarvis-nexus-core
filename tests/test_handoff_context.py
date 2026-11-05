@@ -82,6 +82,37 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(first["external_actions"], 0)
         self.assertEqual(resumed["sender_authentication"], "not_established")
 
+    def test_load_context_optional_digest_rejects_same_memory_edit_after_restart(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        first = self.approve()
+        legacy = self.load()
+        self.assertEqual(self.load(expected_sha256=first["context_sha256"]), legacy)
+        self.stage("mission-two")
+        other = self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        self.assertEqual(self.load(expected_sha256=first["context_sha256"]), legacy)
+        self.profile["execution"]["detail"] = "New private detail with the same source and memory revision."
+        changed = self.ledger.save_context(self.profile, expected_revision=1)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        for value in (first["context_sha256"], other["context_sha256"], "0" * 64):
+            with self.assertRaisesRegex(ValueError, "context digest mismatch"):
+                self.load(expected_sha256=value)
+        for value in (True, "bad", "A" * 64, ""):
+            with self.assertRaises(ValueError):
+                self.load(expected_sha256=value)
+        current = self.load(expected_sha256=changed["context_sha256"])
+        self.assertEqual(current, self.load())
+        self.assertEqual(current["profile"], self.profile)
+        self.assertEqual(current["review_state"], "proposed")
+        self.assertEqual(current["profile"]["execution"]["state"], "outcome_unknown")
+        with self.assertRaisesRegex(ValueError, "private context"):
+            self.load(expected_sha256=changed["context_sha256"], audience="public_candidate")
+        self.assertEqual(self.load("mission-two", expected_sha256=other["context_sha256"])["profile"],
+                         self.context("mission-two"))
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_read_only_inspection_preserves_checkpoint_and_database_bytes(self):
         self.save()
         expected = self.load()

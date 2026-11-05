@@ -1315,6 +1315,34 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "proposal.json").read_bytes(), content)
         self.assertEqual(self.export_context(checksum).returncode, 1)
 
+    def test_load_context_digest_cli_rejects_same_memory_edit_before_output(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        self.profile["execution"]["detail"] = "Changed private detail without changing memory revision."
+        self.write(self.profile)
+        changed = self.save(revision=1)
+        self.assertEqual(changed.returncode, 0, changed.stderr)
+        fresh_digest = json.loads(changed.stdout)["context_sha256"]
+        before = self.db.read_bytes()
+        args = ("--read-only", "load-context", "--handoff", "cli-task", "--source-revision", REVISION,
+                "--memory-revision", "1")
+        for value in (checksum, "bad"):
+            rejected = self.cli(*args, "--digest", value, "--out", "rejected/context.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertFalse((self.root / "rejected").exists())
+            self.assertNotIn("Changed private detail", rejected.stderr + rejected.stdout)
+        accepted = self.cli(*args, "--digest", fresh_digest, "--out", "private/context.json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        output = self.root / "private/context.json"
+        content = output.read_bytes()
+        self.assertEqual(json.loads(content)["profile"], self.profile)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--digest", fresh_digest, "--out", "private/context.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        legacy = self.cli(*args, "--out", "legacy.json")
+        self.assertEqual(legacy.returncode, 0, legacy.stderr)
+        self.assertEqual((self.root / "legacy.json").read_bytes(), content)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_destination_context_survives_cli_backup_and_restoration_read(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic destination checkpoint."))

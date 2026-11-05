@@ -774,3 +774,12 @@ handoffs do not change it; a new selected checkpoint does. Current context edits
 without a new checkpoint and review changes are not part of this index snapshot.
 Defaults and stored schemas remain unchanged. This is a read-transaction observation,
 not a lease, authentication, a future release gate or permission to retry.
+
+For exact-content retrieval, `load-context --digest SHA256` additionally requires
+the selected current context digest alongside source and memory revisions. The API
+option is `expected_sha256` on `load_context`. This catches a profile edit even
+when its source and memory revision are unchanged. A mismatch rejects before CLI
+output creation. Omitting the option preserves the existing retrieval contract
+and response schema. Matching does not bypass audience restrictions, approve the
+profile, clear execution holds or grant a retry. The content digest excludes
+separate review metadata; the read is a snapshot, not a later release gate or lease.

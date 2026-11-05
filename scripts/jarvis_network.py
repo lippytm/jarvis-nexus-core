@@ -211,6 +211,7 @@ def main(argv=None):
     context_load.add_argument("--handoff", required=True)
     context_load.add_argument("--source-revision", required=True)
     context_load.add_argument("--memory-revision", type=int, required=True)
+    context_load.add_argument("--digest", help="Require the exact current context content digest")
     context_load.add_argument("--out", required=True)
     control = commands.add_parser("set-context-control", help="Pause/cancel existing controlled context with exact guards")
     control.add_argument("--handoff", required=True)
@@ -387,7 +388,7 @@ def main(argv=None):
                 elif args.command == "load-context":
                     result = ledger.load_context(args.handoff, expected_source_revision=args.source_revision,
                                                  expected_memory_revision=args.memory_revision,
-                                                 audience="owner_private")
+                                                 audience="owner_private", expected_sha256=args.digest)
                 elif args.command == "capture-checkpoint":
                     result = ledger.checkpoint_context(args.handoff, expected_sha256=args.digest,
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
