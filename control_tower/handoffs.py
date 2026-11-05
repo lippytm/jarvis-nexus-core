@@ -478,13 +478,14 @@ class HandoffLedger:
             self.db.execute("PRAGMA user_version=3")
             duplicate = self.db.execute("SELECT 1 FROM context_checkpoints WHERE handoff_id=? AND revision=?",
                                         (handoff_id, row["revision"])).fetchone() is not None
-            if duplicate:
-                self._checkpoint(handoff_id, row["revision"])
-            else:
+            if not duplicate:
                 if self.db.execute("SELECT count(*) FROM context_checkpoints").fetchone()[0] >= MAX_CONTEXT_CHECKPOINTS:
                     raise ValueError("context checkpoint limit reached")
                 self.db.execute("INSERT INTO context_checkpoints VALUES (?,?,?,?)",
                                 (handoff_id, row["revision"], row["digest"], row["body"]))
+            # Validate new captures too, before the transaction commits. Invalid
+            # adjacent history must roll back the insertion, not earn a receipt.
+            self._checkpoint(handoff_id, row["revision"])
             return {"handoff_id": handoff_id, "checkpoint_revision": row["revision"],
                     "context_sha256": row["digest"], "duplicate": duplicate,
                     "visibility": "owner_private", "authority": "historical_context_only_not_approval", "external_actions": 0}

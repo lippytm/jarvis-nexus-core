@@ -423,6 +423,52 @@ with HandoffLedger(sys.argv[1]) as ledger:
                 expected_memory_revision=2)["profile"], current)
             self.assertEqual(self.path.read_bytes(), before)
 
+    def test_new_capture_rejects_invalid_adjacent_history_without_persisting(self):
+        self.profile = self.control_profile("paused")
+        first = self.save()
+        args = dict(expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=first["context_sha256"], **args)
+        current = deepcopy(self.profile)
+        current["memory_revision"] = 2
+        saved = self.ledger.save_context(current, expected_revision=1)
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        self.ledger.save_context(independent, expected_revision=0)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts", "context_checkpoints")
+        for case in ("memory-order", "attempt-order", "digest"):
+            self.ledger.db.execute("DELETE FROM context_checkpoints WHERE revision=2")
+            damaged = deepcopy(self.profile)
+            if case == "memory-order":
+                damaged["memory_revision"] = 3
+            elif case == "attempt-order":
+                damaged["execution"]["attempts"] = 2
+            checksum = "0" * 64 if case == "digest" else digest(damaged)
+            self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=?",
+                (json.dumps(damaged), checksum, "mission-one"))
+            self.ledger.close()
+            self.ledger = HandoffLedger(self.path)
+            before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+            with self.subTest(case=case, check="capture"), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"],
+                    expected_source_revision=REVISION, expected_memory_revision=2)
+            with self.subTest(case=case, check="rollback"):
+                self.assertEqual(before, {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables})
+            self.assertFalse(self.ledger.db.in_transaction)
+            self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+            self.assertEqual(self.load("independent-task")["profile"], independent)
+        # Restoring the original valid history permits one new capture, then a
+        # duplicate receipt; a restart retains both without changing current state.
+        self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=1",
+            (json.dumps(self.profile), first["context_sha256"], "mission-one"))
+        args.update(expected_sha256=saved["context_sha256"], expected_memory_revision=2)
+        self.assertFalse(self.ledger.checkpoint_context("mission-one", **args)["duplicate"])
+        self.assertTrue(self.ledger.checkpoint_context("mission-one", **args)["duplicate"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(len(self.ledger.list_checkpoints("mission-one")["checkpoints"]), 2)
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
+        self.assertEqual(self.load("independent-task")["profile"], independent)
+
     def test_retained_transition_cannot_temporarily_clear_irreversible_history(self):
         from scripts.jarvis_network import _backup
         self.profile = self.destination_profile()
