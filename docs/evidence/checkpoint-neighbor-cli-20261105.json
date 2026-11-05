@@ -1,0 +1,69 @@
+{
+  "asset_id": "codex",
+  "change": "One new CLI integration method exercises damaged neighbor rejection before parent-directory/file creation, unchanged bytes/holds/no journal, private-text exclusion, restored valid historical export with 0600/limited authority, and overwrite refusal.",
+  "checks": {
+    "diagnostic_limit": "Ancillary ps command unavailable: fatal library error, lookup self. Actual pwd and subsequent Python commands succeeded.",
+    "focused": "New CLI method passed against current implementation; three fresh CLI processes for rejection, restored export and overwrite refusal.",
+    "isolated_sensitivity": "Temporary copy bypassing the shared neighbor bound failed one new CLI return-code assertion with zero harness errors; repository implementation unchanged.",
+    "local_full_verifier": {
+      "elapsed_seconds": 130.145,
+      "limitation": "Existing test_destination_snapshot_cli_rejects_before_output_and_preserves_holds had a 15-second subprocess timeout; no assertion failure. Full local suite not green.",
+      "record_sha256": "0d9ad0110c675aff28150c2c470dd0db08049f2008fef19ea4f78e68e1d786a3",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 1,
+        "failures": 0,
+        "passed": false,
+        "run": 536,
+        "skipped": 0
+      }
+    },
+    "logs_sha256": {
+      "checkpoint-neighbor-cli-20261105.txt": "5617ca3e8be47de804ffdcea6246752309b10e665f1e6000adbb7e273f62fd00",
+      "checkpoint-neighbor-cli-full-20261105.txt": "bae445e695856da7920fe7029c4b0056639edcf24b0e1cf8344eeebfe2c0dfbd",
+      "checkpoint-neighbor-cli-mutant-20261105.txt": "a7d73f4485e99002c0fc1fe9d11765a7fe85f9b9b84b38ed85aa83c6523661d0",
+      "checkpoint-neighbor-cli-targeted-20261105.txt": "33387574795dd32772ca27fecd6e889df5f415849cb1f3205b017aa425c52dbd",
+      "checkpoint-neighbor-cli-web-20261105.txt": "8e5b027dbbab3dac9ac5f55c88cb72868fb0f4c81c46782ac24b10f74fbd35de"
+    },
+    "new_unit_methods": 1,
+    "targeted_after_full": "Exactly one targeted rerun of the timed-out existing method plus new method passed (2 tests in 1.493s); no full-suite retry or runtime-recovery claim.",
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.cli-regression.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "e8d8b5570966646833e1286031142515f9923f0e",
+  "limitations": [
+    "Synthetic CLI fixtures and isolated sensitivity mutation; not authenticated delivery or a real mission repair",
+    "Fixture restoration is direct test SQL, not an implemented repair controller",
+    "Original paused mission and real receipts untouched",
+    "Local full-suite timeout remains distinct from fresh targeted checks and CI"
+  ],
+  "memory_source": "master Page sequence 150",
+  "mission_id": "checkpoint-neighbor-cli-20261105",
+  "next_task": "Exact-revision independent review and fresh CI verification; retain local full-run timeout honestly; do not repeat completed CLI regression.",
+  "observed_gap": "The shared neighbor bounds had API coverage but no dedicated CLI subprocess check for pre-output rejection, valid private export and no overwrite.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft-only regression test/evidence in named repository/branch; implementation unchanged",
+  "project_id": "ai-jarvis",
+  "record_sha256": "d52e52ca392453a509e9d7240c00e829fe86c36a6f64c2d12d2e9a29f6eb0511",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": "ce23c76cdb4fa763796cfcf6302e2fd9b5c0032bcfbdbe057619f6e2ec909cf6",
+  "source_before_sha256": "ca768ae8de6e9d47e26c3ca923460b052937dc35af02b4f144fe9c33bd248dcd",
+  "unchanged_implementation_sha256": "db5d70ccfbaa7b75455d414fb78d9e6224e0629a9ab015bf76aac8a2419b6a04"
+}

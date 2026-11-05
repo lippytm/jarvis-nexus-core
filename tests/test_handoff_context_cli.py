@@ -526,6 +526,62 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(absent.returncode, 1)
         self.assertFalse((self.root / "missing").exists())
 
+    def test_cli_historical_export_rejects_invalid_neighbor_before_creating_output(self):
+        self.profile.update(schema_version=3, destination_id="private-repository",
+            control=dict(state="active", actor_id="local-owner", reason="Synthetic scope."))
+        with HandoffLedger(self.db) as ledger:
+            first = ledger.save_context(self.profile, expected_revision=0)
+            ledger.checkpoint_context("cli-task", expected_sha256=first["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=1)
+            middle = deepcopy(self.profile)
+            middle["memory_revision"] = 2
+            second = ledger.save_context(middle, expected_revision=1)
+            ledger.checkpoint_context("cli-task", expected_sha256=second["context_sha256"],
+                expected_source_revision=REVISION, expected_memory_revision=2)
+            current = deepcopy(middle)
+            current["memory_revision"] = 3
+            current["control"]["state"] = "paused"
+            current["execution"]["state"] = "outcome_unknown"
+            ledger.save_context(current, expected_revision=2)
+            damaged = deepcopy(middle)
+            damaged["memory_revision"] = 4
+            damaged["execution"]["detail"] = "PRIVATE_NEIGHBOR_CONTEXT"
+            ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=2",
+                (json.dumps(damaged), digest(damaged), "cli-task"))
+        args = ("load-checkpoint", "--handoff", "cli-task", "--digest", first["context_sha256"],
+                "--source-revision", REVISION, "--memory-revision", "1", "--checkpoint-revision", "1",
+                "--out", "uncreated/nested/history.json")
+        before = self.db.read_bytes()
+        result = self.cli(*args)  # A new process must reject before invoking the output writer.
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("checkpoint integrity", json.loads(result.stderr)["error"])
+        self.assertNotIn("PRIVATE_NEIGHBOR_CONTEXT", result.stderr)
+        self.assertFalse((self.root / "uncreated").exists())
+        self.assertFalse(list(self.root.glob("ledger.sqlite3-*")))
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=3)["profile"], current)
+        # Fixture-only restoration is separate from the CLI; no repair command is implied.
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=2",
+                (json.dumps(middle), digest(middle), "cli-task"))
+        before = self.db.read_bytes()
+        valid = self.cli(*args)
+        self.assertEqual(valid.returncode, 0, valid.stderr)
+        output = self.root / "uncreated/nested/history.json"
+        retained = output.read_bytes()
+        packet = json.loads(retained)
+        self.assertEqual(packet["profile"], self.profile)
+        self.assertEqual(packet["visibility"], "owner_private")
+        self.assertEqual(packet["authority"], "historical_context_only_not_approval")
+        self.assertFalse(packet["retry_authorized"])
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args).returncode, 1)
+        self.assertEqual(output.read_bytes(), retained)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_historical_read_rejects_stale_revision_escape_and_overwrite(self):
         checksum = json.loads(self.save().stdout)["context_sha256"]
         args = ("--handoff", "cli-task", "--digest", checksum, "--source-revision", REVISION,
