@@ -28,7 +28,7 @@ Each unit uses a working editing budget of at most 380 characters; this is a cre
 constraint, not a verified platform limit or upload-compatibility test. Current
 destination/format capabilities must be checked separately. Plain text carries all
 essential meaning; no image, audio or video is needed for these drafts. Optional
-visuals for slots 2–4 remain unrendered specifications; slot 1 now has a local SVG/PNG review candidate. No hashtags, profile-link promises or
+visuals for slots 3–4 remain unrendered specifications; slots 1–2 now have local SVG/PNG review candidates. No hashtags, profile-link promises or
 claims about today's service status are added.
 
 ## Slot 1 — Explain
@@ -95,6 +95,28 @@ not a new test receipt.” Proposed alt text: “Two synthetic versions differ i
 checkpoint note. The proposed check asks for retained text and a fresh review.”
 Do not display an actual private checkpoint or imitate a live product screen.
 
+### Slot 2 artwork candidate
+
+The [original SVG](jarvis-threads-slot2-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-2.png) implement the synthetic
+A/B note specification above. The 1080×1080 canvas is an editorial choice, not
+verified Threads upload guidance. A is assumed reviewed only within the exercise;
+B changes the note from “draft A” to “draft B.” The changed note is identified in
+words and underlined. “Proposed exercise — not a new test receipt” and unpublished
+labels remain visible. Retention after reopening and fresh review are proposed
+checks, not reported results. The owner-review field is empty and destination
+unassigned. This is original conceptual artwork, not a private checkpoint or live
+product screen.
+
+The SVG was rendered locally and the PNG decoded and visually inspected. XML/resource,
+font-width, image/opacity/metadata and empty-review-field checks passed. See the
+[preparation evidence](../evidence/threads-slot2-artwork-20261104.json) for exact
+hashes and renderer/check receipts. All twelve discussion units, proposed alt text,
+other artwork and campaign source remain unchanged. Independent/owner, rights,
+destination, device/accessibility and platform-format review remain pending.
+No upload, publication or message was sent; the image does not supply a platform
+alt-text field or establish an authenticated reviewer or connection.
+
 ## Slot 3 — Limits
 
 Post ID: jarvis-media-20261029.threads.3
@@ -142,8 +164,8 @@ Empty boxes do not imply completion or approval.” No asset rendered.
 
 ## Review and continuation
 
-All twelve text units are authored. Slot 1 has an SVG/PNG artwork candidate;
-slots 2–4 remain optional unrendered visual specifications. Account access, destination, current platform constraints, exact-copy
+All twelve text units are authored. Slots 1–2 have SVG/PNG artwork candidates;
+slots 3–4 remain optional unrendered visual specifications. Account access, destination, current platform constraints, exact-copy
 owner approval and publication remain unverified/unfinished. The reviewer references
 above are editorial metadata, not instructions to append links to the public copy.
 

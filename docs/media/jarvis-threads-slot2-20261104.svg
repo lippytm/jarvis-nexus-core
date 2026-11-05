@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic A/B checkpoint notes: proposed review exercise</title>
+  <desc id="desc">Two synthetic notes differ: draft A becomes draft B. Version A is assumed reviewed only for this proposed exercise. The changed B note is labelled and underlined. Proposed checks are to retain B after reopening and require a fresh context review. Owner review is empty. This unpublished conceptual image depicts no actual test receipt, private checkpoint or live product screen.</desc>
+  <rect width="1080" height="1080" fill="#101d2c"/>
+  <g font-family="DejaVu Sans" fill="#f5f8fc">
+    <text x="48" y="70" font-size="34" font-weight="bold">ONE EDIT. A FRESH REVIEW.</text>
+    <text x="48" y="112" font-size="22" fill="#a9e0df">SYNTHETIC A/B NOTES • UNPUBLISHED DRAFT</text>
+    <text x="48" y="164" font-size="24">Proposed exercise — not a new test receipt.</text>
+    <rect x="48" y="208" width="984" height="166" rx="16" fill="#20354c"/>
+    <text x="72" y="256" font-size="26" font-weight="bold">Version A · assume reviewed for this exercise</text>
+    <text x="72" y="322" font-size="30">Checkpoint note: draft A.</text>
+    <rect x="48" y="406" width="984" height="192" rx="16" fill="#20354c"/>
+    <text x="72" y="454" font-size="26" font-weight="bold">Version B · changed note</text>
+    <text x="72" y="518" font-size="30">Checkpoint note: draft B.</text>
+    <line x1="72" y1="532" x2="440" y2="532" stroke="#f5f8fc" stroke-width="3"/>
+    <text x="72" y="574" font-size="22" fill="#b8d9e8">Changed note: A becomes B. Review B separately.</text>
+    <text x="48" y="660" font-size="26" font-weight="bold">Proposed check</text>
+    <text x="48" y="708" font-size="25">Retain B after reopening the ledger.</text>
+    <text x="48" y="754" font-size="25">Require a fresh context review.</text>
+    <rect x="48" y="794" width="984" height="104" rx="16" fill="#20354c"/>
+    <text x="72" y="856" font-size="26">Owner review:</text>
+    <rect x="314" y="818" width="668" height="54" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="48" y="956" font-size="22" fill="#b8d9e8">Destination: unassigned • No actual check result depicted.</text>
+    <text x="48" y="1014" font-size="21" fill="#b8d9e8">Local review labels do not authenticate a person or authorize release.</text>
+  </g>
+</svg>
