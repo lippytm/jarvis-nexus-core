@@ -342,8 +342,11 @@ class HandoffLedger:
             return report
 
     def destination_status(self, *, project_id, platform, destination_id,
-                           include_digest=False, expected_sha256=None, mission_id=None):
+                           include_digest=False, expected_sha256=None, mission_id=None,
+                           include_review_state=False):
         """Selective private metadata discovery, never connection/dispatch proof."""
+        if type(include_review_state) is not bool:
+            raise ValueError("include-review-state must be boolean")
         if type(include_digest) is not bool:
             raise ValueError("include-digest must be boolean")
         if expected_sha256 is not None:
@@ -365,20 +368,26 @@ class HandoffLedger:
                     or mission_id is not None and profile["mission_id"] != mission_id):
                     continue
                 original, _ = self._handoff(item["handoff_id"])
-                matches.append({"handoff_id": item["handoff_id"], "mission_id": profile["mission_id"],
+                record = {"handoff_id": item["handoff_id"], "mission_id": profile["mission_id"],
                     "asset_id": profile["asset_id"], "source_revision": profile["source_revision"],
                     "memory_revision": profile["memory_revision"], "context_revision": row["revision"],
                     "context_sha256": row["digest"], "handoff_state": original["state"],
                     "execution_state": profile["execution"]["state"], "control_state": profile["control"]["state"],
-                    "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed"})
+                    "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed"}
+                if include_review_state:
+                    record.update(handoff_review_current=original["reviewed_digest"] == original["digest"],
+                                  context_review_current=row["reviewed_digest"] == row["digest"])
+                matches.append(record)
             result = {"schema_version": 1, "kind": "jarvis.destination_status", "project_id": project_id,
                     "platform": platform, "destination_id": destination_id, "records": matches,
                     "visibility": "owner_private", "sender_authentication": "not_established",
                     "dispatch_authorized": False, "external_actions": 0}
             if mission_id is not None:
                 result.update(schema_version=3, mission_id=mission_id)
-            if include_digest or expected_sha256 is not None or mission_id is not None:
-                if mission_id is None:
+            if include_review_state:
+                result.update(schema_version=4, review_authority="local_record_only_not_identity_authentication")
+            if include_digest or expected_sha256 is not None or mission_id is not None or include_review_state:
+                if mission_id is None and not include_review_state:
                     result["schema_version"] = 2
                 result["report_sha256"] = digest(result)
                 if expected_sha256 is not None and result["report_sha256"] != expected_sha256:

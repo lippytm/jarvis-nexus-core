@@ -1718,6 +1718,67 @@ with HandoffLedger(sys.argv[1]) as ledger:
     def destination_profile(self, destination="repository-one"):
         return {**self.control_profile("active"), "schema_version": 3, "destination_id": destination}
 
+    def test_destination_review_snapshot_distinguishes_both_reviews_after_restart(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one",
+                    mission_id="mission-one", include_review_state=True)
+        first = self.ledger.destination_status(**args)
+        self.assertEqual(first["schema_version"], 4)
+        self.assertEqual(first["review_authority"], "local_record_only_not_identity_authentication")
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        second = self.ledger.destination_status(**args)
+        self.assertEqual((second["records"][0]["handoff_review_current"], second["records"][0]["context_review_current"]), (False, True))
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, expected_sha256=first["report_sha256"])
+        self.ledger.review("mission-one", reviewer_id="local-evaluator", expected_sha256=self.receipt["handoff_sha256"])
+        both = self.ledger.destination_status(**args)
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Changed private evidence; keep unknown hold."
+        self.ledger.save_context(changed, expected_revision=1)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        report = self.ledger.destination_status(**args)
+        self.assertEqual((report["records"][0]["handoff_review_current"], report["records"][0]["context_review_current"]), (True, False))
+        self.assertEqual((report["records"][0]["control_state"], report["records"][0]["execution_state"]), ("paused", "outcome_unknown"))
+        self.assertFalse(report["dispatch_authorized"])
+        self.assertNotIn("Changed private evidence", json.dumps(report))
+        self.assertNotIn("https://", json.dumps(report))
+        self.assertEqual(report["report_sha256"], digest({k: v for k, v in report.items() if k != "report_sha256"}))
+        with self.assertRaisesRegex(ValueError, "destination report is stale"):
+            self.ledger.destination_status(**args, expected_sha256=both["report_sha256"])
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_destination_review_opt_in_preserves_legacy_and_selective_snapshot(self):
+        self.profile = self.destination_profile()
+        self.save()
+        args = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one")
+        for extra in ({}, {"include_digest": True}, {"mission_id": "mission-one"}):
+            old = self.ledger.destination_status(**args, **extra)
+            self.assertEqual(self.ledger.destination_status(**args, **extra, include_review_state=False), old)
+            self.assertNotIn("handoff_review_current", old["records"][0])
+            self.assertNotIn("review_authority", old)
+        selected = self.ledger.destination_status(**args, mission_id="mission-one", include_review_state=True)
+        self.stage("other-task")
+        other = {**self.context("other-task"), "schema_version": 3, "destination_id": "repository-one",
+                 "control": deepcopy(self.profile["control"])}
+        saved = self.ledger.save_context(other, expected_revision=0)
+        self.ledger.review_context("other-task", reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        self.assertEqual(self.ledger.destination_status(**args, mission_id="mission-one", include_review_state=True,
+            expected_sha256=selected["report_sha256"]), selected)
+        for extra in ({}, {"mission_id": "mission-one"}, {"mission_id": "absent", "include_review_state": True}):
+            with self.subTest(extra=extra), self.assertRaisesRegex(ValueError, "destination report is stale"):
+                self.ledger.destination_status(**args, **extra, expected_sha256=selected["report_sha256"])
+        for invalid in (1, None, "", []):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.ledger.destination_status(**args, include_review_state=invalid)
+        empty = self.ledger.destination_status(**args, mission_id="absent", include_review_state=True)
+        self.assertEqual((empty["schema_version"], empty["records"]), (4, []))
+        self.assertFalse(empty["dispatch_authorized"])
+
     def test_destination_mission_selection_retains_all_target_holds_after_restart(self):
         for target in sorted(TARGETS):
             identifier = "selected-" + target

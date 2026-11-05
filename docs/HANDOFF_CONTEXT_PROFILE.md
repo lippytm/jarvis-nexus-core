@@ -563,6 +563,19 @@ empty selection, not a completion claim. Expected snapshot checks bind all four
 selectors and matching records; changes in another mission do not invalidate a
 selected snapshot. All records remain subject to stored-integrity validation.
 
+Opt in with destination-status `--include-review-state` (API
+`include_review_state=True`, a strict boolean) for report version 4. Each selected
+record adds separate `handoff_review_current` and `context_review_current` booleans;
+the older `review_state` field continues to describe context review only. The report
+always includes `report_sha256` and labels its review authority as local records,
+not identity authentication. Optional `--mission` still narrows the selection.
+Carry the flag and all selectors into `--expected-report-digest` checks; a format,
+review or matching-context change requires a fresh snapshot. Unrelated mission
+reviews do not invalidate a mission-selected report. With the flag omitted or
+false, version-1/2/3 reports remain unchanged. No ledger schema or strict packet
+changes are required. Both booleans can be true without authenticated review,
+owner approval, connection availability or dispatch permission.
+
 This read-only view changes no records or holds. Use its exact revisions for a
 subsequent load-context and fresh inspection; it is not a lease or dispatch
 eligibility check. Dispatch authorization is always false. A matching record,

@@ -1311,6 +1311,40 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse(report["dispatch_authorized"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_destination_review_cli_stale_gate_and_private_output(self):
+        self.profile.update(schema_version=3, destination_id="repo-one",
+            control=dict(state="paused", actor_id="local-owner", reason="Synthetic private hold."))
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.write(self.profile)
+        self.assertEqual(self.save().returncode, 0)
+        args = ("--read-only", "destination-status", "--project", "ai-jarvis", "--platform", "codex",
+                "--destination", "repo-one", "--mission", "cli-task", "--include-review-state")
+        first = self.cli(*args)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        old = json.loads(first.stdout)
+        with HandoffLedger(self.db) as ledger:
+            checksum = ledger.load_context("cli-task", expected_source_revision=REVISION, expected_memory_revision=1)["context_sha256"]
+            ledger.review_context("cli-task", reviewer_id="local-evaluator", expected_sha256=checksum)
+        before = self.db.read_bytes()
+        stale = self.cli(*args, "--expected-report-digest", old["report_sha256"], "--out", "stale/report.json")
+        self.assertEqual(stale.returncode, 1)
+        self.assertIn("destination report is stale", stale.stderr)
+        self.assertFalse((self.root / "stale").exists())
+        fresh = json.loads(self.cli(*args).stdout)
+        written = self.cli(*args, "--expected-report-digest", fresh["report_sha256"], "--out", "private/report.json")
+        self.assertEqual(written.returncode, 0, written.stderr)
+        output = self.root / "private/report.json"
+        self.assertEqual(json.loads(output.read_text()), fresh)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        retained = output.read_bytes()
+        self.assertEqual(self.cli(*args, "--out", "private/report.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), retained)
+        row = fresh["records"][0]
+        self.assertEqual((fresh["schema_version"], row["handoff_review_current"], row["context_review_current"]), (4, False, True))
+        self.assertEqual((row["control_state"], row["execution_state"]), ("paused", "outcome_unknown"))
+        self.assertFalse(fresh["dispatch_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_destination_snapshot_cli_rejects_before_output_and_preserves_holds(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic private hold."))
