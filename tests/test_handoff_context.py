@@ -1828,6 +1828,67 @@ with HandoffLedger(sys.argv[1]) as ledger:
     def destination_profile(self, destination="repository-one"):
         return {**self.control_profile("active"), "schema_version": 3, "destination_id": destination}
 
+    def test_destination_review_snapshot_is_atomic_during_concurrent_reviews(self):
+        self.assertEqual(self.ledger.db.execute("PRAGMA journal_mode=WAL").fetchone()[0], "wal")
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        first = self.save()
+        self.stage("mission-two")
+        second_profile = {**deepcopy(self.profile), "handoff_id": "mission-two",
+            "mission_id": "mission-two", "handoff_sha256": self.context("mission-two")["handoff_sha256"]}
+        second = self.ledger.save_context(second_profile, expected_revision=0)
+        args = dict(project_id="ai-jarvis", platform="codex", destination_id="repository-one",
+                    include_review_state=True)
+        with HandoffLedger(self.path, read_only=True) as inspected:
+            before = inspected.destination_status(**args)
+            context = inspected._context
+            committed = []
+            writer_rows = []
+
+            def review_between_reads(identifier):
+                selected = context(identifier)  # Real read establishes the snapshot.
+                if not committed:
+                    for mission, saved in (("mission-one", first), ("mission-two", second)):
+                        self.ledger.review(mission, reviewer_id="local-evaluator",
+                            expected_sha256=self.context(mission)["handoff_sha256"])
+                        self.ledger.review_context(mission, reviewer_id="local-evaluator",
+                            expected_sha256=saved["context_sha256"])
+                    committed.append(True)
+                    writer_rows.extend(self.ledger.db.iterdump())
+                return selected
+
+            with patch.object(inspected, "_context", side_effect=review_between_reads):
+                snapshot = inspected.destination_status(**args)
+            self.assertEqual(committed, [True])
+            self.assertEqual(snapshot, before)
+            self.assertFalse(inspected.db.in_transaction)
+            current = inspected.destination_status(**args)
+            self.assertEqual(len(current["records"]), 2)
+            for record in current["records"]:
+                self.assertTrue(record["handoff_review_current"])
+                self.assertTrue(record["context_review_current"])
+                self.assertEqual((record["control_state"], record["execution_state"]),
+                                 ("paused", "outcome_unknown"))
+            self.assertNotEqual(current["report_sha256"], before["report_sha256"])
+            self.assertEqual(current["report_sha256"], digest({k: v for k, v in current.items()
+                                                               if k != "report_sha256"}))
+            with self.assertRaisesRegex(ValueError, "destination report is stale"):
+                inspected.destination_status(**args, expected_sha256=before["report_sha256"])
+            self.assertFalse(inspected.db.in_transaction)
+            self.assertEqual(list(self.ledger.db.iterdump()), writer_rows)
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.destination_status(**args), current)
+            self.assertEqual(restarted.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+            self.assertEqual(restarted.load_context("mission-two", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], second_profile)
+        for private in ("Synthetic", "https://", "reviewer_id", "local-evaluator"):
+            self.assertNotIn(private, json.dumps(current))
+        self.assertFalse(current["dispatch_authorized"])
+        self.assertEqual(current["external_actions"], 0)
+        self.assert_exports_blocked(first["context_sha256"])
+
     def test_destination_review_snapshot_distinguishes_both_reviews_after_restart(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"

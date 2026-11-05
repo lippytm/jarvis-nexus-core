@@ -1,0 +1,65 @@
+{
+  "asset_id": "codex",
+  "change": "One WAL two-connection regression retains the original snapshot, observes fresh review flags on the next read, rejects its old digest, checks closed transactions/restart, two independent held profiles and private-text omission.",
+  "checks": {
+    "focused": "1 test passed in 0.063s",
+    "isolated_sensitivity": "Temporary source copy bypassing only destination_status transaction failed the snapshot equality assertion: 1 test, 1 expected failure, zero errors. Repository implementation unchanged.",
+    "local_full_verifier": {
+      "record_sha256": "2d9a87bcfe14039fca7f78b1e53c903ff88af3e22bf4809ca173b09af5855d19",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 537,
+        "skipped": 0
+      }
+    },
+    "new_unit_methods": 1,
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.destination-snapshot-regression.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "9b1dcefc629cb4c18f5817f2ff80e3e5db435d15",
+  "limitations": [
+    "Synthetic records and actual local SQLite connections; not authenticated reviewers, live provider delivery, a new worker or evidence of measured reliability improvement",
+    "The scheduling hook pauses between real reads; no fake database results or wall-clock sleeps",
+    "Prior historical local timeout remains separate; this fresh full verification passed",
+    "Original paused mission and retained actual receipts untouched"
+  ],
+  "logs_sha256": {
+    "destination-review-snapshot-20261105.txt": "9f2fd3bab77cf8df1d135723ff0f5cae3003cba9e123222774cb534c9d60302c",
+    "destination-review-snapshot-full-20261105.txt": "f87b6f0a78c6ae4285275064eac56d1a8e054705c344049a5d1d042a626cb882",
+    "destination-review-snapshot-mutant-20261105.txt": "af2b89318751ca9e54c13c25ffc8cf39377edbcf2b2112e91cf834c41f570b15",
+    "destination-review-snapshot-web-20261105.txt": "615909f7739e2eb0ad07d133fa06c09221ca5a283837eaeb93270f6b31d0220e"
+  },
+  "memory_source": "master Page sequence 155",
+  "mission_id": "destination-review-snapshot-20261105",
+  "next_task": "Exact-revision independent review; authenticated registry storage remains pending owner acceptance and audience/access policy. Do not repeat this concurrency regression.",
+  "observed_gap": "Destination review tests covered sequential edits and restart, but did not interleave an actual second SQLite connection committing both reviews during a metadata read.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft regression and evidence on named branch; production implementation and schemas unchanged",
+  "project_id": "ai-jarvis",
+  "record_sha256": "1c7a06741f16ccb64a4c4e126e757cab322f4004fc6dcde70e3ee1cb48ab3977",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": "06fcf203afec12c43adb8ef22075a9f5114b518c1e7c853839604491391cca33",
+  "source_before_sha256": "c557601bc7438ddcf2a8e6b2329501c8ef2c59b1b01ff1e217f63aec6882d544",
+  "unchanged_implementation_sha256": "db5d70ccfbaa7b75455d414fb78d9e6224e0629a9ab015bf76aac8a2419b6a04",
+  "visibility": "owner_private_test_fixture_only_no_private_owner_data"
+}
