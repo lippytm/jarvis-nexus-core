@@ -283,7 +283,7 @@ python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --database ledger.sqli
 ```
 
 This command always opens SQLite read-only and prints a private, handoff-scoped
-jarvis.checkpoint_index version-1 record. It validates each listed retained profile
+jarvis.checkpoint_index version-1 record by default. It validates each listed retained profile
 and returns only revision, digest, source/memory revision and recorded execution state,
 plus project/platform identity. Draft text, context/evidence URLs and execution detail
 are excluded. A valid version-2 ledger returns an empty list without upgrading;
@@ -764,3 +764,13 @@ leases, global cancellation/worker interruption, automatic retry/failover, conne
 dispatch are unfinished. No service is installed or deployed. Trading Bots stays
 research/backtesting/paper only; RoboParty stays deferred. Owner release gates
 and the full business portfolio remain in place.
+
+Opt in to `list-checkpoints --include-digest` for an explicit version-2 index
+with `report_sha256`. `--expected-report-digest SHA256` also selects version 2
+and rejects changed history before creating an output file. API equivalents are
+`include_digest=True` and `expected_sha256` on `list_checkpoints`. The digest binds
+only this handoff's listed history and identity: duplicate captures and unrelated
+handoffs do not change it; a new selected checkpoint does. Current context edits
+without a new checkpoint and review changes are not part of this index snapshot.
+Defaults and stored schemas remain unchanged. This is a read-transaction observation,
+not a lease, authentication, a future release gate or permission to retry.

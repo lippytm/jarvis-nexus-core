@@ -155,6 +155,51 @@ class ContextTests(unittest.TestCase):
             self.ledger.status()
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_checkpoint_index_digest_preserves_legacy_scope_and_rejects_new_history(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        legacy = self.ledger.list_checkpoints("mission-one")
+        self.assertEqual(self.ledger.list_checkpoints("mission-one", include_digest=False), legacy)
+        self.assertNotIn("report_sha256", legacy)
+        empty = self.ledger.list_checkpoints("mission-one", include_digest=True)
+        self.assertEqual(empty["schema_version"], 2)
+        self.ledger.checkpoint_context("mission-one", **args)
+        with self.assertRaisesRegex(ValueError, "checkpoint index is stale"):
+            self.ledger.list_checkpoints("mission-one", expected_sha256=empty["report_sha256"])
+        first = self.ledger.list_checkpoints("mission-one", include_digest=True)
+        self.assertEqual(first["report_sha256"], digest({k: v for k, v in first.items() if k != "report_sha256"}))
+        self.ledger.checkpoint_context("mission-one", **args)
+        self.stage("mission-two")
+        second = self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        self.ledger.checkpoint_context("mission-two", **{**args, "expected_sha256": second["context_sha256"]})
+        self.assertEqual(self.ledger.list_checkpoints("mission-one", expected_sha256=first["report_sha256"]), first)
+        self.profile["memory_revision"] = 2
+        changed = self.ledger.save_context(self.profile, expected_revision=1)
+        self.assertEqual(self.ledger.list_checkpoints("mission-one", include_digest=True), first)
+        self.ledger.checkpoint_context("mission-one", **{**args, "expected_sha256": changed["context_sha256"],
+                                                       "expected_memory_revision": 2})
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        with self.assertRaisesRegex(ValueError, "checkpoint index is stale"):
+            self.ledger.list_checkpoints("mission-one", expected_sha256=first["report_sha256"])
+        for value in (None, 1, "true", []):
+            with self.assertRaises(ValueError):
+                self.ledger.list_checkpoints("mission-one", include_digest=value)
+        for value in (True, "bad", "A" * 64):
+            with self.assertRaises(ValueError):
+                self.ledger.list_checkpoints("mission-one", expected_sha256=value)
+        current = self.ledger.list_checkpoints("mission-one", include_digest=True)
+        self.assertEqual(len(current["checkpoints"]), 2)
+        self.assertNotIn("https://", json.dumps(current))
+        self.assertFalse(current["retry_authorized"])
+        self.assertEqual(self.ledger.load_context("mission-one", expected_source_revision=REVISION,
+            expected_memory_revision=2)["profile"], self.profile)
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_opt_in_checkpoint_retains_old_context_without_rewinding_current_holds(self):
         saved = self.approve()
         original = deepcopy(self.profile)

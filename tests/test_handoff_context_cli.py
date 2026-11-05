@@ -627,6 +627,34 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli("list-checkpoints", "--handoff", "cli-task", database="absent/ledger.sqlite3").returncode, 1)
         self.assertFalse((self.root / "absent").exists())
 
+    def test_checkpoint_index_digest_cli_rejects_stale_before_output_and_retains_private_file(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        args = ("list-checkpoints", "--handoff", "cli-task")
+        old = self.cli(*args, "--include-digest")
+        self.assertEqual(old.returncode, 0, old.stderr)
+        old_digest = json.loads(old.stdout)["report_sha256"]
+        self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", "--handoff", "cli-task",
+            "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1").returncode, 0)
+        before = self.db.read_bytes()
+        for value in (old_digest, "bad"):
+            rejected = self.cli(*args, "--expected-report-digest", value, "--out", "rejected/index.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertFalse((self.root / "rejected").exists())
+        fresh = self.cli(*args, "--include-digest")
+        self.assertEqual(fresh.returncode, 0, fresh.stderr)
+        report = json.loads(fresh.stdout)
+        saved = self.cli(*args, "--expected-report-digest", report["report_sha256"], "--out", "private/index.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/index.json"
+        self.assertEqual(json.loads(output.read_text()), report)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        retained = output.read_bytes()
+        self.assertEqual(self.cli(*args, "--include-digest", "--out", "private/index.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), retained)
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertNotIn("Synthetic", fresh.stdout)
+        self.assertFalse(report["retry_authorized"])
+
     def test_checkpoint_index_file_survives_restart_without_copying_private_context(self):
         checksum = self.controlled(execution="outcome_unknown")
         self.assertEqual(self.cli("capture-checkpoint", "--allow-schema-upgrade", "--handoff", "cli-task",

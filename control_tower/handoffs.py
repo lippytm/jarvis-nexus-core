@@ -503,8 +503,12 @@ class HandoffLedger:
                     "context_sha256": row["digest"], "duplicate": duplicate,
                     "visibility": "owner_private", "authority": "historical_context_only_not_approval", "external_actions": 0}
 
-    def list_checkpoints(self, handoff_id):
+    def list_checkpoints(self, handoff_id, *, include_digest=False, expected_sha256=None):
         """Private selective history index; neither context text nor release authority."""
+        if type(include_digest) is not bool:
+            raise ValueError("include-digest must be boolean")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
         with self._transaction():
             _, handoff = self._handoff(handoff_id)
             records = []
@@ -518,11 +522,17 @@ class HandoffLedger:
                     records.append({"checkpoint_revision": row["revision"], "context_sha256": stored["digest"],
                         "source_revision": profile["source_revision"], "memory_revision": profile["memory_revision"],
                         "execution_state": profile["execution"]["state"]})
-            return {"schema_version": 1, "kind": "jarvis.checkpoint_index", "handoff_id": handoff_id,
+            result = {"schema_version": 1, "kind": "jarvis.checkpoint_index", "handoff_id": handoff_id,
                     "project_id": handoff["draft"]["project_id"], "platform": handoff["draft"]["target"],
                     "checkpoints": records, "visibility": "owner_private",
                     "authority": "historical_context_only_not_approval", "retry_authorized": False,
                     "external_actions": 0}
+            if include_digest or expected_sha256 is not None:
+                result["schema_version"] = 2
+                result["report_sha256"] = digest(result)
+            if expected_sha256 is not None and result["report_sha256"] != expected_sha256:
+                raise ValueError("checkpoint index is stale; retrieve current history again")
+            return result
 
     def load_checkpoint(self, handoff_id, revision, *, expected_sha256, expected_source_revision, expected_memory_revision):
         require_digest(expected_sha256)

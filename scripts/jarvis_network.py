@@ -237,6 +237,8 @@ def main(argv=None):
     checkpoint_index = commands.add_parser("list-checkpoints", help="Read one handoff's private history index without context text")
     checkpoint_index.add_argument("--handoff", required=True)
     checkpoint_index.add_argument("--out", help="Save the private index without overwriting an existing file")
+    checkpoint_index.add_argument("--include-digest", action="store_true", help="Emit a version-2 history snapshot digest")
+    checkpoint_index.add_argument("--expected-report-digest", help="Refuse a changed checkpoint index before output")
     context_review = commands.add_parser("review-context")
     context_review.add_argument("--handoff", required=True)
     context_review.add_argument("--reviewer", required=True)
@@ -390,7 +392,8 @@ def main(argv=None):
                     result = ledger.checkpoint_context(args.handoff, expected_sha256=args.digest,
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
                 elif args.command == "list-checkpoints":
-                    result = ledger.list_checkpoints(args.handoff)
+                    result = ledger.list_checkpoints(args.handoff, include_digest=args.include_digest,
+                        expected_sha256=args.expected_report_digest)
                 elif args.command == "load-checkpoint":
                     result = ledger.load_checkpoint(args.handoff, args.checkpoint_revision, expected_sha256=args.digest,
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
