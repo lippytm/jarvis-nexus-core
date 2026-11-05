@@ -21,8 +21,8 @@ scheduled newsletter editions. No Substack account was accessed or content sent.
 The text between each “Note copy” and “Reviewer reference” heading is the complete
 candidate body. References and production notes are editorial metadata; do not
 automatically append them to public copy. Keep the evidence limits with each body.
-Plain text carries all essential meaning. Slot 1 now has a local SVG/PNG artwork
-candidate; optional artwork for slots 2–4 remains unrendered. No image, audio or
+Plain text carries all essential meaning. Slots 1–2 now have local SVG/PNG artwork
+candidates; optional artwork for slots 3–4 remains unrendered. No image, audio or
 video is required for these text drafts.
 There is no publishing schedule, email subject line or subscriber-send instruction.
 
@@ -102,7 +102,28 @@ Optional visual: two original synthetic text cards, A and B, with the changed
 sentence underlined and labelled “Edited checkpoint note.” Include “Proposed
 exercise; no new run reported.” Proposed alt text: “Two synthetic versions differ
 in one checkpoint sentence; the proposed exercise checks retention and fresh review.”
-Do not imitate a live account screen or display a real private record. No asset rendered.
+Do not imitate a live account screen or display a real private record.
+
+### Slot 2 artwork candidate
+
+The [original SVG](jarvis-substack-slot2-20261105.svg) and
+[PNG review preview](exports/substack-20261029/slot-2.png) implement the synthetic
+A/B card specification above. “Save draft A.” becomes “Save draft B.” The changed
+sentence is underlined and labelled “Edited checkpoint note.” A is assumed reviewed
+only within the exercise. “Proposed exercise; no new run reported,” unpublished
+labels, Review pending and unassigned destination remain explicit. Retention and
+fresh review are proposed checks, not reported results. The 1400×1000 canvas is an
+editorial choice, not verified Substack upload guidance; no private record or live
+account screen is depicted.
+
+The SVG was rendered locally and the PNG decoded and visually inspected.
+XML/resource restrictions, actual text widths, underline coverage and image/opacity/
+metadata checks passed. [Preparation evidence](../evidence/substack-slot2-artwork-20261105.json)
+retains source/output hashes and renderer/check receipts. All four Note bodies,
+proposed alt text, other artwork and campaign remain unchanged. Owner/independent,
+rights, destination, device/accessibility and platform-format review remain pending.
+Nothing was uploaded, published or emailed; the image does not establish an accepted
+upload or a platform alt-text field. Newsletter and paused Studio settings are unchanged.
 
 ## Slot 3 — Limits
 
@@ -168,7 +189,7 @@ No asset rendered.
 ## Review and continuation
 
 Four Note bodies and four optional visual/alt-text specifications are authored.
-Slot 1 has an SVG/PNG artwork candidate; slots 2–4 remain unrendered specifications.
+Slots 1–2 have SVG/PNG artwork candidates; slots 3–4 remain unrendered specifications.
 Current platform capabilities, account/destination confirmation,
 exact-copy owner approval and publication remain unfinished. No subscriber email,
 paid subscription offer, automatic cadence or performance result is represented.
