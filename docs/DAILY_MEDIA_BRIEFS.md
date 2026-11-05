@@ -103,7 +103,7 @@ directories; non-POSIX behavior retains the existing file flush and no-overwrite
 
 The selected assignment now has an [unpublished script and shot plan](media/jarvis-youtube-slot2-20261029.md),
 proposed captions, an original SVG storyboard and a [retained PNG review preview](media/jarvis-youtube-slot2-20261029.md#slot-2-png-review-candidate). These are review artifacts;
-narration recording, final caption timing, video rendering and release remain unfinished.
+narration recording, final caption timing, video rendering and release remain unfinished. A separate [slot-2 SVG/PNG thumbnail review candidate](media/jarvis-youtube-slot2-20261029.md#slot-2-thumbnail-review-candidate) retains the specified task/revision/receipt motif, empty fields, Review pending and unverified service status; exact art/copy/alt review and channel/destination/accessibility acceptance remain pending.
 
 YouTube slot 1 now has a separate [unpublished narration and six-shot plan](media/jarvis-youtube-slot1-20261029.md), with proposed SRT captions, title/description and thumbnail specification. [Six-panel SVG and PNG storyboard candidates](media/jarvis-youtube-slot1-20261029.md#slot-1-storyboard-review-candidate) are retained. A separate [SVG/PNG thumbnail review candidate](media/jarvis-youtube-slot1-20261029.md#slot-1-thumbnail-review-candidate) is retained with three labelled cards and an empty review field. Narration recording, finished video, exact thumbnail/copy owner review and channel/destination confirmation remain pending. Slots 3 and 4 have their own packages below. The existing slot-2 package and newsletter schedule are unchanged.
 

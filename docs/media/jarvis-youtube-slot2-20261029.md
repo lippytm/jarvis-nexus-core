@@ -93,3 +93,30 @@ version of the strict handoff/context schemas. No operational ledger was edited.
 Next production step: review this exact copy and storyboard, record narration,
 then retime captions and render a local preview under a separately bounded task.
 No schedule or persistent worker was created.
+
+## Slot 2 thumbnail review candidate
+
+The [original thumbnail SVG](jarvis-youtube-slot2-thumbnail-20261105.svg) and
+[PNG review candidate](exports/youtube-20261029/slot-2-thumbnail.png) implement
+the specified “SHOW THE EVIDENCE” task/revision/receipt motif. Each conceptual
+card has an empty field. Review pending, Service status: unverified, unpublished
+labels and an unassigned destination remain visible; no terminal result,
+performance figure, provider badge, testimonial or release approval is depicted.
+The 1200×675 canvas is an editorial choice, not verified YouTube upload guidance.
+
+Proposed thumbnail alt text: “Three conceptual cards labelled Task, Revision and
+Receipt have empty fields below Show the evidence. Review is pending and service
+status is unverified.” This is a new draft specification, not a populated platform
+alt-text field or accepted accessibility review.
+
+Eight text-width checks, XML/resource restrictions, PNG decode/dimensions/opacity/
+metadata, three empty-field pixel checks and full assistant visual inspection
+passed. [Preparation evidence](../evidence/youtube-slot2-thumbnail-20261105.json)
+retains the input revision, source/output hashes and actual renderer/check receipts.
+The original script/shot plan, title/description/thumbnail direction, captions,
+campaign and storyboard SVG/PNG remain unchanged.
+
+This is a thumbnail candidate, not an accepted upload or finished video. Exact
+art/copy owner review, rights, channel/destination, device/accessibility and platform
+acceptance remain pending. No narration, video, upload or publication was produced.
+The Daily Newsletter schedule and paused Studio Work Cycle remain unchanged.
