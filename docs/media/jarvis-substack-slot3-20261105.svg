@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+<title id="title">Four separate evidence categories with empty fields</title>
+<desc id="desc">Unpublished conceptual Substack artwork. Saved, Checked, Available and Delivered each have a separate empty Evidence field. Empty fields do not imply completion or availability. Review pending; destination unassigned. No actual outage, recovery, availability, delivery or release approval is reported.</desc>
+<rect width="1400" height="1000" fill="#101d2c"/>
+<g font-family="DejaVu Sans" fill="#f5f8fc">
+<rect x="64" y="276" width="1272" height="104" rx="14" fill="#20354c"/><rect x="580" y="302" width="732" height="52" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="64" y="400" width="1272" height="104" rx="14" fill="#20354c"/><rect x="580" y="426" width="732" height="52" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="64" y="524" width="1272" height="104" rx="14" fill="#20354c"/><rect x="580" y="550" width="732" height="52" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="64" y="648" width="1272" height="104" rx="14" fill="#20354c"/><rect x="580" y="674" width="732" height="52" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<text x="64" y="84" font-size="40" font-weight="bold">FOUR WORDS. FOUR OBSERVATIONS.</text>
+<text x="64" y="138" font-size="26">CONCEPTUAL EXAMPLE • UNPUBLISHED NOTE</text>
+<text x="64" y="194" font-size="25">Each status needs its own evidence. These fields are empty.</text>
+<text x="580" y="252" font-size="24">Evidence</text>
+<text x="64" y="826" font-size="32" font-weight="bold">Review pending</text>
+<text x="64" y="880" font-size="24">No outage, recovery, availability or delivery result is reported.</text>
+<text x="64" y="930" font-size="24">Destination: unassigned • No subscriber email authorized.</text>
+<text x="88" y="341" font-size="32" font-weight="bold">Saved</text>
+<text x="88" y="465" font-size="32" font-weight="bold">Checked</text>
+<text x="88" y="589" font-size="32" font-weight="bold">Available</text>
+<text x="88" y="713" font-size="32" font-weight="bold">Delivered</text>
+</g>
+</svg>
