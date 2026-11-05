@@ -451,6 +451,9 @@ class HandoffLedger:
             earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
             if (type(neighbor["revision"]) is not int or neighbor["revision"] < 1
                 or digest(adjacent) != neighbor["digest"]
+                or adjacent["mission_id"] != current_profile["mission_id"]
+                or (adjacent["schema_version"] == 3
+                    and adjacent["destination_id"] != current_profile.get("destination_id"))
                 or earlier["memory_revision"] > later["memory_revision"]
                 or earlier["execution"]["attempts"] > later["execution"]["attempts"]
                 or earlier["schema_version"] > later["schema_version"]

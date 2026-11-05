@@ -773,6 +773,51 @@ with HandoffLedger(sys.argv[1]) as ledger:
         self.assertEqual(self.load(expected_memory_revision=2)["profile"], current)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_adjacent_checkpoint_identity_drift_blocks_selective_load_and_capture(self):
+        self.profile = self.destination_profile()
+        first = self.save()
+        self.ledger.checkpoint_context("mission-one", expected_sha256=first["context_sha256"],
+            expected_source_revision=REVISION, expected_memory_revision=1)
+        newer = deepcopy(self.profile)
+        newer["memory_revision"] = 2
+        second = self.ledger.save_context(newer, expected_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=second["context_sha256"],
+            expected_source_revision=REVISION, expected_memory_revision=2)
+        current = deepcopy(newer)
+        current["memory_revision"] = 3
+        saved = self.ledger.save_context(current, expected_revision=2)
+        self.stage("independent-task")
+        independent = self.context("independent-task")
+        self.ledger.save_context(independent, expected_revision=0)
+        tables = ("swarms", "handoffs", "returns", "handoff_contexts", "context_checkpoints")
+        for field in ("mission_id", "destination_id"):
+            for damaged_revision in (1, 2):
+                self.ledger.db.execute("DELETE FROM context_checkpoints WHERE revision=3")
+                for revision, profile in ((1, self.profile), (2, newer)):
+                    body = deepcopy(profile)
+                    if revision == damaged_revision:
+                        body[field] = "different-identity"
+                    self.ledger.db.execute("UPDATE context_checkpoints SET body=?,digest=? WHERE handoff_id=? AND revision=?",
+                        (json.dumps(body), digest(body), "mission-one", revision))
+                self.ledger.close()
+                self.ledger = HandoffLedger(self.path)
+                before = {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables}
+                selected_revision = 3 - damaged_revision
+                selected = self.profile if selected_revision == 1 else newer
+                with self.subTest(field=field, neighbor=damaged_revision, check="selective-load"), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                    self.ledger.load_checkpoint("mission-one", selected_revision, expected_sha256=digest(selected),
+                        expected_source_revision=REVISION, expected_memory_revision=selected_revision)
+                # New capture sees revision 2 as its nearest retained neighbor.
+                if damaged_revision == 2:
+                    with self.subTest(field=field, check="new-capture"), self.assertRaisesRegex(ValueError, "checkpoint integrity"):
+                        self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"],
+                            expected_source_revision=REVISION, expected_memory_revision=3)
+                with self.subTest(field=field, neighbor=damaged_revision, check="unchanged"):
+                    self.assertEqual(before, {t: [tuple(r) for r in self.ledger.db.execute("SELECT * FROM " + t)] for t in tables})
+                self.assertFalse(self.ledger.db.in_transaction)
+                self.assertEqual(self.load(expected_memory_revision=3)["profile"], current)
+                self.assertEqual(self.load("independent-task")["profile"], independent)
+
     def test_historical_bound_destination_drift_rejects_after_restart(self):
         self.profile = self.destination_profile()
         saved = self.save()
