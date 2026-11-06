@@ -13,6 +13,7 @@ from control_tower.network_contract import (PROJECTS, TARGETS, canonical, digest
     require_identifier, validate_draft, validate_return)
 from control_tower.swarm_factory import validate_swarm
 from control_tower.handoff_context import validate_context
+from control_tower.validation import json_record_errors
 from control_tower.connections import (connector_report, validate_destination_registry,
     verify_github_commit_response)
 
@@ -847,6 +848,8 @@ class HandoffLedger:
 
     def check_context_review_receipt(self, handoff_id, receipt):
         """Check a saved local receipt against one current snapshot; no authority."""
+        if json_record_errors(receipt):
+            raise ValueError("invalid context review receipt JSON")
         if type(receipt) is not dict or type(receipt.get("recorded_at")) is not str:
             raise ValueError("invalid context review receipt")
         try:

@@ -250,6 +250,33 @@ class ContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "current binding"):
             self.ledger.check_context_review_receipt("mission-one", receipt)
 
+    def test_review_receipt_api_bounds_json_before_hashing_or_ledger_access(self):
+        saved = self.save()
+        receipt = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+        cyclic = []
+        cyclic.append(cyclic)
+        deep = []
+        for _ in range(20):
+            deep = [deep]
+        values = ({"unsupported"}, cyclic, deep, [0] * 2050, "x" * 70000,
+                  float("nan"), "\ud800", {"password": "synthetic-not-a-secret"})
+        before = list(self.ledger.db.iterdump())
+        for index, value in enumerate(values):
+            invalid = {**receipt, "extra": value}
+            try:
+                invalid["receipt_sha256"] = digest({k: v for k, v in invalid.items() if k != "receipt_sha256"})
+            except (TypeError, ValueError, RecursionError, UnicodeError):
+                pass
+            with self.subTest(case=index), patch.object(self.ledger, "_transaction") as transaction, \
+                    patch("control_tower.handoffs.digest") as hasher:
+                with self.assertRaises(ValueError):
+                    self.ledger.check_context_review_receipt("mission-one", invalid)
+                hasher.assert_not_called()
+                transaction.assert_not_called()
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertTrue(self.ledger.check_context_review_receipt("mission-one", receipt)["local_binding_matches"])
+
     def test_failed_review_commit_rolls_back_without_receipt_or_pending_writes(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"
