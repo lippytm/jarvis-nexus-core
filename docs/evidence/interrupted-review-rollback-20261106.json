@@ -1,0 +1,126 @@
+{
+  "approval_state": "owner-authorized draft engineering within named branch; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "change": "Rollback on BaseException in the existing transaction guard, then re-raise. No schema, packet, approval, retry or dispatch change.",
+  "checkpoint": {
+    "return_binding": "input revision and source hashes above; final commit/CI links belong in master Page receipt",
+    "task_state": "local_implementation_verified",
+    "unfinished": "independent exact-revision review; authenticated registry/provider delivery remains unfinished"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_interrupted_review_rolls_back_without_receipt_or_pending_writes",
+      "exit_code": 1,
+      "failures": 1,
+      "observed": "assertFalse(db.in_transaction) failed: True is not false",
+      "run": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "covers": [
+        "same interrupt object propagated",
+        "no receipt",
+        "real UPDATE followed by ROLLBACK with no COMMIT",
+        "no pending writes",
+        "later commit cannot publish interrupted review",
+        "read-only reopen preserves proposed review, independent record and paused/outcome_unknown profile",
+        "existing denied-COMMIT and reader-lock regressions"
+      ],
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "run": 3
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/interrupted-review-full-20261106.json",
+      "exit_code": 0,
+      "record_sha256": "3f3001394815533636dab130d694c16f3488afd1657843d7119dff491a4020a8",
+      "syntax": {
+        "errors": [],
+        "files_checked": 73
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 559,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.interrupted-review-rollback.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "execution_context": "current Codex command environment; no always-on/runtime recovery claim",
+    "exit_code": 0,
+    "observed_stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "external_actions": 0,
+  "input_revision": "3bd601eef932b9478aea069526f12b37cb3da41b",
+  "inspection_errors": [
+    "An initial rg glob tests/test_comedy* matched no file (exit 2); corrected using rg --files to tests/test_space_alien_comedy_affiliate.py. No behavior test failed from that lookup."
+  ],
+  "limitations": [
+    "Synthetic Python interruption, not a real Codex outage or actual owner mission execution.",
+    "Rollback may fail on unusable connection/storage; abrupt process termination cannot run Python cleanup.",
+    "No authentication, live provider delivery, automatic retry/reconciliation, leases, failover or restart controller.",
+    "Self-checks are not independent review. All 17 business areas/portable targets and existing holds remain; Trading Bots research/backtesting/paper only, RoboParty deferred."
+  ],
+  "local_reports": {
+    "reports/interrupted-review-baseline-20261106.txt": {
+      "content": "F\n======================================================================\nFAIL: test_interrupted_review_rolls_back_without_receipt_or_pending_writes (tests.test_handoff_context.ContextTests.test_interrupted_review_rolls_back_without_receipt_or_pending_writes)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 389, in test_interrupted_review_rolls_back_without_receipt_or_pending_writes\n    self.assertFalse(self.ledger.db.in_transaction)\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 1 test in 0.013s\n\nFAILED (failures=1)\n",
+      "sha256": "e249ec18a0c31c107b682bfd058e785d44b3c893291ee0c41ba1ed3907ffcdf4"
+    },
+    "reports/interrupted-review-focused-20261106.txt": {
+      "content": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.051s\n\nOK\n",
+      "sha256": "4d781620bc10541738c207349d827f2b375d4f72493bce92c5f0ea15cb151f4e"
+    },
+    "reports/interrupted-review-web-20261106.txt": {
+      "content": "TAP summary: 181 tests/pass, 0 fail/cancelled/skipped/todo",
+      "sha256": "9df582b9cd855361b841fc017d3c91425182919380fcffd38565514924ad2da1"
+    }
+  },
+  "memory_revision": 173,
+  "metrics": {
+    "baseline_failed_test_attempts": 1,
+    "bounded_items_locally_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "reliability_improvement": "not measured",
+    "revision_conflicts_observed": 0
+  },
+  "mission_id": "interrupted-review-rollback-20261106",
+  "next_task": "independent exact-revision review of transaction cleanup and existing draft runbook; registry audience/access acceptance remains pending",
+  "patch_sha256": "20a4a21808d3558afaaa7a6e1507e45e8abb925e7279d7417defa89442ebcaf6",
+  "platform": "codex",
+  "problem": "Synthetic KeyboardInterrupt after a real SQLite review UPDATE propagated with an open transaction. Exception-only cleanup excluded Python BaseException interrupts.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "5298793d1eb7a26aec86fae2b8f85af7b65b54ad09f45d5a4a8088d0d6c0caef",
+  "schema_version": 1,
+  "scope": {
+    "allowed_actions": [
+      "inspect_source",
+      "prepare_development_patch",
+      "run_local_checks",
+      "commit_to_named_development_branch"
+    ],
+    "branch": "feature/control-tower-foundation-20261021",
+    "pull_request": 5,
+    "repository": "lippytm/jarvis-nexus-core",
+    "visibility": "owner_private"
+  },
+  "source_sha256": {
+    "control_tower/handoffs.py": "48a59352b32915ef6b5d36c747d0f01c9439b39cf556b27150a76c4fc951ccf2",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "914c41d2f2e47d6a7cbcbc03175a861514347dbf85032a6e1da9d7f49c499bd7",
+    "tests/test_handoff_context.py": "9251d9765665e08f8ad913e4d853059d699c6645630633e4cdf0020ca2fee7cc"
+  }
+}

@@ -365,6 +365,41 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["profile"], self.profile)
         self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
 
+    def test_interrupted_review_rolls_back_without_receipt_or_pending_writes(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.stage("mission-two")
+        self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        before = list(self.ledger.db.iterdump())
+        interruption = KeyboardInterrupt("Synthetic interrupted receipt preparation")
+        returned, statements = [], []
+        self.ledger.db.set_trace_callback(statements.append)
+        try:
+            # _now is called after the real review UPDATE, before receipt/commit.
+            with patch("control_tower.handoffs._now", side_effect=interruption):
+                with self.assertRaises(KeyboardInterrupt) as error:
+                    returned.append(self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+                        expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True))
+        finally:
+            self.ledger.db.set_trace_callback(None)
+        self.assertIs(error.exception, interruption)
+        self.assertEqual(returned, [])
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assertTrue(any(s.startswith("UPDATE handoff_contexts") for s in statements))
+        self.assertEqual([s for s in statements if s in ("BEGIN IMMEDIATE", "COMMIT", "ROLLBACK")],
+                         ["BEGIN IMMEDIATE", "ROLLBACK"])
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        # Reusing the connection must not publish the interrupted review.
+        self.ledger.db.commit()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
+
     def test_reader_lock_blocks_review_commit_without_leaking_pending_writes(self):
         self.assertEqual(self.ledger.db.execute("PRAGMA journal_mode=DELETE").fetchone()[0], "delete")
         self.ledger.db.execute("PRAGMA busy_timeout=0")

@@ -107,7 +107,8 @@ class HandoffLedger:
         try:
             yield
             self.db.commit()
-        except Exception:
+        except BaseException:
+            # Release pending writes even when an interrupt is propagated.
             self.db.rollback()
             raise
 
