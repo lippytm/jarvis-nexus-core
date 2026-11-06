@@ -783,3 +783,15 @@ output creation. Omitting the option preserves the existing retrieval contract
 and response schema. Matching does not bypass audience restrictions, approve the
 profile, clear execution holds or grant a retry. The content digest excludes
 separate review metadata; the read is a snapshot, not a later release gate or lease.
+
+The existing `jarvis_network.py demo --out FRESH-FILE.json` also includes a
+`context_recovery` observation from a second, synthetic `codex` handoff in its
+same temporary ledger. It retains a private version-3 context and checkpoint,
+reopens the ledger, detects duplicate capture, then edits memory/context to
+invalidate only that local context review. A final read-only reopen checks the
+old historical profile, current paused/blocked state and review-required hold.
+The original synthetic Gemini packet/return remains independent. These fixtures
+exercise the existing contracts; local reviewer labels do not authenticate a
+person, start an agent, establish a real outage/recovery or deliver to a provider.
+The temporary ledger is removed when the demo finishes; retain the JSON result
+for inspection. It is not the owner's actual paused mission or durable store.

@@ -412,6 +412,31 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(report["model_calls"], 0)
         self.assertEqual(report["external_agents_started"], 0)
 
+    def test_network_demo_retains_codex_context_and_invalidates_only_edited_review(self):
+        report = demonstrate_network()
+        recovery = report["context_recovery"]
+        self.assertEqual(recovery["mode"], "local_synthetic_context_recovery")
+        self.assertEqual(recovery["platform"], "codex")
+        self.assertEqual(recovery["destination_id"], "synthetic-local-codex")
+        for flag in ("profile_retained_after_reopen", "prior_local_review_retained",
+                     "duplicate_checkpoint", "historical_profile_retained"):
+            self.assertTrue(recovery[flag], flag)
+        self.assertEqual((recovery["context_revision"], recovery["memory_revision"]), (2, 2))
+        self.assertEqual(recovery["review_state_after_edit"], "proposed")
+        self.assertEqual((recovery["execution_state"], recovery["control_state"]), ("execution_blocked", "paused"))
+        self.assertEqual(recovery["holds"], ["paused", "context_review_required"])
+        self.assertEqual(recovery["sender_authentication"], "not_established")
+        self.assertFalse(recovery["dispatch_authorized"])
+        self.assertFalse(recovery["retry_authorized"])
+        self.assertEqual(report["target_provider_count"], 17)
+        records = {r["handoff_id"]: r for r in report["ledger"]["handoffs"]}
+        self.assertEqual(records["demo-handoff"]["state"], "returned_unverified")
+        self.assertEqual(records["demo-codex-context"]["state"], "reviewed")
+        self.assertEqual(report["ledger"]["return_count"], 1)
+        self.assertNotIn("https://", json.dumps(recovery))
+        for field in ("external_actions", "model_calls", "external_agents_started"):
+            self.assertEqual(report[field], 0)
+
     def test_cli_refuses_escape_and_existing_output(self):
         with TemporaryDirectory() as directory:
             base = [sys.executable, str(ROOT / "scripts/jarvis_network.py"), "--root", directory, "demo", "--out"]
