@@ -2043,6 +2043,33 @@ with HandoffLedger(sys.argv[1]) as ledger:
             "expected_sha256": context["context_sha256"], "expected_source_revision": REVISION,
             "expected_memory_revision": 1, **changes})
 
+    def test_inspection_revision_guard_rejects_restored_context_after_restart(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        first = self.save()
+        original = deepcopy(self.profile)
+        self.stage("mission-two")
+        self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        self.profile["execution"]["detail"] = "Temporary private edit."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        restored = self.ledger.save_context(original, expected_revision=2)
+        self.assertEqual(first["context_sha256"], restored["context_sha256"])
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        default = self.inspect()
+        self.assertEqual(default["lineage"][0]["context"]["revision"], 3)
+        for revision in (1, 2, 4, 0, -1, True, "3"):
+            with self.subTest(revision=revision), self.assertRaises(ValueError):
+                self.inspect(expected_revision=revision)
+        self.assertEqual(self.inspect(expected_revision=3), default)
+        self.assertIn("outcome_unknown", default["lineage"][0]["holds"])
+        self.assertIn("paused", default["lineage"][0]["holds"])
+        self.assertFalse(default["retry_authorized"])
+        self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_recovery_inspection_survives_restart_without_releasing_unknown_hold(self):
         self.profile["execution"]["state"] = "outcome_unknown"
         saved = self.approve()

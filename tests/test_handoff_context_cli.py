@@ -1007,6 +1007,35 @@ class ContextCLITests(unittest.TestCase):
         return self.cli("inspect-recovery", "--handoff", "cli-task", "--digest", checksum,
                         "--source-revision", revision, "--memory-revision", str(memory), "--out", out)
 
+    def test_inspection_cli_can_pin_stored_revision_after_content_restore(self):
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.write(self.profile)
+        first = json.loads(self.save().stdout)
+        original = deepcopy(self.profile)
+        self.profile["execution"]["detail"] = "Temporary edit."
+        self.write(self.profile)
+        self.assertEqual(self.save(1).returncode, 0)
+        self.write(original)
+        restored = json.loads(self.save(2).stdout)
+        self.assertEqual(first["context_sha256"], restored["context_sha256"])
+        before = self.db.read_bytes()
+        args = ("--read-only", "inspect-recovery", "--handoff", "cli-task", "--digest",
+            first["context_sha256"], "--source-revision", REVISION, "--memory-revision", "1")
+        for value in ("1", "2", "4", "0", "-1", "bad"):
+            with self.subTest(value=value):
+                rejected = self.cli(*args, "--context-revision", value, "--out", "rejected.json")
+                self.assertNotEqual(rejected.returncode, 0)
+                self.assertFalse((self.root / "rejected.json").exists())
+        accepted = self.cli(*args, "--context-revision", "3", "--out", "pinned.json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        self.assertEqual(self.cli(*args, "--out", "default.json").returncode, 0)
+        pinned = json.loads((self.root / "pinned.json").read_text())
+        self.assertEqual(pinned, json.loads((self.root / "default.json").read_text()))
+        self.assertEqual(pinned["lineage"][0]["context"]["revision"], 3)
+        self.assertIn("outcome_unknown", pinned["lineage"][0]["holds"])
+        self.assertFalse(pinned["retry_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_recovery_inspection_in_new_process_preserves_hold_and_omits_private_text(self):
         self.profile["execution"]["state"] = "outcome_unknown"
         self.write(self.profile)

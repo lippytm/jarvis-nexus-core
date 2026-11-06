@@ -263,6 +263,7 @@ def main(argv=None):
     recovery.add_argument("--digest", required=True, help="Exact selected context SHA-256")
     recovery.add_argument("--source-revision", required=True)
     recovery.add_argument("--memory-revision", type=int, required=True)
+    recovery.add_argument("--context-revision", type=int, help="Require the exact stored context revision")
     recovery.add_argument("--out", required=True)
     recovery_check = commands.add_parser("check-recovery")
     recovery_check.add_argument("--handoff", required=True)
@@ -428,7 +429,8 @@ def main(argv=None):
                                                    audience="owner_private")
                 elif args.command == "inspect-recovery":
                     result = ledger.inspect_recovery(args.handoff, expected_sha256=args.digest,
-                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
+                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision,
+                        expected_revision=args.context_revision)
                 elif args.command == "check-recovery":
                     result = ledger.check_recovery(args.handoff, expected_inspection_sha256=args.inspection_digest,
                         expected_sha256=args.digest, expected_source_revision=args.source_revision,

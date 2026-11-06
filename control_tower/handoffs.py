@@ -597,7 +597,7 @@ class HandoffLedger:
                         raise ValueError("controlled export requires fresh context review")
 
     def inspect_recovery(self, handoff_id, *, expected_sha256, expected_source_revision,
-                         expected_memory_revision):
+                         expected_memory_revision, expected_revision=None):
         """Private metadata snapshot for reconciliation; never releases or retries.
 
         The expected digest binds the selected context. Ancestor context/return
@@ -605,10 +605,14 @@ class HandoffLedger:
         reference URLs and provider-return contents are deliberately omitted.
         """
         require_digest(expected_sha256)
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context inspection revision")
         if type(expected_memory_revision) is not int:
             raise ValueError("invalid expected memory revision")
         with self._transaction():
             selected, profile = self._context(handoff_id)
+            if expected_revision is not None and selected["revision"] != expected_revision:
+                raise ValueError("context inspection revision mismatch")
             if (selected["digest"] != expected_sha256
                 or profile["source_revision"] != expected_source_revision
                 or profile["memory_revision"] != expected_memory_revision):
