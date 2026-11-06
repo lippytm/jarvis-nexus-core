@@ -246,6 +246,7 @@ def main(argv=None):
     context_review.add_argument("--digest", required=True)
     context_review.add_argument("--context-revision", type=int, help="Require the exact stored context revision")
     context_review.add_argument("--include-receipt", action="store_true", help="Return a versioned private review receipt; requires --context-revision")
+    context_review.add_argument("--out", help="Save the private receipt to a fresh file; requires --include-receipt and --context-revision")
     context_export = commands.add_parser("export-context")
     context_export.add_argument("--handoff", required=True)
     context_export.add_argument("--digest", required=True)
@@ -320,6 +321,8 @@ def main(argv=None):
         output = _local(root, args.out) if getattr(args, "out", None) is not None else None
         if output and output.exists():
             raise ValueError("output already exists; use a fresh filename")
+        if args.command == "review-context" and output and (not args.include_receipt or args.context_revision is None):
+            raise ValueError("saved review receipt requires --include-receipt and --context-revision")
         if args.command == "factory":
             result = build_swarm(args.project, args.targets.split(","), swarm_id=args.swarm,
                                  source_revision=args.source_revision)
