@@ -250,6 +250,7 @@ def main(argv=None):
     receipt_check = commands.add_parser("check-review-receipt", help="Check saved local receipt against current binding without ledger writes")
     receipt_check.add_argument("--handoff", required=True)
     receipt_check.add_argument("--file", required=True)
+    receipt_check.add_argument("--receipt-digest", help="Require this exact saved receipt SHA-256 before opening the ledger")
     receipt_check.add_argument("--out", help="Save private check metadata to a fresh file")
     context_export = commands.add_parser("export-context")
     context_export.add_argument("--handoff", required=True)
@@ -355,6 +356,10 @@ def main(argv=None):
             returned_packet = load_packet(_local(root, args.file)) if args.command == "import-return" else None
             context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
             review_receipt = load_packet(_local(root, args.file)) if args.command == "check-review-receipt" else None
+            if args.command == "check-review-receipt" and args.receipt_digest is not None:
+                require_digest(args.receipt_digest)
+                if review_receipt.get("receipt_sha256") != args.receipt_digest:
+                    raise ValueError("saved review receipt does not match expected digest")
             observation_packet = load_packet(_local(root, args.file)) if args.command == "bind-observation" else None
             registry = None
             if args.command == "bind-observation" and any(value is not None for value in

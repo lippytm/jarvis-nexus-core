@@ -1537,6 +1537,44 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(json.loads(output.read_text()), checked)
         self.assertEqual((self.db.read_bytes(), (self.root / "receipt.json").read_bytes()), before)
 
+    def test_saved_review_check_cli_can_pin_one_exact_receipt(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        reviewed = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+            "--digest", checksum, "--context-revision", "1", "--include-receipt")
+        self.assertEqual(reviewed.returncode, 0, reviewed.stderr)
+        receipt = json.loads(reviewed.stdout)
+        path = self.root / "receipt.json"
+        path.write_text(reviewed.stdout)
+        args = ["check-review-receipt", "--handoff", "cli-task", "--file", "receipt.json"]
+        before = self.db.read_bytes()
+        original = self.cli("--read-only", *args, "--receipt-digest", receipt["receipt_sha256"])
+        self.assertEqual(original.returncode, 0, original.stderr)
+        self.assertEqual(json.loads(original.stdout)["receipt_sha256"], receipt["receipt_sha256"])
+        # Timestamp is not archived/attested. A different internally consistent
+        # receipt remains acceptable by default, but is not the pinned receipt.
+        replacement = {**receipt, "recorded_at": "2001-01-01T00:00:00+00:00"}
+        replacement["receipt_sha256"] = digest({k: v for k, v in replacement.items() if k != "receipt_sha256"})
+        path.write_text(json.dumps(replacement))
+        self.assertEqual(self.cli(*args).returncode, 0)
+        for expected in (receipt["receipt_sha256"], "0" * 64, "invalid"):
+            rejected = self.cli(*args, "--receipt-digest", expected, "--out", "rejected/check.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertEqual(rejected.stdout, "")
+        from scripts.jarvis_network import main
+        with patch("scripts.jarvis_network.HandoffLedger") as opened:
+            self.assertEqual(main(["--root", str(self.root), *args,
+                "--receipt-digest", receipt["receipt_sha256"]]), 1)
+            opened.assert_not_called()
+        accepted = self.cli(*args, "--receipt-digest", replacement["receipt_sha256"], "--out", "private/pinned.json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        checked = json.loads((self.root / "private/pinned.json").read_text())
+        self.assertEqual(checked["receipt_sha256"], replacement["receipt_sha256"])
+        self.assertFalse(checked["dispatch_authorized"])
+        self.assertFalse(checked["retry_authorized"])
+        self.assertFalse((self.root / "rejected").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertEqual(json.loads(path.read_text()), replacement)
+
     def test_saved_review_check_cli_rejects_bad_input_missing_ledger_and_stale_receipt(self):
         checksum = self.controlled(execution="outcome_unknown")
         reviewed = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",

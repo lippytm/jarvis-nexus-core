@@ -1,0 +1,69 @@
+{
+  "asset_id": "codex",
+  "change": "Optional check-review-receipt --receipt-digest validates expected digest and compares receipt_sha256 before ledger open. Default behavior/API/schema/check output unchanged.",
+  "checks": {
+    "behavior": [
+      "original pinned receipt accepted",
+      "rehashed replacement timestamp still accepted by default, demonstrating compatibility and authentication limit",
+      "old expected digest, wrong digest and malformed digest reject with no output",
+      "mocked ledger constructor proves mismatch rejects before opening",
+      "replacement expected digest accepted and private output bound to replacement receipt",
+      "database bytes and receipt contents unchanged; no dispatch/retry authority"
+    ],
+    "focused": {
+      "passed": true,
+      "run": 1,
+      "seconds": 0.797
+    },
+    "full": {
+      "record_sha256": "fc00b7bdf3678109b5e76974ed31aa82061ce794ccd787fd9338a927b44d4f74",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 558,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.receipt-digest-pin.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "ac714701a1dc794e4b7b179b8b0a9c1613d2978a",
+  "limitations": [
+    "expected digest must be retained independently for substitution detection",
+    "pins canonical receipt body identity, not file byte hash",
+    "local consistency/integrity only, not reviewer authentication, timestamp attestation or owner release",
+    "no accepted registry, worker, retry/dispatch controller or live provider delivery"
+  ],
+  "memory_revision": 171,
+  "mission_id": "receipt-digest-pin-20261106",
+  "next_task": "independent exact-revision review; accepted registry audience/access policy remains pending",
+  "observed_gap": "CLI verifies receipt integrity/current binding but could not require one independently recorded receipt digest; timestamp is deliberately unarchived and can be rehashed.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "dba52b9d4d2390d43d3572d8564155c61aab211d824a08e70f910fb33e69a0f6",
+  "reports_sha256": {
+    "reports/receipt-digest-pin-focused-20261106.txt": "fcec5c1321580d315a74b2795a0d722876a5c62595c0ccf496d4d8f2a9741b20",
+    "reports/receipt-digest-pin-full-20261106.json": "4c2406b3b3486bb145fd64935521a5b18079edfebc1bf6d88f88e354edd344fb",
+    "reports/receipt-digest-pin-web-20261106.txt": "71004b3c3c2be6db0cb90ea67ab29662af4f2e0769e9457c70b84c812eceef52"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "7645d374e7a1920e0dd107d6d66aa19fea3c3d4beb1a0f71fded267131430e28",
+    "scripts/jarvis_network.py": "cdb68371787de172db73ebeb09d37c948405bb5cf08741befe9a4f974cbdfbb6",
+    "tests/test_handoff_context_cli.py": "aa723b6976b838ae10a1e812c514ff48b794d7e0c05d2452750f18314a05a09e"
+  }
+}
