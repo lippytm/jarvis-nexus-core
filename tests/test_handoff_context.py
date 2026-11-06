@@ -400,6 +400,50 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["profile"], self.profile)
         self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
 
+    def test_interrupt_after_completed_commit_retains_review_without_receipt(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.stage("mission-two")
+        self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        other = self.load("mission-two")
+        connection = self.ledger.db
+        interruption = KeyboardInterrupt("Synthetic lost commit acknowledgement")
+        calls, returned = [], []
+
+        class CommitThenInterrupt:
+            def __getattr__(self, name):
+                return getattr(connection, name)
+
+            def commit(self):
+                calls.append("commit")
+                connection.commit()  # Real durable commit before the injected signal.
+                raise interruption
+
+            def rollback(self):
+                calls.append("rollback")
+                connection.rollback()  # Cannot undo the completed commit.
+
+        with patch.object(self.ledger, "db", CommitThenInterrupt()):
+            with self.assertRaises(KeyboardInterrupt) as error:
+                returned.append(self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+                    expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True))
+        self.assertIs(error.exception, interruption)
+        self.assertEqual(calls, ["commit", "rollback"])
+        self.assertEqual(returned, [])
+        self.assertFalse(connection.in_transaction)
+        committed_rows = list(connection.iterdump())
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(list(self.ledger.db.iterdump()), committed_rows)
+        self.assertEqual(self.load()["review_state"], "locally_reviewed")
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two"), other)
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_reader_lock_blocks_review_commit_without_leaking_pending_writes(self):
         self.assertEqual(self.ledger.db.execute("PRAGMA journal_mode=DELETE").fetchone()[0], "delete")
         self.ledger.db.execute("PRAGMA busy_timeout=0")

@@ -9,7 +9,13 @@ Use this when `review-context --include-receipt --context-revision N --out ...`
 fails or when a retained receipt needs checking after restart. The review commits
 before file publication. An I/O error can therefore leave a committed review
 with either no receipt file or a complete file that was not acknowledged.
-Do not infer database rollback from the CLI exit code or replay blindly.
+An interruption after SQLite completes a commit can likewise prevent the review
+receipt from returning to the caller. Cleanup rollback cannot undo that completed
+commit. Do not infer database rollback from the CLI exit code, an exception or an
+absent receipt, and do not replay blindly. A deterministic regression commits a
+real synthetic SQLite review and injects an interrupt before acknowledgement;
+read-only reopen observes the review while execution holds remain intact. This
+models the boundary, not an actual owner incident or runtime outage.
 
 ## Retain the same mission and scope
 
