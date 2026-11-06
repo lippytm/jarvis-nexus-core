@@ -25,6 +25,23 @@ def _now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def _context_review_receipt(handoff_id, row, profile, reviewer_id, recorded_at):
+    result = {"schema_version": 1, "kind": "jarvis.context_review_receipt",
+        "handoff_id": handoff_id, "handoff_sha256": profile["handoff_sha256"],
+        **{key: profile[key] for key in ("project_id", "mission_id", "asset_id", "platform",
+            "source_revision", "memory_revision", "configuration_version")},
+        "destination_id": profile.get("destination_id"),
+        "context_schema_version": profile["schema_version"],
+        "context_revision": row["revision"], "context_sha256": row["digest"],
+        "reviewer_label": reviewer_id, "recorded_at": recorded_at,
+        "review_state": "locally_reviewed", "visibility": "owner_private",
+        "execution_state": profile["execution"]["state"],
+        "control_state": profile.get("control", {}).get("state", "legacy_uncontrolled"),
+        "authority": "local_record_only_not_identity_authentication",
+        "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
+    return {**result, "receipt_sha256": digest(result)}
+
+
 class HandoffLedger:
     """Single local SQLite ledger; opaque IDs are never used as filenames."""
 
@@ -826,20 +843,33 @@ class HandoffLedger:
             self.db.execute("UPDATE handoff_contexts SET reviewer_id=?,reviewed_digest=? WHERE handoff_id=?",
                             (reviewer_id, expected_sha256, handoff_id))
             if include_receipt:
-                result = {"schema_version": 1, "kind": "jarvis.context_review_receipt",
-                    "handoff_id": handoff_id, "handoff_sha256": profile["handoff_sha256"],
-                    **{key: profile[key] for key in ("project_id", "mission_id", "asset_id", "platform",
-                        "source_revision", "memory_revision", "configuration_version")},
-                    "destination_id": profile.get("destination_id"),
-                    "context_schema_version": profile["schema_version"],
-                    "context_revision": row["revision"], "context_sha256": row["digest"],
-                    "reviewer_label": reviewer_id, "recorded_at": _now(),
-                    "review_state": "locally_reviewed", "visibility": "owner_private",
-                    "execution_state": profile["execution"]["state"],
-                    "control_state": profile.get("control", {}).get("state", "legacy_uncontrolled"),
-                    "authority": "local_record_only_not_identity_authentication",
-                    "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
-                return {**result, "receipt_sha256": digest(result)}
+                return _context_review_receipt(handoff_id, row, profile, reviewer_id, _now())
+
+    def check_context_review_receipt(self, handoff_id, receipt):
+        """Check a saved local receipt against one current snapshot; no authority."""
+        if type(receipt) is not dict or type(receipt.get("recorded_at")) is not str:
+            raise ValueError("invalid context review receipt")
+        try:
+            recorded_at = datetime.fromisoformat(receipt["recorded_at"])
+        except ValueError:
+            raise ValueError("invalid context review receipt timestamp") from None
+        if recorded_at.tzinfo is None:
+            raise ValueError("context review receipt timestamp must include timezone")
+        require_digest(receipt.get("receipt_sha256"))
+        if receipt["receipt_sha256"] != digest({k: v for k, v in receipt.items() if k != "receipt_sha256"}):
+            raise ValueError("context review receipt digest mismatch")
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if row["reviewed_digest"] != row["digest"] or row["reviewer_id"] is None:
+                raise ValueError("context no longer has an exact local review")
+            expected = _context_review_receipt(handoff_id, row, profile, row["reviewer_id"], receipt["recorded_at"])
+            if canonical(receipt) != canonical(expected):
+                raise ValueError("context review receipt does not match current binding")
+            return {"schema_version": 1, "kind": "jarvis.context_review_check",
+                "receipt_sha256": receipt["receipt_sha256"], "context_revision": row["revision"],
+                "local_binding_matches": True, "visibility": "owner_private",
+                "authority": "local_record_only_not_identity_authentication",
+                "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
 
     def export_context(self, handoff_id, *, expected_sha256, expected_source_revision,
                        expected_memory_revision, audience="owner_private"):

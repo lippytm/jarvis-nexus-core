@@ -189,6 +189,67 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["review_state"], "locally_reviewed")
         self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
 
+    def test_saved_review_receipt_checks_after_restart_without_writes(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        receipt = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+        self.stage("mission-two")
+        other = self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        legacy = self.ledger.review_context("mission-two", reviewer_id="local-evaluator",
+            expected_sha256=other["context_sha256"], expected_revision=1, include_receipt=True)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        for identifier, original in (("mission-one", receipt), ("mission-two", legacy)):
+            retained = json.loads(json.dumps(original))
+            checked = self.ledger.check_context_review_receipt(identifier, retained)
+            self.assertTrue(checked["local_binding_matches"])
+            self.assertEqual(checked["receipt_sha256"], original["receipt_sha256"])
+            self.assertEqual(checked["authority"], "local_record_only_not_identity_authentication")
+            self.assertFalse(checked["dispatch_authorized"])
+            self.assertFalse(checked["retry_authorized"])
+            self.assertNotIn("https://", json.dumps(checked))
+            self.assertEqual(retained, original)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_saved_review_receipt_rejects_tampering_and_stale_bindings(self):
+        saved = self.save()
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"],
+                    expected_revision=1, include_receipt=True)
+        receipt = self.ledger.review_context("mission-one", **args)
+        before = list(self.ledger.db.iterdump())
+        for key, value in (("mission_id", "other"), ("platform", "github"), ("context_revision", True),
+                           ("visibility", "public_candidate"), ("dispatch_authorized", True),
+                           ("source_revision", "0" * 40), ("reviewer_label", "other-reviewer"),
+                           ("destination_id", "other"), ("schema_version", True),
+                           ("extra", "unsupported"), ("recorded_at", "2026-11-06T00:00:00")):
+            altered = {**receipt, key: value}
+            altered["receipt_sha256"] = digest({k: v for k, v in altered.items() if k != "receipt_sha256"})
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.ledger.check_context_review_receipt("mission-one", altered)
+        with self.assertRaises(ValueError):
+            self.ledger.check_context_review_receipt("mission-one", {**receipt, "receipt_sha256": "0" * 64})
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.ledger.review_context("mission-one", **{**args, "reviewer_id": "other-evaluator"})
+        with self.assertRaisesRegex(ValueError, "current binding"):
+            self.ledger.check_context_review_receipt("mission-one", receipt)
+        self.profile["execution"]["detail"] = "Changed then restored at same source/memory revision."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        with self.assertRaisesRegex(ValueError, "no longer"):
+            self.ledger.check_context_review_receipt("mission-one", receipt)
+        self.profile = self.context("mission-one")
+        restored = self.ledger.save_context(self.profile, expected_revision=2)
+        self.assertEqual(restored["context_sha256"], saved["context_sha256"])
+        self.ledger.review_context("mission-one", **{**args, "expected_revision": 3})
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        with self.assertRaisesRegex(ValueError, "current binding"):
+            self.ledger.check_context_review_receipt("mission-one", receipt)
+
     def test_failed_review_commit_rolls_back_without_receipt_or_pending_writes(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"
