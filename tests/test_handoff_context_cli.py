@@ -1511,6 +1511,62 @@ class ContextCLITests(unittest.TestCase):
                     with HandoffLedger(self.db, read_only=True) as ledger:
                         self.assertEqual(list(ledger.db.iterdump()), rows)
 
+    def test_saved_review_check_cli_reopens_without_ledger_or_receipt_writes(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        created = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+            "--digest", checksum, "--context-revision", "1", "--include-receipt", "--out", "receipt.json")
+        self.assertEqual(created.returncode, 0, created.stderr)
+        before = self.db.read_bytes(), (self.root / "receipt.json").read_bytes()
+        args = ("check-review-receipt", "--handoff", "cli-task", "--file", "receipt.json")
+        first = self.cli(*args)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        checked = json.loads(first.stdout)
+        self.assertEqual(checked["kind"], "jarvis.context_review_check")
+        self.assertTrue(checked["local_binding_matches"])
+        self.assertEqual(checked["receipt_sha256"], json.loads(before[1])["receipt_sha256"])
+        self.assertFalse(checked["dispatch_authorized"])
+        self.assertFalse(checked["retry_authorized"])
+        self.assertNotIn("https://", first.stdout)
+        self.assertNotIn("local-reviewer", first.stdout)
+        saved = self.cli("--read-only", *args, "--out", "private/check.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/check.json"
+        self.assertEqual(json.loads(output.read_text()), checked)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--out", "private/check.json").returncode, 1)
+        self.assertEqual(json.loads(output.read_text()), checked)
+        self.assertEqual((self.db.read_bytes(), (self.root / "receipt.json").read_bytes()), before)
+
+    def test_saved_review_check_cli_rejects_bad_input_missing_ledger_and_stale_receipt(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        reviewed = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+            "--digest", checksum, "--context-revision", "1", "--include-receipt")
+        self.assertEqual(reviewed.returncode, 0, reviewed.stderr)
+        receipt = json.loads(reviewed.stdout)
+        (self.root / "receipt.json").write_text(reviewed.stdout)
+        args = ("check-review-receipt", "--handoff", "cli-task", "--file", "receipt.json")
+        before = self.db.read_bytes()
+        missing = self.cli(*args, "--out", "rejected/check.json", database="absent/ledger.sqlite3")
+        self.assertEqual(missing.returncode, 1)
+        self.assertFalse((self.root / "absent").exists())
+        for raw in ('{"kind":"one","kind":"two"}', json.dumps({**receipt, "receipt_sha256": "0" * 64})):
+            (self.root / "bad.json").write_text(raw)
+            result = self.cli("--read-only", "check-review-receipt", "--handoff", "cli-task",
+                "--file", "bad.json", "--out", "rejected/check.json")
+            self.assertEqual(result.returncode, 1, result.stderr)
+            self.assertEqual(result.stdout, "")
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertFalse((self.root / "rejected").exists())
+        self.profile["execution"]["detail"] = "Later context invalidates the old receipt."
+        self.write(self.profile)
+        self.assertEqual(self.save(revision=1).returncode, 0)
+        before = self.db.read_bytes()
+        stale = self.cli(*args, "--out", "rejected/stale.json")
+        self.assertEqual(stale.returncode, 1, stale.stderr)
+        self.assertEqual(stale.stdout, "")
+        self.assertFalse((self.root / "rejected").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_destination_context_survives_cli_backup_and_restoration_read(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic destination checkpoint."))

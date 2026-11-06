@@ -247,6 +247,10 @@ def main(argv=None):
     context_review.add_argument("--context-revision", type=int, help="Require the exact stored context revision")
     context_review.add_argument("--include-receipt", action="store_true", help="Return a versioned private review receipt; requires --context-revision")
     context_review.add_argument("--out", help="Save the private receipt to a fresh file; requires --include-receipt and --context-revision")
+    receipt_check = commands.add_parser("check-review-receipt", help="Check saved local receipt against current binding without ledger writes")
+    receipt_check.add_argument("--handoff", required=True)
+    receipt_check.add_argument("--file", required=True)
+    receipt_check.add_argument("--out", help="Save private check metadata to a fresh file")
     context_export = commands.add_parser("export-context")
     context_export.add_argument("--handoff", required=True)
     context_export.add_argument("--digest", required=True)
@@ -313,7 +317,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -350,6 +354,7 @@ def main(argv=None):
             manifest = load_packet(_local(root, args.manifest)) if args.command == "stage" else None
             returned_packet = load_packet(_local(root, args.file)) if args.command == "import-return" else None
             context_packet = load_packet(_local(root, args.file)) if args.command == "save-context" else None
+            review_receipt = load_packet(_local(root, args.file)) if args.command == "check-review-receipt" else None
             observation_packet = load_packet(_local(root, args.file)) if args.command == "bind-observation" else None
             registry = None
             if args.command == "bind-observation" and any(value is not None for value in
@@ -374,7 +379,7 @@ def main(argv=None):
             database = _local(root, args.database)
             if args.command != "stage" and not database.is_file():
                 raise ValueError("operation requires an existing ledger; use stage to create a new ledger")
-            with HandoffLedger(database, read_only=args.read_only or registry is not None or args.command in {"load-checkpoint", "list-checkpoints"}) as ledger:
+            with HandoffLedger(database, read_only=args.read_only or registry is not None or args.command in {"load-checkpoint", "list-checkpoints", "check-review-receipt"}) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
                                           handoff_id=args.handoff, parent_id=args.parent)
@@ -403,6 +408,8 @@ def main(argv=None):
                 elif args.command == "load-checkpoint":
                     result = ledger.load_checkpoint(args.handoff, args.checkpoint_revision, expected_sha256=args.digest,
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
+                elif args.command == "check-review-receipt":
+                    result = ledger.check_context_review_receipt(args.handoff, review_receipt)
                 elif args.command == "review-context":
                     receipt = ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest,
                                           expected_revision=args.context_revision, include_receipt=args.include_receipt)
