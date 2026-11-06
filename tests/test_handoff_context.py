@@ -113,6 +113,40 @@ class ContextTests(unittest.TestCase):
         self.assertFalse(self.ledger.db.in_transaction)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_context_review_revision_guard_rejects_restored_content_after_restart(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        first = self.approve()
+        original = deepcopy(self.profile)
+        self.profile["execution"]["detail"] = "Temporary private edit at the same memory revision."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        restored = self.ledger.save_context(original, expected_revision=2)
+        self.assertEqual(restored["context_sha256"], first["context_sha256"])
+        self.assertEqual(restored["revision"], 3)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        before = list(self.ledger.db.iterdump())
+        args = dict(reviewer_id="local-evaluator", expected_sha256=first["context_sha256"])
+        for revision in (1, 2, 4):
+            with self.assertRaisesRegex(ValueError, "context review revision mismatch"):
+                self.ledger.review_context("mission-one", **args, expected_revision=revision)
+        for revision in (True, 0, -1, "3"):
+            with self.assertRaises(ValueError):
+                self.ledger.review_context("mission-one", **args, expected_revision=revision)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        with self.assertRaises(ValueError):
+            self.ledger.review_context("mission-one", **{**args, "reviewer_id": original["asset_id"]}, expected_revision=3)
+        with self.assertRaises(ValueError):
+            self.ledger.review_context("mission-one", **{**args, "expected_sha256": "0" * 64}, expected_revision=3)
+        self.ledger.review_context("mission-one", **args, expected_revision=3)
+        self.assertEqual(self.load()["review_state"], "locally_reviewed")
+        self.assertEqual(self.load()["profile"], original)
+        self.assert_exports_blocked(first["context_sha256"])
+        # Digest-only callers retain the prior contract, with no schema change.
+        self.ledger.review_context("mission-one", **args)
+        self.assertFalse(self.ledger.db.in_transaction)
+
     def test_read_only_inspection_preserves_checkpoint_and_database_bytes(self):
         self.save()
         expected = self.load()

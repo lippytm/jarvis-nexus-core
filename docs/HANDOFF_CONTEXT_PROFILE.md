@@ -795,3 +795,12 @@ exercise the existing contracts; local reviewer labels do not authenticate a
 person, start an agent, establish a real outage/recovery or deliver to a provider.
 The temporary ledger is removed when the demo finishes; retain the JSON result
 for inspection. It is not the owner's actual paused mission or durable store.
+
+For revision-bound local review, add `review-context --context-revision N`
+(API `expected_revision` on `review_context`) using the stored `revision` from
+`load-context`, not the profile's memory revision. Both content digest and stored
+revision must match atomically. This rejects an old review request after content
+A is edited to B and restored to A at a later revision. Omitting the option keeps
+the existing digest-only contract and response schema. Matching still requires a
+distinct local reviewer label and grants no identity authentication, owner release,
+hold removal or retry authority. No packet or database schema changes are involved.

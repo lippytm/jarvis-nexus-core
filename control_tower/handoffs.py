@@ -808,11 +808,15 @@ class HandoffLedger:
             "sender_authentication": "not_established", "dispatch_authorized": False, "external_actions": 0}
         return {**result, "receipt_sha256": digest(result)}
 
-    def review_context(self, handoff_id, *, reviewer_id, expected_sha256):
+    def review_context(self, handoff_id, *, reviewer_id, expected_sha256, expected_revision=None):
         require_identifier(reviewer_id, "reviewer label")
         require_digest(expected_sha256)
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context review revision")
         with self._transaction():
             row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("context review revision mismatch")
             if row["digest"] != expected_sha256 or reviewer_id == profile["asset_id"]:
                 raise ValueError("context review requires exact content and a distinct label")
             self.db.execute("UPDATE handoff_contexts SET reviewer_id=?,reviewed_digest=? WHERE handoff_id=?",

@@ -1343,6 +1343,38 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "legacy.json").read_bytes(), content)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_context_review_revision_cli_rejects_restored_content_without_changing_holds(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        changed = {**self.profile, "execution": {**self.profile["execution"], "detail": "Temporary private edit."}}
+        self.write(changed)
+        self.assertEqual(self.save(revision=1).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(revision=2)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            before = list(ledger.db.iterdump())
+        args = ("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer", "--digest", checksum)
+        for revision in ("1", "2", "4", "0", "-1"):
+            rejected = self.cli(*args, "--context-revision", revision)
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertNotIn("Temporary private", rejected.stderr + rejected.stdout)
+            # Writable CLI startup may update SQLite's schema-version header;
+            # rejected review must preserve every logical record and hold.
+            with HandoffLedger(self.db, read_only=True) as ledger:
+                self.assertEqual(list(ledger.db.iterdump()), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["review_state"], "proposed")
+        accepted = self.cli(*args, "--context-revision", "3")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        self.assertEqual(json.loads(accepted.stdout)["authority"], "local_record_only_not_identity_authentication")
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            current = ledger.load_context("cli-task", expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertEqual(current["review_state"], "locally_reviewed")
+            self.assertEqual(current["profile"], self.profile)
+        self.assertEqual(self.cli(*args).returncode, 0)
+
     def test_destination_context_survives_cli_backup_and_restoration_read(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic destination checkpoint."))

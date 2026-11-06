@@ -244,6 +244,7 @@ def main(argv=None):
     context_review.add_argument("--handoff", required=True)
     context_review.add_argument("--reviewer", required=True)
     context_review.add_argument("--digest", required=True)
+    context_review.add_argument("--context-revision", type=int, help="Require the exact stored context revision")
     context_export = commands.add_parser("export-context")
     context_export.add_argument("--handoff", required=True)
     context_export.add_argument("--digest", required=True)
@@ -399,7 +400,8 @@ def main(argv=None):
                     result = ledger.load_checkpoint(args.handoff, args.checkpoint_revision, expected_sha256=args.digest,
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
                 elif args.command == "review-context":
-                    ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest)
+                    ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest,
+                                          expected_revision=args.context_revision)
                     result = {"handoff_id": args.handoff, "context_sha256": args.digest,
                               "review_state": "locally_reviewed", "external_actions": 0,
                               "authority": "local_record_only_not_identity_authentication"}
