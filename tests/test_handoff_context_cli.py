@@ -1455,6 +1455,62 @@ class ContextCLITests(unittest.TestCase):
                     self.assertEqual(list(ledger.db.iterdump()), rows)
         self.assertFalse((self.root / "rejected").exists())
 
+    @unittest.skipUnless(os.name == "posix", "directory fsync is POSIX-specific")
+    def test_review_receipt_fsync_failures_retain_review_and_reconcilable_output(self):
+        from contextlib import redirect_stdout, redirect_stderr
+        from io import StringIO
+        from scripts.jarvis_network import main
+        real_fsync = os.fsync
+        checksum = self.controlled(execution="outcome_unknown")
+        for fail_at in (1, 2):
+            with self.subTest(fsync_call=fail_at):
+                if fail_at == 2:
+                    self.profile["execution"]["detail"] = "Second private receipt attempt."
+                    self.write(self.profile)
+                    checksum = json.loads(self.save(revision=1).stdout)["context_sha256"]
+                output = self.root / f"private/receipt-{fail_at}.json"
+                args = ["review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                    "--digest", checksum, "--context-revision", str(fail_at), "--include-receipt",
+                    "--out", str(output.relative_to(self.root))]
+                calls = []
+
+                def fail_fsync(fd):
+                    calls.append(fd)
+                    if len(calls) == fail_at:
+                        raise OSError("Synthetic private path detail must not escape.")
+                    return real_fsync(fd)
+
+                stdout, stderr = StringIO(), StringIO()
+                with patch("scripts.jarvis_network.os.fsync", side_effect=fail_fsync), \
+                        redirect_stdout(stdout), redirect_stderr(stderr):
+                    code = main(["--root", str(self.root), "--database", "ledger.sqlite3", *args])
+                self.assertEqual(code, 1)
+                self.assertEqual(len(calls), fail_at)  # No implicit replay.
+                self.assertEqual(stdout.getvalue(), "")
+                self.assertEqual(json.loads(stderr.getvalue()), {"error": "OSError", "external_actions": 0})
+                self.assertEqual(list(output.parent.glob(".jarvis-write-*")), [])
+                with HandoffLedger(self.db, read_only=True) as ledger:
+                    rows = list(ledger.db.iterdump())
+                    current = ledger.load_context("cli-task", expected_source_revision=REVISION,
+                                                  expected_memory_revision=1)
+                    self.assertEqual(current["review_state"], "locally_reviewed")
+                    self.assertEqual(current["profile"], self.profile)
+                if fail_at == 1:
+                    self.assertFalse(output.exists())
+                else:
+                    content = output.read_bytes()
+                    receipt = json.loads(content)
+                    self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+                    self.assertEqual(receipt["context_sha256"], checksum)
+                    self.assertEqual(receipt["context_revision"], 2)
+                    self.assertEqual(receipt["receipt_sha256"], digest({k: v for k, v in receipt.items() if k != "receipt_sha256"}))
+                    self.assertFalse(receipt["dispatch_authorized"])
+                    self.assertFalse(receipt["retry_authorized"])
+                    self.assertEqual(self.cli(*args).returncode, 1)
+                    self.assertEqual(output.read_bytes(), content)
+                    with HandoffLedger(self.db, read_only=True) as ledger:
+                        self.assertEqual(list(ledger.db.iterdump()), rows)
+
     def test_destination_context_survives_cli_backup_and_restoration_read(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic destination checkpoint."))
