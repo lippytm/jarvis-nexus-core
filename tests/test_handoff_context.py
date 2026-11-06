@@ -277,6 +277,57 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(list(self.ledger.db.iterdump()), before)
         self.assertTrue(self.ledger.check_context_review_receipt("mission-one", receipt)["local_binding_matches"])
 
+    def test_receipt_check_keeps_one_snapshot_during_concurrent_context_edit(self):
+        self.assertEqual(self.ledger.db.execute("PRAGMA journal_mode=WAL").fetchone()[0], "wal")
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        first = self.save()
+        receipt = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=first["context_sha256"], expected_revision=1, include_receipt=True)
+        self.stage("mission-two")
+        other = self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        other_receipt = self.ledger.review_context("mission-two", reviewer_id="local-evaluator",
+            expected_sha256=other["context_sha256"], expected_revision=1, include_receipt=True)
+        edited = deepcopy(self.profile)
+        edited["memory_revision"] = 2
+        edited["execution"]["detail"] = "Concurrent writer retained the unknown outcome and pause."
+        committed = []
+        with HandoffLedger(self.path, read_only=True) as reader:
+            expected = reader.check_context_review_receipt("mission-one", receipt)
+            handoff = reader._handoff
+
+            def edit_between_reads(identifier):
+                selected = handoff(identifier)  # Establish the real SQLite read snapshot.
+                if not committed:
+                    committed.append(self.ledger.save_context(edited, expected_revision=1))
+                return selected
+
+            with patch.object(reader, "_handoff", side_effect=edit_between_reads):
+                checked = reader.check_context_review_receipt("mission-one", receipt)
+            self.assertEqual(len(committed), 1)
+            self.assertEqual(checked, expected)
+            self.assertFalse(reader.db.in_transaction)
+            writer_rows = list(self.ledger.db.iterdump())
+            with self.assertRaisesRegex(ValueError, "no longer has an exact local review"):
+                reader.check_context_review_receipt("mission-one", receipt)
+            self.assertFalse(reader.db.in_transaction)
+            self.assertTrue(reader.check_context_review_receipt("mission-two", other_receipt)["local_binding_matches"])
+            self.assertEqual(list(self.ledger.db.iterdump()), writer_rows)
+        refreshed = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=committed[0]["context_sha256"], expected_revision=2, include_receipt=True)
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertTrue(restarted.check_context_review_receipt("mission-one", refreshed)["local_binding_matches"])
+            with self.assertRaisesRegex(ValueError, "current binding"):
+                restarted.check_context_review_receipt("mission-one", receipt)
+            self.assertEqual(restarted.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=2)["profile"], edited)
+            self.assertEqual(restarted.load_context("mission-two", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.context("mission-two"))
+        for flag in ("dispatch_authorized", "retry_authorized", "external_actions"):
+            self.assertFalse(checked[flag])
+        self.assert_exports_blocked(committed[0]["context_sha256"])
+
     def test_failed_review_commit_rolls_back_without_receipt_or_pending_writes(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"

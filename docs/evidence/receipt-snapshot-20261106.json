@@ -1,0 +1,75 @@
+{
+  "asset_id": "codex",
+  "change": "One WAL snapshot regression using existing checker and two actual SQLite connections. Production code unchanged.",
+  "checks": {
+    "behavior": [
+      "writer commits context revision 2 between reader handoff/context reads",
+      "in-flight check matches original revision-1 snapshot",
+      "next check rejects old receipt; failed read closes transaction",
+      "unrelated second record remains valid; reader adds no logical writes",
+      "fresh exact revision-2 review checks after restart while old receipt rejects",
+      "paused/outcome_unknown profile preserved and export remains blocked"
+    ],
+    "focused": {
+      "passed": true,
+      "run": 1,
+      "seconds": 0.052
+    },
+    "full": {
+      "record_sha256": "62ef1bf08a9ae25b03e354be3f63c782eb7cde67378c8947dcc4d9623183bd87",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 557,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "sensitivity": {
+      "caught": "in-flight receipt check incorrectly observes the later invalidated review",
+      "expected_errors": 1,
+      "failures": 0,
+      "isolated_read_transaction_bypass": true,
+      "production_source_modified": false
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.receipt-snapshot.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "43bb9a7c550a9d3d0338d087cf83459a4fb5a5a8",
+  "limitations": [
+    "synthetic fixtures with actual local SQLite connections; no provider delivery or runtime outage",
+    "consistency check is point-in-time and does not freeze later edits or authenticate identity",
+    "no release/retry/dispatch authority, lease/failover worker or controller installed"
+  ],
+  "memory_revision": 170,
+  "mission_id": "receipt-snapshot-20261106",
+  "next_task": "independent exact-revision review; accepted registry audience/access policy remains pending",
+  "observed_gap": "Receipt checker used a transaction but had no deterministic two-connection regression for a commit between its handoff/context reads.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "1735daf696d086beea1c9afaa0f5707c683c79db3097ab858ea324fbce7af342",
+  "reports_sha256": {
+    "reports/receipt-snapshot-focused-20261106.txt": "8760910da8bda11ad1281701465fd1c660db965d9e2dfe899b4bf910acd756e0",
+    "reports/receipt-snapshot-full-20261106.json": "a1b7a0021666b619b991115cb28ba3e78e3269e7cf01b4eff4b8e2f009c67859",
+    "reports/receipt-snapshot-sensitivity-20261106.txt": "eadddfcc4c47550c50bebbd0d95745c10f6d40254439f5c50eb58897c0c3c694",
+    "reports/receipt-snapshot-web-20261106.txt": "5acaf76255778cee7db43cdcb9a2a6142978879216ae9a3118aed5e4e6d1fb3e"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "bd1ba35029af310b42aa9389e6be06098e101ff29549b785a4554653c85e3d0e",
+    "tests/test_handoff_context.py": "7d7339da14c3942b4900cbe7a6889a9a080a58945db2d3508044ca39ba634e8d"
+  }
+}
