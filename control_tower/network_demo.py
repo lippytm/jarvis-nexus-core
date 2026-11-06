@@ -1,4 +1,5 @@
 """Exercise one local fixture round trip and prepare cross-project assistant drafts."""
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -47,17 +48,25 @@ def demonstrate_network():
                     "detail": "Synthetic blocked attempt; no real runtime failure is asserted."}}
             saved = ledger.save_context(profile, expected_revision=0)
             ledger.review("demo-codex-context", reviewer_id="demo-evaluator", expected_sha256=codex["handoff_sha256"])
-            ledger.review_context("demo-codex-context", reviewer_id="demo-evaluator", expected_sha256=saved["context_sha256"])
+            review_receipt = ledger.review_context("demo-codex-context", reviewer_id="demo-evaluator",
+                expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+            retained_receipt = json.loads(json.dumps(review_receipt))
             guards = dict(expected_source_revision=BASE_REVISION, expected_memory_revision=1,
                           expected_sha256=saved["context_sha256"])
             ledger.checkpoint_context("demo-codex-context", **guards)
         with HandoffLedger(path) as ledger:
             restored = ledger.load_context("demo-codex-context", **guards)
+            receipt_check = ledger.check_context_review_receipt("demo-codex-context", retained_receipt)
             duplicate = ledger.checkpoint_context("demo-codex-context", **guards)
             edited = {**profile, "memory_revision": 2,
                       "execution": {**profile["execution"], "detail": "Synthetic updated evidence; retain pause and blocked state."}}
             updated = ledger.save_context(edited, expected_revision=1)
         with HandoffLedger(path, read_only=True) as ledger:
+            stale_receipt_rejected = False
+            try:
+                ledger.check_context_review_receipt("demo-codex-context", retained_receipt)
+            except ValueError:
+                stale_receipt_rejected = True
             current = ledger.load_context("demo-codex-context", expected_source_revision=BASE_REVISION,
                 expected_memory_revision=2, expected_sha256=updated["context_sha256"])
             history = ledger.load_checkpoint("demo-codex-context", 1, **guards)
@@ -69,6 +78,9 @@ def demonstrate_network():
                 "context_revision": current["revision"], "memory_revision": current["profile"]["memory_revision"],
                 "profile_retained_after_reopen": restored["profile"] == profile,
                 "prior_local_review_retained": restored["review_state"] == "locally_reviewed",
+                "review_receipt_check": {**receipt_check,
+                    "receipt_roundtrip_retained": retained_receipt == review_receipt,
+                    "stale_after_edit_rejected": stale_receipt_rejected},
                 "duplicate_checkpoint": duplicate["duplicate"],
                 "historical_profile_retained": history["profile"] == profile,
                 "review_state_after_edit": current["review_state"],

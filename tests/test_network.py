@@ -426,6 +426,16 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual((recovery["execution_state"], recovery["control_state"]), ("execution_blocked", "paused"))
         self.assertEqual(recovery["holds"], ["paused", "context_review_required"])
         self.assertEqual(recovery["sender_authentication"], "not_established")
+        checked = recovery["review_receipt_check"]
+        self.assertEqual(checked["kind"], "jarvis.context_review_check")
+        self.assertEqual(checked["context_revision"], 1)
+        for flag in ("local_binding_matches", "receipt_roundtrip_retained", "stale_after_edit_rejected"):
+            self.assertTrue(checked[flag], flag)
+        self.assertEqual(checked["authority"], "local_record_only_not_identity_authentication")
+        self.assertEqual(checked["visibility"], "owner_private")
+        self.assertEqual(len(checked["receipt_sha256"]), 64)
+        for flag in ("dispatch_authorized", "retry_authorized", "external_actions"):
+            self.assertFalse(checked[flag], flag)
         self.assertFalse(recovery["dispatch_authorized"])
         self.assertFalse(recovery["retry_authorized"])
         self.assertEqual(report["target_provider_count"], 17)

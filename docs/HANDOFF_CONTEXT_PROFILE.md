@@ -829,3 +829,6 @@ Transaction commit failures roll back pending ledger writes before propagating t
 
 
 Direct saved-review receipt API input now passes the existing shared JSON-record validator before timestamp parsing, hashing or transaction entry: finite acyclic JSON, UTF-8/64 KiB bounds, depth/node limits and known sensitive-field-name restrictions. These checks align direct API calls with existing ingestion conventions; they are not a general PII detector or identity authentication. Valid saved receipts and their schemas remain unchanged.
+
+
+The existing `demo` command now reports a `context_recovery.review_receipt_check` for its synthetic Codex record: JSON receipt roundtrip, valid local binding after ledger reopen, then rejection after the context edit. Existing checkpoint deduplication, historical profile, pause/block holds and independent Gemini fixture remain. The report is actual local demo output; it is not an authenticated Codex return, the owner's paused mission, or live provider delivery. Temporary demo storage is discarded; only the requested report is saved.
