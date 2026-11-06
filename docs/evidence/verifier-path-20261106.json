@@ -1,0 +1,136 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_draft_diagnostics_fix",
+    "test",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "auxiliary_observations": [
+    "An inspection attempted to parse the summary before the running verifier exited and received JSONDecodeError on the incomplete file. After the actual exit 0, parsing succeeded. This was an early read, not a failed verifier test or runtime outage."
+  ],
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "new_agents": 0,
+    "purchases": 0,
+    "scope": "one bounded repair"
+  },
+  "change": "Reject an existing companion text-report symlink before discovery, demo or writes; reuse the preflight path for the normal text write. Existing normal report overwrite behavior and schema remain unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory revision and source hashes; final commit and CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision review"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_verifier_output.VerifierOutputTests.test_companion_symlinks_are_rejected_before_checks_or_writes",
+      "exit_code": 1,
+      "reason": "external sentinel and JSON-alias sentinel both overwritten",
+      "subtest_failures": 2,
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_verifier_output",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/verifier-path-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "stdout_summary": {
+        "evidence": "reports/verifier-path-full-20261106.json",
+        "passed": true,
+        "record_sha256": "327e2d963a49b0f23d3f0f6396d83eeb71904def2a6088d86896162f376d7516",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 567,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 567,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.verifier-path.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/evidence/verifier-output-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "context": "actual Codex shell command in intended repository",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "edbe97691a17d711263819f7fa04611c45ffd44f",
+  "limitations": [
+    "Preflight rejection only: concurrent symlink/parent changes and hard links are not guarded. No race-proof filesystem isolation or new security boundary is claimed.",
+    "Fixtures are synthetic and temporary; no actual owner file loss or provider failure inferred.",
+    "No queue/profile schema change, live connection/delivery, worker controller, retry/failover or automatic recovery implementation.",
+    "All 17 business areas and 17 portable targets retained. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/verifier-path-baseline-20261106.txt": {
+      "sha256": "e4372bd5e4a2556468107533ec45e087750a8931ef6f027cfa88acb3330b0582",
+      "text": "FF\n======================================================================\nFAIL: test_companion_symlinks_are_rejected_before_checks_or_writes (tests.test_verifier_output.VerifierOutputTests.test_companion_symlinks_are_rejected_before_checks_or_writes) (aliases_json=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 41, in test_companion_symlinks_are_rejected_before_checks_or_writes\n    self.assertEqual(target.read_bytes(), b\"KEEP\")\nAssertionError: b'\\n---------------------------------------[68 chars]AN\\n' != b'KEEP'\n\n======================================================================\nFAIL: test_companion_symlinks_are_rejected_before_checks_or_writes (tests.test_verifier_output.VerifierOutputTests.test_companion_symlinks_are_rejected_before_checks_or_writes) (aliases_json=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 41, in test_companion_symlinks_are_rejected_before_checks_or_writes\n    self.assertEqual(target.read_bytes(), b\"KEEP\")\nAssertionError: b'\\n---------------------------------------[68 chars]AN\\n' != b'KEEP'\n\n----------------------------------------------------------------------\nRan 1 test in 0.011s\n\nFAILED (failures=2)\n"
+    },
+    "reports/verifier-path-focused-20261106.txt": {
+      "sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.011s\n\nOK\n"
+    }
+  },
+  "memory_revision": 181,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "verifier-path-20261106",
+  "next_task": "Independent exact-revision diagnostics review; retain authenticated registry/delivery and audience acceptance as unfinished.",
+  "observed_at": "2026-11-06T23:19:06.756663+00:00",
+  "platform": "codex",
+  "problem": "A pre-existing companion text-report symlink can overwrite a file outside ROOT or overwrite the JSON report itself. Both sentinel overwrites reproduced in temporary fixtures.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "eeda757a15f07f8f5d8076e0a7328d7d59ac55519cd35cb95fbb109b3f5f77a9",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "scripts/verify_control_tower.py": "d3db02fdd75b198b84530949422c98af4dc23a269913deadbfa778e411335290",
+    "tests/test_verifier_output.py": "773492c565c5da0b8753db7c61530fbfa1ef64c2693afa72b0b53cd2b37012d7"
+  },
+  "tracked_patch_sha256": "428c804c57899d230b1b2dbe6f0ae9d1c02a4b4a12f869ec62f8ad01d021c6a1",
+  "visibility": "owner_private"
+}

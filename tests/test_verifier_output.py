@@ -13,6 +13,41 @@ from scripts import verify_control_tower as verifier
 
 
 class VerifierOutputTests(unittest.TestCase):
+    def test_companion_symlinks_are_rejected_before_checks_or_writes(self):
+        for aliases_json in (False, True):
+            with self.subTest(aliases_json=aliases_json), TemporaryDirectory() as directory:
+                base = Path(directory)
+                root = base / "root"
+                (root / "reports").mkdir(parents=True)
+                output = root / "reports/result.json"
+                companion = output.with_suffix(".txt")
+                target = output if aliases_json else base / "sentinel.txt"
+                target.write_bytes(b"KEEP")
+                try:
+                    companion.symlink_to(target)
+                except (OSError, NotImplementedError) as exc:
+                    self.skipTest(f"symlinks unavailable: {exc}")
+                stdout, stderr = io.StringIO(), io.StringIO()
+                with patch.object(verifier, "ROOT", root), \
+                     patch.object(sys, "argv", ["verify", "--out", "reports/result.json"]), \
+                     patch.object(unittest.defaultTestLoader, "discover",
+                                  return_value=unittest.TestSuite()) as discover, \
+                     patch("control_tower.demo.demonstrate", return_value={}) as demo, \
+                     redirect_stdout(stdout), redirect_stderr(stderr):
+                    try:
+                        code = verifier.main()
+                    except SystemExit as exc:
+                        code = exc.code
+                self.assertEqual(target.read_bytes(), b"KEEP")
+                self.assertEqual(code, 2)
+                self.assertIn("text report cannot be a symlink", stderr.getvalue())
+                self.assertEqual(stdout.getvalue(), "")
+                discover.assert_not_called()
+                demo.assert_not_called()
+                self.assertTrue(companion.is_symlink())
+                if not aliases_json:
+                    self.assertFalse(output.exists())
+
     def test_noisy_success_and_failure_keep_json_summary_and_complete_log(self):
         for failing in (False, True):
             with self.subTest(failing=failing), TemporaryDirectory() as directory:

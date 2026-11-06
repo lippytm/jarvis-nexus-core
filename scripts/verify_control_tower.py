@@ -29,6 +29,9 @@ def main():
     output = (ROOT / args.out).resolve()
     if not output.is_relative_to(ROOT) or output.suffix != ".json":
         parser.error("output must be a JSON path inside this repository")
+    text_output = output.with_suffix(".txt")
+    if text_output.is_symlink():
+        parser.error("text report cannot be a symlink")
     sources = sorted([*ROOT.joinpath("control_tower").glob("*.py"),
                       *ROOT.joinpath("tests").glob("test_*.py"), *ROOT.joinpath("scripts").glob("*.py")])
     hashes, syntax_errors = {}, []
@@ -80,7 +83,7 @@ def main():
     report["record_sha256"] = sha256(json.dumps(report, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    output.with_suffix(".txt").write_text(stream.getvalue(), encoding="utf-8")
+    text_output.write_text(stream.getvalue(), encoding="utf-8")
     print(json.dumps({"passed": successful, "tests": report["tests"],
                       "syntax_files": len(sources), "evidence": str(output.relative_to(ROOT)),
                       "record_sha256": report["record_sha256"]}))
