@@ -2,6 +2,8 @@
 
 **Proposed procedure — independent and owner review pending.** Prepared against
 source `1b702e9357ab78892527f7759d107873fa587dbf` and master memory revision 172.
+Inspection template updated against source
+`6a24084c5b5a1eaec65e9f3bc450be14f285bd89` and master memory revision 178.
 This is navigation for the existing local ledger, not an accepted operating
 policy, authenticated approval or permission to release work.
 
@@ -94,8 +96,15 @@ the default consistency check because timestamps are not archived or attested.
 When exact context selectors are available, inspect recovery holds separately:
 
 ```sh
-python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only inspect-recovery --handoff "$HANDOFF_ID" --digest "$CONTEXT_SHA256" --source-revision "$SOURCE_REVISION" --memory-revision "$MEMORY_REVISION" --out reports/recovery-inspection-001.json
+python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only inspect-recovery --handoff "$HANDOFF_ID" --digest "$CONTEXT_SHA256" --source-revision "$SOURCE_REVISION" --memory-revision "$MEMORY_REVISION" --context-revision "$CONTEXT_REVISION" --out reports/recovery-inspection-001.json
 ```
+
+Use the selected stored revision from the retained record, not the profile's
+memory revision. The revision guard rejects an old request after content changes
+and is restored to the same digest at a later stored revision. On mismatch,
+preserve the failed observation and retrieve the current authorized metadata;
+do not discard the guard merely to obtain output. This check is atomic with the
+inspection read, but it does not freeze future state or authorize a later write.
 
 Keep paused/cancelled, blocked and unknown-outcome state intact. Consistency is
 point-in-time: a successful read does not freeze later edits or gate a later
