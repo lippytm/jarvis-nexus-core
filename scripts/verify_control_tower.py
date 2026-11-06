@@ -2,9 +2,11 @@
 
 Run from the repository root: python scripts/verify_control_tower.py
 This command performs no installation, model call or deployment.
+Python discovery/test prints go to the text report; stdout carries the JSON summary.
 """
 import argparse
 import ast
+from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timezone
 from hashlib import sha256
 import io
@@ -44,8 +46,10 @@ def main():
     stream = io.StringIO()
     result = None
     if not syntax_errors:
-        suite = unittest.defaultTestLoader.discover(str(ROOT / "tests"))
-        result = unittest.TextTestRunner(stream=stream, verbosity=2).run(suite)
+        # Keep incidental test prints out of the machine-readable summary.
+        with redirect_stdout(stream), redirect_stderr(stream):
+            suite = unittest.defaultTestLoader.discover(str(ROOT / "tests"))
+            result = unittest.TextTestRunner(stream=stream, verbosity=2).run(suite)
     successful = result is not None and result.wasSuccessful()
     demonstration = None
     if successful:
