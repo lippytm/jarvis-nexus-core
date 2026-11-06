@@ -88,11 +88,10 @@ class HandoffLedger:
         self.db.execute("BEGIN" if self.read_only else "BEGIN IMMEDIATE")
         try:
             yield
+            self.db.commit()
         except Exception:
             self.db.rollback()
             raise
-        else:
-            self.db.commit()
 
     def _swarm(self, swarm_id):
         require_identifier(swarm_id, "swarm ID")

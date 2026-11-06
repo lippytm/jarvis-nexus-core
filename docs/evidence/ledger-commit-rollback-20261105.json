@@ -1,0 +1,74 @@
+{
+  "asset_id": "codex",
+  "change": "Commit inside transaction try block; commit exceptions trigger rollback before propagating. No retry or schema change.",
+  "checks": {
+    "baseline_regression": {
+      "failures": 1,
+      "reason": "in_transaction remained True",
+      "run": 1
+    },
+    "diff_check": "passed",
+    "fixed_regression": {
+      "assertions": [
+        "no receipt",
+        "one commit attempt",
+        "no pending writes",
+        "later commit cannot publish failed review",
+        "reopen preserves two independent records and paused/outcome_unknown profile"
+      ],
+      "failures": 0,
+      "run": 1
+    },
+    "full": {
+      "record_sha256": "cf2764430e9d30a246f90dff46bb2c97a635cfcdd78fea59381ce2dd605c1dee",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 547,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.ledger-commit-rollback.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "c41ec0045439b7286b093b6b901f074f85f79cc6",
+  "limitations": [
+    "synthetic failure, not Codex outage",
+    "rollback itself can fail with unusable storage/connection",
+    "no authentication, live delivery, retry or failover controller"
+  ],
+  "memory_revision": 162,
+  "mission_id": "ledger-commit-rollback-20261105",
+  "next_task": "independent exact-revision review; registry audience/access acceptance pending",
+  "preparation_errors": [
+    "Evidence preparation first read nonexistent syntax_files key; corrected to verifier summary count; code/tests unaffected."
+  ],
+  "problem": "Real SQLite authorizer denial of COMMIT left db.in_transaction True. Previous diagnostic required explicit test rollback.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "35896d50bbe2768d3d5b70ae6c3c541326dd02c7eb00682bbb621ac0f2e12da0",
+  "reports_sha256": {
+    "reports/commit-rollback-focused-20261105.txt": "774d1086a37de6d8b9e2865f12621648cb23ee1c9a1e8f5919ee23e907dcf70c",
+    "reports/commit-rollback-full-20261105.json": "57e6cee3dc5bd063c79e201e717d6f2c03da62c155dcc66104c0003f9612e2b3",
+    "reports/commit-rollback-web-20261105.txt": "5433549aeca68f21ac545ab70ef598264184f506ed099c59d8578642f24ff6d4"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "22561e42a8e7f583e3ef6e148984a27a0c4d7dd33c7de76393d202ee8fbc50a1",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "ad33d344209884436303f6d7e88350559a46259dbf6ba6ca3c14a3551bdeca8f",
+    "tests/test_handoff_context.py": "a9e23d5e4372c82fdf21632dbbdd7eaf977c7f909cc33b88dfacdf3d6bc4bdb0"
+  }
+}

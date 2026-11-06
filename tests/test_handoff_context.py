@@ -189,6 +189,43 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["review_state"], "locally_reviewed")
         self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
 
+    def test_failed_review_commit_rolls_back_without_receipt_or_pending_writes(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.stage("mission-two")
+        self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        before = list(self.ledger.db.iterdump())
+        commits = []
+
+        def deny_commit(action, name, *_):
+            if action == sqlite3.SQLITE_TRANSACTION and name == "COMMIT":
+                commits.append(name)
+                return sqlite3.SQLITE_DENY
+            return sqlite3.SQLITE_OK
+
+        returned = []
+        self.ledger.db.set_authorizer(deny_commit)
+        try:
+            with self.assertRaises(sqlite3.DatabaseError):
+                returned.append(self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+                    expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True))
+        finally:
+            self.ledger.db.set_authorizer(None)
+        self.assertEqual(commits, ["COMMIT"])
+        self.assertEqual(returned, [])
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        # A later commit must not publish writes from the rejected review.
+        self.ledger.db.commit()
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
+
     def test_read_only_inspection_preserves_checkpoint_and_database_bytes(self):
         self.save()
         expected = self.load()

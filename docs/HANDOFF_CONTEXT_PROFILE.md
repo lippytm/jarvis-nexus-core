@@ -818,3 +818,6 @@ CLI responses keep their existing shape. No strict packet/storage schema changes
 Retain the returned receipt privately if needed: the ledger persists its existing
 review binding, not a new receipt archive or authenticated approval. Changed
 context can invalidate that binding; this historical receipt is no future gate.
+
+
+Transaction commit failures roll back pending ledger writes before propagating the error. A failed local context review returns no receipt and leaves no review update for a later commit to publish. This cleanup performs no retry or dispatch; commit failure is not evidence of a provider/runtime outage. Rollback itself may still fail if the database connection or storage is unusable.
