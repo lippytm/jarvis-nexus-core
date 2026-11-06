@@ -808,11 +808,16 @@ class HandoffLedger:
             "sender_authentication": "not_established", "dispatch_authorized": False, "external_actions": 0}
         return {**result, "receipt_sha256": digest(result)}
 
-    def review_context(self, handoff_id, *, reviewer_id, expected_sha256, expected_revision=None):
+    def review_context(self, handoff_id, *, reviewer_id, expected_sha256, expected_revision=None,
+                       include_receipt=False):
         require_identifier(reviewer_id, "reviewer label")
         require_digest(expected_sha256)
         if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
             raise ValueError("invalid expected context review revision")
+        if type(include_receipt) is not bool:
+            raise ValueError("include-receipt must be boolean")
+        if include_receipt and expected_revision is None:
+            raise ValueError("review receipt requires an exact context revision")
         with self._transaction():
             row, profile = self._context(handoff_id)
             if expected_revision is not None and row["revision"] != expected_revision:
@@ -821,6 +826,21 @@ class HandoffLedger:
                 raise ValueError("context review requires exact content and a distinct label")
             self.db.execute("UPDATE handoff_contexts SET reviewer_id=?,reviewed_digest=? WHERE handoff_id=?",
                             (reviewer_id, expected_sha256, handoff_id))
+            if include_receipt:
+                result = {"schema_version": 1, "kind": "jarvis.context_review_receipt",
+                    "handoff_id": handoff_id, "handoff_sha256": profile["handoff_sha256"],
+                    **{key: profile[key] for key in ("project_id", "mission_id", "asset_id", "platform",
+                        "source_revision", "memory_revision", "configuration_version")},
+                    "destination_id": profile.get("destination_id"),
+                    "context_schema_version": profile["schema_version"],
+                    "context_revision": row["revision"], "context_sha256": row["digest"],
+                    "reviewer_label": reviewer_id, "recorded_at": _now(),
+                    "review_state": "locally_reviewed", "visibility": "owner_private",
+                    "execution_state": profile["execution"]["state"],
+                    "control_state": profile.get("control", {}).get("state", "legacy_uncontrolled"),
+                    "authority": "local_record_only_not_identity_authentication",
+                    "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
+                return {**result, "receipt_sha256": digest(result)}
 
     def export_context(self, handoff_id, *, expected_sha256, expected_source_revision,
                        expected_memory_revision, audience="owner_private"):

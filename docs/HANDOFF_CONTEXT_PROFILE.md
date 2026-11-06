@@ -804,3 +804,17 @@ A is edited to B and restored to A at a later revision. Omitting the option keep
 the existing digest-only contract and response schema. Matching still requires a
 distinct local reviewer label and grants no identity authentication, owner release,
 hold removal or retry authority. No packet or database schema changes are involved.
+
+`review-context --context-revision N --include-receipt` opts in to a separate
+version-1 `jarvis.context_review_receipt` (API `include_receipt=True` on
+`review_context`, requiring `expected_revision`). It returns only after the
+existing review transaction commits, binding handoff/context digests, stored
+revision, source/memory revisions, project/mission/asset/platform/configuration,
+optional destination, local reviewer label, timestamp and retained execution/control
+state. The receipt is owner-private, checksum-bound and explicitly unauthenticated,
+with no dispatch or retry authority. It omits profile text and reference URLs.
+Legacy contexts have a null destination; default API calls still return None and
+CLI responses keep their existing shape. No strict packet/storage schema changes.
+Retain the returned receipt privately if needed: the ledger persists its existing
+review binding, not a new receipt archive or authenticated approval. Changed
+context can invalidate that binding; this historical receipt is no future gate.

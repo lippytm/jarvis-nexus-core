@@ -1375,6 +1375,37 @@ class ContextCLITests(unittest.TestCase):
             self.assertEqual(current["profile"], self.profile)
         self.assertEqual(self.cli(*args).returncode, 0)
 
+    def test_context_review_receipt_cli_is_explicit_and_keeps_legacy_response(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        args = ("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer", "--digest", checksum)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            before = list(ledger.db.iterdump())
+        rejected = self.cli(*args, "--include-receipt")
+        self.assertEqual(rejected.returncode, 1, rejected.stderr)
+        self.assertNotIn("jarvis.context_review_receipt", rejected.stdout)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(list(ledger.db.iterdump()), before)
+        accepted = self.cli(*args, "--context-revision", "1", "--include-receipt")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        receipt = json.loads(accepted.stdout)
+        self.assertEqual(receipt["kind"], "jarvis.context_review_receipt")
+        self.assertEqual((receipt["context_revision"], receipt["memory_revision"]), (1, 1))
+        self.assertEqual(receipt["source_revision"], REVISION)
+        self.assertEqual(receipt["context_sha256"], checksum)
+        self.assertEqual(receipt["platform"], "codex")
+        self.assertEqual(receipt["visibility"], "owner_private")
+        self.assertEqual(receipt["authority"], "local_record_only_not_identity_authentication")
+        self.assertEqual(receipt["receipt_sha256"], digest({k: v for k, v in receipt.items() if k != "receipt_sha256"}))
+        self.assertFalse(receipt["dispatch_authorized"])
+        self.assertFalse(receipt["retry_authorized"])
+        self.assertNotIn("https://", accepted.stdout)
+        old = self.cli(*args, "--context-revision", "1")
+        self.assertEqual(old.returncode, 0, old.stderr)
+        self.assertEqual(set(json.loads(old.stdout)), {"handoff_id", "context_sha256", "review_state", "external_actions", "authority"})
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+
     def test_destination_context_survives_cli_backup_and_restoration_read(self):
         self.profile.update(schema_version=3, destination_id="repo-one",
             control=dict(state="paused", actor_id="local-owner", reason="Synthetic destination checkpoint."))

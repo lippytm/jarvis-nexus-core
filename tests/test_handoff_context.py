@@ -147,6 +147,48 @@ class ContextTests(unittest.TestCase):
         self.ledger.review_context("mission-one", **args)
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_context_review_receipt_retains_exact_provenance_without_profile_text(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"])
+        before = list(self.ledger.db.iterdump())
+        for value in (None, 0, "true", []):
+            with self.assertRaises(ValueError):
+                self.ledger.review_context("mission-one", **args, expected_revision=1, include_receipt=value)
+        with self.assertRaisesRegex(ValueError, "exact context revision"):
+            self.ledger.review_context("mission-one", **args, include_receipt=True)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        receipt = self.ledger.review_context("mission-one", **args, expected_revision=1, include_receipt=True)
+        self.assertEqual((receipt["schema_version"], receipt["kind"]), (1, "jarvis.context_review_receipt"))
+        for key in ("handoff_id", "handoff_sha256", "project_id", "mission_id", "asset_id", "platform",
+                    "source_revision", "memory_revision", "configuration_version", "destination_id"):
+            self.assertEqual(receipt[key], self.profile[key])
+        self.assertEqual((receipt["context_schema_version"], receipt["context_revision"]), (3, 1))
+        self.assertEqual(receipt["context_sha256"], saved["context_sha256"])
+        self.assertIsNotNone(datetime.fromisoformat(receipt["recorded_at"]).tzinfo)
+        self.assertEqual(receipt["receipt_sha256"], digest({k: v for k, v in receipt.items() if k != "receipt_sha256"}))
+        self.assertEqual((receipt["execution_state"], receipt["control_state"]), ("outcome_unknown", "paused"))
+        self.assertEqual(receipt["visibility"], "owner_private")
+        for flag in ("dispatch_authorized", "retry_authorized", "external_actions"):
+            self.assertFalse(receipt[flag])
+        self.assertNotIn("https://", json.dumps(receipt))
+        self.assertNotIn("detail", receipt)
+        self.assertIsNone(self.ledger.review_context("mission-one", **args))
+        self.stage("mission-two")
+        other = self.ledger.save_context(self.context("mission-two"), expected_revision=0)
+        legacy = self.ledger.review_context("mission-two", reviewer_id="local-evaluator",
+            expected_sha256=other["context_sha256"], expected_revision=1, include_receipt=True)
+        self.assertIsNone(legacy["destination_id"])
+        self.assertEqual(legacy["control_state"], "legacy_uncontrolled")
+        receipt["mission_id"] = "changed-returned-copy"
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load()["review_state"], "locally_reviewed")
+        self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
+
     def test_read_only_inspection_preserves_checkpoint_and_database_bytes(self):
         self.save()
         expected = self.load()
