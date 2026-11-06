@@ -121,7 +121,7 @@
         "state": "owner_reference_unverified",
         "urls": [
           "https://lippytmai.getbizfunds.com",
-          "https://www.7figurescredit.com?a_aid=lippytm"
+          "http://www.7figurescredit.com?a_aid=lippytm"
         ]
       },
       "evidence_gaps": [
@@ -157,8 +157,8 @@
         "label": "Owner-provided partner destinations",
         "state": "owner_reference_unverified",
         "urls": [
-          "https://lendtrack.ai/join/lippytmai",
-          "https://join.7figurespartners.com/?a_aid=lippytm"
+          "http://lendtrack.ai/join/lippytmai",
+          "http://join.7figurespartners.com/?a_aid=lippytm"
         ]
       },
       "evidence_gaps": [
@@ -425,5 +425,5 @@
   ],
   "live_metrics": null,
   "external_actions": 0,
-  "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9"
+  "catalog_sha256": "ea0083f55f660f42986dea2db5b32c43a26ccba07694a3bb0b4e17d0b4842374"
 }

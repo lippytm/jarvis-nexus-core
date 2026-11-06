@@ -3,8 +3,8 @@ from control_tower.validation import json_record_errors, valid_identifier
 
 KINDS = {"member", "funding_customer", "funding_partner"}
 DESTINATIONS = {
-    "funding_customer": ("https://lippytmai.getbizfunds.com", "https://www.7figurescredit.com?a_aid=lippytm"),
-    "funding_partner": ("https://lendtrack.ai/join/lippytmai", "https://join.7figurespartners.com/?a_aid=lippytm"),
+    "funding_customer": ("https://lippytmai.getbizfunds.com", "http://www.7figurescredit.com?a_aid=lippytm"),
+    "funding_partner": ("http://lendtrack.ai/join/lippytmai", "http://join.7figurespartners.com/?a_aid=lippytm"),
 }
 def route_lead(record):
     if json_record_errors(record):

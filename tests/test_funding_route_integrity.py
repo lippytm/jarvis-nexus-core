@@ -1,6 +1,9 @@
 """Funding journeys must preserve the selected product through route handoffs."""
 import unittest
 
+from control_tower.funnels import route_lead
+from control_tower.journeys import reconcile_journeys
+
 from control_tower.injective_marketing import (
     ROUTES, injective_campaign, newsletter_injective_map, route_record,
 )
@@ -18,6 +21,40 @@ DESTINATIONS = {
 
 
 class FundingRouteIntegrityTests(unittest.TestCase):
+    def test_lead_funnels_preserve_exact_owner_urls_and_audiences(self):
+        for kind, products in (
+            ("funding_customer", ("funding-getbizfunds", "funding-7figures")),
+            ("funding_partner", ("partner-lendtrack", "partner-7figures")),
+        ):
+            with self.subTest(kind=kind):
+                routed = route_lead({"kind": kind, "consent": True, "utm_source": "linkedin"})
+                self.assertEqual(routed["status"], "sandbox_only")
+                self.assertEqual(routed["destinations"], tuple(DESTINATIONS[p] for p in products))
+
+    def test_reconciled_referrals_preserve_all_four_exact_owner_urls(self):
+        cases = (
+            ("funding_customer", "getbizfunds", "funding-getbizfunds"),
+            ("funding_customer", "7figures_customer", "funding-7figures"),
+            ("funding_partner", "lendtrack_partner", "partner-lendtrack"),
+            ("funding_partner", "7figures_partner", "partner-7figures"),
+        )
+        events = [{"event_id": f"synthetic-event-{n}", "journey_id": f"synthetic-journey-{n}",
+            "kind": kind, "event_type": "funding_referral_click" if kind == "funding_customer"
+            else "funding_partner_signup", "occurred_at": "2026-11-06T17:00:00Z",
+            "source": "test", "synthetic": True, "referral_provider": provider,
+            "service_consent": True} for n, (kind, provider, _) in enumerate(cases)]
+        result = reconcile_journeys(events + [events[0]])
+        self.assertEqual(result["counts"], {"accepted": 4, "duplicate": 1, "rejected": 0})
+        self.assertEqual(result["external_actions"], 0)
+        self.assertEqual(result["provider_authentication"], "not_performed")
+        for n, (kind, provider, product) in enumerate(cases):
+            with self.subTest(product=product):
+                referral = result["referrals"][f"synthetic-journey-{n}"]
+                self.assertEqual(referral["destination"], DESTINATIONS[product])
+                self.assertEqual(referral["kind"], kind)
+                self.assertEqual(referral["referral_provider"], provider)
+                self.assertEqual(referral["provider_completion"], "unverified")
+
     def test_every_comedy_product_route_resolves_to_the_same_product(self):
         for product_id, route_id in PRODUCT_ROUTE_MAP.items():
             with self.subTest(product=product_id, route=route_id):
