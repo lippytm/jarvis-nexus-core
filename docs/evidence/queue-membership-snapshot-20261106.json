@@ -1,0 +1,111 @@
+{
+  "acceptance": [
+    "one writer assignment",
+    "no mixed-snapshot membership",
+    "next report rejects stale digest",
+    "current digest accepted",
+    "paused/outcome_unknown original retained unchanged",
+    "new independent profile retained",
+    "report metadata omits reference URLs",
+    "reader observations do not mutate rows",
+    "reopen retains current report",
+    "no dispatch or external action authority"
+  ],
+  "allowed_actions": [
+    "inspect",
+    "prepare_draft_regression",
+    "test",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "One two-connection SQLite WAL queue-report regression; production code and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory revision and hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent review; authenticated registry/delivery and accepted audience/access policy remain unfinished"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "tests": 1
+    },
+    "full": {
+      "record_sha256": "54f5120aa3d078ca1f292f9b3c85efb78ea1545fd62e4bf0e4786405b9dccefd",
+      "syntax": {
+        "errors": [],
+        "files_checked": 73
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 565,
+        "skipped": 0
+      }
+    },
+    "sensitivity": {
+      "errors": 1,
+      "exit_code": 1,
+      "failures": 0,
+      "reason": "isolated read transaction bypass makes in-flight report stale during membership change; no source mutation",
+      "tests": 1
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.queue-membership-snapshot.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "input_revision": "0e303f327eef2783d352e60b847c50fae93dd447",
+  "limitations": [
+    "Real local connections with synthetic records, not owner mission execution or provider delivery.",
+    "Snapshot consistency is point-in-time, not a future lease/release gate, authentication or measured reliability improvement.",
+    "No worker, retry, failover or reconnect controller installed.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/queue-membership-focused-20261106.txt": {
+      "sha256": "412fbac06d9d5c5a43d5cbc7140a2e7e1666408565f390acfd8ae465689519f7",
+      "text": ".\n----------------------------------------------------------------------\nRan 1 test in 0.057s\n\nOK\n"
+    },
+    "reports/queue-membership-sensitivity-20261106.txt": {
+      "sha256": "6074f297b315702260e71ca7e0b6aad1fca6b8b3d538f052a94d710f1c6cdb94",
+      "text": "test_queue_report_keeps_snapshot_during_concurrent_mission_membership (tests.test_handoff_context.ContextTests.test_queue_report_keeps_snapshot_during_concurrent_mission_membership) ... ERROR\n\n======================================================================\nERROR: test_queue_report_keeps_snapshot_during_concurrent_mission_membership (tests.test_handoff_context.ContextTests.test_queue_report_keeps_snapshot_during_concurrent_mission_membership)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 1623, in test_queue_report_keeps_snapshot_during_concurrent_mission_membership\n    in_flight = reader.queue_report(**args, expected_sha256=expected[\"report_sha256\"])\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/handoffs.py\", line 359, in queue_report\n    raise ValueError(\"queue report is stale; retrieve current metadata again\")\nValueError: queue report is stale; retrieve current metadata again\n\n----------------------------------------------------------------------\nRan 1 test in 0.026s\n\nFAILED (errors=1)\n"
+    }
+  },
+  "memory_revision": 177,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "observed_revision_conflicts": 0,
+    "production_test_failures": 0,
+    "reliability_improvement": "not measured",
+    "sensitivity_failed_attempts": 1
+  },
+  "mission_id": "queue-membership-snapshot-20261106",
+  "next_task": "independent exact-revision queue snapshot review; do not duplicate this regression",
+  "patch_sha256": "f59bdf66ab176e9969353ada5b5ae30053907c6176beffc9040b821930ebc358",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "70da388321240c8052df3720a6174572137b049b36e1cf69ac17f89c84886729",
+  "repository": "lippytm/jarvis-nexus-core",
+  "scenario": "Writer assigns a previously staged contextless handoff to the selected mission after the reader establishes its real snapshot. In-flight digest-pinned report retains old membership; next read rejects old digest and sees two members; current digest/reopen match.",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context.py": "087405ac410c7e4932d64afacf0a60f36b15016762061fce93eca74077982e5a"
+  },
+  "visibility": "owner_private"
+}

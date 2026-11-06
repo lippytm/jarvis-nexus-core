@@ -1598,6 +1598,51 @@ with HandoffLedger(sys.argv[1]) as ledger:
         self.assertEqual(self.path.read_bytes(), before)
         self.assertFalse(self.ledger.db.in_transaction)
 
+    def test_queue_report_keeps_snapshot_during_concurrent_mission_membership(self):
+        self.assertEqual(self.ledger.db.execute("PRAGMA journal_mode=WAL").fetchone()[0], "wal")
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("z-member")  # Already staged, but not yet assigned context/mission.
+        member = self.context("z-member")
+        member["mission_id"] = "mission-one"
+        args = dict(project_id="ai-jarvis", mission_id="mission-one", include_review_state=True)
+        original = self.load()
+        committed = []
+        with HandoffLedger(self.path, read_only=True) as reader:
+            expected = reader.queue_report(**args)
+            handoff = reader._handoff
+
+            def assign_between_reads(identifier):
+                selected = handoff(identifier)
+                if not committed:
+                    committed.append(self.ledger.save_context(member, expected_revision=0))
+                return selected
+
+            with patch.object(reader, "_handoff", side_effect=assign_between_reads):
+                in_flight = reader.queue_report(**args, expected_sha256=expected["report_sha256"])
+            self.assertEqual(len(committed), 1)
+            self.assertEqual(in_flight, expected)
+            self.assertEqual(in_flight["handoff_count"], 1)
+            self.assertFalse(reader.db.in_transaction)
+            written_rows = list(self.ledger.db.iterdump())
+            with self.assertRaisesRegex(ValueError, "queue report is stale"):
+                reader.queue_report(**args, expected_sha256=expected["report_sha256"])
+            current = reader.queue_report(**args)
+            self.assertEqual(current["handoff_count"], 2)
+            self.assertEqual({r["handoff_id"] for r in current["bindings"]}, {"mission-one", "z-member"})
+            self.assertEqual(current["control_states"]["paused"], 1)
+            self.assertEqual(current["execution_states"]["outcome_unknown"], 1)
+            self.assertFalse(current["dispatch_authorized"])
+            self.assertEqual(current["external_actions"], 0)
+            self.assertNotIn("https://", json.dumps(current))
+            self.assertEqual(reader.queue_report(**args, expected_sha256=current["report_sha256"]), current)
+            self.assertEqual(list(self.ledger.db.iterdump()), written_rows)
+        with HandoffLedger(self.path, read_only=True) as restarted:
+            self.assertEqual(restarted.queue_report(**args), current)
+        self.assertEqual(self.load(), original)
+        self.assertEqual(self.load("z-member")["profile"], member)
+
     def test_queue_snapshot_guard_binds_scope_and_new_mission_membership(self):
         self.save()
         selected = self.ledger.queue_report(project_id="ai-jarvis", mission_id="mission-one")
