@@ -487,6 +487,12 @@ changed edit; existing save rules invalidate context review. Repeating the same
 control with the current guards is a duplicate without a revision increment.
 Old guards are stale and rejected, not silently treated as successful retries.
 
+Optional `--context-revision N` additionally pins the selected positive stored
+revision before the edit. It rejects an old selection even after content is
+restored to the same digest and memory revision. The helper API accepts the same
+guard as `expected_revision`; the subsequent save still uses compare-and-swap.
+Omission preserves existing behavior. This is not authentication or a lease.
+
 Version-1 profiles are refused; an operator must explicitly prepare/save the
 existing version-2 profile first. Public-candidate profiles and --read-only are
 refused; no implicit reclassification or new schema/table is added. Mission,

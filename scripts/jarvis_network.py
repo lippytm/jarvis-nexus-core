@@ -74,7 +74,8 @@ def _write(path, record, *, packet_output=False):
 
 
 def _set_context_control(ledger, *, handoff_id, state, actor_id, reason,
-                         expected_sha256, expected_source_revision, expected_memory_revision):
+                         expected_sha256, expected_source_revision, expected_memory_revision,
+                         expected_revision=None):
     """Narrow local pause/cancel edit through existing context CAS, not authority."""
     require_digest(expected_sha256)
     require_identifier(actor_id, "local controller label")
@@ -82,7 +83,8 @@ def _set_context_control(ledger, *, handoff_id, state, actor_id, reason,
     if state not in {"paused", "cancelled"}:
         raise ValueError("control command permits only pause or cancel")
     selected = ledger.load_context(handoff_id, expected_source_revision=expected_source_revision,
-        expected_memory_revision=expected_memory_revision, audience="owner_private")
+        expected_memory_revision=expected_memory_revision, audience="owner_private",
+        expected_revision=expected_revision)
     if selected["context_sha256"] != expected_sha256:
         raise ValueError("context digest mismatch")
     profile = selected["profile"]
@@ -222,6 +224,7 @@ def main(argv=None):
     control.add_argument("--digest", required=True)
     control.add_argument("--source-revision", required=True)
     control.add_argument("--memory-revision", type=int, required=True)
+    control.add_argument("--context-revision", type=int, help="Require the exact selected stored context revision")
     checkpoint_capture = commands.add_parser("capture-checkpoint", help="Retain exact current context; opt in to storage version 3")
     checkpoint_capture.add_argument("--handoff", required=True)
     checkpoint_capture.add_argument("--digest", required=True)
@@ -401,7 +404,8 @@ def main(argv=None):
                 elif args.command == "set-context-control":
                     result = _set_context_control(ledger, handoff_id=args.handoff, state=args.state,
                         actor_id=args.actor, reason=args.reason, expected_sha256=args.digest,
-                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
+                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision,
+                        expected_revision=args.context_revision)
                 elif args.command == "load-context":
                     result = ledger.load_context(args.handoff, expected_source_revision=args.source_revision,
                                                  expected_memory_revision=args.memory_revision,

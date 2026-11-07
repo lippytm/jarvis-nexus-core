@@ -194,6 +194,53 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(retained["destination_id"], self.profile["destination_id"])
         self.assertEqual(retained["handoff_sha256"], self.profile["handoff_sha256"])
 
+    def test_control_revision_cli_rejects_restored_selection_and_retains_duplicate(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Temporary private control edit."
+        self.write(changed)
+        self.assertEqual(self.save(revision=1).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(revision=2)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        args = ("set-context-control", "--handoff", "cli-task", "--state", "paused",
+                "--actor", "local-controller", "--reason", "Synthetic operator hold.",
+                "--source-revision", REVISION)
+        before = self.control_snapshot()
+        for revision in ("1", "2", "4", "0", "-1"):
+            rejected = self.cli(*args, "--digest", checksum, "--memory-revision", "1",
+                                "--context-revision", revision)
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertIn("context retrieval revision", rejected.stderr)
+            self.assertEqual(self.control_snapshot(), before)
+        accepted = self.cli(*args, "--digest", checksum, "--memory-revision", "1",
+                            "--context-revision", "3")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        result = json.loads(accepted.stdout)
+        self.assertEqual(result["revision"], 4)
+        self.assertEqual(result["memory_revision"], 2)
+        self.assertEqual(result["execution_state"], "outcome_unknown")
+        self.assertFalse(result["duplicate"])
+        for flag in ("retry_authorized", "dispatch_authorized", "external_actions"):
+            self.assertFalse(result[flag])
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            current = ledger.load_context("cli-task", expected_source_revision=REVISION,
+                                          expected_memory_revision=2, expected_revision=4)
+        expected = deepcopy(self.profile)
+        expected["control"] = dict(state="paused", actor_id="local-controller", reason="Synthetic operator hold.")
+        expected["memory_revision"] = 2
+        self.assertEqual(current["profile"], expected)
+        self.assertEqual(current["review_state"], "proposed")
+        before = self.control_snapshot()
+        fresh = (*args, "--digest", result["context_sha256"], "--memory-revision", "2")
+        self.assertEqual(self.cli(*fresh, "--context-revision", "3").returncode, 1)
+        for options in (("--context-revision", "4"), ()):
+            repeated = self.cli(*fresh, *options)
+            self.assertEqual(repeated.returncode, 0, repeated.stderr)
+            self.assertTrue(json.loads(repeated.stdout)["duplicate"])
+            self.assertEqual(self.control_snapshot(), before)
+
     def test_control_cli_refuses_legacy_stale_guards_and_read_only(self):
         saved = self.save()
         checksum = json.loads(saved.stdout)["context_sha256"]
