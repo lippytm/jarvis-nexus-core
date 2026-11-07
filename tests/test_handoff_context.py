@@ -543,6 +543,88 @@ class ContextTests(unittest.TestCase):
                             if not connection.close_calls:
                                 connection.close()
 
+    def test_failed_read_only_open_preserves_existing_recovery_records(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        historical = deepcopy(self.profile)
+        first = self.save()
+        checkpoint_args = dict(expected_sha256=first["context_sha256"],
+            expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_revision=1, **checkpoint_args)
+        self.profile["memory_revision"] = 2
+        self.profile["execution"]["detail"] = "Synthetic retained reconciliation checkpoint."
+        current = self.ledger.save_context(self.profile, expected_revision=1)
+        review = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=current["context_sha256"], expected_revision=2, include_receipt=True)
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        self.ledger.save_context(neighbor, expected_revision=0)
+        rows = tuple(self.ledger.db.iterdump())
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        connect = sqlite3.connect
+
+        for trigger in ("PRAGMA foreign_keys=ON", "PRAGMA user_version"):
+            for error_type in (KeyboardInterrupt, SystemExit, sqlite3.OperationalError):
+                with self.subTest(phase=trigger, error=error_type.__name__):
+                    failure = error_type("Synthetic interrupted read-only recovery open")
+                    connections, returned = [], []
+
+                    class InterruptedConnection(sqlite3.Connection):
+                        close_calls = 0
+
+                        def execute(connection, sql, *args, **kwargs):
+                            result = super().execute(sql, *args, **kwargs)
+                            if sql == trigger:
+                                raise failure
+                            return result
+
+                        def close(connection):
+                            connection.close_calls += 1
+                            return super().close()
+
+                    def capture(*args, **kwargs):
+                        self.assertTrue(kwargs["uri"])
+                        self.assertTrue(args[0].endswith("?mode=ro"))
+                        connection = connect(*args, **kwargs, factory=InterruptedConnection)
+                        connections.append(connection)
+                        return connection
+
+                    try:
+                        with patch("control_tower.handoffs.sqlite3.connect", side_effect=capture):
+                            with self.assertRaises(error_type) as raised:
+                                returned.append(HandoffLedger(self.path, read_only=True))
+                        self.assertIs(raised.exception, failure)
+                        self.assertEqual(returned, [])
+                        self.assertEqual(len(connections), 1)
+                        self.assertEqual(connections[0].close_calls, 1)
+                        with self.assertRaises(sqlite3.ProgrammingError):
+                            connections[0].execute("SELECT 1")
+                        self.assertEqual(self.path.read_bytes(), before)
+                        # A fresh reader, not just the pre-existing handle, must recover.
+                        with HandoffLedger(self.path, read_only=True) as restarted:
+                            self.assertEqual(restarted.db.execute("PRAGMA user_version").fetchone()[0], 3)
+                            self.assertEqual(tuple(restarted.db.iterdump()), rows)
+                            selected = restarted.load_context("mission-one", expected_source_revision=REVISION,
+                                expected_memory_revision=2, expected_revision=2)
+                            self.assertEqual(selected["profile"], self.profile)
+                            self.assertTrue(restarted.check_context_review_receipt(
+                                "mission-one", review)["local_binding_matches"])
+                            self.assertEqual(restarted.load_checkpoint(
+                                "mission-one", 1, **checkpoint_args)["profile"], historical)
+                            self.assertEqual(restarted.load_context("mission-two",
+                                expected_source_revision=REVISION, expected_memory_revision=1)["profile"], neighbor)
+                            with self.assertRaisesRegex(ValueError, "unknown outcome"):
+                                restarted.export_context("mission-one", expected_sha256=current["context_sha256"],
+                                    expected_source_revision=REVISION, expected_memory_revision=2, expected_revision=2)
+                        self.assertEqual(self.path.read_bytes(), before)
+                    finally:
+                        for connection in connections:
+                            if not connection.close_calls:
+                                connection.close()
+
     def test_interrupted_review_rolls_back_without_receipt_or_pending_writes(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"
