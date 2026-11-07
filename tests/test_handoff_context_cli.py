@@ -157,6 +157,56 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "absent").exists())
         self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
 
+    def test_registry_combined_scope_intersects_mixed_projects_and_platforms(self):
+        from control_tower.connections import inspect_destination_registry
+        from control_tower.network_contract import PROJECTS
+        self.registry_input()
+        path = self.root / "registry.json"
+        registry = json.loads(path.read_text())
+        other, empty = sorted(p for p in PROJECTS if p != "ai-jarvis")[:2]
+        # Different counts expose accidental union, project-only or platform-only selection.
+        registry["entries"] = [dict(project_id=project, platform=target,
+            destination_id=f"private-{index}", resource_id="private-resource-" + str(index),
+            allowed_actions=["read"]) for index, (project, target) in enumerate([
+                ("ai-jarvis", "codex"), ("ai-jarvis", "codex"), ("ai-jarvis", "gemini"),
+                (other, "codex"), (other, "gemini"), (other, "gemini")])]
+        path.write_text(json.dumps(registry))
+        before = path.read_bytes(), self.db.read_bytes()
+        guards = dict(expected_sha256=digest(registry), expected_revision=1,
+                      expected_source_revision=REVISION)
+        default = inspect_destination_registry(registry, **guards)
+        self.assertEqual(default["entry_count"], 6)
+        self.assertEqual(default["platform_counts"], {"codex": 3, "gemini": 3})
+        receipts = set()
+        for index, (project, target, count) in enumerate([
+                ("ai-jarvis", "codex", 2), ("ai-jarvis", "gemini", 1),
+                (other, "codex", 1), (other, "gemini", 2), (empty, "codex", 0)]):
+            with self.subTest(project=project, platform=target):
+                expected = inspect_destination_registry(registry, project_id=project, platform=target, **guards)
+                self.assertEqual(expected["entry_count"], count)
+                self.assertEqual(expected["platform_counts"], {target: count} if count else {})
+                self.assertEqual(expected["project_id"], project)
+                self.assertEqual(expected["platform"], target)
+                self.assertEqual(expected["schema_version"], 3)
+                self.assertEqual(expected["visibility"], "owner_private")
+                self.assertFalse(expected["dispatch_authorized"])
+                receipts.add(expected["receipt_sha256"])
+                args = ("--read-only", "inspect-registry", "--file", "registry.json",
+                    "--digest", guards["expected_sha256"], "--registry-revision", "1",
+                    "--source-revision", REVISION, "--project", project, "--platform", target)
+                first = self.cli(*args, database="absent/ledger.sqlite3")
+                second = self.cli(*args, database="absent/ledger.sqlite3")
+                self.assertEqual(first.returncode, 0, first.stderr)
+                self.assertEqual(second.returncode, 0, second.stderr)
+                self.assertEqual(first.stdout, second.stdout)
+                self.assertEqual(json.loads(first.stdout), expected)
+                self.assertNotIn("private-resource-", first.stdout)
+                self.assertNotIn("private-0", first.stdout)
+        self.assertEqual(len(receipts), 5)
+        self.assertEqual(inspect_destination_registry(registry, **guards), default)
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
+
     def test_registry_project_preflight_is_selective_without_ledger(self):
         from control_tower.network_contract import PROJECTS
         self.registry_input()
