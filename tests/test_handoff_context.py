@@ -3073,6 +3073,53 @@ with HandoffLedger(sys.argv[1]) as ledger:
             expected_memory_revision=1, now=datetime(2026, 10, 28, 1, tzinfo=timezone.utc))
         return raw, observation, registry, args
 
+    def test_configured_observation_keeps_snapshot_during_concurrent_context_edit(self):
+        self.assertEqual(self.ledger.db.execute("PRAGMA journal_mode=WAL").fetchone()[0], "wal")
+        self.save()  # Independent Codex context must remain intact.
+        raw, observation, registry, args = self.configured_read()
+        self.ledger.review_context("github-read", reviewer_id="local-evaluator",
+            expected_sha256=args["expected_sha256"], expected_revision=1)
+        original = self.ledger.load_context("github-read", expected_source_revision=REVISION,
+            expected_memory_revision=1)["profile"]
+        changed = deepcopy(original)
+        changed["memory_revision"] = 2
+        changed["execution"]["detail"] = "Concurrent writer preserves paused unknown outcome."
+        committed = []
+        with HandoffLedger(self.path, read_only=True) as reader:
+            expected = reader.bind_configured_github_observation("github-read", observation, raw, registry,
+                **args, expected_revision=1)
+            handoff = reader._handoff
+
+            def edit_between_reads(identifier):
+                selected = handoff(identifier)  # Establish the real read snapshot.
+                if identifier == "github-read" and not committed:
+                    committed.append(self.ledger.save_context(changed, expected_revision=1))
+                return selected
+
+            with patch.object(reader, "_handoff", side_effect=edit_between_reads):
+                observed = reader.bind_configured_github_observation("github-read", observation, raw, registry,
+                    **args, expected_revision=1)
+            self.assertEqual(len(committed), 1)
+            self.assertEqual(observed, expected)
+            self.assertEqual(observed["destination_observation"]["review_state"], "locally_reviewed")
+            self.assertFalse(reader.db.in_transaction)
+            writer_rows = tuple(self.ledger.db.iterdump())
+            with self.assertRaisesRegex(ValueError, "context retrieval revision mismatch"):
+                reader.bind_configured_github_observation("github-read", observation, raw, registry,
+                    **args, expected_revision=1)
+            self.assertFalse(reader.db.in_transaction)
+            refreshed = reader.bind_configured_github_observation("github-read", observation, raw, registry,
+                **{**args, "expected_sha256": committed[0]["context_sha256"], "expected_memory_revision": 2},
+                expected_revision=2)
+            self.assertEqual(refreshed["destination_observation"]["context_revision"], 2)
+            self.assertEqual(refreshed["destination_observation"]["review_state"], "proposed")
+            self.assertFalse(refreshed["dispatch_authorized"])
+            self.assertEqual(reader.load_context("github-read", expected_source_revision=REVISION,
+                expected_memory_revision=2)["profile"], changed)
+            self.assertEqual(reader.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+            self.assertEqual(tuple(self.ledger.db.iterdump()), writer_rows)
+
     def test_observation_revision_rejects_restored_context_for_both_bindings(self):
         raw, observation, registry, args = self.configured_read()
         loaded = self.ledger.load_context("github-read", expected_source_revision=REVISION,
