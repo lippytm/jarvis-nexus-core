@@ -32,6 +32,9 @@ def main():
     text_output = output.with_suffix(".txt")
     if text_output.is_symlink():
         parser.error("text report cannot be a symlink")
+    for report_path in (output, text_output):
+        if report_path.exists() and report_path.stat().st_nlink > 1:
+            parser.error("report output cannot have multiple hard links")
     sources = sorted([*ROOT.joinpath("control_tower").glob("*.py"),
                       *ROOT.joinpath("tests").glob("test_*.py"), *ROOT.joinpath("scripts").glob("*.py")])
     hashes, syntax_errors = {}, []

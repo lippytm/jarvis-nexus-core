@@ -13,6 +13,45 @@ from scripts import verify_control_tower as verifier
 
 
 class VerifierOutputTests(unittest.TestCase):
+    def test_report_hardlinks_are_rejected_before_checks_or_writes(self):
+        for mode in ("text_external", "text_json", "json_external"):
+            with self.subTest(mode=mode), TemporaryDirectory() as directory:
+                base = Path(directory)
+                root = base / "root"
+                (root / "reports").mkdir(parents=True)
+                output = root / "reports/result.json"
+                companion = output.with_suffix(".txt")
+                target = output if mode == "text_json" else base / "sentinel.txt"
+                target.write_bytes(b"KEEP")
+                linked = output if mode == "json_external" else companion
+                try:
+                    linked.hardlink_to(target)
+                except (OSError, NotImplementedError) as exc:
+                    self.skipTest(f"hard links unavailable: {exc}")
+                self.assertEqual(target.stat().st_nlink, 2)
+                stdout, stderr = io.StringIO(), io.StringIO()
+                with patch.object(verifier, "ROOT", root), \
+                     patch.object(sys, "argv", ["verify", "--out", "reports/result.json"]), \
+                     patch.object(unittest.defaultTestLoader, "discover",
+                                  return_value=unittest.TestSuite()) as discover, \
+                     patch("control_tower.demo.demonstrate", return_value={}) as demo, \
+                     redirect_stdout(stdout), redirect_stderr(stderr):
+                    try:
+                        code = verifier.main()
+                    except SystemExit as exc:
+                        code = exc.code
+                self.assertEqual(target.read_bytes(), b"KEEP")
+                self.assertEqual(code, 2)
+                self.assertIn("report output cannot have multiple hard links", stderr.getvalue())
+                self.assertEqual(stdout.getvalue(), "")
+                discover.assert_not_called()
+                demo.assert_not_called()
+                self.assertTrue(linked.samefile(target))
+                if mode == "text_external":
+                    self.assertFalse(output.exists())
+                elif mode == "json_external":
+                    self.assertFalse(companion.exists())
+
     def test_companion_symlinks_are_rejected_before_checks_or_writes(self):
         for aliases_json in (False, True):
             with self.subTest(aliases_json=aliases_json), TemporaryDirectory() as directory:
@@ -53,6 +92,9 @@ class VerifierOutputTests(unittest.TestCase):
             with self.subTest(failing=failing), TemporaryDirectory() as directory:
                 root = Path(directory)
                 (root / "tests").mkdir()
+                (root / "reports").mkdir()
+                (root / "reports/result.json").write_text("OLD_JSON", encoding="utf-8")
+                (root / "reports/result.txt").write_text("OLD_LOG", encoding="utf-8")
 
                 class NoisyFixture(unittest.TestCase):
                     def runTest(self):
