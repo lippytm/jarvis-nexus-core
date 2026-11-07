@@ -1,9 +1,11 @@
-# Draft local review receipt recovery
+# Draft local review and export recovery
 
 **Proposed procedure — independent and owner review pending.** Prepared against
 source `1b702e9357ab78892527f7759d107873fa587dbf` and master memory revision 172.
 Inspection template updated against source
 `6a24084c5b5a1eaec65e9f3bc450be14f285bd89` and master memory revision 178.
+Export reconciliation added against source
+`e4800d7fdac5691c607266265af6e00089205c38` and master memory revision 195.
 This is navigation for the existing local ledger, not an accepted operating
 policy, authenticated approval or permission to release work.
 
@@ -111,6 +113,45 @@ point-in-time: a successful read does not freeze later edits or gate a later
 write. No command here authorizes dispatch, retry, unpause, publishing, merge,
 deployment, spending or live trading. Trading Bots remains research/backtesting/
 paper-only; RoboParty remains deferred.
+
+## Reconcile a failed manual envelope export
+
+For `export-context --context-revision N --out ...` I/O failures, preserve the
+same ledger, selected revisions, output locator and error. The export transaction
+commits before the file writer runs. `export_prepared` records preparation, not
+successful file publication, provider delivery or mission completion. An absent
+file does not prove that the ledger rolled back. Do not invoke `export-context`
+again merely to inspect the outcome, and never import an envelope as a review
+receipt: `check-review-receipt` accepts a different record kind.
+
+| Observed output | Bounded reconciliation |
+|---|---|
+| No output file after a file-sync failure | Retain the error and observe the original ledger read-only. Record publication as unconfirmed; do not create a replacement mission or assume export state reverted. |
+| Complete file after a directory-sync failure | Preserve its exact bytes and byte digest privately. A complete file may exist despite exit code 1; do not overwrite it or describe crash durability as verified. |
+| Missing/unreadable ledger, partial/unreadable output or mismatched binding | Keep the discrepancy unresolved. Do not delete, overwrite or automatically replay; request exact-artifact review within the existing authority limits. |
+
+Use fresh output names to observe the same project/mission and selected context:
+
+```sh
+python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only queue-report --project "$PROJECT_ID" --mission "$MISSION_ID" --include-review-state --out reports/export-queue-001.json
+python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only inspect-recovery --handoff "$HANDOFF_ID" --digest "$CONTEXT_SHA256" --source-revision "$SOURCE_REVISION" --memory-revision "$MEMORY_REVISION" --context-revision "$CONTEXT_REVISION" --out reports/export-recovery-001.json
+```
+
+These separate snapshots do not freeze concurrent edits. Compare the handoff,
+context digest/stored revision, source/memory revisions, local review and retained
+execution/control state. On mismatch, retain both observations and retrieve fresh
+authorized selectors. The inspection omits profile text and reference URLs but
+still contains private identifiers. Neither command validates the exported file
+or authenticates approval. Separately compare any retained envelope's original
+handoff/context bindings and exact revision during authorized artifact review;
+a file byte digest alone is not an independent signature or delivery receipt.
+
+The POSIX regression in `tests/test_handoff_context_cli.py` injects file and
+directory fsync failures into temporary ledgers. It observes committed export
+state, absent versus complete private files and overwrite refusal. This is not
+a real owner incident, a power/process-loss test or measured runtime recovery.
+Retain blocked/paused/cancelled/unknown-outcome holds. This proposed procedure
+authorizes no new export, retry, dispatch, unpause or release.
 
 ## Write back observations separately from decisions
 
