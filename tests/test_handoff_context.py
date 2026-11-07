@@ -216,6 +216,41 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["profile"], self.profile)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_duplicate_context_save_preserves_review_receipt_and_holds_after_restart(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        receipt = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        self.ledger.save_context(neighbor, expected_revision=0)
+        before = list(self.ledger.db.iterdump())
+        for _ in range(2):
+            duplicate = self.ledger.save_context(deepcopy(self.profile), expected_revision=1)
+            self.assertEqual(duplicate, {**saved, "duplicate": True})
+            self.assertTrue(self.ledger.check_context_review_receipt(
+                "mission-one", json.loads(json.dumps(receipt)))["local_binding_matches"])
+        with self.assertRaisesRegex(ValueError, "context revision mismatch"):
+            self.ledger.save_context(deepcopy(self.profile), expected_revision=0)
+        self.assertEqual(list(self.ledger.db.iterdump()), before)
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.ledger.close()
+        database_bytes = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        checked = self.ledger.check_context_review_receipt("mission-one", receipt)
+        self.assertEqual(checked["context_revision"], 1)
+        for flag in ("dispatch_authorized", "retry_authorized", "external_actions"):
+            self.assertFalse(checked[flag])
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load()["review_state"], "locally_reviewed")
+        self.assertEqual(self.load("mission-two")["profile"], neighbor)
+        with self.assertRaisesRegex(ValueError, "private context"):
+            self.load(audience="public_candidate")
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.assertEqual(self.path.read_bytes(), database_bytes)
+
     def test_saved_review_receipt_rejects_tampering_and_stale_bindings(self):
         saved = self.save()
         args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"],
