@@ -1,6 +1,63 @@
 # PR 5 review snapshots
 
-## Current review entry for November 6 2026 late update
+## Current review entry for November 7 2026
+
+Review source `d46971806731da0cb92c3968f4b3031ba9bc7c14` on `feature/control-tower-foundation-20261021`,
+[draft PR #5](https://github.com/lippytm/jarvis-nexus-core/pull/5), master memory 201.
+The PR API reports 442 changed files and 215 commits at this input. This entry
+covers the thirteen commits since the previous review entry's source. It is a
+navigation and acceptance checklist, not an independent review or release decision.
+PR metadata remains historical and unchanged; earlier source-bound snapshots follow.
+
+| Review area | Exact source entry points | Acceptance questions |
+|---|---|---|
+| Stored-revision selection | [Checkpoint capture](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/control_tower/handoffs.py#L496), [manual export](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/control_tower/handoffs.py#L893), [plain/configured observation binding](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/control_tower/handoffs.py#L788), [profile contract](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/HANDOFF_CONTEXT_PROFILE.md) | Optional selectors reject A-to-B-to-A stale selection while omission preserves defaults/schemas. Export rejects before state mutation; capture rejects before table/storage upgrade. Observation checks remain private reads with held outcomes intact, not authenticated delivery or a later-write gate. |
+| Constructor failure cleanup | [Constructor](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/control_tower/handoffs.py#L49), [fault regression](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/tests/test_handoff_context.py#L493) | Setup belongs inside cleanup. Ordinary errors and KeyboardInterrupt/SystemExit propagate after closing the allocated connection. Nine injected cases must leave no returned object or partial schema; normal reopening still works. Cleanup itself can fail on unusable storage; this is not process/power-loss recovery. |
+| Concurrent observations | [WAL regression](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/tests/test_handoff_context.py#L3129), [configured binding](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/control_tower/handoffs.py#L813) | Reader keeps the complete old receipt while another connection commits. Next read rejects the old selector; fresh selection sees review invalidation. Holds and independent context remain intact. A coherent receipt may already be historical when returned; it is not a lease. |
+| Publication acknowledgement loss | [Export sync-failure regression](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/tests/test_handoff_context_cli.py#L1853), [backup sync-failure regression](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/tests/test_handoff_context_cli.py#L2367), [proposed recovery procedure](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md) | Distinguish absent output after file-sync failure from a complete private file after directory-sync failure. Preserve committed state, review/holds, old files and source bytes. No success receipt does not prove rollback or no publication. Do not automatically replay. Procedures remain proposed. |
+| Retained backup byte check | [Digest checker](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/scripts/jarvis_network.py#L115), [subprocess checks](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/tests/test_handoff_context_cli.py#L2422) | Check a saved independent byte hash without SQLite open or missing-ledger creation. Enforce regular-file/128 MiB/loop-budget limits and private no-overwrite output. Matching non-SQLite bytes are allowed and explicitly unvalidated. No WAL inspection, writer exclusion, path-race isolation, hard OS I/O deadline, provenance authentication or restore authority follows. |
+
+### Evidence bound to this input
+
+[Push CI](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42403114803)
+checks `d46971806731da0cb92c3968f4b3031ba9bc7c14`; [PR CI](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42403118927)
+checks merge `cc27780d52f4688f317b4f8616f1824f7670cd12`. Both passed
+591 Python tests, 74 syntax checks, 181 web and 234 container tests plus Compose
+initialization/no-overwrite/replacement persistence, with every job, step and upload
+successful. Unit artifacts: [push](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42403114803/artifacts/13586073134),
+[PR](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42403118927/artifacts/13585764908).
+These are input-revision results. This documentation commit receives separate CI.
+
+Actual work receipts: [checkpoint selection](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/checkpoint-selection-20261106.json),
+[export selection](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/export-selection-20261107.json),
+[observation selection](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/observation-revision-20261107.json),
+[observation snapshot](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/observation-snapshot-20261107.json),
+[constructor repair](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/init-cleanup-20261107.json),
+[export sync failure](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/export-fsync-20261107.json),
+[backup sync failure](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/backup-sync-20261107.json) and
+[backup digest checker](https://github.com/lippytm/jarvis-nexus-core/blob/d46971806731da0cb92c3968f4b3031ba9bc7c14/docs/evidence/backup-digest-20261107.json).
+Retain their initial failures and final passes separately. Fixtures are synthetic;
+none establishes an actual owner incident, provider delivery, authentication or a
+measured reliability improvement.
+
+### Reviewer handoff and retained boundaries
+
+Review one area against the exact source above and report concrete findings with
+file/line references and reproduced checks. Self-checks and CI are implementation
+evidence, not independent approval. The owner retains the exact-revision release
+gate. Accepted registry audience/access policy and authenticated delivery remain
+unfinished. The export-recovery procedure remains proposed; byte comparison alone
+does not validate a ledger, approve memory or permit restoration.
+
+All 17 portable targets including codex and all 17 master business areas remain
+in scope; seven source project keys are a different inventory. Inactive/manual
+specifications are not running agents or authenticated connections. Trading Bots
+stays research/backtesting/paper-only; RoboParty stays deferred. The actual paused
+mission, separately paused Studio cycle and newsletter schedule are unchanged.
+No worker, lease, automatic retry/failover/reconnect controller, merge, deployment,
+dispatch, publishing, spending or permissions change is established by this entry.
+
+## Historical November 6 2026 late update
 
 Review source `edb070f3786df7fbfc2a22db32f0fc9b548436d5` on `feature/control-tower-foundation-20261021`,
 [draft PR #5](https://github.com/lippytm/jarvis-nexus-core/pull/5).
