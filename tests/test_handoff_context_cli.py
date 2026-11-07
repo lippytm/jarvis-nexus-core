@@ -1814,6 +1814,69 @@ class ContextCLITests(unittest.TestCase):
                     with HandoffLedger(self.db, read_only=True) as ledger:
                         self.assertEqual(list(ledger.db.iterdump()), rows)
 
+    @unittest.skipUnless(os.name == "posix", "directory fsync is POSIX-specific")
+    def test_export_fsync_failures_retain_committed_state_and_reconcilable_file(self):
+        from contextlib import redirect_stdout, redirect_stderr
+        from io import StringIO
+        from scripts.jarvis_network import main
+        checksum = self.controlled()
+        with HandoffLedger(self.db) as ledger:
+            ledger.review("cli-task", reviewer_id="local-reviewer",
+                          expected_sha256=self.profile["handoff_sha256"])
+            ledger.review_context("cli-task", reviewer_id="local-reviewer",
+                                  expected_sha256=checksum, expected_revision=1)
+        seed_bytes = self.db.read_bytes()
+        real_fsync = os.fsync
+        for fail_at in (1, 2):
+            with self.subTest(fsync_call=fail_at):
+                database = f"export-{fail_at}.sqlite3"
+                case_db = self.root / database
+                case_db.write_bytes(seed_bytes)
+                output = self.root / f"private/export-{fail_at}.json"
+                args = ["export-context", "--handoff", "cli-task", "--digest", checksum,
+                    "--source-revision", REVISION, "--memory-revision", "1",
+                    "--context-revision", "1", "--out", str(output.relative_to(self.root))]
+                calls = []
+
+                def fail_fsync(fd):
+                    calls.append(fd)
+                    if len(calls) == fail_at:
+                        raise OSError("Synthetic private export path must not escape.")
+                    return real_fsync(fd)
+
+                stdout, stderr = StringIO(), StringIO()
+                with patch("scripts.jarvis_network.os.fsync", side_effect=fail_fsync), \
+                        redirect_stdout(stdout), redirect_stderr(stderr):
+                    code = main(["--root", str(self.root), "--database", database, *args])
+                self.assertEqual(code, 1)
+                self.assertEqual(len(calls), fail_at)  # No automatic replay.
+                self.assertEqual(stdout.getvalue(), "")
+                self.assertEqual(json.loads(stderr.getvalue()), {"error": "OSError", "external_actions": 0})
+                self.assertEqual(list(output.parent.glob(".jarvis-write-*")), [])
+                with HandoffLedger(case_db, read_only=True) as ledger:
+                    rows = tuple(ledger.db.iterdump())
+                    self.assertEqual(ledger._handoff("cli-task")[0]["state"], "export_prepared")
+                    current = ledger.load_context("cli-task", expected_source_revision=REVISION,
+                        expected_memory_revision=1, expected_revision=1)
+                    self.assertEqual(current["profile"], self.profile)
+                    self.assertEqual(current["review_state"], "locally_reviewed")
+                if fail_at == 1:
+                    self.assertFalse(output.exists())
+                else:
+                    content = output.read_bytes()
+                    packet = json.loads(content)
+                    self.assertEqual(packet["context"], self.profile)
+                    self.assertEqual(packet["context_sha256"], checksum)
+                    self.assertEqual(packet["context_revision"], 1)
+                    self.assertEqual(packet["handoff_sha256"], self.profile["handoff_sha256"])
+                    self.assertEqual(packet["external_actions"], 0)
+                    self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+                    self.assertEqual(self.cli(*args, database=database).returncode, 1)
+                    self.assertEqual(output.read_bytes(), content)
+                    with HandoffLedger(case_db, read_only=True) as ledger:
+                        self.assertEqual(tuple(ledger.db.iterdump()), rows)
+                self.assertEqual(self.db.read_bytes(), seed_bytes)
+
     def test_saved_review_check_cli_reopens_without_ledger_or_receipt_writes(self):
         checksum = self.controlled(execution="outcome_unknown")
         created = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
