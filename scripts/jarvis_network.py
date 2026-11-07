@@ -112,6 +112,39 @@ def _check_backup_scopes(ledger):
         ledger._lineage(row["id"])
 
 
+def _check_backup_digest(path, expected_sha256):
+    """Compare bounded file bytes only; never open SQLite or authorize restore."""
+    require_digest(expected_sha256)
+    limit = 128 * 1024 * 1024
+    deadline = time.monotonic() + 10
+    flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
+    checksum, size = hashlib.sha256(), 0
+    with os.fdopen(os.open(path, flags), "rb") as handle:
+        metadata = os.fstat(handle.fileno())
+        if not stat.S_ISREG(metadata.st_mode):
+            raise ValueError("backup digest input must be a regular file")
+        if metadata.st_size > limit:
+            raise ValueError("backup digest input exceeds 128 MiB")
+        while True:
+            if time.monotonic() > deadline:
+                raise ValueError("backup digest time budget exceeded")
+            block = handle.read(65536)
+            if not block:
+                break
+            size += len(block)
+            if size > limit:
+                raise ValueError("backup digest input exceeds 128 MiB")
+            checksum.update(block)
+    actual = checksum.hexdigest()
+    if actual != expected_sha256:
+        raise ValueError("backup file digest mismatch")
+    return {"schema_version": 1, "kind": "jarvis.backup_digest_check",
+            "backup_sha256": actual, "bytes": size, "visibility": "owner_private",
+            "verification": "file_bytes_only", "ledger_validation": "not_performed",
+            "sender_authentication": "not_established", "restore_authorized": False,
+            "retry_authorized": False, "external_actions": 0}
+
+
 def _backup(connection, path):
     """Publish a checked SQLite online backup, never replace an existing file."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -286,6 +319,10 @@ def main(argv=None):
     reconciliation.add_argument("--out", required=True)
     backup = commands.add_parser("backup-ledger")
     backup.add_argument("--out", required=True)
+    backup_check = commands.add_parser("check-backup-digest", help="Compare retained file bytes with an independently saved SHA-256; no SQLite open")
+    backup_check.add_argument("--file", required=True)
+    backup_check.add_argument("--digest", required=True)
+    backup_check.add_argument("--out", help="Save private check metadata to a fresh file")
     commands.add_parser("status")
     queue = commands.add_parser("queue-report")
     queue.add_argument("--project", choices=sorted(PROJECTS), required=True)
@@ -327,7 +364,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "check-backup-digest", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -350,6 +387,8 @@ def main(argv=None):
             result = demonstrate_network()
         elif args.command == "init-ledger":
             result = _initialize_ledger(_local(root, args.database))
+        elif args.command == "check-backup-digest":
+            result = _check_backup_digest(_local(root, args.file), args.digest)
         elif args.command == "backup-ledger":
             database = _local(root, args.database)
             if not database.is_file():

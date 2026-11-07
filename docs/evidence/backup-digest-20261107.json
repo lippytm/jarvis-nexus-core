@@ -1,0 +1,144 @@
+{
+  "acceptance_observations": [
+    "Actual subprocess compares a created SQLite backup with its creation receipt hash using an absent --database path; no missing ledger directory is created, source and backup bytes remain unchanged.",
+    "Default metadata and saved 0600/no-overwrite report agree. Matching non-SQLite bytes explicitly remain not ledger validation; patched SQLite connect proves helper opens no database.",
+    "Malformed expected digest rejects before file open. Digest mismatch, absent/escaping/oversized/directory/FIFO input reject without output directory or ledger creation. Injected exhausted time budget rejects."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_bounded_backup_digest_check",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed; runbook remains proposed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add check-backup-digest --file --digest [--out] and bounded helper: regular files, 128 MiB, ten-second checks between 64 KiB reads. Separate version-1 jarvis.backup_digest_check report explicitly omits ledger validation/authentication/restore/retry authority. Extend existing proposed recovery runbook; strict packets/storage unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision backup byte-check review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_backup_digest_cli_checks_bytes_without_opening_a_ledger tests.test_handoff_context_cli.ContextCLITests.test_backup_digest_rejects_mismatch_bounds_and_nonregular_inputs",
+      "errors": 1,
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "New command/helper absent.",
+      "tests": 2
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "same two baseline tests after implementation",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/backup-digest-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/backup-digest-full-20261107.json",
+        "passed": true,
+        "record_sha256": "0a0fe8828fb43db8fce762e50544a9b6ffcb8f2d509f089f7baf917f1ce57bb3",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 591,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 591,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.backup-digest.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/backup-sync-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "f96e11cb721a0d6b9b341dee9518846dc8d0e663",
+  "limitations": [
+    "Matching byte digest is not SQLite/schema/record/hold validation, authenticated provenance, accepted memory, crash durability or restore/retry/dispatch permission. Expected hash must be retained independently.",
+    "No WAL sidecar inspection, writer exclusion or protection against concurrent path replacement. Loop time checks do not interrupt blocked OS I/O; reject active/changing inputs as frozen backup evidence.",
+    "No actual owner mission access, worker, automatic retry/failover/reconnect controller, permissions change, merge, deployment, dispatch, publication or spending. Paused mission/schedules untouched.",
+    "All 17 portable targets/business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/backup-digest-baseline-20261107.txt": {
+      "sha256": "e496389b1894545d3ea88cb7275ec8e3991e96690e4c3b7ff8535f94b83754d8",
+      "text": "FE\n======================================================================\nERROR: test_backup_digest_rejects_mismatch_bounds_and_nonregular_inputs (tests.test_handoff_context_cli.ContextCLITests.test_backup_digest_rejects_mismatch_bounds_and_nonregular_inputs)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 2451, in test_backup_digest_rejects_mismatch_bounds_and_nonregular_inputs\n    from scripts.jarvis_network import _check_backup_digest\nImportError: cannot import name '_check_backup_digest' from 'scripts.jarvis_network' (/workspace/scratch/3e7507676923/jarvis-cycle/scripts/jarvis_network.py)\n\n======================================================================\nFAIL: test_backup_digest_cli_checks_bytes_without_opening_a_ledger (tests.test_handoff_context_cli.ContextCLITests.test_backup_digest_cli_checks_bytes_without_opening_a_ledger)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 2431, in test_backup_digest_cli_checks_bytes_without_opening_a_ledger\n    self.assertEqual(result.returncode, 0, result.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: argument command: invalid choice: 'check-backup-digest' (choose from init-ledger, catalog, factory, stage, review, export, import-return, save-context, load-context, set-context-control, capture-checkpoint, load-checkpoint, list-checkpoints, review-context, check-review-receipt, export-context, inspect-recovery, check-recovery, prepare-reconciliation, backup-ledger, status, queue-report, destination-status, inspect-registry, bind-observation, demo)\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.274s\n\nFAILED (failures=1, errors=1)\n"
+    },
+    "reports/backup-digest-focused-20261107.txt": {
+      "sha256": "3492b85d4db1d130f06ad4d9f388072149196959082f7a5e05296898485d71bc",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 1.025s\n\nOK\n"
+    },
+    "reports/backup-digest-full-20261107.json": {
+      "sha256": "0bdf77387046c794f66f81521986d4ee8dae05a22a6799bd808d1f1691598347"
+    },
+    "reports/backup-digest-web-20261107.txt": {
+      "sha256": "ba7eb0add8b7778c0966a47a71b0c15686034d959e742bf9d87fc1759b02e7bf"
+    }
+  },
+  "memory_revision": 200,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "backup-digest-20261107",
+  "next_task": "Independent exact-revision backup byte-check review; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "problem": "Backup creation returns a byte hash, but the repository CLI lacked a bounded way to compare a retained file with an independently saved backup_sha256 without opening SQLite.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "d5045ea0ca5cb4862a567b8ae2dac8d7016dc930b2dbeb41b59e133964a51d02",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "d68815aeca3c544d4bbba0bd18514be779b9fbfa4d521303871cb8ffc879865c",
+    "scripts/jarvis_network.py": "5ae82a635e1ad2f8f0a5625a2a972428b5eef15fa686f1c89b32848b19aa4e1b",
+    "tests/test_handoff_context_cli.py": "ac01c9c7e83605d3c335b4ade3d86ee68a1b8f122542ae0814be01759c983899"
+  },
+  "tracked_patch_sha256": "ef176e1cf05f6814b1df247fbf80e2668cb0c824f068a3e4f73bdd290d892c81",
+  "visibility": "owner_private"
+}

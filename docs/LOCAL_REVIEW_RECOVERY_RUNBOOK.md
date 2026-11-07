@@ -153,6 +153,34 @@ a real owner incident, a power/process-loss test or measured runtime recovery.
 Retain blocked/paused/cancelled/unknown-outcome holds. This proposed procedure
 authorizes no new export, retry, dispatch, unpause or release.
 
+## Compare a retained backup's byte digest
+
+When an expected `backup_sha256` was retained independently, compare that exact
+file byte hash before considering a retained backup for further review:
+
+```sh
+python scripts/jarvis_network.py --root "$TASK_ROOT" --read-only check-backup-digest --file backups/retained.sqlite3 --digest "$BACKUP_SHA256" --out reports/backup-byte-check-001.json
+```
+
+This command opens no SQLite database and ignores `--database`. It reads one
+regular file inside the workspace, with a 128 MiB limit and a ten-second budget
+checked between 64 KiB reads. Blocking operating-system I/O can exceed that budget.
+Mismatch, invalid digest, missing/nonregular/oversized input or exhausted budget
+rejects without a check report. Default output is metadata on stdout; optional
+`--out` uses the existing private 0600, no-overwrite writer. Input bytes remain
+unchanged. Report schema version 1 is `jarvis.backup_digest_check`, separate from
+strict handoff packets and backup creation receipts.
+
+A match means only that the bytes read have the expected digest. The command
+deliberately accepts matching non-SQLite bytes and says `ledger_validation` is
+`not_performed`. It does not inspect WAL sidecars, validate schema/records/holds,
+authenticate the expected digest, attest crash durability or authorize restore,
+retry or dispatch. Do not use an active/changing file as a frozen backup; this
+read does not lock out writers or protect against concurrent path replacement.
+Retain the expected digest separately rather than treating a newly computed
+self-declared hash as independent provenance. A mismatch stays unresolved; do
+not discard the expected hash or overwrite evidence to manufacture a match.
+
 ## Write back observations separately from decisions
 
 Retain input source/memory revisions, actual execution context/result, exact

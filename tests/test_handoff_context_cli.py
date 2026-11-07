@@ -2419,6 +2419,69 @@ class ContextCLITests(unittest.TestCase):
                         self.assertEqual(self.db.read_bytes(), source_bytes)
                         self.assertEqual(tuple(source.db.iterdump()), rows)
 
+    def test_backup_digest_cli_checks_bytes_without_opening_a_ledger(self):
+        self.controlled(execution="outcome_unknown")
+        created = self.cli("backup-ledger", "--out", "private/backup.sqlite3")
+        self.assertEqual(created.returncode, 0, created.stderr)
+        checksum = json.loads(created.stdout)["backup_sha256"]
+        backup = self.root / "private/backup.sqlite3"
+        before = self.db.read_bytes(), backup.read_bytes()
+        args = ("--read-only", "check-backup-digest", "--file", "private/backup.sqlite3", "--digest", checksum)
+        result = self.cli(*args, database="absent/ledger.sqlite3")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        record = json.loads(result.stdout)
+        self.assertEqual(record["backup_sha256"], checksum)
+        self.assertEqual(record["bytes"], len(before[1]))
+        self.assertEqual(record["ledger_validation"], "not_performed")
+        self.assertFalse(record["restore_authorized"])
+        self.assertFalse(record["retry_authorized"])
+        self.assertEqual(record["external_actions"], 0)
+        saved = self.cli(*args, "--out", "reports/check.json", database="absent/ledger.sqlite3")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "reports/check.json"
+        content = output.read_bytes()
+        self.assertEqual(json.loads(content), record)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--out", "reports/check.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        self.assertEqual((self.db.read_bytes(), backup.read_bytes()), before)
+        self.assertFalse((self.root / "absent").exists())
+
+    def test_backup_digest_rejects_mismatch_bounds_and_nonregular_inputs(self):
+        from scripts.jarvis_network import _check_backup_digest
+        path = self.root / "retained.bin"
+        path.write_bytes(b"Retained bytes are not proof of a valid ledger.")
+        before = self.db.read_bytes(), path.read_bytes()
+        expected = hashlib.sha256(before[1]).hexdigest()
+        with patch("scripts.jarvis_network.sqlite3.connect", side_effect=AssertionError("must not open SQLite")):
+            report = _check_backup_digest(path, expected)
+        self.assertEqual(report["ledger_validation"], "not_performed")
+        with patch("scripts.jarvis_network.os.open", side_effect=AssertionError("must validate digest first")):
+            with self.assertRaises(ValueError):
+                _check_backup_digest(path, "invalid")
+        with patch("scripts.jarvis_network.time.monotonic", side_effect=[0, 11]):
+            with self.assertRaisesRegex(ValueError, "time budget"):
+                _check_backup_digest(path, expected)
+        oversized = self.root / "oversized.bin"
+        with oversized.open("wb") as handle:
+            handle.truncate(128 * 1024 * 1024 + 1)
+        candidates = [("retained.bin", "0" * 64), ("retained.bin", "invalid"),
+                      ("missing.bin", expected), ("../outside.bin", expected),
+                      ("oversized.bin", expected), ("reports", expected)]
+        (self.root / "reports").mkdir()
+        if hasattr(os, "mkfifo"):
+            os.mkfifo(self.root / "pipe")
+            candidates.append(("pipe", expected))
+        for name, checksum in candidates:
+            with self.subTest(name=name):
+                result = self.cli("check-backup-digest", "--file", name, "--digest", checksum,
+                                  "--out", "rejected/check.json", database="absent/ledger.sqlite3")
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertFalse((self.root / "rejected").exists())
+                self.assertFalse((self.root / "absent").exists())
+                self.assertEqual((self.db.read_bytes(), path.read_bytes()), before)
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):
