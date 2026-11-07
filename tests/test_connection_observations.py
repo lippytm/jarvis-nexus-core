@@ -115,6 +115,33 @@ class ConnectionObservationTests(unittest.TestCase):
         self.assertEqual(registry, original)
         self.assertEqual(inspect_destination_registry(registry, **args), legacy)
 
+    def test_project_selection_cannot_hide_invalid_neighbor_entries(self):
+        from control_tower.network_contract import PROJECTS
+        original = self.registry()
+        other = next(p for p in PROJECTS if p != "ai-jarvis")
+        original["entries"].append({**deepcopy(original["entries"][0]), "project_id": other})
+        invalid = []
+        for key, value in (("allowed_actions", ["read", "write"]), ("platform", "unknown"),
+                           ("project_id", "unknown"), ("destination_id", "../bad"),
+                           ("resource_id", "../bad"), ("extra", "unsupported")):
+            registry = deepcopy(original)
+            registry["entries"][-1][key] = value
+            invalid.append(registry)
+        duplicate = deepcopy(original)
+        duplicate["entries"].append(deepcopy(duplicate["entries"][-1]))
+        invalid.append(duplicate)
+        for index, registry in enumerate(invalid):
+            before = deepcopy(registry)
+            with self.subTest(case=index), self.assertRaises(ValueError):
+                inspect_destination_registry(registry, expected_sha256=digest(registry),
+                    expected_revision=1, expected_source_revision=registry["source_revision"],
+                    project_id="ai-jarvis")
+            self.assertEqual(registry, before)
+        accepted = inspect_destination_registry(original, expected_sha256=digest(original),
+            expected_revision=1, expected_source_revision=original["source_revision"], project_id="ai-jarvis")
+        self.assertEqual(accepted["entry_count"], len(TARGETS))
+        self.assertFalse(accepted["dispatch_authorized"])
+
     def test_registry_inspection_rejects_stale_digest_source_and_revision(self):
         registry = self.registry()
         before = deepcopy(registry)

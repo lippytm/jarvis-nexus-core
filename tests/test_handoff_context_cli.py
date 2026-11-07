@@ -101,6 +101,40 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "absent").exists())
         self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
 
+    def test_registry_project_cli_rejects_invalid_neighbors_without_output(self):
+        from control_tower.network_contract import PROJECTS
+        self.registry_input()
+        path = self.root / "registry.json"
+        original = json.loads(path.read_text())
+        other = next(p for p in PROJECTS if p != "ai-jarvis")
+        neighbor = {**deepcopy(original["entries"][0]), "project_id": other,
+                    "resource_id": "private-neighbor-resource"}
+        original["entries"].append(neighbor)
+        invalid_scope = deepcopy(original)
+        invalid_scope["entries"][-1]["allowed_actions"] = ["read", "write"]
+        duplicate = deepcopy(original)
+        duplicate["entries"].append(deepcopy(neighbor))
+        output = self.root / "private/existing.json"
+        output.parent.mkdir()
+        output.write_bytes(b"KEEP")
+        database_bytes = self.db.read_bytes()
+        for index, registry in enumerate((invalid_scope, duplicate)):
+            path.write_text(json.dumps(registry))
+            registry_bytes = path.read_bytes()
+            args = ("--read-only", "inspect-registry", "--file", "registry.json", "--digest", digest(registry),
+                    "--registry-revision", "1", "--source-revision", REVISION, "--project", "ai-jarvis")
+            for destination in ("rejected/summary.json", "private/existing.json"):
+                with self.subTest(case=index, destination=destination):
+                    rejected = self.cli(*args, "--out", destination, database="absent/ledger.sqlite3")
+                    self.assertEqual(rejected.returncode, 1, rejected.stderr)
+                    self.assertEqual(rejected.stdout, "")
+                    self.assertNotIn("private-neighbor-resource", rejected.stderr)
+                    self.assertFalse((self.root / "rejected").exists())
+                    self.assertFalse((self.root / "absent").exists())
+                    self.assertEqual(output.read_bytes(), b"KEEP")
+                    self.assertEqual(path.read_bytes(), registry_bytes)
+                    self.assertEqual(self.db.read_bytes(), database_bytes)
+
     def test_registry_preflight_without_ledger_survives_process_restart(self):
         args = self.registry_input()
         before = self.db.read_bytes(), (self.root / "registry.json").read_bytes()
