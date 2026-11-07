@@ -832,6 +832,15 @@ the existing digest-only contract and response schema. Matching still requires a
 distinct local reviewer label and grants no identity authentication, owner release,
 hold removal or retry authority. No packet or database schema changes are involved.
 
+Manual `export-context --context-revision N` (API `export_context` with
+`expected_revision=N`) optionally requires the exact stored context revision in
+the same transaction as the existing review/digest/source/memory checks, before
+marking the handoff `export_prepared`. It rejects stale selection after A changes
+to B and returns to A, even after a fresh local review of the restored content.
+Use the stored revision, not memory revision. Omission preserves existing behavior
+and the version-1 envelope. Private-only export, pause/cancel and unknown-outcome
+holds still apply; a matching selector does not authorize dispatch or release.
+
 `review-context --context-revision N --include-receipt` opts in to a separate
 version-1 `jarvis.context_review_receipt` (API `include_receipt=True` on
 `review_context`, requiring `expected_revision`). It returns only after the

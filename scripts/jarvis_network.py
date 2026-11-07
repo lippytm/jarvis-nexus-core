@@ -262,6 +262,7 @@ def main(argv=None):
     context_export.add_argument("--digest", required=True)
     context_export.add_argument("--source-revision", required=True)
     context_export.add_argument("--memory-revision", type=int, required=True)
+    context_export.add_argument("--context-revision", type=int, help="Require the exact stored context revision before preparing export")
     context_export.add_argument("--out", required=True)
     recovery = commands.add_parser("inspect-recovery")
     recovery.add_argument("--handoff", required=True)
@@ -435,7 +436,7 @@ def main(argv=None):
                     result = ledger.export_context(args.handoff, expected_sha256=args.digest,
                                                    expected_source_revision=args.source_revision,
                                                    expected_memory_revision=args.memory_revision,
-                                                   audience="owner_private")
+                                                   audience="owner_private", expected_revision=args.context_revision)
                 elif args.command == "inspect-recovery":
                     result = ledger.inspect_recovery(args.handoff, expected_sha256=args.digest,
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision,

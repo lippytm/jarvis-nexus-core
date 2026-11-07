@@ -1067,6 +1067,45 @@ class ContextCLITests(unittest.TestCase):
         return self.cli("export-context", "--handoff", "cli-task", "--digest", checksum,
                         "--source-revision", revision, "--memory-revision", str(memory), "--out", out)
 
+    def test_export_revision_cli_rejects_stale_selection_without_output_or_state_change(self):
+        checksum = self.prepare_reviews()
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Synthetic intervening context."
+        self.write(changed)
+        self.assertEqual(self.save(1).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(2)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        before = self.control_snapshot()
+        args = ("export-context", "--handoff", "cli-task", "--digest", checksum,
+                "--source-revision", REVISION, "--memory-revision", "1", "--context-revision")
+        for revision in ("1", "2", "4", "0", "-1"):
+            with self.subTest(revision=revision):
+                rejected = self.cli(*args, revision, "--out", "rejected/envelope.json")
+                self.assertEqual(rejected.returncode, 1, rejected.stderr)
+                self.assertIn("context export revision", rejected.stderr)
+                self.assertEqual(rejected.stdout, "")
+                self.assertFalse((self.root / "rejected").exists())
+                self.assertEqual(self.control_snapshot(), before)
+        exported = self.cli(*args, "3", "--out", "private/envelope.json")
+        self.assertEqual(exported.returncode, 0, exported.stderr)
+        path = self.root / "private/envelope.json"
+        content = path.read_bytes()
+        packet = json.loads(content)
+        self.assertEqual(packet["context_revision"], 3)
+        self.assertEqual(packet["schema_version"], 1)
+        self.assertEqual(packet["context"], self.profile)
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        after = self.control_snapshot()
+        self.assertEqual(self.cli(*args, "3", "--out", "private/envelope.json").returncode, 1)
+        self.assertEqual(path.read_bytes(), content)
+        self.assertEqual(self.control_snapshot(), after)
+        self.assertEqual(self.export_context(checksum, out="default.json").returncode, 0)
+        self.assertEqual(json.loads((self.root / "default.json").read_bytes()), packet)
+        self.assertEqual(self.control_snapshot(), after)
+
     def test_reviewed_envelope_keeps_original_binding_and_checkpoint(self):
         checksum = self.prepare_reviews()
         self.assertEqual(self.export_context(checksum).returncode, 1)

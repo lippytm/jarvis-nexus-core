@@ -889,7 +889,7 @@ class HandoffLedger:
                 "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
 
     def export_context(self, handoff_id, *, expected_sha256, expected_source_revision,
-                       expected_memory_revision, audience="owner_private"):
+                       expected_memory_revision, audience="owner_private", expected_revision=None):
         """Export a compatible envelope only after both exact local reviews.
 
         This does not authenticate a reviewer, authorize release or send a packet.
@@ -898,8 +898,12 @@ class HandoffLedger:
         require_digest(expected_sha256)
         if audience not in ("owner_private", "public_candidate") or type(expected_memory_revision) is not int:
             raise ValueError("invalid export audience or memory revision")
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context export revision")
         with self._transaction():
             row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("context export revision mismatch")
             self._require_export_active(handoff_id)
             original, handoff = self._handoff(handoff_id)
             if (row["digest"] != expected_sha256 or row["reviewed_digest"] != expected_sha256

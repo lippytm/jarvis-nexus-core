@@ -69,6 +69,64 @@ class ContextTests(unittest.TestCase):
         return self.ledger.export_context("mission-one", expected_sha256=checksum,
             expected_source_revision=REVISION, expected_memory_revision=1, **changes)
 
+    def test_export_revision_rejects_restored_content_before_state_change(self):
+        saved = self.approve()
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Synthetic intervening context."
+        self.ledger.save_context(changed, expected_revision=1)
+        restored = self.ledger.save_context(self.profile, expected_revision=2)
+        self.assertEqual(restored["context_sha256"], saved["context_sha256"])
+        self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=3)
+        before = tuple(self.ledger.db.iterdump())
+        for revision in (1, 2, 4, 0, -1, True, 3.0, "3"):
+            with self.subTest(revision=revision):
+                with self.assertRaisesRegex(ValueError, "context export revision"):
+                    self.export(saved["context_sha256"], expected_revision=revision)
+                self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+                self.assertEqual(self.ledger._handoff("mission-one")[0]["state"], "reviewed")
+        with self.assertRaisesRegex(ValueError, "public envelope"):
+            self.export(saved["context_sha256"], expected_revision=3, audience="public_candidate")
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        packet = self.export(saved["context_sha256"], expected_revision=3)
+        self.assertEqual(packet["context_revision"], 3)
+        self.assertEqual(packet["schema_version"], 1)
+        self.assertEqual(packet["context"], self.profile)
+        self.assertEqual(packet["external_actions"], 0)
+        self.assertEqual(self.ledger._handoff("mission-one")[0]["state"], "export_prepared")
+        self.assertEqual(self.export(saved["context_sha256"]), packet)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load()["revision"], 3)
+
+    def test_export_revision_match_does_not_bypass_holds_or_reviews(self):
+        for state in ("paused", "cancelled", "outcome_unknown", "unreviewed"):
+            with self.subTest(state=state):
+                swarm_id = "hold-" + state
+                manifest = build_swarm("ai-jarvis", ["gemini"], swarm_id=swarm_id, source_revision=REVISION)
+                staged = self.ledger.stage({"schema_version": 1, "kind": "jarvis.draft",
+                    "project_id": "ai-jarvis", "target": "gemini", "text": "Synthetic held draft."},
+                    manifest, assistant_id=swarm_id + ".builder", handoff_id=state)
+                profile = self.context(state)
+                profile["asset_id"] = swarm_id + ".builder"
+                if state in ("paused", "cancelled"):
+                    profile.update(schema_version=2, control={"state": state,
+                        "actor_id": "local-controller", "reason": "Synthetic hold."})
+                elif state == "outcome_unknown":
+                    profile["execution"]["state"] = state
+                saved = self.ledger.save_context(profile, expected_revision=0)
+                self.ledger.review(state, reviewer_id="local-evaluator",
+                    expected_sha256=staged["handoff_sha256"])
+                if state != "unreviewed":
+                    self.ledger.review_context(state, reviewer_id="local-evaluator",
+                        expected_sha256=saved["context_sha256"])
+                before = tuple(self.ledger.db.iterdump())
+                with self.assertRaises(ValueError):
+                    self.ledger.export_context(state, expected_sha256=saved["context_sha256"],
+                        expected_source_revision=REVISION, expected_memory_revision=1, expected_revision=1)
+                self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+
     def test_restart_retains_blocked_checkpoint_and_original_packet(self):
         saved = self.approve()
         first = self.export(saved["context_sha256"])
