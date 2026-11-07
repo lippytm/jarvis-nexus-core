@@ -1,0 +1,130 @@
+{
+  "acceptance_observations": [
+    "Exactly the selected fsync call fails and the original exception propagates; no success receipt returns, no automatic replay occurs and temporary backup files are removed.",
+    "File fsync failure leaves no published backup. Directory fsync failure leaves a complete 0600 backup which reopens read-only with exact logical records, current context review and paused unknown-outcome profile. Export remains blocked.",
+    "Explicit existing-name backup attempt refuses overwrite, preserves backup bytes and cleans its temporary file. Original source bytes and logical records remain unchanged across all cases."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_backup_sync_failure_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add POSIX regression for file/directory fsync failures in the existing checked SQLite online-backup publisher. Production source/schema unchanged; no baseline defect asserted.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision backup publication/recovery review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_backup_fsync_failures_preserve_source_and_reconcilable_output tests.test_handoff_context_cli.ContextCLITests.test_backup_publish_race_preserves_winner_and_cleans_temporary_file",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/backup-sync-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/backup-sync-full-20261107.json",
+        "passed": true,
+        "record_sha256": "6f8bf019653f3c84eacd115d90ab0231a85b4e831d0e344babff70932f3b2d0b",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 589,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 589,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.backup-sync.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/init-cleanup-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "c148a824eae7858e6d5924a3214fdca38235eb74",
+  "limitations": [
+    "Temporary-ledger POSIX fault injection, not actual owner backup loss, power/process loss or measured runtime recovery.",
+    "A complete file after failed directory fsync does not establish crash durability; an absent success receipt does not prove no backup was published. Local reviews do not authenticate approval.",
+    "No owner mission access, worker, automatic retry/failover/reconnect controller, permissions change, merge, deployment, dispatch, publication or spending. Paused mission/schedules untouched.",
+    "All 17 portable targets/business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/backup-sync-focused-20261107.txt": {
+      "sha256": "4ff0af7011150573c8ea4c3f903207433835b814693ff626c75d4894bc32f3bd",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.363s\n\nOK\n"
+    },
+    "reports/backup-sync-full-20261107.json": {
+      "sha256": "8c843d42662f09bce4a6928f7ac4c4bd232edcb27a2481b10e89517f4b6a05ea"
+    },
+    "reports/backup-sync-web-20261107.txt": {
+      "sha256": "18fbbd2c347cb6bd8390406eb8e7ec5d91f3d4559ab446234677d69b3a981bbc"
+    }
+  },
+  "memory_revision": 199,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_fsync_failures": 2
+  },
+  "mission_id": "backup-sync-20261107",
+  "next_task": "Independent exact-revision backup publication/recovery review; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "4f4437b1bb5eb22c2ddc597fdcca5fdfcdf51b098b262611d6f1274e6d76b29d",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context_cli.py": "0d29abecd8d939e7dad8599f2d081dac1a2f2e0c3d510acbe3fd807bd81d49b4"
+  },
+  "tracked_patch_sha256": "f44a120d0c3956aa7a6f8036a0c4d8da3beb4aea7c86be1ae678f4c6aa6359de",
+  "visibility": "owner_private"
+}

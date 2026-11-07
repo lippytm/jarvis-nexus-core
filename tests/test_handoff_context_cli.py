@@ -2363,6 +2363,62 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli(*args).returncode, 1)
         self.assertEqual((self.root / "bound-read.json").read_bytes(), content)
 
+    @unittest.skipUnless(os.name == "posix", "directory fsync is POSIX-specific")
+    def test_backup_fsync_failures_preserve_source_and_reconcilable_output(self):
+        self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        saved = self.save(1)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        source_bytes = self.db.read_bytes()
+        real_fsync = os.fsync
+        with HandoffLedger(self.db, read_only=True) as source:
+            rows = tuple(source.db.iterdump())
+            for fail_at in (1, 2):
+                with self.subTest(fsync_call=fail_at):
+                    target = self.root / f"private/backup-{fail_at}.sqlite3"
+                    failure = OSError("Synthetic backup synchronization failure")
+                    calls, returned = [], []
+
+                    def fail_fsync(fd):
+                        calls.append(fd)
+                        if len(calls) == fail_at:
+                            raise failure
+                        return real_fsync(fd)
+
+                    with patch("scripts.jarvis_network.os.fsync", side_effect=fail_fsync):
+                        with self.assertRaises(OSError) as raised:
+                            returned.append(_backup(source.db, target))
+                    self.assertIs(raised.exception, failure)
+                    self.assertEqual(returned, [])
+                    self.assertEqual(len(calls), fail_at)  # No automatic replay.
+                    self.assertFalse(list(target.parent.glob(".jarvis-backup-*")))
+                    self.assertEqual(self.db.read_bytes(), source_bytes)
+                    self.assertEqual(tuple(source.db.iterdump()), rows)
+                    if fail_at == 1:
+                        self.assertFalse(target.exists())
+                    else:
+                        content = target.read_bytes()
+                        self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+                        with HandoffLedger(target, read_only=True) as restored:
+                            self.assertEqual(tuple(restored.db.iterdump()), rows)
+                            current = restored.load_context("cli-task", expected_source_revision=REVISION,
+                                expected_memory_revision=1, expected_revision=2)
+                            self.assertEqual(current["profile"], self.profile)
+                            self.assertEqual(current["review_state"], "locally_reviewed")
+                            with self.assertRaises(ValueError):
+                                restored.export_context("cli-task", expected_sha256=checksum,
+                                    expected_source_revision=REVISION, expected_memory_revision=1,
+                                    expected_revision=2)
+                        with self.assertRaises(FileExistsError):
+                            _backup(source.db, target)
+                        self.assertEqual(target.read_bytes(), content)
+                        self.assertFalse(list(target.parent.glob(".jarvis-backup-*")))
+                        self.assertEqual(self.db.read_bytes(), source_bytes)
+                        self.assertEqual(tuple(source.db.iterdump()), rows)
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):
