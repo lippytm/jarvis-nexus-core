@@ -105,6 +105,58 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "default.json").read_bytes(), content)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_registry_platform_selection_is_versioned_private_and_guarded(self):
+        from control_tower.connections import inspect_destination_registry
+        args = self.registry_input()
+        path = self.root / "registry.json"
+        registry = json.loads(path.read_text())
+        guards = dict(expected_sha256=digest(registry), expected_revision=1,
+                      expected_source_revision=REVISION)
+        before = path.read_bytes(), self.db.read_bytes()
+        for target in sorted(TARGETS):
+            selected = inspect_destination_registry(registry, platform=target, **guards)
+            self.assertEqual(selected["schema_version"], 3)
+            self.assertEqual(selected["platform"], target)
+            self.assertEqual(selected["platform_counts"], {target: 1})
+            self.assertEqual(selected["entry_count"], 1)
+            self.assertEqual(selected["acceptance_state"], "proposed_unverified")
+            self.assertFalse(selected["dispatch_authorized"])
+            self.assertEqual(selected["receipt_sha256"], digest(
+                {k: v for k, v in selected.items() if k != "receipt_sha256"}))
+            self.assertNotIn("opaque-private-resource", json.dumps(selected))
+        legacy = inspect_destination_registry(registry, **guards)
+        self.assertEqual(legacy, inspect_destination_registry(registry, platform=None, **guards))
+        self.assertEqual(legacy["schema_version"], 1)
+        self.assertEqual(inspect_destination_registry(registry, project_id="ai-jarvis", **guards)["schema_version"], 2)
+        for target in ("unknown", "", True, 1):
+            with self.assertRaises(ValueError):
+                inspect_destination_registry(registry, platform=target, **guards)
+        changed = deepcopy(registry)
+        changed["entries"][-1]["resource_id"] = "changed-private-neighbor"
+        with self.assertRaises(ValueError):
+            inspect_destination_registry(changed, platform="codex", **guards)
+        changed["entries"][-1]["allowed_actions"] = ["write"]
+        with self.assertRaises(ValueError):
+            inspect_destination_registry(changed, platform="codex",
+                **{**guards, "expected_sha256": digest(changed)})
+        selected = self.cli(*args, "--platform", "codex", "--project", "ai-jarvis",
+                            "--out", "private/codex.json", database="absent/ledger.sqlite3")
+        self.assertEqual(selected.returncode, 0, selected.stderr)
+        output = self.root / "private/codex.json"
+        content = output.read_bytes()
+        record = json.loads(content)
+        self.assertEqual(record["platform_counts"], {"codex": 1})
+        self.assertEqual(record["project_id"], "ai-jarvis")
+        self.assertEqual(record["schema_version"], 3)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--platform", "codex", "--out", "private/codex.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        rejected = self.cli(*args, "--platform", "unknown", "--out", "rejected/summary.json")
+        self.assertEqual(rejected.returncode, 1)
+        self.assertFalse((self.root / "rejected").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
+
     def test_registry_project_preflight_is_selective_without_ledger(self):
         from control_tower.network_contract import PROJECTS
         self.registry_input()

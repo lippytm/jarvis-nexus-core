@@ -118,17 +118,21 @@ def validate_destination_registry(registry):
 
 
 def inspect_destination_registry(registry, *, expected_sha256, expected_revision,
-                                 expected_source_revision, project_id=None):
+                                 expected_source_revision, project_id=None, platform=None):
     """Private metadata-only preflight; no storage, acceptance or authentication."""
     require_digest(expected_sha256)
     registry = validate_destination_registry(registry)
     if project_id is not None and (not isinstance(project_id, str) or project_id not in PROJECTS):
         raise ValueError("unknown registry inspection project")
+    if platform is not None and (not isinstance(platform, str) or platform not in TARGETS):
+        raise ValueError("unknown registry inspection platform")
     if (type(expected_revision) is not int or registry["revision"] != expected_revision
         or registry["source_revision"] != expected_source_revision
         or digest(registry) != expected_sha256):
         raise ValueError("registry digest, source or revision mismatch")
-    entries = [entry for entry in registry["entries"] if project_id is None or entry["project_id"] == project_id]
+    entries = [entry for entry in registry["entries"]
+               if (project_id is None or entry["project_id"] == project_id)
+               and (platform is None or entry["platform"] == platform)]
     counts = {}
     for entry in entries:
         counts[entry["platform"]] = counts.get(entry["platform"], 0) + 1
@@ -140,6 +144,8 @@ def inspect_destination_registry(registry, *, expected_sha256, expected_revision
         "dispatch_authorized": False, "external_actions": 0}
     if project_id is not None:
         result.update(schema_version=2, project_id=project_id)
+    if platform is not None:
+        result.update(schema_version=3, platform=platform)
     return {**result, "receipt_sha256": digest(result)}
 
 

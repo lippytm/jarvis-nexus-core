@@ -698,12 +698,19 @@ it omits entries, destination/resource IDs and resource-to-destination mappings.
 It supports all seventeen existing portable target IDs through the existing
 validator. Earlier packets, registry snapshots and database schemas are unchanged.
 
+Optional `--platform TARGET-ID` (API `platform`) selects one of the seventeen
+portable targets and emits an explicit version-3 inspection receipt with
+`platform`. Combine it with `--project` to intersect both scopes. The entire
+registry is still validated and checked against the original digest/revisions
+before filtering. Only counts are returned; resource mappings stay omitted and
+the receipt remains proposed/unverified, with no dispatch authorization.
+
 Optional `--project PROJECT-ID` (API `project_id`) selects one known source
 project and emits an explicit version-2 inspection receipt with `project_id`.
 Entry/platform counts cover only that project; a known project with no entries
 returns zero counts. The digest still pins the entire validated registry, so
 neighbor changes invalidate the supplied guard. Resource mappings remain omitted.
-Omission retains the version-1 aggregate report. These source project IDs are
+Omitting both selectors retains the version-1 aggregate report. These source project IDs are
 separate from the master Page's seventeen business areas.
 
 ```sh

@@ -1,0 +1,141 @@
+{
+  "acceptance_observations": [
+    "All 17 portable targets select independently, receipt hash recomputes, mappings omitted, state proposed/unverified and dispatch false.",
+    "Invalid selector types reject; changed unselected neighbor fails stale digest guard; rehashed malformed unselected neighbor still rejects.",
+    "Actual CLI subprocess combines project/platform, retains 0600/no-overwrite output, leaves registry/ledger bytes unchanged and does not create an absent ledger. Existing project/default/restart checks pass."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "extend_versioned_registry_summary",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Optional inspect_destination_registry platform / inspect-registry --platform emits explicit version-3 counts scoped to a portable target, optionally intersected with project. Full-registry validation and exact original guards precede filtering. Defaults/version-1 and project-only/version-2 retained; stored schemas/strict packets unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory/log hashes; final commit and actual CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision selective registry review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "errors": 1,
+      "exit_code": 1,
+      "reason": "new keyword absent; expected missing-feature TypeError, not a prior production outage",
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 4
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/registry-platform-full-20261107.json",
+        "passed": true,
+        "record_sha256": "f1fff2a51fd9bb3346c654e4189cf054c8f6cc3886e5e060a5f0d64de5ea2fb9",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 594,
+          "skipped": 0
+        }
+      }
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.registry-platform.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/backup-deadline-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "d95e6894a31b867c0eae29d76835fa3d11ac098b",
+  "limitations": [
+    "Synthetic configuration fixtures, not accepted facts, authenticated storage, provider availability, live connections or delivery. Whole-registry digest still reveals common snapshot identity; no public audience or ACL is introduced.",
+    "No new memory store, schema migration, worker, lease, retry/failover/reconnect controller, actual paused mission/Studio or Newsletter schedule change, permissions/credentials change, merge, deployment, dispatch, publication or spending.",
+    "All 17 portable targets and business areas retained; seven source project IDs are a separate inventory. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/registry-platform-baseline-20261107.txt": {
+      "bytes": 897,
+      "sha256": "008ce85cf872b7920c44be99de96cc37423f72980ccc7c2a8992ab1be2d6050b",
+      "text": "E\n======================================================================\nERROR: test_registry_platform_selection_is_versioned_private_and_guarded (tests.test_handoff_context_cli.ContextCLITests.test_registry_platform_selection_is_versioned_private_and_guarded)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 117, in test_registry_platform_selection_is_versioned_private_and_guarded\n    selected = inspect_destination_registry(registry, platform=target, **guards)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: inspect_destination_registry() got an unexpected keyword argument 'platform'\n\n----------------------------------------------------------------------\nRan 1 test in 0.014s\n\nFAILED (errors=1)\n"
+    },
+    "reports/registry-platform-focused-20261107.txt": {
+      "bytes": 102,
+      "sha256": "0f44664474d660d9c9ae146763b10d15430b074701560cd77adcdb4c1e4c44f6",
+      "text": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.754s\n\nOK\n"
+    },
+    "reports/registry-platform-full-20261107.txt": {
+      "bytes": 98471,
+      "sha256": "16a8133a0ec8fc8ea84fc8116d74305b29554bed7b584cb2e2d48db060904e2a"
+    },
+    "reports/registry-platform-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/registry-platform-summary-20261107.json": {
+      "bytes": 263,
+      "sha256": "cda6c144dba59bb7419fddf5d4e165a851da0d6dcdd6a6c7f3cfe939aa6432b8",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 594, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/registry-platform-full-20261107.json\", \"record_sha256\": \"f1fff2a51fd9bb3346c654e4189cf054c8f6cc3886e5e060a5f0d64de5ea2fb9\"}\n"
+    },
+    "reports/registry-platform-web-20261107.txt": {
+      "bytes": 39584,
+      "sha256": "bc800ca396545049d7486a3cde6f926784c39854914ea321cb65dc36cfd95de9"
+    }
+  },
+  "memory_revision": 204,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "duplicate_development_attempts": 0,
+    "expected_missing_feature_failures": 1,
+    "final_verification_failures": 0,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0
+  },
+  "mission_id": "selective-registry-platform-20261107",
+  "patch_sha256": "b7d293304d15cc33bb294262c3c115829385399b1a31257b0dadab3f69562e88",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "0f7345eb4436c5d78ec38157d131794c2529b0b6d9e65e4a4df39ac4e24c7e34",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/connections.py": "45dbf92f71edbae579309f6e23f03d802d721fb78a7a194d89719a52b5ff4acd",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "b626384383cbdccef96f4f47a48bbc0d9aff8b213360697c99dd5a42dddcdc4e",
+    "scripts/jarvis_network.py": "2d04095e5f99eb0885cd0a23c3522028410766b6828a0311161e0293dd904ddc",
+    "tests/test_handoff_context_cli.py": "087dededc61b38f6fdd5a57d818939b31a8fc1a2840ca59432ec3d6a4f913ce9"
+  },
+  "visibility": "owner_private"
+}

@@ -347,6 +347,7 @@ def main(argv=None):
     registry_inspect.add_argument("--registry-revision", type=int, required=True)
     registry_inspect.add_argument("--source-revision", required=True)
     registry_inspect.add_argument("--project", help="Select one known source project in a version-2 summary")
+    registry_inspect.add_argument("--platform", help="Select one portable target in a version-3 summary; may combine with --project")
     registry_inspect.add_argument("--out", help="Save private summary to a fresh file instead of stdout")
     observation = commands.add_parser("bind-observation")
     observation.add_argument("--handoff", required=True)
@@ -384,7 +385,7 @@ def main(argv=None):
         elif args.command == "inspect-registry":
             result = inspect_destination_registry(load_packet(_local(root, args.file)),
                 expected_sha256=args.digest, expected_revision=args.registry_revision,
-                expected_source_revision=args.source_revision, project_id=args.project)
+                expected_source_revision=args.source_revision, project_id=args.project, platform=args.platform)
         elif args.command == "demo":
             result = demonstrate_network()
         elif args.command == "init-ledger":
