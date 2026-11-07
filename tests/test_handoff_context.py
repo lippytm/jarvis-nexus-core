@@ -1528,6 +1528,58 @@ with HandoffLedger(sys.argv[1]) as ledger:
                     expected_memory_revision=3, audience="owner_private")["profile"]
                 self.assertEqual(current, held)
 
+    def test_failed_checkpoint_commit_rolls_back_table_upgrade_and_keeps_review(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        review = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        self.ledger.save_context(neighbor, expected_revision=0)
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1, expected_revision=1)
+        before = tuple(self.ledger.db.iterdump())
+        commits, returned = [], []
+
+        def deny_commit(action, name, *_):
+            if action == sqlite3.SQLITE_TRANSACTION and name == "COMMIT":
+                commits.append(name)
+                return sqlite3.SQLITE_DENY
+            return sqlite3.SQLITE_OK
+
+        self.ledger.db.set_authorizer(deny_commit)
+        try:
+            with self.assertRaises(sqlite3.DatabaseError):
+                returned.append(self.ledger.checkpoint_context("mission-one", **args))
+        finally:
+            self.ledger.db.set_authorizer(None)
+        self.assertEqual(commits, ["COMMIT"])
+        self.assertEqual(returned, [])
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.assertIsNone(self.ledger.db.execute(
+            "SELECT name FROM sqlite_master WHERE name='context_checkpoints'").fetchone())
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        self.ledger.db.commit()  # Must not publish any rejected upgrade later.
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two")["profile"], neighbor)
+        self.assertTrue(self.ledger.check_context_review_receipt("mission-one", review)["local_binding_matches"])
+        self.assert_exports_blocked(saved["context_sha256"])
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        captured = self.ledger.checkpoint_context("mission-one", **args)
+        self.assertFalse(captured["duplicate"])
+        self.assertEqual(captured["checkpoint_revision"], 1)
+        self.assertTrue(self.ledger.checkpoint_context("mission-one", **args)["duplicate"])
+        self.assertTrue(self.ledger.check_context_review_receipt("mission-one", review)["local_binding_matches"])
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two")["profile"], neighbor)
+
     def test_checkpoint_rejections_do_not_upgrade_or_change_existing_records(self):
         saved = self.save()
         args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION, expected_memory_revision=1)
