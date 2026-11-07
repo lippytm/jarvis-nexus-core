@@ -164,7 +164,8 @@ python scripts/jarvis_network.py --root "$TASK_ROOT" --read-only check-backup-di
 
 This command opens no SQLite database and ignores `--database`. It reads one
 regular file inside the workspace, with a 128 MiB limit and a ten-second budget
-checked between 64 KiB reads. Blocking operating-system I/O can exceed that budget.
+checked before and after each 64 KiB read, including EOF. A read finishing after
+the deadline rejects; blocking operating-system I/O itself can exceed that budget.
 Mismatch, invalid digest, missing/nonregular/oversized input or exhausted budget
 rejects without a check report. Default output is metadata on stdout; optional
 `--out` uses the existing private 0600, no-overwrite writer. Input bytes remain

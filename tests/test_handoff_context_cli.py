@@ -2482,6 +2482,38 @@ class ContextCLITests(unittest.TestCase):
                 self.assertFalse((self.root / "absent").exists())
                 self.assertEqual((self.db.read_bytes(), path.read_bytes()), before)
 
+    def test_backup_digest_rejects_final_read_finishing_after_budget(self):
+        from scripts.jarvis_network import _check_backup_digest
+        path = self.root / "retained.bin"
+        path.write_bytes(b"Synthetic retained backup bytes")
+        before = self.db.read_bytes(), path.read_bytes()
+        expected = hashlib.sha256(before[1]).hexdigest()
+        clock, readers = [0], []
+        fdopen = os.fdopen
+
+        def slow_eof(*args, **kwargs):
+            handle = fdopen(*args, **kwargs)
+            readers.append(handle)
+            read = handle.read
+
+            def delayed_read(size):
+                block = read(size)
+                if not block:
+                    clock[0] = 11  # The final real EOF read exceeded the budget.
+                return block
+
+            handle.read = delayed_read
+            return handle
+
+        with patch("scripts.jarvis_network.os.fdopen", side_effect=slow_eof), \
+             patch("scripts.jarvis_network.time.monotonic", side_effect=lambda: clock[0]), \
+             patch("scripts.jarvis_network.sqlite3.connect", side_effect=AssertionError("must not open SQLite")):
+            with self.assertRaisesRegex(ValueError, "time budget"):
+                _check_backup_digest(path, expected)
+        self.assertEqual(len(readers), 1)
+        self.assertTrue(readers[0].closed)
+        self.assertEqual((self.db.read_bytes(), path.read_bytes()), before)
+
     def test_backup_publish_race_preserves_winner_and_cleans_temporary_file(self):
         target = self.root / "race.sqlite3"
         def competing_link(*_):

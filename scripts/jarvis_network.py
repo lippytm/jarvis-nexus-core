@@ -129,6 +129,8 @@ def _check_backup_digest(path, expected_sha256):
             if time.monotonic() > deadline:
                 raise ValueError("backup digest time budget exceeded")
             block = handle.read(65536)
+            if time.monotonic() > deadline:
+                raise ValueError("backup digest time budget exceeded")
             if not block:
                 break
             size += len(block)
