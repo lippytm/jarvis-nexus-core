@@ -493,13 +493,18 @@ class HandoffLedger:
                 raise ValueError("stored context checkpoint integrity mismatch")
         return row, profile
 
-    def checkpoint_context(self, handoff_id, *, expected_sha256, expected_source_revision, expected_memory_revision):
+    def checkpoint_context(self, handoff_id, *, expected_sha256, expected_source_revision,
+                           expected_memory_revision, expected_revision=None):
         """Opt-in version-3 local history; never rewinds current context or reviews."""
         require_digest(expected_sha256)
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected checkpoint revision")
         if self.read_only:
             raise ValueError("read-only inspection cannot capture checkpoints")
         with self._transaction():
             row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("checkpoint revision mismatch")
             if (row["digest"] != expected_sha256 or profile["source_revision"] != expected_source_revision
                 or type(expected_memory_revision) is not int or profile["memory_revision"] != expected_memory_revision):
                 raise ValueError("checkpoint requires exact current context and revisions")

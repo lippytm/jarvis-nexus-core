@@ -248,6 +248,11 @@ captures; this explicit local opt-in is not identity authentication or release a
 It requires an existing ledger and prints a metadata receipt with checkpoint_revision,
 context_sha256 and duplicate. An exact replay at the unchanged current revision is
 deduplicated. It cannot capture already-replaced context. --read-only rejects capture.
+Optional `--context-revision N` (API `expected_revision`) pins the positive stored
+current revision in the capture transaction. Stale selection rejects before the
+checkpoint table is created or storage is upgraded, including when edited content
+is restored to the same digest/memory revision. Omission preserves existing
+behavior and receipt schema; the explicit schema-upgrade opt-in remains required.
 load-checkpoint always opens the database read-only, even without --read-only. Its
 checkpoint revision, digest, source and memory revision select the retained historical
 record, which may differ from current context. It writes a new owner-private JSON file

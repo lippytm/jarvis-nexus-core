@@ -230,6 +230,7 @@ def main(argv=None):
     checkpoint_capture.add_argument("--digest", required=True)
     checkpoint_capture.add_argument("--source-revision", required=True)
     checkpoint_capture.add_argument("--memory-revision", type=int, required=True)
+    checkpoint_capture.add_argument("--context-revision", type=int, help="Require the exact current stored context revision")
     checkpoint_capture.add_argument("--allow-schema-upgrade", action="store_true", required=True,
         help="Explicitly permit opt-in version-3 history storage; required on every capture")
     checkpoint_load = commands.add_parser("load-checkpoint", help="Read one private historical context without database writes")
@@ -413,7 +414,8 @@ def main(argv=None):
                                                  expected_revision=args.context_revision)
                 elif args.command == "capture-checkpoint":
                     result = ledger.checkpoint_context(args.handoff, expected_sha256=args.digest,
-                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
+                        expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision,
+                        expected_revision=args.context_revision)
                 elif args.command == "list-checkpoints":
                     result = ledger.list_checkpoints(args.handoff, include_digest=args.include_digest,
                         expected_sha256=args.expected_report_digest)

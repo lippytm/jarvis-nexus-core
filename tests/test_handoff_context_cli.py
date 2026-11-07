@@ -1440,6 +1440,42 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "proposal.json").read_bytes(), content)
         self.assertEqual(self.export_context(checksum).returncode, 1)
 
+    def test_capture_revision_cli_rejects_restored_selection_before_upgrade(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Temporary private capture edit."
+        self.write(changed)
+        self.assertEqual(self.save(revision=1).returncode, 0)
+        self.write(self.profile)
+        self.assertEqual(self.save(revision=2).returncode, 0)
+        args = ("capture-checkpoint", "--allow-schema-upgrade", "--handoff", "cli-task",
+                "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1")
+        before = self.control_snapshot()
+        for revision in ("1", "2", "4", "0", "-1"):
+            rejected = self.cli(*args, "--context-revision", revision)
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertIn("checkpoint revision", rejected.stderr)
+            self.assertEqual(self.control_snapshot(), before)
+        accepted = self.cli(*args, "--context-revision", "3")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        self.assertEqual(json.loads(accepted.stdout)["checkpoint_revision"], 3)
+        self.assertFalse(json.loads(accepted.stdout)["duplicate"])
+        before = self.control_snapshot()
+        for options in (("--context-revision", "3"), ()):
+            duplicate = self.cli(*args, *options)
+            self.assertEqual(duplicate.returncode, 0, duplicate.stderr)
+            self.assertTrue(json.loads(duplicate.stdout)["duplicate"])
+            self.assertEqual(self.control_snapshot(), before)
+        with HandoffLedger(self.db, read_only=True) as restarted:
+            current = restarted.load_context("cli-task", expected_source_revision=REVISION,
+                                            expected_memory_revision=1, expected_revision=3)
+            history = restarted.load_checkpoint("cli-task", 3, expected_sha256=checksum,
+                expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertEqual(current["profile"], self.profile)
+            self.assertEqual(history["profile"], self.profile)
+            self.assertEqual(current["review_state"], "proposed")
+            self.assertFalse(history["retry_authorized"])
+
     def test_load_context_digest_cli_rejects_same_memory_edit_before_output(self):
         checksum = self.controlled(execution="outcome_unknown")
         self.profile["execution"]["detail"] = "Changed private detail without changing memory revision."

@@ -672,6 +672,34 @@ class ContextTests(unittest.TestCase):
         self.assertFalse(self.ledger.db.in_transaction)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        original = deepcopy(self.profile)
+        self.profile["execution"]["detail"] = "Temporary edit before checkpoint selection."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        self.ledger.save_context(original, expected_revision=2)
+        args = dict(expected_sha256=saved["context_sha256"], expected_source_revision=REVISION,
+                    expected_memory_revision=1)
+        before = tuple(self.ledger.db.iterdump())
+        for revision in (1, 2, 4, True, 0, -1, "3"):
+            with self.subTest(revision=revision), self.assertRaises(ValueError):
+                self.ledger.checkpoint_context("mission-one", **args, expected_revision=revision)
+            self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        captured = self.ledger.checkpoint_context("mission-one", **args, expected_revision=3)
+        self.assertEqual(captured["checkpoint_revision"], 3)
+        self.assertFalse(captured["duplicate"])
+        before = tuple(self.ledger.db.iterdump())
+        self.assertTrue(self.ledger.checkpoint_context("mission-one", **args)["duplicate"])
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.load_checkpoint("mission-one", 3, **args)["profile"], original)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        self.assert_exports_blocked(saved["context_sha256"])
+
     def test_opt_in_checkpoint_retains_old_context_without_rewinding_current_holds(self):
         saved = self.approve()
         original = deepcopy(self.profile)
