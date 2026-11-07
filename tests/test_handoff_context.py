@@ -490,6 +490,59 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["profile"], self.profile)
         self.assertEqual(self.load("mission-two")["profile"], self.context("mission-two"))
 
+    def test_failed_initialization_closes_connection_and_rolls_back_schema(self):
+        from contextlib import closing
+        connect = sqlite3.connect
+        seed_rows = tuple(self.ledger.db.iterdump())
+        triggers = ("PRAGMA foreign_keys=ON", "PRAGMA user_version",
+                    "CREATE TABLE IF NOT EXISTS handoff_contexts")
+        for phase, trigger in enumerate(triggers):
+            for error_type in (KeyboardInterrupt, SystemExit, sqlite3.OperationalError):
+                with self.subTest(phase=phase, error=error_type.__name__):
+                    failure = error_type("Synthetic interrupted ledger initialization")
+                    connections, returned = [], []
+
+                    class InterruptedConnection(sqlite3.Connection):
+                        close_calls = 0
+
+                        def execute(connection, sql, *args, **kwargs):
+                            result = super().execute(sql, *args, **kwargs)
+                            if sql.startswith(trigger):
+                                raise failure
+                            return result
+
+                        def close(connection):
+                            connection.close_calls += 1
+                            return super().close()
+
+                    def capture(*args, **kwargs):
+                        connection = connect(*args, **kwargs, factory=InterruptedConnection)
+                        connections.append(connection)
+                        return connection
+
+                    path = self.path.parent / f"initialization-{phase}-{error_type.__name__}.sqlite3"
+                    try:
+                        with patch("control_tower.handoffs.sqlite3.connect", side_effect=capture):
+                            with self.assertRaises(error_type) as raised:
+                                returned.append(HandoffLedger(path))
+                        self.assertIs(raised.exception, failure)
+                        self.assertEqual(returned, [])
+                        self.assertEqual(len(connections), 1)
+                        self.assertEqual(connections[0].close_calls, 1)
+                        with self.assertRaises(sqlite3.ProgrammingError):
+                            connections[0].execute("SELECT 1")
+                        with closing(connect(path)) as inspected:
+                            self.assertEqual(inspected.execute("PRAGMA user_version").fetchone()[0], 0)
+                            self.assertEqual(inspected.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall(), [])
+                        with HandoffLedger(path) as restarted:
+                            self.assertEqual(restarted.db.execute("PRAGMA user_version").fetchone()[0], 2)
+                            self.assertEqual(restarted.status()["handoffs"], [])
+                        self.assertEqual(tuple(self.ledger.db.iterdump()), seed_rows)
+                    finally:
+                        for connection in connections:
+                            if not connection.close_calls:
+                                connection.close()
+
     def test_interrupted_review_rolls_back_without_receipt_or_pending_writes(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"

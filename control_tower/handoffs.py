@@ -55,9 +55,9 @@ class HandoffLedger:
             path.parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(path.resolve().as_uri() + "?mode=ro" if read_only else path,
                                  uri=read_only, timeout=2, isolation_level=None)
-        self.db.row_factory = sqlite3.Row
-        self.db.execute("PRAGMA foreign_keys=ON")
         try:
+            self.db.row_factory = sqlite3.Row
+            self.db.execute("PRAGMA foreign_keys=ON")
             with self._transaction():
                 # Inspect and initialize under one lock/snapshot. A concurrent
                 # checkpoint upgrade must never be overwritten by a stale version.
@@ -88,7 +88,7 @@ class HandoffLedger:
                     revision INTEGER NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
                     reviewer_id TEXT, reviewed_digest TEXT)""")
                 self.db.execute("PRAGMA user_version=3" if version == 3 else "PRAGMA user_version=2")
-        except Exception:
+        except BaseException:
             self.db.close()
             raise
 
