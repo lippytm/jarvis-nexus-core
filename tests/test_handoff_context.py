@@ -113,6 +113,38 @@ class ContextTests(unittest.TestCase):
         self.assertFalse(self.ledger.db.in_transaction)
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_load_context_revision_guard_rejects_restored_content_after_restart(self):
+        self.profile = self.control_profile("paused")
+        self.profile["execution"]["state"] = "outcome_unknown"
+        first = self.approve()
+        original = deepcopy(self.profile)
+        self.profile["execution"]["detail"] = "Temporary edit before identical content is restored."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        restored = self.ledger.save_context(original, expected_revision=2)
+        self.assertEqual(restored["context_sha256"], first["context_sha256"])
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        self.ledger.save_context(neighbor, expected_revision=0)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        for revision in (1, 2, 4):
+            with self.subTest(stale=revision), self.assertRaisesRegex(ValueError, "context retrieval revision mismatch"):
+                self.load(expected_sha256=first["context_sha256"], expected_revision=revision)
+        for revision in (True, 0, -1, "3"):
+            with self.subTest(invalid=revision), self.assertRaises(ValueError):
+                self.load(expected_revision=revision)
+        current = self.load(expected_sha256=restored["context_sha256"], expected_revision=3)
+        self.assertEqual(current, self.load())
+        self.assertEqual(current["profile"], original)
+        self.assertEqual(current["review_state"], "proposed")
+        with self.assertRaisesRegex(ValueError, "private context"):
+            self.load(expected_revision=3, audience="public_candidate")
+        self.assertEqual(self.load("mission-two", expected_revision=1)["profile"], neighbor)
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assert_exports_blocked(restored["context_sha256"])
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_context_review_revision_guard_rejects_restored_content_after_restart(self):
         self.profile = self.control_profile("paused")
         self.profile["execution"]["state"] = "outcome_unknown"

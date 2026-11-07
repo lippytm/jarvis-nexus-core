@@ -755,16 +755,20 @@ class HandoffLedger:
             return {"revision": revision + 1, "context_sha256": checksum, "duplicate": False}
 
     def load_context(self, handoff_id, *, expected_source_revision, expected_memory_revision,
-                     audience="owner_private", expected_sha256=None):
+                     audience="owner_private", expected_sha256=None, expected_revision=None):
         """Selective local retrieval, not an authenticated provider endpoint."""
         if audience not in ("owner_private", "public_candidate"):
             raise ValueError("unknown context audience")
         if type(expected_memory_revision) is not int:
             raise ValueError("invalid expected memory revision")
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context retrieval revision")
         if expected_sha256 is not None:
             require_digest(expected_sha256)
         with self._transaction():
             row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("context retrieval revision mismatch")
             if (profile["source_revision"] != expected_source_revision
                 or profile["memory_revision"] != expected_memory_revision):
                 raise ValueError("source or memory revision mismatch")

@@ -784,6 +784,13 @@ and response schema. Matching does not bypass audience restrictions, approve the
 profile, clear execution holds or grant a retry. The content digest excludes
 separate review metadata; the read is a snapshot, not a later release gate or lease.
 
+The `load_context` API also accepts optional `expected_revision`, a positive
+stored context revision checked in the same read transaction. This rejects stale
+selection after an edit is restored to the same content digest. It is separate
+from the profile's memory revision. Omission preserves existing behavior and the
+response schema. The CLI does not yet expose this retrieval revision option;
+the API guard does not freeze future state or change review or execution holds.
+
 The existing `jarvis_network.py demo --out FRESH-FILE.json` also includes a
 `context_recovery` observation from a second, synthetic `codex` handoff in its
 same temporary ledger. It retains a private version-3 context and checkpoint,
