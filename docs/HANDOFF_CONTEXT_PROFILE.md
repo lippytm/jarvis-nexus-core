@@ -689,6 +689,14 @@ it omits entries, destination/resource IDs and resource-to-destination mappings.
 It supports all seventeen existing portable target IDs through the existing
 validator. Earlier packets, registry snapshots and database schemas are unchanged.
 
+Optional `--project PROJECT-ID` (API `project_id`) selects one known source
+project and emits an explicit version-2 inspection receipt with `project_id`.
+Entry/platform counts cover only that project; a known project with no entries
+returns zero counts. The digest still pins the entire validated registry, so
+neighbor changes invalidate the supplied guard. Resource mappings remain omitted.
+Omission retains the version-1 aggregate report. These source project IDs are
+separate from the master Page's seventeen business areas.
+
 ```sh
 python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --read-only inspect-registry --file registry.json --digest YOUR-REGISTRY-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --registry-revision 1 --out private/registry-inspection-001.json
 ```

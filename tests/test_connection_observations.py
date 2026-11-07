@@ -79,6 +79,42 @@ class ConnectionObservationTests(unittest.TestCase):
             **{**args, "expected_sha256": digest(other)})["receipt_sha256"],
             inspect_destination_registry(registry, **args)["receipt_sha256"])
 
+    def test_registry_inspection_selects_project_with_explicit_version_two(self):
+        from control_tower.network_contract import PROJECTS
+        registry = self.registry()
+        other = next(p for p in PROJECTS if p != "ai-jarvis")
+        empty = next(p for p in PROJECTS if p not in ("ai-jarvis", other))
+        registry["entries"].append({**deepcopy(registry["entries"][0]), "project_id": other})
+        original = deepcopy(registry)
+        args = dict(expected_sha256=digest(registry), expected_revision=1,
+                    expected_source_revision=registry["source_revision"])
+        legacy = inspect_destination_registry(registry, **args)
+        self.assertEqual(legacy["schema_version"], 1)
+        self.assertNotIn("project_id", legacy)
+        self.assertEqual(legacy["entry_count"], len(TARGETS) + 1)
+        for project, count in (("ai-jarvis", len(TARGETS)), (other, 1), (empty, 0)):
+            selected = inspect_destination_registry(registry, **args, project_id=project)
+            self.assertEqual(selected["schema_version"], 2)
+            self.assertEqual(selected["project_id"], project)
+            self.assertEqual(selected["entry_count"], count)
+            self.assertEqual(sum(selected["platform_counts"].values()), count)
+            self.assertEqual(selected["registry_sha256"], args["expected_sha256"])
+            self.assertEqual(selected["acceptance_state"], "proposed_unverified")
+            self.assertEqual(selected["sender_authentication"], "not_established")
+            self.assertFalse(selected["dispatch_authorized"])
+            self.assertEqual(selected["receipt_sha256"], digest({k:v for k,v in selected.items() if k != "receipt_sha256"}))
+            self.assertNotIn("opaque-resource", json.dumps(selected))
+            self.assertNotIn("entries", selected)
+        for project in (True, [], "unknown"):
+            with self.subTest(project=project), self.assertRaises(ValueError):
+                inspect_destination_registry(registry, **args, project_id=project)
+        changed_neighbor = deepcopy(registry)
+        changed_neighbor["entries"][-1]["resource_id"] = "changed-neighbor-resource"
+        with self.assertRaisesRegex(ValueError, "registry digest, source or revision mismatch"):
+            inspect_destination_registry(changed_neighbor, **args, project_id="ai-jarvis")
+        self.assertEqual(registry, original)
+        self.assertEqual(inspect_destination_registry(registry, **args), legacy)
+
     def test_registry_inspection_rejects_stale_digest_source_and_revision(self):
         registry = self.registry()
         before = deepcopy(registry)

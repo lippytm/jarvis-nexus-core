@@ -117,23 +117,29 @@ def validate_destination_registry(registry):
     return deepcopy(registry)
 
 
-def inspect_destination_registry(registry, *, expected_sha256, expected_revision, expected_source_revision):
+def inspect_destination_registry(registry, *, expected_sha256, expected_revision,
+                                 expected_source_revision, project_id=None):
     """Private metadata-only preflight; no storage, acceptance or authentication."""
     require_digest(expected_sha256)
     registry = validate_destination_registry(registry)
+    if project_id is not None and (not isinstance(project_id, str) or project_id not in PROJECTS):
+        raise ValueError("unknown registry inspection project")
     if (type(expected_revision) is not int or registry["revision"] != expected_revision
         or registry["source_revision"] != expected_source_revision
         or digest(registry) != expected_sha256):
         raise ValueError("registry digest, source or revision mismatch")
+    entries = [entry for entry in registry["entries"] if project_id is None or entry["project_id"] == project_id]
     counts = {}
-    for entry in registry["entries"]:
+    for entry in entries:
         counts[entry["platform"]] = counts.get(entry["platform"], 0) + 1
     result = {"schema_version": 1, "kind": "jarvis.destination_registry_inspection",
         **{key: registry[key] for key in ("registry_id", "revision", "source_revision", "configuration_version")},
-        "registry_sha256": expected_sha256, "entry_count": len(registry["entries"]),
+        "registry_sha256": expected_sha256, "entry_count": len(entries),
         "platform_counts": dict(sorted(counts.items())), "visibility": "owner_private",
         "acceptance_state": "proposed_unverified", "sender_authentication": "not_established",
         "dispatch_authorized": False, "external_actions": 0}
+    if project_id is not None:
+        result.update(schema_version=2, project_id=project_id)
     return {**result, "receipt_sha256": digest(result)}
 
 

@@ -70,6 +70,37 @@ class ContextCLITests(unittest.TestCase):
         return ["inspect-registry", "--file", "registry.json", "--digest", digest(record),
                 "--registry-revision", "1", "--source-revision", REVISION]
 
+    def test_registry_project_preflight_is_selective_without_ledger(self):
+        from control_tower.network_contract import PROJECTS
+        self.registry_input()
+        path = self.root / "registry.json"
+        registry = json.loads(path.read_text())
+        other = next(p for p in PROJECTS if p != "ai-jarvis")
+        registry["entries"].append({**deepcopy(registry["entries"][0]), "project_id": other})
+        path.write_text(json.dumps(registry))
+        before = path.read_bytes(), self.db.read_bytes()
+        args = ("--read-only", "inspect-registry", "--file", "registry.json", "--digest", digest(registry),
+                "--registry-revision", "1", "--source-revision", REVISION, "--project", other)
+        selected = self.cli(*args, database="absent/ledger.sqlite3")
+        self.assertEqual(selected.returncode, 0, selected.stderr)
+        record = json.loads(selected.stdout)
+        self.assertEqual(record["schema_version"], 2)
+        self.assertEqual(record["project_id"], other)
+        self.assertEqual(record["entry_count"], 1)
+        saved = self.cli(*args, "--out", "private/selected.json", database="absent/ledger.sqlite3")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/selected.json"
+        content = output.read_bytes()
+        self.assertEqual(json.loads(content), record)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--out", "private/selected.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        invalid = self.cli(*args[:-1], "unknown", "--out", "rejected/summary.json")
+        self.assertEqual(invalid.returncode, 1)
+        self.assertFalse((self.root / "rejected").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
+
     def test_registry_preflight_without_ledger_survives_process_restart(self):
         args = self.registry_input()
         before = self.db.read_bytes(), (self.root / "registry.json").read_bytes()
