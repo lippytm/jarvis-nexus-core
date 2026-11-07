@@ -1,0 +1,65 @@
+$ node --test --test-reporter=tap tests/test_workbench.mjs
+TAP version 13
+# Subtest: tests/test_workbench.mjs
+ok 1 - tests/test_workbench.mjs
+  ---
+  duration_ms: 111.036728
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 122.108535
+
+exit_code: 0
+
+$ node tests/test_workbench.mjs
+✔ both shipped authored scripts compile (1.400147ms)
+✔ the complete embedded catalog matches the tracked catalog without drift (1.731226ms)
+✔ the catalog content digest verifies without implying author authentication (0.768016ms)
+✔ a catalog with live metrics, wrong schema or external actions is rejected (0.731401ms)
+✔ missing, duplicate and unknown initiative or project IDs are rejected (0.906955ms)
+✔ catalog plans, gaps and destination assignments must be explicit (0.915238ms)
+✔ the education site and unassigned affiliate platform remain separate (0.192449ms)
+✔ financing customers and referral partners retain different journeys and references (0.127672ms)
+✔ search is case-insensitive and includes useful catalog details (0.859945ms)
+✔ project filtering returns the assigned initiatives without moving them (0.381764ms)
+✔ journey filters keep education, financing and partner work distinct (0.204127ms)
+✔ combined filters and unmatched terms return no invented fallback initiative (0.322665ms)
+✔ invalid or oversized filter input is rejected (0.198619ms)
+✔ mission export has exactly the six request keys and preserves the objective (0.609177ms)
+✔ all 12 initiative IDs and all 12 draft targets are accepted (0.33931ms)
+✔ unknown and incorrectly typed initiative and target IDs are rejected (0.479521ms)
+✔ timeboxes accept only the four integer choices (0.915888ms)
+✔ the ASCII objective limit is exactly 2,000 UTF-8 bytes (0.395936ms)
+✔ UTF-8 byte limits account for multibyte characters and emoji (0.424559ms)
+✔ blank objectives include Unicode whitespace and U+0085 (0.296015ms)
+✔ C0 controls are rejected except tab, LF and CR (0.321774ms)
+✔ invalid surrogate text cannot be silently normalized during export (0.166311ms)
+✔ non-string objectives are rejected (0.140883ms)
+✔ character and byte counts remain distinct (0.168764ms)
+✔ request validation rejects extra authority fields, missing fields and wrong schema (0.534826ms)
+✔ the plain-text brief includes the chosen request, plan, gaps and boundaries (0.320422ms)
+✔ a brief cannot substitute another initiative or accept an invalid request (0.381304ms)
+✔ the affiliate brief does not inherit education or financing URLs (0.31215ms)
+✔ per-initiative memory starts with explicit empty drafts and returns copies (0.150617ms)
+✔ switching initiatives retains separate in-memory objectives and choices (0.233362ms)
+✔ in-progress text is preserved for editing but still must pass export validation (0.217137ms)
+✔ the workbench has no network, persistence, external assets or HTML insertion sinks (0.435285ms)
+✔ the objective has native English spelling and the separate composer link is local (0.145008ms)
+✔ shared JavaScript-to-Python fixtures match actual exports and rejection rules (0.847435ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26.094973
+
+exit_code: 0

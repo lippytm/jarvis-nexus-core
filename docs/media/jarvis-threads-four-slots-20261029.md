@@ -1,0 +1,216 @@
+# Threads four-slot discussion copy — October 29, 2026
+
+Status: **unpublished copy; exact-content owner review pending**.
+Four three-part discussions are authored: twelve text units, not twelve published
+posts. No Threads account was accessed, no reply sent and no publication scheduled.
+
+## Provenance and scope
+
+- Project: ai-jarvis; mission: jarvis-media-20261029; campaign: jarvis-media-20261029.campaign.daily.2026-10-29.
+- Source: [24-assignment packet](../../examples/portfolio/jarvis-daily-media-20261029.json); briefs_sha256: `43fb53174b4bdeae8f7e464692ce8f34bda46e7b2ec78f43c77cff18f645f5ea`.
+- Original source context: `3f1b4e5697e9ed74430214563008a6c8dea093fd`; Threads source brief SHA-256: `8ff9854f886b5748c77abd7bd08c9f465ad882014797201a3faa46df12e3ae2c`.
+- Preparation input revision: `26985f5b33ce0f71b48a5c8bf81d1df03433642c`. The original campaign source remains unchanged.
+- Preparing target: **codex**; intended channel: **threads**. This is copy preparation; it creates no agent, dispatch, connection or operational queue reservation.
+- Audience: Charles and future Jarvis collaborators. Objective: explain source revision, exact-content review and actual test receipts while distinguishing development evidence from deployed services.
+- Slots 1–4 retain explain, demonstrate, limits and next-step. Each contains an opening idea, concrete example, then evidence limit and question. Slot/date IDs are editorial identifiers, not a posting schedule.
+- Candidate destination inherited from the brief remains **unverified**: https://github.com/lippytm/jarvis-nexus-core?utm_source=threads&utm_medium=organic&utm_campaign=jarvis-media-20261029.campaign . It is omitted from all twelve copy units. Confirm the exact account, destination and tracking policy before adding a link.
+- All copy is public-candidate material. No private chat, diary, customer/billing record or credential is included. No funding/referral CTA applies.
+- Review requirements: facts/sources; exact account/audience/format/destination; accessibility/rights/disclosures; actual outcomes separate from proposals. No invented replies, testimonials, engagement or provider outcomes.
+
+## Sequence and production specification
+
+Each slot is one proposed three-part discussion. The units are the author's
+continuation copy, not fabricated audience replies. Keep their order so the example
+and evidence limit stay with the opening. Do not publish a partial sequence without
+reviewing whether its remaining copy still supplies the necessary context.
+
+Each unit uses a working editing budget of at most 380 characters; this is a creative
+constraint, not a verified platform limit or upload-compatibility test. Current
+destination/format capabilities must be checked separately. Plain text carries all
+essential meaning; no image, audio or video is needed for these drafts. All four optional
+visuals now have local SVG/PNG review candidates. No hashtags, profile-link promises or
+claims about today's service status are added.
+
+## Slot 1 — Explain
+
+Post ID: jarvis-media-20261029.threads.1
+
+### Part 1 — Opening
+
+An AI coding update should give another person something to inspect: the starting code version, the changed artifact and the checks that actually ran. For Jarvis, I want those records kept together before deciding what to release.
+
+### Part 2 — Example
+
+Conceptual example: a handoff links a starting revision to one changed file and its check result. A later edit needs a fresh review decision. This example describes a review practice; it is not a new test receipt.
+
+### Part 3 — Limit and question
+
+A saved development result does not establish a running service, connected account or owner release approval. Which part would you inspect first: the change, the check or the unfinished work?
+
+Reviewer reference: [Codex role and preflight](../CODEX_JARVIS_READINESS.md).
+Optional visual specification: one original three-row text diagram labelled
+“Starting revision,” “Changed artifact” and “Actual checks,” with an unfilled review
+field. Proposed alt text: “A conceptual handoff keeps a starting revision, changed
+artifact and actual checks together; review is still undecided.”
+
+### Slot 1 artwork candidate
+
+The [original SVG](jarvis-threads-slot1-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-1.png) implement the three-row
+specification above. The 1080×1080 canvas is an editorial choice, not verified
+Threads upload guidance. Starting revision, Changed artifact and Actual checks
+reference fields are empty, as is Owner review. The image prominently retains
+Conceptual example, Unpublished draft, unassigned destination and evidence limits.
+It depicts no actual test result, completed exercise or owner approval.
+
+The SVG was rendered locally; the PNG was fully decoded and visually inspected.
+XML/resource restrictions, actual font widths, image dimensions/opacity/metadata
+and empty-field pixel checks passed. The renderer exited 0 with a GtkRecentManager
+warning. [Preparation evidence](../evidence/threads-slot1-artwork-20261104.json)
+records source/output hashes and limits. No text unit, proposed alt text or source
+packet changed. Independent owner/destination/rights/device/accessibility/platform
+review remains pending; the PNG does not supply a platform alt-text field or
+establish an accepted upload. Nothing was posted or sent.
+
+## Slot 2 — Demonstrate
+
+Post ID: jarvis-media-20261029.threads.2
+
+### Part 1 — Opening
+
+A small review exercise: version A has been reviewed, then version B changes its checkpoint note. Should the old review automatically cover the new content? Use synthetic records to make that question testable.
+
+### Part 2 — Example
+
+Proposed demonstration: save A, review it, edit the note and reopen the ledger. Expected behavior: the new text is retained and the old context review no longer applies. This discussion proposes the exercise; it does not report a new run.
+
+### Part 3 — Limit and question
+
+An expected result still needs an actual check against a named revision. Local reviewer labels also do not authenticate a person or authorize release. What small edit would you include in a review-invalidation check?
+
+Reviewer reference: [context review and retrieval](../HANDOFF_CONTEXT_PROFILE.md).
+Optional visual specification: synthetic A/B text notes with the changed note
+highlighted by an underline and words, not color alone. Include “Proposed exercise —
+not a new test receipt.” Proposed alt text: “Two synthetic versions differ in their
+checkpoint note. The proposed check asks for retained text and a fresh review.”
+Do not display an actual private checkpoint or imitate a live product screen.
+
+### Slot 2 artwork candidate
+
+The [original SVG](jarvis-threads-slot2-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-2.png) implement the synthetic
+A/B note specification above. The 1080×1080 canvas is an editorial choice, not
+verified Threads upload guidance. A is assumed reviewed only within the exercise;
+B changes the note from “draft A” to “draft B.” The changed note is identified in
+words and underlined. “Proposed exercise — not a new test receipt” and unpublished
+labels remain visible. Retention after reopening and fresh review are proposed
+checks, not reported results. The owner-review field is empty and destination
+unassigned. This is original conceptual artwork, not a private checkpoint or live
+product screen.
+
+The SVG was rendered locally and the PNG decoded and visually inspected. XML/resource,
+font-width, image/opacity/metadata and empty-review-field checks passed. See the
+[preparation evidence](../evidence/threads-slot2-artwork-20261104.json) for exact
+hashes and renderer/check receipts. All twelve discussion units, proposed alt text,
+other artwork and campaign source remain unchanged. Independent/owner, rights,
+destination, device/accessibility and platform-format review remain pending.
+No upload, publication or message was sent; the image does not supply a platform
+alt-text field or establish an authenticated reviewer or connection.
+
+## Slot 3 — Limits
+
+Post ID: jarvis-media-20261029.threads.3
+
+### Part 1 — Opening
+
+Saved, tested and running need different evidence. A retained file shows an artifact exists. A named check describes observed behavior. A running service needs its own runtime observation. I want Jarvis updates to keep those distinctions visible.
+
+### Part 2 — Example
+
+Conceptual example: CI passes on one runner while the intended execution environment remains unverified. The CI result does not establish that other environment's availability. Name what ran, where it ran and what remains unknown.
+
+### Part 3 — Limit and question
+
+When execution is blocked, keep the task and checkpoint. A later successful actual command in the intended environment is needed before reporting recovery. Which status word would you ask a project owner to explain?
+
+Reviewer reference: [operational preflight and fallback](../CODEX_JARVIS_READINESS.md).
+Optional visual specification: independent text rows for artifact, CI runner and
+intended runtime; no automatic success arrows, online dots or uptime charts.
+Proposed alt text: “Separate rows distinguish a retained artifact, a CI check and
+the intended runtime; each needs its own evidence.” No actual availability claim.
+
+### Slot 3 artwork candidate
+
+The [original SVG](jarvis-threads-slot3-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-3.png) implement the independent
+artifact, CI-runner and intended-runtime rows above. The 1080×1080 canvas is an
+editorial choice, not verified Threads upload guidance. Each row has a separate,
+empty evidence-reference field; owner review is also empty. Conceptual/unpublished
+labels, unassigned destination and the absence of actual check/availability/release
+claims remain explicit. No automatic success arrows, online indicators or uptime
+charts connect the rows.
+
+The SVG was rendered locally and the PNG decoded and visually inspected.
+XML/resource restrictions, text-width, image/opacity/metadata and four empty-field
+pixel checks passed. [Preparation evidence](../evidence/threads-slot3-artwork-20261104.json)
+retains hashes, actual renderer/check receipts and limits. All twelve discussion
+units, proposed alt text, other artwork and campaign remain unchanged.
+Owner/independent, rights, destination, device/accessibility and platform-format
+review remain pending. No upload, publication or message was sent; the image does
+not supply a platform alt-text field or establish a running service/connection.
+
+## Slot 4 — Bounded next step
+
+Post ID: jarvis-media-20261029.threads.4
+
+### Part 1 — Opening
+
+Before expanding an AI workflow, make one unfinished task reviewable. Name its starting version, permitted action and intended destination. Retrieve only the context needed for that task, rather than copying unrelated private conversations.
+
+### Part 2 — Example
+
+Example return bundle: one artifact, the checks actually run, unresolved limits and a continuation checkpoint. Keep a proposed observation separate from an accepted project fact. For a first exercise, choose synthetic data and a draft-only action.
+
+### Part 3 — Limit and question
+
+A prepared handoff does not authorize dispatch, purchases or publication. Review the exact result before deciding what to release, and do not create overlapping work to bypass a hold. Which existing unfinished task could you make reviewable today?
+
+Reviewer references: [shared context profile](../HANDOFF_CONTEXT_PROFILE.md) and
+[Codex role](../CODEX_JARVIS_READINESS.md).
+Optional visual specification: an original four-item return checklist with empty
+boxes for artifact, checks, limits and checkpoint. Proposed alt text: “An example
+return checklist lists an artifact, actual checks, unresolved limits and a checkpoint.
+Empty boxes do not imply completion or approval.”
+
+### Slot 4 artwork candidate
+
+The [original SVG](jarvis-threads-slot4-20261104.svg) and
+[PNG review preview](exports/threads-20261029/slot-4.png) implement the four-item
+return checklist above. Artifact, Actual checks, Unresolved limits and Continuation
+checkpoint each have an empty checkbox; owner review is also empty. Conceptual and
+unpublished labels, unassigned destination and the statement that empty boxes imply
+neither completion nor approval remain visible. The artwork depicts no completed
+return and grants no dispatch, purchase or publication authority. The 1080×1080
+canvas is an editorial choice, not verified Threads upload guidance.
+
+The SVG was rendered locally and the PNG decoded and visually inspected.
+XML/resource restrictions, text-width, image/opacity/metadata and five empty-field
+pixel checks passed. [Preparation evidence](../evidence/threads-slot4-artwork-20261104.json)
+retains exact hashes, renderer/check receipts and limits. All twelve discussion
+units, proposed alt text, other artwork and campaign remain unchanged.
+Owner/independent, rights, destination, device/accessibility and platform-format
+review remain pending. Nothing was uploaded, published or sent; the image does not
+supply a platform alt-text field or establish a running service/connection.
+
+## Review and continuation
+
+All twelve text units are authored. All four slots have SVG/PNG artwork candidates. Account access, destination, current platform constraints, exact-copy
+owner approval and publication remain unverified/unfinished. The reviewer references
+above are editorial metadata, not instructions to append links to the public copy.
+
+Next bounded media step: review one complete three-part sequence for factual scope,
+readability, exact destination and disclosures. Keep its source and changed revision
+with any later edits. Do not invent audience reactions or treat draft questions as
+messages already sent. No engagement, attribution, cost or performance measurement
+exists for these drafts. Four prepared editorial slots do not establish four
+published posts, twelve sent replies, a 24-post day or a changed newsletter schedule.

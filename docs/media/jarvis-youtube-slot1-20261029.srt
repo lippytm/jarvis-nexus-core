@@ -1,0 +1,59 @@
+1
+00:00:00,000 --> 00:00:05,000
+Returning to an AI coding task?
+Start with three records:
+
+2
+00:00:05,000 --> 00:00:10,000
+the source revision, the changed artifact
+and the actual checks.
+
+3
+00:00:10,000 --> 00:00:15,000
+The source revision identifies
+the starting code. Keep it with the task
+
+4
+00:00:15,000 --> 00:00:20,000
+so the next person can inspect
+the same starting point.
+
+5
+00:00:20,000 --> 00:00:25,000
+The artifact shows the proposed change.
+If its content changes after review,
+
+6
+00:00:25,000 --> 00:00:30,000
+ask for a fresh review
+of that exact version.
+
+7
+00:00:30,000 --> 00:00:35,000
+The check receipt records what ran
+and where. Keep failed or blocked
+
+8
+00:00:35,000 --> 00:00:40,000
+checks visible, with the unfinished task
+and its checkpoint.
+
+9
+00:00:40,000 --> 00:00:45,000
+These records support a review decision.
+A deployed service, connected account
+
+10
+00:00:45,000 --> 00:00:50,000
+or delivered post still needs
+its own evidence and authorization.
+
+11
+00:00:50,000 --> 00:00:55,000
+Before your next handoff, name one task,
+pin its starting revision
+
+12
+00:00:55,000 --> 00:01:00,000
+and keep the artifact, checks
+and remaining gap together.

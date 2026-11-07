@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data: blob:; media-src data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Jarvis — The Three-World Field Guide</title>
+  <style>
+    :root { color-scheme:dark; --bg:#090e20; --panel:#121a31; --panel2:#18233f; --ink:#f1f3ff; --muted:#afbdd9; --line:#344462; --cyan:#8ae8e3; --gold:#ffd38c; --lavender:#bcb0ff; --error:#ffb4bb; font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(ellipse at 15% 0%,#1c3150 0%,transparent 45%),radial-gradient(ellipse at 95% 30%,#231e41 0%,transparent 35%),var(--bg); color:var(--ink); line-height:1.55; }
+    a { color:var(--cyan); text-underline-offset:3px; }
+    button,input,textarea,select { font:inherit; }
+    button,a,input,textarea { -webkit-tap-highlight-color:transparent; }
+    button { min-height:44px; border:1px solid var(--line); border-radius:10px; padding:10px 15px; color:var(--ink); background:var(--panel2); font-weight:700; cursor:pointer; transition:background .15s,border-color .15s,transform .15s; }
+    button:hover:not(:disabled) { background:#26365a; border-color:var(--cyan); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .primary { background:var(--cyan); color:#092b32; border-color:var(--cyan); }
+    .primary:hover:not(:disabled) { background:#b3fff1; }
+    :focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+    [hidden] { display:none!important; }
+    p { margin:0 0 12px; }
+    h1,h2,h3 { margin:0; line-height:1.2; }
+    .shell { max-width:1440px; margin:auto; padding:24px 32px 32px; }
+    .skip { position:absolute; left:16px; top:-120px; background:var(--panel); border:2px solid var(--gold); border-radius:8px; padding:12px; z-index:100; }
+    .skip:focus { top:16px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:20px; padding-bottom:22px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; gap:12px; align-items:center; }
+    .sigil { width:44px; height:44px; display:grid; place-items:center; border:1px solid var(--cyan); background:linear-gradient(145deg,#263e59,#15213c); transform:rotate(-8deg); border-radius:12px 3px 12px 3px; color:var(--cyan); font-family:Georgia,serif; font-size:27px; }
+    .brand strong { display:block; letter-spacing:.17em; font-size:.9rem; }
+    .brand small { display:block; color:var(--muted); letter-spacing:.14em; font-size:.66rem; margin-top:2px; }
+    .top-actions { display:flex; align-items:center; gap:18px; font-size:.83rem; }
+    .calm { display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--muted); }
+    input[type="checkbox"] { width:19px; height:19px; accent-color:var(--cyan); }
+    .eyebrow { font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; font-weight:750; color:var(--cyan); }
+    .intro { display:flex; align-items:flex-end; justify-content:space-between; gap:28px; padding:27px 0 24px; }
+    h1 { font-size:clamp(2.2rem,4.8vw,3.9rem); font-weight:760; letter-spacing:-.05em; max-width:840px; margin:8px 0 12px; }
+    .intro p { color:var(--muted); max-width:730px; font-size:.98rem; margin:0; }
+    .pilot-stamp { border:1px solid var(--line); border-radius:12px; padding:13px 16px; flex-shrink:0; background:rgb(18 26 49 / 70%); font-size:.76rem; color:var(--muted); }
+    .pilot-stamp strong { display:block; color:var(--gold); letter-spacing:.12em; margin-bottom:5px; }
+    .edition-banner { border:1px solid #42615e; border-left:4px solid var(--cyan); border-radius:10px; background:#143135; padding:13px 17px; margin:0 0 20px; }
+    .edition-banner[data-owner="true"] { border-color:#a9874e; border-left-color:var(--gold); background:#352c2d; }
+    .edition-banner strong { display:block; font-size:.89rem; letter-spacing:.08em; color:var(--gold); }
+    .edition-banner p { font-size:.82rem; margin:6px 0 0; color:#d7deeb; }
+    .layout { display:grid; grid-template-columns:minmax(0,1.17fr) minmax(360px,1fr); gap:20px; align-items:start; }
+    .panel { background:linear-gradient(150deg,rgb(28 40 66 / 95%),rgb(15 23 44 / 98%)); border:1px solid var(--line); border-radius:18px; overflow:hidden; }
+    .panel-pad { padding:22px; }
+    .atlas { position:relative; }
+    .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:linear-gradient(145deg,#20395a,#342953 70%,#091e38); }
+    .scene::after { content:""; position:absolute; inset:30% 0 0; background:linear-gradient(transparent,#10192ef5); pointer-events:none; }
+    .scene img { width:100%; height:100%; object-fit:cover; display:block; }
+    .fallback-art { position:absolute; inset:0; overflow:hidden; background:radial-gradient(ellipse at 49% 40%,#44888770,transparent 55%); }
+    .moon { position:absolute; width:24%; aspect-ratio:1; top:10%; right:18%; border:1px solid #d7e5ff80; border-radius:50%; box-shadow:0 0 60px #9ef2e029,inset 15px -10px 40px #8ae8e344; }
+    .ring { position:absolute; width:52%; aspect-ratio:1; border:1px solid #8ae8e355; border-radius:50%; left:24%; top:20%; transform:rotateX(65deg); }
+    .tower { position:absolute; bottom:12%; width:18%; border:1px solid #94c7e777; border-top:4px solid #a3dbed; background:repeating-linear-gradient(0deg,#253a53 0 12px,#7ca1bd55 13px 14px,#253a53 15px 29px); box-shadow:12px 12px 0 #101d3380; transform:skewY(-7deg); }
+    .tower.one { height:46%; left:14%; }
+    .tower.two { height:59%; left:41%; width:20%; border-top-color:#ffd38c; }
+    .tower.three { height:39%; right:12%; }
+    .spark { position:absolute; width:5px; height:5px; background:#d4fff9; transform:rotate(45deg); box-shadow:0 0 11px #8ae8e388; }
+    .spark.a { left:12%; top:20%; }.spark.b { left:37%; top:15%; }.spark.c { right:12%; top:44%; }.spark.d { left:66%; top:21%; }
+    .scene-caption { position:absolute; left:22px; right:22px; bottom:22px; z-index:1; }
+    .scene-caption h2 { font-size:clamp(1.65rem,3.2vw,2.45rem); letter-spacing:-.025em; margin:6px 0 8px; }
+    .scene-caption p { font-size:.86rem; color:#d3def0; max-width:510px; margin:0; }
+    .fiction-badge { position:absolute; top:16px; left:16px; z-index:1; font-size:.64rem; font-weight:750; letter-spacing:.1em; border:1px solid #bccdea80; border-radius:25px; padding:5px 10px; background:#0a1534c9; }
+    .world-nav { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:16px; }
+    .world-button { display:flex; align-items:center; gap:9px; min-width:0; text-align:left; padding:12px 11px; background:#111d35; }
+    .world-button[aria-pressed="true"] { background:#204047; border-color:var(--cyan); box-shadow:inset 0 -3px var(--cyan); }
+    .world-symbol { color:var(--gold); font-size:1.35rem; width:26px; text-align:center; }
+    .world-button small { display:block; font-size:.65rem; color:var(--muted); font-weight:400; }
+    .world-button strong { font-size:.82rem; }
+    .progress-strip { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:0 19px 18px; }
+    .progress-label { display:flex; justify-content:space-between; font-size:.71rem; color:var(--muted); margin-bottom:6px; }
+    progress { width:100%; height:6px; border:0; border-radius:6px; overflow:hidden; display:block; background:#263652; accent-color:var(--cyan); }
+    progress::-webkit-progress-bar { background:#263652; }
+    progress::-webkit-progress-value { background:var(--cyan); }
+    progress::-moz-progress-bar { background:var(--cyan); }
+    .player-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:15px; }
+    .player-heading h2 { font-size:1.18rem; margin:5px 0 0; }
+    .local-pill { color:var(--gold); border:1px solid #745f3b; background:#3a302633; border-radius:30px; padding:4px 9px; font-size:.65rem; white-space:nowrap; }
+    .video-box { background:#070b16; border:1px solid #344462; border-radius:12px; overflow:hidden; }
+    video { display:block; width:100%; aspect-ratio:16/9; background:#070b16; }
+    .empty-video { padding:14px 16px; color:var(--muted); font-size:.8rem; border-top:1px solid var(--line); }
+    .file-tools { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+    .file-tools label { display:block; font-size:.77rem; font-weight:650; margin-bottom:6px; }
+    input[type="file"] { width:100%; min-width:0; color:var(--muted); border:1px solid var(--line); border-radius:8px; padding:6px; font-size:.7rem; }
+    input[type="file"]::file-selector-button { background:#263653; color:var(--ink); border:0; border-radius:5px; padding:7px 8px; margin-right:7px; font:inherit; cursor:pointer; }
+    .hint { color:var(--muted); font-size:.75rem; margin:9px 0 0; }
+    .status { min-height:1.3em; font-size:.8rem; color:var(--cyan); margin:10px 0 0; overflow-wrap:anywhere; }
+    .status[data-error="true"] { color:var(--error); }
+    .quest-panel { grid-column:1/-1; display:grid; grid-template-columns:290px minmax(0,1fr); }
+    .quest-list-pane { border-right:1px solid var(--line); padding:22px; background:#0d162a80; }
+    .quest-list-pane h2 { font-size:1.1rem; margin:6px 0 8px; }
+    .quest-list-pane p { font-size:.79rem; color:var(--muted); }
+    .quest-list { display:flex; flex-direction:column; gap:10px; margin-top:17px; }
+    .quest-button { display:block; width:100%; text-align:left; padding:13px; background:#15203a; }
+    .quest-button[aria-pressed="true"] { border-color:var(--gold); background:#363241; }
+    .quest-button strong { display:block; font-size:.83rem; }
+    .quest-button span { display:block; font-size:.66rem; color:var(--muted); margin-top:5px; }
+    .quest-detail { padding:26px; min-width:0; }
+    .quest-topline { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .planned-badge { font-size:.66rem; color:var(--gold); background:#3d332b; padding:4px 8px; border:1px solid #6a5c44; border-radius:5px; font-weight:750; letter-spacing:.08em; }
+    .quest-world { font-size:.75rem; color:var(--muted); }
+    #quest-title { font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.035em; margin-bottom:12px; }
+    #quest-objective { max-width:780px; color:#d4dff0; font-size:.95rem; }
+    .quest-rule { font-size:.77rem; color:var(--muted); border-left:2px solid var(--gold); padding-left:11px; margin:17px 0; }
+    .note-label { display:block; font-size:.83rem; font-weight:700; margin:18px 0 7px; }
+    textarea { width:100%; min-height:105px; resize:vertical; background:#0d172a; border:1px solid var(--line); border-radius:10px; color:var(--ink); padding:12px 13px; line-height:1.6; }
+    textarea[aria-invalid="true"] { border-color:var(--error); }
+    .note-meta { display:flex; justify-content:space-between; gap:14px; font-size:.71rem; color:var(--muted); margin-top:5px; }
+    .quest-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    #explore-quest[aria-pressed="true"] { color:var(--cyan); border-color:var(--cyan); background:#1b3d43; }
+    .lower-grid { grid-column:1/-1; display:grid; grid-template-columns:1.1fr 1fr; gap:20px; }
+    .section-title { font-size:1.08rem; margin-bottom:10px; }
+    details>summary { cursor:pointer; font-weight:700; padding:3px 0; }
+    .transcript-list { margin:18px 0 0; padding-left:21px; }
+    .transcript-list li { padding:0 0 17px 5px; font-size:.84rem; }
+    .transcript-list h3 { font-size:.87rem; margin-bottom:5px; }
+    .transcript-list p { margin:7px 0; color:var(--muted); white-space:pre-wrap; overflow-wrap:anywhere; }
+    .evidence-tag { display:inline-block; font-size:.64rem; color:var(--gold); border:1px solid var(--line); background:#26314a; padding:3px 7px; border-radius:5px; }
+    .export-copy { font-size:.85rem; color:var(--muted); }
+    .export-actions { display:flex; gap:10px; flex-wrap:wrap; margin:17px 0 10px; }
+    #copy-preview { min-height:170px; margin-top:12px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.75rem; }
+    .export-limit { font-size:.73rem; color:var(--muted); }
+    .footer { border-top:1px solid var(--line); padding-top:19px; margin-top:25px; color:var(--muted); font-size:.75rem; }
+    .error-banner { background:#432632; border:1px solid #a76d77; border-radius:12px; padding:18px; }
+    dialog { width:min(720px,calc(100% - 28px)); max-height:85vh; background:#111b31; color:var(--ink); border:1px solid #627696; border-radius:16px; padding:24px; box-shadow:0 30px 120px #000a; }
+    dialog::backdrop { background:#030817c7; }
+    .dialog-head { display:flex; justify-content:space-between; align-items:center; gap:18px; margin-bottom:13px; }
+    .dialog-head h2 { font-size:1.35rem; }
+    .dialog-note { font-size:.84rem; color:var(--muted); }
+    .evidence-record { border-top:1px solid var(--line); margin-top:15px; padding-top:15px; }
+    .evidence-record h3 { font-size:.94rem; margin-bottom:8px; }
+    .evidence-record p { font-size:.82rem; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .evidence-source { margin:13px 0; padding:12px; border:1px solid var(--line); border-radius:9px; background:#0b1426; }
+    .evidence-source strong { display:block; font-size:.83rem; }
+    .source-url { display:block; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; color:var(--cyan); overflow-wrap:anywhere; font-size:.73rem; margin-top:7px; }
+    .source-context { color:var(--muted); font-size:.73rem; overflow-wrap:anywhere; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    body[data-calm="true"] *,body[data-calm="true"] *::before,body[data-calm="true"] *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+    @media (max-width:1100px) { .shell { padding:22px; } .layout { grid-template-columns:minmax(0,1.1fr) minmax(310px,1fr); gap:16px; } .world-nav { gap:7px; padding:12px; } .world-button { padding:10px 8px; gap:5px; } .world-symbol { font-size:1.05rem; width:20px; } .panel-pad { padding:18px; } .file-tools { grid-template-columns:1fr; gap:9px; } .quest-panel { grid-template-columns:245px 1fr; } .quest-list-pane { padding:18px; } }
+    @media (max-width:850px) { .layout { grid-template-columns:1fr; } .intro { align-items:flex-start; } .pilot-stamp { display:none; } .player .file-tools { grid-template-columns:1fr 1fr; } .quest-panel { grid-column:auto; grid-template-columns:1fr; } .quest-list-pane { border-right:0; border-bottom:1px solid var(--line); } .quest-list { display:grid; grid-template-columns:repeat(3,1fr); } .lower-grid { grid-column:auto; grid-template-columns:1fr; } .scene { aspect-ratio:16/8; } }
+    @media (max-width:520px) { .shell { padding:16px 12px 24px; } .topbar { align-items:flex-start; gap:12px; } .top-actions { gap:8px; flex-wrap:wrap; justify-content:flex-end; max-width:170px; font-size:.72rem; } .brand small { max-width:115px; font-size:.57rem; } .intro { padding:23px 3px; } .world-button { justify-content:center; text-align:center; display:block; } .world-symbol { display:block; margin:auto; width:auto; } .scene { aspect-ratio:4/3; } .scene-caption { left:18px; right:18px; bottom:18px; } .scene-caption p { font-size:.8rem; } .quest-list { grid-template-columns:1fr; gap:8px; } .quest-button { padding:10px 12px; } .quest-button span { margin-top:3px; } .quest-detail { padding:20px 17px; } .quest-actions button { width:100%; } .player .file-tools { grid-template-columns:1fr; } .export-actions button { width:100%; } .note-meta { flex-direction:column; gap:3px; } .progress-strip { gap:12px; } .panel { border-radius:14px; } }
+  </style>
+</head>
+<body data-calm="true">
+  <a class="skip" href="#quest-detail">Skip to your selected quest</a>
+  <div class="shell">
+    <header class="topbar"><div class="brand"><div class="sigil" aria-hidden="true">J</div><div><strong>JARVIS</strong><small>THREE-WORLD FIELD GUIDE</small></div></div><div class="top-actions"><a href="jarvis-diary.html" target="_blank" rel="noopener">Daily diary<span class="sr-only"> (opens a new tab)</span></a><a href="jarvis-workbench.html" target="_blank" rel="noopener">Portfolio<span class="sr-only"> (opens a new tab)</span></a><label class="calm" for="calm-mode"><input id="calm-mode" type="checkbox" checked>Calm mode</label></div></header>
+    <main>
+      <section class="intro" aria-labelledby="page-title"><div><div class="eyebrow" id="edition-eyebrow">An offline story companion</div><h1 id="page-title">A little wonder.<br>A clear next step.</h1><p>Explore three fictional worlds, read the selected record, and leave yourself a useful quest note. Your progress belongs to this visit.</p></div><div class="pilot-stamp"><strong>LOCAL EPISODE</strong><span id="pilot-date">Dated snapshot</span></div></section>
+      <noscript><p class="error-banner">This offline companion needs JavaScript for its story controls. No data is submitted to a server.</p></noscript>
+      <p class="error-banner" id="episode-error" role="alert" hidden></p>
+      <section id="edition-banner" class="edition-banner" aria-labelledby="edition-label" hidden><strong id="edition-label"></strong><p id="edition-note"></p></section>
+      <div class="layout" id="workspace" hidden>
+        <section class="panel atlas" aria-labelledby="world-title"><div class="scene" id="world-scene"><div class="fallback-art" id="fallback-art" aria-hidden="true"><div class="moon"></div><div class="ring"></div><div class="tower one"></div><div class="tower two"></div><div class="tower three"></div><span class="spark a"></span><span class="spark b"></span><span class="spark c"></span><span class="spark d"></span></div><img id="episode-art" data-jarvis-inline-art="" alt="Fictional Jarvis command-library key art" hidden><span class="fiction-badge">FICTIONAL WORLDS · REAL LABELS</span><div class="scene-caption"><div class="eyebrow" id="world-eyebrow">World 01</div><h2 id="world-title"></h2><p id="world-description"></p></div></div><nav class="world-nav" id="world-nav" aria-label="Choose a fictional world"></nav><div class="progress-strip"><div><div class="progress-label"><label for="world-progress">Worlds opened</label><span id="world-progress-label">1 / 3</span></div><progress id="world-progress" max="3" value="1"></progress></div><div><div class="progress-label"><label for="quest-progress">Quests explored</label><span id="quest-progress-label">0 / 3</span></div><progress id="quest-progress" max="3" value="0"></progress></div></div></section>
+        <section class="panel player panel-pad" aria-labelledby="player-title"><div class="player-heading"><div><div class="eyebrow">Watch at your own pace</div><h2 id="player-title">The pilot viewing room</h2></div><span class="local-pill">LOCAL MEDIA</span></div><div class="video-box"><video id="episode-video" controls playsinline preload="metadata" data-jarvis-inline-video="" aria-label="Local pilot video"><track id="episode-captions" kind="captions" srclang="en" label="English captions" data-jarvis-inline-captions=""></video><p class="empty-video" id="video-empty">Choose a local MP4 below. A packaged edition may include its video here. Playback starts only when you press play.</p></div><div class="file-tools"><div><label for="video-file">Choose local MP4</label><input id="video-file" type="file" accept=".mp4,video/mp4" aria-describedby="video-limit"></div><div><label for="caption-file">Optional local VTT captions</label><input id="caption-file" type="file" accept=".vtt,text/vtt" aria-describedby="caption-limit"></div></div><p class="hint" id="video-limit">MP4 up to 150 MiB. The file stays in this browser visit.</p><p class="hint" id="caption-limit">VTT up to 128 KiB. Captions should match the selected video; the app cannot establish alignment.</p><p id="media-status" class="status" role="status" aria-live="polite" aria-atomic="true"></p><p class="hint">Use the transcript below without playing media. Calm mode removes interface transitions; the video remains under your control.</p></section>
+        <section class="panel quest-panel" aria-label="Explore the three review quests"><div class="quest-list-pane"><div class="eyebrow">Your local quest board</div><h2>Choose a thread</h2><p>Every project quest remains planned. Exploration markers are only a record of this visit.</p><nav class="quest-list" id="quest-list" aria-label="Select a review quest"></nav></div><div class="quest-detail" id="quest-detail" tabindex="-1" aria-labelledby="quest-title"><div class="quest-topline"><span class="planned-badge">PROJECT STATUS: PLANNED</span><span id="quest-world" class="quest-world"></span></div><h2 id="quest-title" tabindex="-1"></h2><p id="quest-objective"></p><p class="quest-rule">Opening or exploring a quest does not verify a connection, complete business work, start an assistant or earn money.</p><label class="note-label" for="objective-note">Your next local check or reflection</label><textarea id="objective-note" lang="en" spellcheck="true" autocomplete="off" aria-describedby="note-limit note-memory" placeholder="Name one check you want to make, or one thing this quest helped you notice."></textarea><div class="note-meta"><span id="note-memory">Each quest keeps its own note until you reload.</span><span id="note-limit">0 / 1,000 UTF-8 bytes</span></div><div class="quest-actions"><button type="button" id="explore-quest" class="primary" aria-pressed="false">Mark this quest explored</button><button type="button" id="copy-quest">Copy quest brief</button><button type="button" id="open-evidence" aria-haspopup="dialog" aria-controls="evidence-dialog">Open source drawer</button></div><p id="quest-status" class="status" role="status" aria-live="polite" aria-atomic="true"></p></div></section>
+        <div class="lower-grid"><section class="panel panel-pad" aria-labelledby="transcript-heading"><details><summary id="transcript-heading">Read the pilot transcript &amp; labels</summary><p id="fictional-framing" class="hint"></p><p id="news-status" class="hint"></p><ol id="transcript" class="transcript-list"></ol></details></section><section class="panel panel-pad" aria-labelledby="export-heading"><div class="eyebrow">Leave a bookmark for yourself</div><h2 id="export-heading" class="section-title">Keep your exploration notes</h2><p class="export-copy">Download visited worlds, explored quest IDs and your notes. The export describes local exploration and carries no task-completion or publication approval.</p><div class="export-actions"><button type="button" id="export-progress">Download progress .json</button><button type="button" id="copy-progress">Copy exploration brief</button></div><p class="export-limit">There is no autosave, progress import, account link or background sync.</p><p class="status" id="export-status" role="status" aria-live="polite" aria-atomic="true"></p><details id="copy-preview-details"><summary>Plain-text copy preview</summary><label class="sr-only" for="copy-preview">Latest brief, read only</label><textarea id="copy-preview" readonly spellcheck="false"></textarea></details></section></div>
+      </div>
+    </main>
+    <footer class="footer"><p>The worlds and guide are fictional framing for the selected diary record. Evidence labels travel with the source record; they do not independently verify it. This is an anime-inspired companion interface, with no claim of a fully animated production.</p><p>Notes and exploration stay in memory. No application network calls, analytics or storage. Native spellcheck depends on browser settings and may use its own service. Download anything you want to keep before reloading.</p></footer>
+  </div>
+  <dialog id="evidence-dialog" aria-labelledby="evidence-heading"><div class="dialog-head"><h2 id="evidence-heading">The source drawer</h2><button type="button" id="close-evidence">Close</button></div><p class="dialog-note">These are references and recorded classifications from this selected episode. URLs are text; opening or verifying a source is a separate action.</p><p id="source-context" class="source-context"></p><div id="evidence-records"></div><h3 style="margin-top:22px">HTTPS references</h3><div id="evidence-sources"></div></dialog>
+  <script type="application/json" id="episode-data">
+{
+  "audience": "public",
+  "date": "2026-10-22",
+  "episode_id": "rpg-20261022-jarvis-pilot",
+  "episode_sha256": "19a7eaba577ef0914ed5a5a6f65dfaeab37ae4f7d9bf5837b3a7b3274bfea230",
+  "external_actions": 0,
+  "fictional_framing": "Original fictional setting; project records and plans retain their labels.",
+  "kind": "jarvis.rpg_episode",
+  "model_calls": 0,
+  "news_status": "not_included_in_this_project_pilot",
+  "observations_omitted": 0,
+  "publication_approval": "not_granted",
+  "quests": [
+    {
+      "evidence_state": "planned",
+      "objective": "Confirm the site's Hostinger product and available read-only access; review a supported route before any live connection attempt.",
+      "quest_id": "hostinger-connection",
+      "source_ids": [],
+      "status": "planned",
+      "title": "Inspect the connection route",
+      "world_id": "observatory"
+    },
+    {
+      "evidence_state": "planned",
+      "objective": "Choose one bounded assistant or tool change, run its checks, and retain a human review before considering a release.",
+      "quest_id": "ai-building-cycle",
+      "source_ids": [],
+      "status": "planned",
+      "title": "Review one building cycle",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "planned",
+      "objective": "Review source labels, original asset rights, narration, captions and accessibility before considering any media publication.",
+      "quest_id": "media-review",
+      "source_ids": [],
+      "status": "planned",
+      "title": "Review the media draft",
+      "world_id": "archive"
+    }
+  ],
+  "scenes": [
+    {
+      "evidence_state": "fictional",
+      "scene_id": "opening",
+      "screen_text": "FICTIONAL SETTING · Archive / Forge / Observatory\nSelected project: Jarvis tools and assistant building",
+      "source_ids": [],
+      "title": "The command library opens",
+      "voiceover": "Original fictional setting; project records and plans retain their labels. Welcome. I'm Luma, your guide through the Lantern Archive, Copper Forge and Sky Observatory. Our selected project is Jarvis tools and assistant building. Come with me; we'll read the records, then choose the next page.",
+      "world_id": "archive"
+    },
+    {
+      "evidence_state": "source_linked",
+      "scene_id": "record-01",
+      "screen_text": "SOURCE-LINKED RECORD\nThe public diary milestone includes a browser workbench, local revision history and a compiler for local multimedia drafts.",
+      "source_ids": [
+        "milestone-commit"
+      ],
+      "title": "Diary record: diary-milestone",
+      "voiceover": "Source-linked record. From the diary: The public diary milestone includes a browser workbench, local revision history and a compiler for local multimedia drafts.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "source_linked",
+      "scene_id": "record-02",
+      "screen_text": "SOURCE-LINKED RECORD\nThe retained milestone checks record 232 passing Python tests and 123 passing JavaScript helper tests. The linked CI run completed successfully.",
+      "source_ids": [
+        "milestone-commit",
+        "milestone-ci"
+      ],
+      "title": "Diary record: retained-checks",
+      "voiceover": "Source-linked record. From the diary: The retained milestone checks record 232 passing Python tests and 123 passing JavaScript helper tests. The linked CI run completed successfully.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "planned",
+      "scene_id": "briefing",
+      "screen_text": "PLANNED · Attach the record to a dated review.\nCurrent news is not included.",
+      "source_ids": [],
+      "title": "Plan the dated briefing",
+      "voiceover": "Proposed briefing step. At the Observatory, place this dated record beside its sources and keep the labels in view. The project diary is our focus here; current news is not included in this pilot.",
+      "world_id": "observatory"
+    },
+    {
+      "evidence_state": "planned",
+      "scene_id": "revenue-experiment",
+      "screen_text": "PLANNED · Define one offer and a way to test interest.\nNo revenue result is claimed.",
+      "source_ids": [],
+      "title": "Plan one offer experiment",
+      "voiceover": "Proposed offer experiment. In the Forge, sketch one small learning or media offer. Who is it for, how would it be delivered, and what would help you judge interest? Keep the result open until you have evidence.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "planned",
+      "scene_id": "next-quests",
+      "screen_text": "PLANNED · Hostinger connection / AI-building cycle / media review\nNext: Review one small assistant-building change, confirm the permitted Hostinger connection route, and review t…",
+      "source_ids": [],
+      "title": "Three proposed quests",
+      "voiceover": "Three proposed quests await: inspect the Hostinger connection route, review one AI-building cycle, and review the media draft. The diary's next action is: Review one small assistant-building change, confirm the permitted Hostinger connection route, and review the next media draft.",
+      "world_id": "forge"
+    },
+    {
+      "evidence_state": "fictional",
+      "scene_id": "closing",
+      "screen_text": "FICTIONAL CLOSING · Keep the record. Review the plan.\nNo quest completion or publication is granted.",
+      "source_ids": [],
+      "title": "Leave a lantern for the next visit",
+      "voiceover": "In our fictional library, Luma places a lantern beside the unfinished page. The quests are still proposals; you choose what to try next. Bring back a reviewed record, and we'll open the next chapter together.",
+      "world_id": "archive"
+    }
+  ],
+  "schema_version": 1,
+  "source_context_revision": "76e7a538d7c1a3a113d57727f025a2c6b27ccf13",
+  "source_entry_sha256": "ff580d4fd8b08b477848315f342bbfeebbc05820f00909288663552045b822bd",
+  "source_visibility": "public_candidate",
+  "sources": [
+    {
+      "source_id": "milestone-commit",
+      "title": "Public diary and multimedia milestone source context",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/commit/76e7a538d7c1a3a113d57727f025a2c6b27ccf13"
+    },
+    {
+      "source_id": "milestone-ci",
+      "title": "Successful diary milestone CI run",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/actions/runs/39862842245"
+    }
+  ],
+  "timezone": "America/Los_Angeles",
+  "title": "Jarvis Diary: Lanterns for the Next Cycle",
+  "worlds": [
+    {
+      "description": "An original fictional command library for diary records, source references and creative editions.",
+      "title": "The Lantern Archive",
+      "world_id": "archive"
+    },
+    {
+      "description": "An original fictional workshop for proposed tools, learning projects and small experiments.",
+      "title": "The Copper Forge",
+      "world_id": "forge"
+    },
+    {
+      "description": "An original fictional lookout for reviewing access, evidence gaps and the next planned step.",
+      "title": "The Sky Observatory",
+      "world_id": "observatory"
+    }
+  ]
+}
+  </script>
+  <script id="jarvis-rpg-core">
+"use strict";
+globalThis.JarvisRPG=(()=>{
+  const WORLD_IDS=Object.freeze(["archive","forge","observatory"]);
+  const QUEST_IDS=Object.freeze(["hostinger-connection","ai-building-cycle","media-review"]);
+  const QUEST_WORLDS=Object.freeze({"hostinger-connection":"observatory","ai-building-cycle":"forge","media-review":"archive"});
+  const STATES=Object.freeze({source_linked:"Source linked · reference attached, not independently verified",owner_reported:"Owner reported · supplied statement",planned:"Planned · not completed work",fictional:"Fictional · story framing"});
+  const EPISODE_KEYS=Object.freeze(["schema_version","kind","episode_id","date","timezone","title","audience","source_visibility","source_entry_sha256","source_context_revision","sources","worlds","scenes","quests","observations_omitted","news_status","fictional_framing","publication_approval","external_actions","model_calls","episode_sha256"]);
+  const PROGRESS_KEYS=Object.freeze(["schema_version","kind","scope","episode_id","audience","source_visibility","selected_world","selected_quest","visited_worlds","explored_quests","objective_notes"]);
+  const MAX_NOTE_BYTES=1000,MAX_VIDEO_BYTES=150*1024*1024,MAX_VTT_BYTES=128*1024;
+  const encoder=new TextEncoder();
+  const bytes=value=>encoder.encode(value).length;
+  const isRecord=value=>value!==null && typeof value==="object" && !Array.isArray(value);
+  function exact(value,keys,label) { if(!isRecord(value)||Object.keys(value).length!==keys.length||!keys.every(key=>Object.hasOwn(value,key))) throw new TypeError(`${label} has unexpected fields.`); }
+  function unicode(value) {
+    for(let i=0;i<value.length;i+=1){const n=value.charCodeAt(i);if(n>=0xd800&&n<=0xdbff){const next=value.charCodeAt(i+1);if(!(next>=0xdc00&&next<=0xdfff))return false;i+=1;}else if(n>=0xdc00&&n<=0xdfff)return false;}return true;
+  }
+  function text(value,label,{max=2000,blank=false}={}) { if(typeof value!=="string"||!unicode(value)||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(value)||Array.from(value).length>max||(!blank&&/^\p{White_Space}*$/u.test(value)))throw new TypeError(`${label} contains invalid or oversized text.`);return value; }
+  function identifier(value) { const match=typeof value==="string"?/^[a-z][a-z0-9_.-]{1,47}$/u.exec(value):null;return !!match&&match[0]===value; }
+  function knownList(values,allowed,label) {if(!Array.isArray(values)||values.length>allowed.length||new Set(values).size!==values.length||!values.every(value=>allowed.includes(value)))throw new TypeError(`Invalid ${label}.`);}
+  function validDate(value) {if(typeof value!=="string"||value.length!==10||!/^\d{4}-\d{2}-\d{2}$/u.test(value))return false;const[y,m,d]=value.split("-").map(Number);return y>=1&&m>=1&&m<=12&&d>=1&&d<=[31,y%4===0&&(y%100!==0||y%400===0)?29:28,31,30,31,30,31,31,30,31,30,31][m-1];}
+  function sourceURL(value) {text(value,"Source URL",{max:1000});if(bytes(value)>1000||!/^https:\/\/[^/?#]+/iu.test(value)||/[\p{White_Space}\u0000-\u001f\\]/u.test(value)||/^https:\/\/[^/?#]*@/iu.test(value))throw new TypeError("Invalid HTTPS source reference.");let url;try{url=new URL(value);}catch{throw new TypeError("Invalid HTTPS source reference.");}if(url.protocol!=="https:"||!url.hostname||url.username||url.password||!["","443"].includes(url.port))throw new TypeError("Invalid HTTPS source reference.");}
+  function validateEpisode(episode) {
+    exact(episode,EPISODE_KEYS,"Episode");
+    if(episode.schema_version!==1||episode.kind!=="jarvis.rpg_episode"||!identifier(episode.episode_id))throw new TypeError("Unsupported episode schema or ID.");
+    if(!["public","owner"].includes(episode.audience)||!["private","internal","public_candidate"].includes(episode.source_visibility)||(episode.audience==="public"&&episode.source_visibility!=="public_candidate"))throw new TypeError("Public editions require a public-candidate source; other sources require explicit owner audience.");
+    if(episode.publication_approval!=="not_granted"||episode.external_actions!==0||episode.model_calls!==0)throw new TypeError("The episode must remain a local, unapproved project draft.");
+    if(!validDate(episode.date)||episode.timezone!=="America/Los_Angeles")throw new TypeError("Invalid episode date or timezone.");
+    for(const key of ["source_entry_sha256","episode_sha256"])if(typeof episode[key]!=="string"||episode[key].length!==64||!/^[a-f0-9]{64}$/u.test(episode[key]))throw new TypeError("Invalid episode content digest.");
+    if(typeof episode.source_context_revision!=="string"||episode.source_context_revision.length!==40||!/^[a-f0-9]{40}$/u.test(episode.source_context_revision))throw new TypeError("Invalid source revision.");
+    text(episode.title,"Episode title",{max:180});if(bytes(episode.title)>180)throw new TypeError("Episode title exceeds 180 UTF-8 bytes.");
+    if(episode.fictional_framing!=="Original fictional setting; project records and plans retain their labels.")throw new TypeError("Episode fictional framing must remain explicit.");
+    if(episode.news_status!=="not_included_in_this_project_pilot"||!Number.isInteger(episode.observations_omitted)||episode.observations_omitted<0||episode.observations_omitted>5)throw new TypeError("Invalid pilot scope.");
+    if(!Array.isArray(episode.sources)||episode.sources.length>5)throw new TypeError("Invalid source list.");
+    const sourceIDs=[];
+    for(const source of episode.sources){exact(source,["source_id","title","url"],"Source");if(!identifier(source.source_id)||sourceIDs.includes(source.source_id))throw new TypeError("Invalid source ID.");sourceIDs.push(source.source_id);text(source.title,"Source title",{max:200});if(bytes(source.title)>200)throw new TypeError("Source title exceeds 200 UTF-8 bytes.");sourceURL(source.url);}
+    if(!Array.isArray(episode.worlds)||episode.worlds.length!==3)throw new TypeError("Three fictional worlds are required.");
+    knownList(episode.worlds.map(world=>world.world_id),WORLD_IDS,"world IDs");
+    episode.worlds.forEach((world,index)=>{exact(world,["world_id","title","description"],"World");if(world.world_id!==WORLD_IDS[index])throw new TypeError("World order must match the episode contract.");text(world.title,"World title",{max:80});text(world.description,"World description",{max:240});});
+    if(!Array.isArray(episode.scenes)||episode.scenes.length<6||episode.scenes.length>7)throw new TypeError("The public pilot needs six or seven scenes.");
+    const sceneIDs=[];
+    for(const scene of episode.scenes){exact(scene,["scene_id","title","voiceover","screen_text","evidence_state","source_ids","world_id"],"Scene");if(!identifier(scene.scene_id)||sceneIDs.includes(scene.scene_id)||!WORLD_IDS.includes(scene.world_id)||typeof scene.evidence_state!=="string"||!Object.hasOwn(STATES,scene.evidence_state))throw new TypeError("Invalid scene identity or classification.");sceneIDs.push(scene.scene_id);text(scene.title,"Scene title",{max:80});text(scene.voiceover,"Voiceover",{max:500});text(scene.screen_text,"Screen text",{max:180});knownList(scene.source_ids,sourceIDs,"scene source references");if(scene.evidence_state==="source_linked"&&!scene.source_ids.length)throw new TypeError("A source-linked scene needs a reference.");if(["opening","closing"].includes(scene.scene_id)){if(scene.evidence_state!=="fictional"||scene.source_ids.length)throw new TypeError("Episode framing must remain fictional.");}else if(!scene.scene_id.startsWith("record-")&&(scene.evidence_state!=="planned"||scene.source_ids.length))throw new TypeError("Episode proposals must remain planned.");}
+    const recordCount=sceneIDs.filter(id=>id.startsWith("record-")).length;
+    const sceneOrder=["opening",...Array.from({length:recordCount},(_,i)=>`record-0${i+1}`),...(recordCount<3?["briefing","revenue-experiment"]:["briefing-revenue-plan"]),"next-quests","closing"];
+    if(recordCount<1||recordCount>3||JSON.stringify(sceneIDs)!==JSON.stringify(sceneOrder)||(recordCount<3&&episode.observations_omitted))throw new TypeError("Invalid episode scene sequence or omission count.");
+    if(!Array.isArray(episode.quests)||episode.quests.length!==3)throw new TypeError("Three planned quests are required.");
+    knownList(episode.quests.map(quest=>quest.quest_id),QUEST_IDS,"quest IDs");
+    episode.quests.forEach((quest,index)=>{exact(quest,["quest_id","title","objective","status","evidence_state","source_ids","world_id"],"Quest");if(quest.quest_id!==QUEST_IDS[index]||quest.status!=="planned"||quest.evidence_state!=="planned"||quest.world_id!==QUEST_WORLDS[quest.quest_id])throw new TypeError("Quest states must remain planned in their assigned worlds.");text(quest.title,"Quest title",{max:80});text(quest.objective,"Quest objective",{max:400});knownList(quest.source_ids,sourceIDs,"quest references");if(quest.source_ids.length)throw new TypeError("Planned quests cannot establish source-backed results.");});
+    if(bytes(JSON.stringify(episode))>65536)throw new RangeError("Episode exceeds 64 KiB.");
+    return JSON.parse(JSON.stringify(episode));
+  }
+  function editionLabel(episode) {validateEpisode(episode);return episode.audience==="owner"?`OWNER EDITION / ${episode.source_visibility.replaceAll("_"," ").toUpperCase()} SOURCE`:"PUBLIC CANDIDATE EDITION / REVIEW REQUIRED";}
+  function initialProgress(episode) {validateEpisode(episode);return{schema_version:1,kind:"jarvis.rpg_progress",scope:"visit_only_exploration",episode_id:episode.episode_id,audience:episode.audience,source_visibility:episode.source_visibility,selected_world:"archive",selected_quest:"media-review",visited_worlds:["archive"],explored_quests:[],objective_notes:Object.fromEntries(QUEST_IDS.map(id=>[id,""]))};}
+  function note(value) {text(value,"Quest note",{max:MAX_NOTE_BYTES,blank:true});if(bytes(value)>MAX_NOTE_BYTES)throw new RangeError("Keep each quest note within 1,000 UTF-8 bytes.");return value;}
+  function validateProgress(episode,state) {validateEpisode(episode);exact(state,PROGRESS_KEYS,"Exploration progress");if(state.schema_version!==1||state.kind!=="jarvis.rpg_progress"||state.scope!=="visit_only_exploration"||state.episode_id!==episode.episode_id||state.audience!==episode.audience||state.source_visibility!==episode.source_visibility)throw new TypeError("Invalid exploration scope, episode or source classification.");if(!WORLD_IDS.includes(state.selected_world)||!QUEST_IDS.includes(state.selected_quest)||QUEST_WORLDS[state.selected_quest]!==state.selected_world)throw new TypeError("Invalid selected world and quest.");knownList(state.visited_worlds,WORLD_IDS,"visited worlds");knownList(state.explored_quests,QUEST_IDS,"explored quests");if(!state.visited_worlds.includes(state.selected_world))throw new TypeError("The selected world must be recorded as visited.");if(state.explored_quests.some(id=>!state.visited_worlds.includes(QUEST_WORLDS[id])))throw new TypeError("An explored quest must belong to a visited world.");exact(state.objective_notes,QUEST_IDS,"Objective notes");QUEST_IDS.forEach(id=>{try{note(state.objective_notes[id]);}catch(error){throw new TypeError(`Note for ${id}: ${error.message}`);}});return JSON.parse(JSON.stringify(state));}
+  function cloneState(state) {return{...state,visited_worlds:[...state.visited_worlds],explored_quests:[...state.explored_quests],objective_notes:{...state.objective_notes}};}
+  function selectWorld(state,worldId) {if(!WORLD_IDS.includes(worldId))throw new TypeError("Unknown fictional world.");const next=cloneState(state);next.selected_world=worldId;next.selected_quest=QUEST_IDS.find(id=>QUEST_WORLDS[id]===worldId);if(!next.visited_worlds.includes(worldId))next.visited_worlds.push(worldId);return next;}
+  function selectQuest(state,questId) {if(!QUEST_IDS.includes(questId))throw new TypeError("Unknown exploration quest.");return selectWorld(state,QUEST_WORLDS[questId]);}
+  function setNote(state,questId,value) {if(!QUEST_IDS.includes(questId)||typeof value!=="string")throw new TypeError("Invalid quest note.");const next=cloneState(state);next.objective_notes[questId]=value;return next;}
+  function toggleExplored(state,questId) {if(!QUEST_IDS.includes(questId)||!state.visited_worlds.includes(QUEST_WORLDS[questId]))throw new TypeError("Open a quest's world before exploring it.");const next=cloneState(state);next.explored_quests=next.explored_quests.includes(questId)?next.explored_quests.filter(id=>id!==questId):[...next.explored_quests,questId];return next;}
+  function questBrief(episode,state) {const valid=validateProgress(episode,state);const quest=episode.quests.find(item=>item.quest_id===valid.selected_quest);return["JARVIS — FICTIONAL WORLD / PLANNED QUEST BRIEF",editionLabel(episode),`Audience: ${valid.audience}; source visibility: ${valid.source_visibility}`,`Episode: ${episode.title}`,`Snapshot date: ${episode.date} (${episode.timezone})`,`Quest: ${quest.title}`,`World: ${quest.world_id}`,"Project status and evidence state: PLANNED",`Explored during this visit: ${valid.explored_quests.includes(quest.quest_id)?"yes":"no"}`,"",quest.objective,"","MY LOCAL NOTE",valid.objective_notes[quest.quest_id]||"(No note added.)","","EPISODE REFERENCES — not independently verified; these do not establish quest completion",...(episode.sources.length?episode.sources.flatMap(source=>[`[${source.source_id}] ${source.title}`,source.url]):["No source reference was supplied for this episode."]),"","Exploration is visit-only. It does not complete business work, establish a connection, authorize publication or earn money."].join("\n");}
+  function progressBrief(episode,state) {const valid=validateProgress(episode,state);return["JARVIS — VISIT-ONLY EXPLORATION",editionLabel(episode),`Audience: ${valid.audience}; source visibility: ${valid.source_visibility}`,`Episode: ${episode.episode_id}`,`Worlds opened: ${valid.visited_worlds.join(", ")}`,`Quests explored: ${valid.explored_quests.join(", ")||"none"}`,"",...QUEST_IDS.flatMap(id=>[episode.quests.find(quest=>quest.quest_id===id).title,`Project status: PLANNED; explored in this visit: ${valid.explored_quests.includes(id)?"yes":"no"}`,valid.objective_notes[id]||"(No note added.)",""]),"This record describes local exploration. It contains no business-completion or publication approval."].join("\n");}
+  function serializeProgress(episode,state) {return JSON.stringify(validateProgress(episode,state),null,2)+"\n";}
+  function videoFile(file) {if(!file||typeof file.name!=="string"||file.name.length<=4||!file.name.toLowerCase().endsWith(".mp4")||/[\u0000-\u001f]/u.test(file.name)||!["","video/mp4"].includes(file.type)||!Number.isSafeInteger(file.size)||file.size<=0||file.size>MAX_VIDEO_BYTES)throw new TypeError("Choose an MP4 file between 1 byte and 150 MiB.");return true;}
+  function captionText(value) {if(typeof value!=="string"||!unicode(value)||bytes(value)>MAX_VTT_BYTES||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(value))throw new TypeError("Choose valid UTF-8 VTT captions up to 128 KiB.");const clean=value.replace(/^\ufeff/u,"");if(!/^WEBVTT(?:[ \t][^\r\n]*)?(?:\r?\n|$)/u.test(clean)||!/(?:^|\n)(?:\d{2,}:)?[0-5]\d:[0-5]\d\.\d{3}[ \t]+-->[ \t]+(?:\d{2,}:)?[0-5]\d:[0-5]\d\.\d{3}(?:[ \t][^\r\n]*)?(?:\r?\n|$)/u.test(clean))throw new TypeError("The captions need a WEBVTT header and at least one timed cue.");return clean;}
+  function inlineAsset(value,kind) {if(typeof value!=="string")return false;const prefix={art:/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/u,video:/^data:video\/mp4;base64,[A-Za-z0-9+/]+={0,2}$/u,captions:/^data:text\/vtt;base64,[A-Za-z0-9+/]+={0,2}$/u}[kind];return !!prefix&&prefix.test(value);}
+  return Object.freeze({WORLD_IDS,QUEST_IDS,QUEST_WORLDS,STATES,EPISODE_KEYS,PROGRESS_KEYS,MAX_NOTE_BYTES,MAX_VIDEO_BYTES,MAX_VTT_BYTES,bytes,validateEpisode,editionLabel,initialProgress,validateProgress,validateNote:note,selectWorld,selectQuest,setNote,toggleExplored,questBrief,progressBrief,serializeProgress,videoFile,captionText,inlineAsset});
+})();
+  </script>
+  <script id="jarvis-rpg-app">
+"use strict";
+(()=>{
+  const core=globalThis.JarvisRPG,$=id=>document.getElementById(id);
+  let episode;
+  try{episode=core.validateEpisode(JSON.parse($("episode-data").textContent));}
+  catch{$("episode-error").hidden=false;$("episode-error").textContent="The selected episode data failed its checks. No episode content was loaded.";return;}
+  let progress=core.initialProgress(episode),videoURL=null,captionURL=null,captionTicket=0;
+  const worldButtons=new Map(),questButtons=new Map();
+  function status(id,message,error=false){$(id).textContent=message;$(id).dataset.error=String(error);}
+  function element(tag,text,className=""){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(className)node.className=className;return node;}
+  function refresh(){
+    const world=episode.worlds.find(item=>item.world_id===progress.selected_world),quest=episode.quests.find(item=>item.quest_id===progress.selected_quest);
+    $("world-title").textContent=world.title;$("world-description").textContent=world.description;$("world-eyebrow").textContent=`World 0${core.WORLD_IDS.indexOf(world.world_id)+1} · fictional setting`;
+    $("quest-title").textContent=quest.title;$("quest-objective").textContent=quest.objective;$("quest-world").textContent=world.title;
+    $("objective-note").value=progress.objective_notes[quest.quest_id];$("note-limit").textContent=`${core.bytes($("objective-note").value).toLocaleString("en")} / 1,000 UTF-8 bytes`;
+    const explored=progress.explored_quests.includes(quest.quest_id);$("explore-quest").setAttribute("aria-pressed",String(explored));$("explore-quest").textContent=explored?"Explored this visit · undo marker":"Mark this quest explored";
+    worldButtons.forEach((node,id)=>node.setAttribute("aria-pressed",String(id===progress.selected_world)));
+    questButtons.forEach((node,id)=>{node.setAttribute("aria-pressed",String(id===progress.selected_quest));node.querySelector("span").textContent=`Planned · ${progress.explored_quests.includes(id)?"explored this visit":"open for reflection"}`;});
+    $("world-progress").value=progress.visited_worlds.length;$("quest-progress").value=progress.explored_quests.length;$("world-progress-label").textContent=`${progress.visited_worlds.length} / 3`;$("quest-progress-label").textContent=`${progress.explored_quests.length} / 3`;
+    try{core.validateProgress(episode,progress);$("objective-note").removeAttribute("aria-invalid");for(const id of["copy-quest","copy-progress","export-progress"])$(id).disabled=false;status("export-status","");}
+    catch(error){try{core.validateNote(progress.objective_notes[progress.selected_quest]);$("objective-note").removeAttribute("aria-invalid");}catch{$("objective-note").setAttribute("aria-invalid","true");}for(const id of["copy-quest","copy-progress","export-progress"])$(id).disabled=true;status("export-status",`${error.message} Your notes remain in the form.`,true);}
+  }
+  function openQuest(id){progress=core.selectQuest(progress,id);refresh();status("quest-status","Quest opened for local exploration. Project status remains planned.");$("quest-title").focus();}
+  const symbols={archive:"▱",forge:"◇",observatory:"✧"};
+  episode.worlds.forEach(world=>{const button=element("button",undefined,"world-button");button.type="button";button.setAttribute("aria-pressed","false");button.setAttribute("aria-controls","quest-detail");const symbol=element("span",symbols[world.world_id],"world-symbol");symbol.setAttribute("aria-hidden","true");const label=element("span");label.append(element("strong",world.world_id[0].toUpperCase()+world.world_id.slice(1)),element("small","Fictional world"));button.append(symbol,label);button.addEventListener("click",()=>openQuest(core.QUEST_IDS.find(id=>core.QUEST_WORLDS[id]===world.world_id)));worldButtons.set(world.world_id,button);$("world-nav").append(button);});
+  episode.quests.forEach(quest=>{const button=element("button",undefined,"quest-button");button.type="button";button.setAttribute("aria-pressed","false");button.setAttribute("aria-controls","quest-detail");button.append(element("strong",quest.title),element("span","Planned · open for reflection"));button.addEventListener("click",()=>openQuest(quest.quest_id));questButtons.set(quest.quest_id,button);$("quest-list").append(button);});
+  $("objective-note").addEventListener("input",()=>{const start=$("objective-note").selectionStart,end=$("objective-note").selectionEnd;progress=core.setNote(progress,progress.selected_quest,$("objective-note").value);refresh();$("objective-note").setSelectionRange(start,end);status("quest-status","");});
+  $("explore-quest").addEventListener("click",()=>{progress=core.toggleExplored(progress,progress.selected_quest);refresh();status("quest-status",progress.explored_quests.includes(progress.selected_quest)?"Exploration marker added for this visit. No project task was completed.":"Exploration marker removed. Your note is preserved.");});
+  $("calm-mode").addEventListener("change",()=>{document.body.dataset.calm=String($("calm-mode").checked);});
+  $("pilot-date").textContent=`${episode.date} · Pacific snapshot`;
+  $("edition-eyebrow").textContent=episode.audience==="owner"?"An offline story companion · owner edition":"An offline story companion · public candidate";
+  $("edition-label").textContent=core.editionLabel(episode);
+  $("edition-banner").dataset.owner=String(episode.audience==="owner");
+  $("edition-note").textContent=episode.audience==="owner"?`This deliberately packaged local file contains a ${episode.source_visibility.replaceAll("_"," ")} diary source. Its classification stays with exported notes. This label does not encrypt the file or grant publication consent.`:"This edition uses an explicitly selected public-candidate diary source. Publication approval is not granted by the episode, player or exploration export.";
+  $("edition-banner").hidden=false;
+  $("fictional-framing").textContent=episode.fictional_framing;
+  $("news-status").textContent="This pilot contains a project snapshot, not a researched news bulletin.";
+  $("source-context").textContent=`${core.editionLabel(episode)} · ${episode.date} · source revision ${episode.source_context_revision}. Content digests are integrity references, not source authentication.`;
+  episode.scenes.forEach(scene=>{const item=element("li");item.append(element("h3",scene.title),element("span",core.STATES[scene.evidence_state],"evidence-tag"),element("p",scene.voiceover),element("p",`Source IDs: ${scene.source_ids.join(", ")||"none attached"}`));$("transcript").append(item);const record=element("article",undefined,"evidence-record");record.append(element("h3",scene.title),element("span",core.STATES[scene.evidence_state],"evidence-tag"),element("p",scene.screen_text),element("p",`Source IDs: ${scene.source_ids.join(", ")||"none attached"}`));$("evidence-records").append(record);});
+  episode.sources.forEach(source=>{const row=element("div",undefined,"evidence-source");row.append(element("strong",`${source.source_id} · ${source.title}`),element("span",source.url,"source-url"));$("evidence-sources").append(row);});
+  if(!episode.sources.length)$("evidence-sources").append(element("p","No reference URL was supplied for this pilot."));
+  $("open-evidence").addEventListener("click",()=>{$("evidence-dialog").showModal();});
+  $("close-evidence").addEventListener("click",()=>{$("evidence-dialog").close();});
+  async function copy(text){$("copy-preview").value=text;try{if(!navigator.clipboard||typeof navigator.clipboard.writeText!=="function")throw new Error("unavailable");await navigator.clipboard.writeText(text);status("export-status","Brief copied with its exploration and evidence labels.");}catch{$("copy-preview-details").open=true;$("copy-preview").focus();$("copy-preview").select();status("export-status","Your brief is selected below. Press Ctrl+C or ⌘C to copy it.");}}
+  $("copy-quest").addEventListener("click",()=>{try{void copy(core.questBrief(episode,progress));}catch(error){status("export-status",error.message,true);}});
+  $("copy-progress").addEventListener("click",()=>{try{void copy(core.progressBrief(episode,progress));}catch(error){status("export-status",error.message,true);}});
+  $("export-progress").addEventListener("click",()=>{try{const blob=new Blob([core.serializeProgress(episode,progress)],{type:"application/json;charset=utf-8"});const url=URL.createObjectURL(blob);const anchor=document.createElement("a");anchor.href=url;anchor.download="jarvis-rpg-progress.json";document.body.append(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status("export-status","Exploration JSON download requested. The project quests remain planned.");}catch(error){status("export-status",error.message,true);}});
+  const video=$("episode-video"),captions=$("episode-captions"),art=$("episode-art");
+  function clearCaptions(){captionTicket+=1;captions.removeAttribute("src");captions.removeAttribute("default");$("caption-file").value="";if(captionURL){URL.revokeObjectURL(captionURL);captionURL=null;}}
+  const artData=art.dataset.jarvisInlineArt,videoData=video.dataset.jarvisInlineVideo,captionData=captions.dataset.jarvisInlineCaptions;
+  if(core.inlineAsset(artData,"art")){art.src=artData;art.hidden=false;$("fallback-art").hidden=true;video.poster=artData;}
+  if(core.inlineAsset(videoData,"video")){video.src=videoData;$("video-empty").hidden=true;status("media-status","Packaged local pilot loaded. Press play when you are ready.");}
+  if(core.inlineAsset(captionData,"captions")&&core.inlineAsset(videoData,"video")){captions.src=captionData;captions.default=true;}
+  $("video-file").addEventListener("change",()=>{const file=$("video-file").files&&$("video-file").files[0];if(!file)return;try{core.videoFile(file);const next=URL.createObjectURL(file);video.pause();clearCaptions();if(videoURL)URL.revokeObjectURL(videoURL);videoURL=next;video.src=next;video.load();$("video-empty").hidden=true;status("media-status","Local MP4 loaded. Press play to watch; choose matching captions if needed.");}catch(error){status("media-status",`${error.message} The current player source is unchanged.`,true);}finally{$("video-file").value="";}});
+  $("caption-file").addEventListener("change",async()=>{const input=$("caption-file"),file=input.files&&input.files[0];if(!file)return;const ticket=++captionTicket;try{if(!video.getAttribute("src"))throw new TypeError("Load a video before attaching captions.");if(!Number.isSafeInteger(file.size)||file.size<=0||file.size>core.MAX_VTT_BYTES||!/^.+\.vtt$/iu.test(file.name))throw new TypeError("Choose a VTT file up to 128 KiB.");const content=await file.arrayBuffer();if(ticket!==captionTicket)return;const text=core.captionText(new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(content));const next=URL.createObjectURL(new Blob([text],{type:"text/vtt;charset=utf-8"}));if(captionURL)URL.revokeObjectURL(captionURL);captionURL=next;captions.src=next;captions.default=true;status("media-status","Local captions attached. Use the player's captions menu; timing still needs your review.");}catch(error){if(ticket===captionTicket)status("media-status",error instanceof TypeError?error.message:"The captions could not be decoded. Existing captions are unchanged.",true);}finally{if(ticket===captionTicket)input.value="";}});
+  video.addEventListener("error",()=>status("media-status","The browser could not play this local media. Keep the transcript available and try a supported MP4.",true));
+  captions.addEventListener("error",()=>status("media-status","The browser could not load these captions. The transcript remains available.",true));
+  window.addEventListener("pagehide",()=>{if(videoURL)URL.revokeObjectURL(videoURL);if(captionURL)URL.revokeObjectURL(captionURL);});
+  refresh();$("workspace").hidden=false;
+})();
+  </script>
+</body>
+</html>

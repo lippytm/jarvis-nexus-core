@@ -1,0 +1,74 @@
+{
+  "asset_id": "codex",
+  "change": "Optional expected_sha256 on load_context and --digest on load-context; stale content fails before CLI output creation. Existing defaults, response/stored schemas and v1 packets unchanged.",
+  "checks": {
+    "focused": "2 tests passed in 0.656s",
+    "full": {
+      "record_sha256": "3652db927e9808fb0ccbf6c156cf104bfd1c45464a9b2777d997bc0cfedc6692",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 541,
+        "skipped": 0
+      }
+    },
+    "new_methods": 2,
+    "sensitivity": "Isolated copy without new content guard: 2 expected failures, zero errors; repository untouched",
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.context-retrieval.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "00485cb86ee0175bd1b296aedc266146b7ca1d54",
+  "limitations": [
+    "Synthetic local/CLI fixtures; not authenticated shared storage or live delivery",
+    "Content digest excludes separate review metadata; no lease or future release gate",
+    "Existing private/public restriction, review invalidation and unknown holds remain in force",
+    "Original paused mission/receipts unchanged; historical local timeout remains separate"
+  ],
+  "logs_sha256": {
+    "context-load-digest-focused-20261105.txt": "0000333fc36ed7718f9c9094f6207fc10d91359dc43912e8de0c44c5f8376979",
+    "context-load-digest-full-20261105.txt": "1015929a18d48292d23f642b72bd1b40e7404581bc837d0473b8b4cbfdd8932e",
+    "context-load-digest-mutant-20261105.txt": "ff06f69fde25c16052e1787d3cccf509cc15572583fbe74736225e98f98461d8",
+    "context-load-digest-web-20261105.txt": "02dcc9c925f9bf94821c794a4ab4e382881063365879f7dadd0df6da018a6a98"
+  },
+  "memory_source": "master Page sequence 157",
+  "mission_id": "context-load-digest-20261105",
+  "next_task": "Exact-revision independent review; authenticated registry acceptance and audience/access policy remain pending. Do not repeat this implementation.",
+  "observed_gap": "Source and memory revision selectors alone cannot request exact context content after a permitted same-memory detail edit.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft-only implementation, CLI, tests, profile documentation and evidence on named branch",
+  "project_id": "ai-jarvis",
+  "record_sha256": "95616562a70da7f0922c526f59deb29b203fa7c3c1df1045f82f36275b433918",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/handoffs.py": "fc4e4ecad4c80423df4d3be3c60e639e48c8503d9eb8275f3b7dff0360b2db4b",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bc4e39b068e384c6f62e434a7c12d6aab274ca7ac8086f87345cf6b00022305e",
+    "scripts/jarvis_network.py": "1c8df3d0cb558cb76453894d34afbe2ee573c2d9ef98e7391c2649dcc16fc2dd",
+    "tests/test_handoff_context.py": "1d3384e8872962c3e69068582973b7b051f11cd5b385515c8b22dfe6ce69fa00",
+    "tests/test_handoff_context_cli.py": "18fe7dbaf10be6464695fc298b6472c2e914645180a8889a33d41e01785f99e1"
+  },
+  "source_before_sha256": {
+    "control_tower/handoffs.py": "09156469b370d8d5c2509c5969dfe58d5fa0ab459ff4d5655cfe4ac7dd83bf3a",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "e09f5e46210d8f096b5e15ba8d13977e8d9bf1f8faf9efd1852bd909b623c995",
+    "scripts/jarvis_network.py": "9b0cff63e90ed7b869a98b2c4e0a68547cfae80f54743774c14387e249a02ee4",
+    "tests/test_handoff_context.py": "69782abbec2dff055d4c930ac527605919dffe2b3d5315e006446a637faf8a9e",
+    "tests/test_handoff_context_cli.py": "9768653fb12827723dc6dcb0cc75c3caafd9e91917c54aaf25e1b3b27595a773"
+  }
+}

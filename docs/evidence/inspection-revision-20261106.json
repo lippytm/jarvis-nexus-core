@@ -1,0 +1,104 @@
+{
+  "acceptance": "After A-to-B-to-A restoration at same memory revision/content digest, stale stored revision rejects; current revision matches default output. API/CLI read-only reopen retains independent records/paused unknown-outcome holds and database bytes; rejected CLI calls create no output. No future release gate/authentication inferred.",
+  "allowed_actions": [
+    "inspect",
+    "prepare_draft_patch",
+    "test",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable tool write checks pending; independent exact-revision/owner release review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "Optional inspect_recovery expected_revision and inspect-recovery --context-revision require exact selected stored revision within the existing SQLite read transaction. Positive strict integer; defaults and version-1 output unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory revision and source hashes; final commit/CI in master receipt",
+    "state": "locally_verified",
+    "unfinished": "independent review; accepted registry audience/access policy and authenticated delivery remain unfinished"
+  },
+  "checks": {
+    "baseline": {
+      "errors": 8,
+      "failures": 1,
+      "reason": "API keyword and CLI flag absent; feature not implemented",
+      "tests": 2
+    },
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "record_sha256": "64dbdadb6fa889c97df00de3907be8e4de98d84993386a609f529b4028d70a64",
+      "syntax": {
+        "errors": [],
+        "files_checked": 73
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 564,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.inspection-revision.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "input_revision": "6a3f32df4e8f9e33c4f6305cdc9dad864e222656",
+  "limitations": [
+    "Read-time guard only; no lease or automatic worker/retry/failover/controller.",
+    "Synthetic fixtures, not actual owner mission execution, live provider delivery or authentication.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/inspection-revision-baseline-20261106.txt": {
+      "sha256": "c29a87e41c4d35e1d45a7551fcff64f89de85cdd550b79517861f76f8f4b7541",
+      "summary": "overy() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nFAIL: test_inspection_cli_can_pin_stored_revision_after_content_restore (tests.test_handoff_context_cli.ContextCLITests.test_inspection_cli_can_pin_stored_revision_after_content_restore)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1030, in test_inspection_cli_can_pin_stored_revision_after_content_restore\n    self.assertEqual(accepted.returncode, 0, accepted.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 3\n\n\n----------------------------------------------------------------------\nRan 2 tests in 1.030s\n\nFAILED (failures=1, errors=8)\n"
+    },
+    "reports/inspection-revision-focused-20261106.txt": {
+      "sha256": "5bdb0945f1767d3cbc9692691aa0caf0196d7c96b5c6515cefea4ecc07bbb283",
+      "summary": "..\n----------------------------------------------------------------------\nRan 2 tests in 1.031s\n\nOK\n"
+    }
+  },
+  "memory_revision": 176,
+  "metrics": {
+    "baseline_failed_test_attempts": 1,
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "observed_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "inspection-revision-20261106",
+  "next_task": "independent exact-revision review; retain original paused mission and do not duplicate this option",
+  "patch_sha256": "848ccbb4aba3b07d901f4ff968a4ed67d4d2435a1495d0f88fdaf7c035b55272",
+  "platform": "codex",
+  "preparation_errors": [
+    "Attempted nonexistent control_tower/destination_registry.py lookup (exit 2); no file changed. Registry inspection was not selected.",
+    "First multi-file apply_patch failed verification on an abbreviated documentation line; no hunks applied. Corrected production patch and appended documentation separately."
+  ],
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "e8bc4525fc2dd265932ee7bb6efe5311c3fb56f9827d3a2956316bdacc3244b9",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "efcd797a166c9725fe9f03ddb721e9b4cfe07cc7c7f28adf630ffea9b7aec0dc",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bc4335b6756ab5f4b410b1d0e3519e3c5635686637f115b5711e7518153164a0",
+    "scripts/jarvis_network.py": "71b250adf6f6dbac70b74c0f8fa674e7d94007c30a93c4d721059b946cce2eb4",
+    "tests/test_handoff_context.py": "9ffb450baf18c5a0f3940bb1eb1910bd2d91ea1b72ad9348dc62272a028ecbe4",
+    "tests/test_handoff_context_cli.py": "db34db12593be7847ffb42c7a99e0b05ab18242bf568ec0802cac3f1dd259134"
+  },
+  "visibility": "owner_private"
+}

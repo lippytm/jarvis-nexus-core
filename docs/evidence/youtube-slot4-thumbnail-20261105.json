@@ -1,0 +1,100 @@
+{
+  "artifact_sha256": {
+    "docs/DAILY_MEDIA_BRIEFS.md": "109b4c6fc3e7bac9843fec331c9c62ce78da1035eac245c4e12b5d376b1fb2fe",
+    "docs/media/exports/youtube-20261029/slot-4-thumbnail.png": "84250110848d14c3a53c4d16254b976317a56b989d2712443621561aca5a4afc",
+    "docs/media/jarvis-youtube-slot4-20261029.md": "ca9bdcbc97323bc32f92ac24917a462043a9cb3e2233dab0aaedde3fa6fe90bc",
+    "docs/media/jarvis-youtube-slot4-thumbnail-20261105.svg": "6fb74e7de54b19fde10ff9b4072ad776b6a00603e129271b7c1e051b266ef4ed"
+  },
+  "asset_id": "codex",
+  "checks": {
+    "campaign_srt_storyboard_prior_thumbnails_unchanged": true,
+    "empty_field_pixel_checks": 3,
+    "local_full_suite": "not rerun for artwork; prior full-run timeout remains a separate receipt",
+    "narration_shot_plan_upload_copy_alt_unchanged": true,
+    "new_unit_tests": 0,
+    "png_bytes": 64747,
+    "png_decode_opacity": "passed",
+    "png_dimensions": [
+      1200,
+      675
+    ],
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "ONE REVIEWABLE TASK",
+        "width": 683.140625
+      },
+      {
+        "text": "CONCEPTUAL EXAMPLE \u2022 UNPUBLISHED",
+        "width": 502.296875
+      },
+      {
+        "text": "Task",
+        "width": 84.59375
+      },
+      {
+        "text": "Artifact",
+        "width": 99.140625
+      },
+      {
+        "text": "Check",
+        "width": 83.0625
+      },
+      {
+        "text": "Owner review",
+        "width": 248.75
+      },
+      {
+        "text": "Draft only \u2022 Review pending",
+        "width": 447.28125
+      },
+      {
+        "text": "Destination: unassigned \u2022 No completion or approval depicted.",
+        "width": 695.390625
+      }
+    ],
+    "visual_inspection": "full PNG inspected; no clipping/overlap observed",
+    "whitespace": "git diff --check passed",
+    "xml_resources": "allowlisted tags; no links/scripts/images/events"
+  },
+  "configuration_version": "codex.media-artwork.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "unassigned",
+  "duplicate_candidates": 0,
+  "evidence_class": "actual local thumbnail render/checks; conceptual artwork implies no completion, dispatch or approval",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "adbbf8b403a25a93068dea639e9d39a7cad211d0",
+  "limitations": [
+    "Not an accepted upload or populated platform alt-text field",
+    "Owner/rights/channel/destination/device/accessibility/platform review pending",
+    "No finished video or publication; no newsletter change"
+  ],
+  "memory_source": "master Page sequence 154",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact thumbnail/script/caption/storyboard owner review; all four thumbnail candidates retained; recording/retiming/video production unfinished; do not regenerate them.",
+  "owner_release_approval": "not_granted",
+  "platform_id": "youtube",
+  "project_id": "ai-jarvis",
+  "record_sha256": "2dc0c5100e09133c5f21ff030a9552273d719fba5bb8366bffc353f34bec1ad0",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "Original slot-4 thumbnail SVG/PNG and guide/index links; narration/SRT/storyboard/runtime unchanged",
+  "source_assignment": "jarvis-media-20261029.youtube.4"
+}

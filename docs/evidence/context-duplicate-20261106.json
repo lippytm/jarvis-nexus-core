@@ -1,0 +1,118 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "add_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "One regression exercises identical context saves with a valid current revision, stale CAS rejection, retained review receipt, paused unknown-outcome holds, independent Gemini record, private/public separation and read-only restart. Production code and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory and test/source hashes; final commit and CI linked in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision review and authenticated registry/delivery acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_duplicate_context_save_preserves_review_receipt_and_holds_after_restart",
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 1
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/context-duplicate-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/context-duplicate-full-20261106.json",
+        "passed": true,
+        "record_sha256": "0bcc5cdbef410ce2dcac728a41919c6b690547762fb22ca43c81719d296fdd6e",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 568,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 568,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.context-duplicate.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/verifier-path-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "4f0496910e0863d3cf9a052afdb3763a4aa8c82e",
+  "limitations": [
+    "Synthetic local fixtures are not authenticated Codex/Gemini delivery or an actual owner recovery incident.",
+    "No baseline production bug asserted or repaired; this adds regression coverage for existing behavior.",
+    "Local review labels/hashes do not authenticate a reviewer. No leases, failover, reconnect controller or live worker added.",
+    "All 17 business areas and 17 portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/context-duplicate-focused-20261106.txt": {
+      "sha256": "20f07600223b8fe9057d561239cc10f6baa6ac50c34daceeab97c28b080b8a20",
+      "text": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
+    }
+  },
+  "memory_revision": 182,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "identical_save_attempts_in_fixture": 2,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "stale_save_rejections_in_fixture": 1
+  },
+  "mission_id": "context-duplicate-20261106",
+  "next_task": "Independent exact-revision context deduplication/recovery review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "a76e51e284a262afefdb1f59a3682757cd0f3b855bcb3ac529b7b76730a2307d",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context.py": "0f765e0b7293e1248abc094454fff14da3e584a5eee4a76ff5bb981a8c7dcd4f"
+  },
+  "tracked_patch_sha256": "784746b7b1b05d3d10c03d3d057c00e690e38474897a7f312a921bf47640f808",
+  "visibility": "owner_private"
+}

@@ -1,0 +1,56 @@
+{
+  "authentication_or_live_dispatch": "not_established",
+  "change": "Opt-in version-2 destination report digest and expected snapshot check inside the existing read transaction; default version-1 output unchanged. CLI checks before private file output.",
+  "configuration_version": "codex.engineering-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "2ac9d06fe461a6f01eaf7e9e4c050dbdf6d13ec6",
+  "limitations": "Synthetic temporary ledgers only. No actual mission checkpoint edited or accepted registry configured. Snapshot match is point-in-time metadata, not authenticated review, lease, future-write gate or delivery evidence. No strict packet, stored profile or database schema changes.",
+  "local_verification": {
+    "focused_errors": 0,
+    "focused_failures": 0,
+    "focused_methods": 3,
+    "record_sha256": "96629ef5bf3f93b33b3807f43a1aeeff005ec8a21ee9f68eec5575836f014246",
+    "syntax_files": 73,
+    "tests": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "run": 520,
+      "skipped": 0
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "memory_source": "master Page sequence 126",
+  "mission_id": "destination-snapshot-20261104",
+  "next_task": "Exact-revision independent review; retain one saved registry candidate until owner acceptance and intended audience/access policy verification permit operational adapter work.",
+  "observed_gap": "Destination metadata reports lacked the optional exact snapshot check already available for queue reports. This is a bounded feature addition, not a reproduced code failure.",
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "e227e61103f4d385dc1c2152aa370ac5019e5de225c92e05c1b72a1f2d1ac5de",
+  "regressions": [
+    "Read-only restart preserves paused/unknown holds; context review changes invalidate snapshots; unrelated destination changes do not.",
+    "Project/platform/destination and matching membership bind the snapshot; invalid options reject without record writes; returned data stays independent.",
+    "Fresh-process CLI rejects changed context before creating output directories, writes matching report mode 0600, refuses duplicate output without changing file/database bytes."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_destination_snapshot_observation",
+  "source_sha256": {
+    "control_tower/handoffs.py": "3cce978a4b167167f5ef0565e11f22598d7014149425473ab6e9b88a94807ecd",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "6fd075da997a055e79e930b06b16bdc5a8a0adf860b1e3c4d674e22c95f2c74a",
+    "scripts/jarvis_network.py": "b6ab5aad0ae86ace253d05900ffc0b4449a9108f310b03ac47a54f84edd97441",
+    "tests/test_handoff_context.py": "3a1fe368a337ff05b14637c9ec1eea62cc029fdda1b3a69fc99ed011b9869da1",
+    "tests/test_handoff_context_cli.py": "cb40e52fe27aa4363072e20f471064d69ebf80782ef4dd8432a917ef8d674c8e"
+  }
+}

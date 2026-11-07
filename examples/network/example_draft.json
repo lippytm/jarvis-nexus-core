@@ -1,0 +1,7 @@
+{
+  "kind": "jarvis.draft",
+  "project_id": "ai-jarvis",
+  "schema_version": 1,
+  "target": "gemini",
+  "text": "Synthetic example: propose one bounded integration improvement, with acceptance checks and evidence. Return a draft; do not publish or run generated code."
+}

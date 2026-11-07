@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Jarvis — Life &amp; Business Daily Diary</title>
+  <style>
+    :root { color-scheme: light; --bg:#f5f4ef; --panel:#fffefa; --ink:#183b3b; --muted:#5d706e; --line:#d7e0d9; --accent:#0b7167; --soft:#e5f2eb; --warm:#f1e9d9; --danger:#a32e32; --danger-bg:#fff0ee; --shadow:0 10px 32px rgb(28 62 54 / 5%); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    @media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) { color-scheme:dark; --bg:#142120; --panel:#1c2c2a; --ink:#e7f1ea; --muted:#b2c5bb; --line:#3b514b; --accent:#88d7bc; --soft:#253f36; --warm:#34382a; --danger:#ffb5b2; --danger-bg:#422c2b; --shadow:none; } }
+    :root[data-theme="dark"] { color-scheme:dark; --bg:#142120; --panel:#1c2c2a; --ink:#e7f1ea; --muted:#b2c5bb; --line:#3b514b; --accent:#88d7bc; --soft:#253f36; --warm:#34382a; --danger:#ffb5b2; --danger-bg:#422c2b; --shadow:none; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--bg); line-height:1.55; }
+    button,input,textarea,select { font:inherit; }
+    button,a,input,textarea,select,summary { -webkit-tap-highlight-color:transparent; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    :focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+    [hidden] { display:none!important; }
+    button { min-height:44px; border:1px solid var(--line); border-radius:10px; padding:9px 14px; background:var(--panel); color:var(--ink); font-weight:650; cursor:pointer; }
+    button:hover:not(:disabled) { border-color:var(--accent); background:var(--soft); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .primary { color:var(--panel); background:var(--accent); border-color:var(--accent); }
+    .primary:hover:not(:disabled) { color:var(--ink); }
+    .subtle { color:var(--muted); font-size:.88rem; }
+    .remove { color:var(--danger); font-size:.85rem; }
+    input,select,textarea { display:block; width:100%; border:1px solid var(--line); border-radius:9px; background:var(--panel); color:var(--ink); padding:11px 12px; min-width:0; }
+    input[type="checkbox"] { width:19px; min-width:19px; height:19px; margin:3px 0 0; accent-color:var(--accent); }
+    input[type="file"] { padding:8px; font-size:.88rem; }
+    input[type="file"]::file-selector-button { margin-right:10px; border:0; border-radius:6px; padding:8px 10px; background:var(--soft); color:var(--ink); font:inherit; cursor:pointer; }
+    input[readonly] { background:var(--bg); font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.84rem; }
+    textarea { min-height:110px; resize:vertical; }
+    [aria-invalid="true"] { border-color:var(--danger); }
+    label,.field-label { display:block; font-size:.9rem; font-weight:650; margin-bottom:6px; }
+    p { margin:0 0 12px; }
+    h1,h2,h3 { margin:0; line-height:1.2; }
+    .shell { max-width:1320px; margin:auto; padding:26px 30px 40px; }
+    .skip-link { position:absolute; top:-100px; left:20px; z-index:20; padding:12px; background:var(--panel); border:2px solid var(--accent); }
+    .skip-link:focus { top:12px; }
+    .topbar { display:flex; gap:20px; justify-content:space-between; align-items:center; padding-bottom:25px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; gap:12px; align-items:center; }
+    .mark { display:grid; place-items:center; width:44px; height:44px; background:var(--ink); color:var(--panel); border-radius:14px 14px 14px 3px; font-family:Georgia,serif; font-size:28px; }
+    .brand strong { display:block; letter-spacing:.15em; font-size:.9rem; }
+    .brand span { font-size:.72rem; color:var(--muted); letter-spacing:.08em; }
+    .top-actions { display:flex; align-items:center; gap:18px; font-size:.85rem; }
+    .theme-label { margin:0; font-size:.75rem; color:var(--muted); }
+    .theme-label select { margin-top:2px; font-size:.82rem; padding:7px 9px; }
+    .hero { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; padding:32px 0 27px; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.13em; color:var(--accent); font-size:.72rem; font-weight:750; margin-bottom:9px; }
+    h1 { font-family:Georgia,"Times New Roman",serif; font-weight:500; font-size:clamp(2.1rem,4.4vw,3.4rem); letter-spacing:-.035em; }
+    .hero p { color:var(--muted); max-width:650px; margin:13px 0 0; }
+    .local-badge { white-space:nowrap; border:1px solid var(--line); border-radius:30px; padding:8px 13px; background:var(--soft); font-size:.8rem; font-weight:650; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 320px; align-items:start; gap:24px; }
+    .entry-form { display:flex; flex-direction:column; gap:18px; min-width:0; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:24px; box-shadow:var(--shadow); }
+    .section-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom:20px; }
+    .section-heading h2 { font-size:1.18rem; }
+    .section-heading p { font-size:.88rem; color:var(--muted); margin:7px 0 0; }
+    .step { display:inline-grid; place-items:center; font-size:.73rem; width:27px; height:27px; border-radius:50%; background:var(--soft); color:var(--accent); margin-right:7px; vertical-align:2px; }
+    .field { margin-bottom:16px; min-width:0; }
+    .field:last-child { margin-bottom:0; }
+    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .id-row { display:flex; gap:8px; align-items:start; }
+    .id-row input { flex:1; }
+    .id-row button { flex-shrink:0; }
+    .hint { font-size:.8rem; color:var(--muted); margin:6px 0 0; }
+    .byte-count { text-align:right; font-size:.74rem; color:var(--muted); margin-top:4px; min-height:1.15em; }
+    .visibility-note { border-left:3px solid var(--accent); padding:10px 13px; background:var(--soft); font-size:.84rem; margin:3px 0 0; border-radius:0 8px 8px 0; }
+    .repeater { display:flex; flex-direction:column; gap:15px; }
+    .repeater-row { min-width:0; border:1px solid var(--line); border-radius:12px; margin:0; padding:14px 16px 16px; }
+    .repeater-row legend { padding:0 7px; font-weight:700; font-size:.9rem; }
+    .row-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .row-id { color:var(--muted); font-size:.76rem; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; overflow-wrap:anywhere; }
+    .observation-text { min-height:100px; }
+    .source-links { border:0; padding:0; margin:12px 0 0; min-width:0; }
+    .source-links legend { padding:0; font-size:.82rem; font-weight:650; }
+    .source-choice { display:flex; align-items:flex-start; gap:9px; font-size:.84rem; font-weight:400; margin:10px 0 0; overflow-wrap:anywhere; }
+    .source-choice span { min-width:0; }
+    .add-row { margin-top:16px; width:100%; border-style:dashed; color:var(--accent); }
+    .media-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+    .media-grid .wide { grid-column:1/-1; }
+    .media-grid textarea { min-height:88px; }
+    .sidebar { position:sticky; top:20px; display:flex; flex-direction:column; gap:16px; min-width:0; }
+    .sidebar .card { padding:20px; }
+    .sidebar h2 { font-size:1.05rem; margin-bottom:10px; }
+    .side-note { font-size:.85rem; color:var(--muted); }
+    .visibility-badge { display:inline-block; padding:4px 9px; border-radius:5px; background:var(--soft); color:var(--accent); font-size:.74rem; font-weight:750; letter-spacing:.04em; text-transform:uppercase; margin-bottom:12px; }
+    .check-state { padding:12px; border-radius:9px; background:var(--warm); font-size:.84rem; margin:14px 0; overflow-wrap:anywhere; }
+    .export-actions { display:flex; flex-direction:column; gap:9px; }
+    .small { font-size:.76rem; color:var(--muted); margin-top:10px; }
+    .action-status { font-size:.84rem; color:var(--accent); min-height:1.3em; margin:10px 0 0; overflow-wrap:anywhere; }
+    .action-status[data-error="true"] { color:var(--danger); }
+    .classification-list { margin:12px 0 0; padding:0; list-style:none; }
+    .classification-list li { font-size:.79rem; color:var(--muted); margin:10px 0; }
+    .classification-list strong { color:var(--ink); display:block; font-weight:650; }
+    .preview-card { grid-column:1/-1; }
+    .preview-card textarea { min-height:340px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.83rem; background:var(--bg); line-height:1.65; }
+    .preview-meta { font-size:.8rem; color:var(--muted); margin-bottom:14px; }
+    footer { color:var(--muted); font-size:.77rem; padding-top:24px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media (max-width:1020px) { .layout { grid-template-columns:minmax(0,1fr) 280px; gap:16px; } .card { padding:20px; } .shell { padding:22px; } .top-actions { gap:12px; } }
+    @media (max-width:800px) { .layout { grid-template-columns:1fr; } .sidebar { position:static; display:grid; grid-template-columns:1fr 1fr; } .sidebar .classification-card { grid-column:1/-1; } .classification-list { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; } .preview-card { grid-column:auto; } .hero { align-items:flex-start; } .local-badge { display:none; } }
+    @media (max-width:540px) { .shell { padding:16px 12px 26px; } .topbar { align-items:flex-start; gap:10px; } .brand span { max-width:110px; display:block; } .top-actions { flex-wrap:wrap; justify-content:flex-end; max-width:145px; gap:7px; } .top-actions a { font-size:.75rem; } .theme-label { display:flex; align-items:center; gap:5px; } .theme-label select { max-width:82px; } .card { padding:18px 15px; border-radius:13px; } .hero { padding:25px 2px; } .field-row,.media-grid,.sidebar { grid-template-columns:1fr; } .media-grid .wide,.sidebar .classification-card { grid-column:auto; } .section-heading { gap:8px; } .id-row { flex-direction:column; } .id-row button { width:100%; } .repeater-row { padding:12px; } .classification-list { grid-template-columns:1fr; } }
+    @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto!important; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#diary-form">Skip to your diary entry</a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="mark" aria-hidden="true">J</div><div><strong>JARVIS</strong><span>LIFE &amp; BUSINESS DIARY</span></div></div>
+      <div class="top-actions"><a href="jarvis-workbench.html" target="_blank" rel="noopener">Portfolio <span class="sr-only">(opens a new tab)</span></a><a href="jarvis-composer.html" target="_blank" rel="noopener">Spelling composer <span class="sr-only">(opens a new tab)</span></a><label class="theme-label" for="theme">Appearance<select id="theme"><option value="auto">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title"><div><div class="eyebrow">Notice. Learn. Choose a next step.</div><h1 id="page-title">A useful record of your day.</h1><p>Capture what you observed, what supports it, and what you want to do next. Keep your life and business notes together in one deliberate draft.</p></div><div class="local-badge">Local draft · private by default</div></section>
+      <noscript><p class="card">This local form needs JavaScript to validate, preview and export entries. It does not submit data to a server.</p></noscript>
+      <div class="layout" id="workspace">
+        <form class="entry-form" id="diary-form" tabindex="-1" novalidate>
+          <section class="card" aria-labelledby="entry-heading">
+            <div class="section-heading"><div><h2 id="entry-heading"><span class="step" aria-hidden="true">1</span> Your day, in context</h2><p>The date starts at today in America/Los_Angeles. You can change it.</p></div></div>
+            <div class="field-row"><div class="field"><label for="entry-date">Date · Pacific time</label><input id="entry-date" type="date" min="0001-01-01" max="9999-12-31" required aria-describedby="timezone-note"><p id="timezone-note" class="hint">Timezone: America/Los_Angeles</p></div><div class="field"><label for="initiative">Initiative</label><select id="initiative" required></select><p class="hint">Changing this keeps the rest of your entry.</p></div></div>
+            <div class="field"><label for="entry-id">Entry ID</label><div class="id-row"><input id="entry-id" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" pattern="[a-z][a-z0-9_.-]{1,47}" required aria-describedby="entry-id-note"><button type="button" id="generate-id">Generate ID</button></div><p id="entry-id-note" class="hint">2–48 characters: start with a lowercase letter, then lowercase letters, numbers, dots, underscores or hyphens. This is a local label, not a signature.</p></div>
+            <div class="field"><label for="title">Entry title</label><input id="title" type="text" lang="en" spellcheck="true" autocomplete="off" required placeholder="What is the thread running through today?" aria-describedby="title-count"><p class="byte-count" id="title-count">0 / 180 UTF-8 bytes</p></div>
+            <div class="field"><label for="visibility">Visibility intention</label><select id="visibility"><option value="private">Private — personal working notes</option><option value="internal">Internal — intended for a local team review</option><option value="public_candidate">Public candidate — prepare for a separate review</option></select><p class="visibility-note" id="visibility-note">Private is the default. Files you download are ordinary local files, not encrypted or access-controlled by this page. Share them only when you choose.</p></div>
+            <div class="field"><label for="summary">Daily summary</label><textarea id="summary" lang="en" spellcheck="true" autocomplete="off" required placeholder="Write the context, the progress you can support, and anything that changed your thinking." aria-describedby="summary-count"></textarea><p class="byte-count" id="summary-count">0 / 3,000 UTF-8 bytes</p></div>
+          </section>
+          <section class="card" aria-labelledby="observations-heading"><div class="section-heading"><div><h2 id="observations-heading"><span class="step" aria-hidden="true">2</span> Observations &amp; evidence</h2><p>Label each note honestly. New rows start as planned work.</p></div><span class="subtle" id="observation-count">1 of 8</span></div><div class="repeater" id="observations"></div><button type="button" class="add-row" id="add-observation">+ Add observation</button><p class="hint">Keep at least one observation. A source-linked observation needs one or more sources selected below its text.</p></section>
+          <section class="card" aria-labelledby="sources-heading"><div class="section-heading"><div><h2 id="sources-heading"><span class="step" aria-hidden="true">3</span> Source references</h2><p>Optional references. URLs are recorded as text and are never fetched.</p></div><span class="subtle" id="source-count">0 of 5</span></div><p class="hint" id="sources-empty">No sources added. You can still record owner reports, plans or fictional material.</p><div class="repeater" id="sources"></div><button type="button" class="add-row" id="add-source">+ Add source</button><p class="hint">Use HTTPS without credentials, whitespace or a custom port. Linking a source does not verify its claims.</p></section>
+          <section class="card" aria-labelledby="next-heading"><div class="section-heading"><div><h2 id="next-heading"><span class="step" aria-hidden="true">4</span> A next step worth taking</h2><p>Choose one practical follow-up. This does not schedule or start it.</p></div></div><label for="next-action">Next action</label><textarea id="next-action" lang="en" spellcheck="true" autocomplete="off" required placeholder="Name one action and the evidence you would want from it." aria-describedby="next-action-count"></textarea><p class="byte-count" id="next-action-count">0 / 1,500 UTF-8 bytes</p></section>
+          <section class="card" aria-labelledby="media-heading"><div class="section-heading"><div><h2 id="media-heading"><span class="step" aria-hidden="true">5</span> Optional creative direction</h2><p>Notes for a later local media draft. Blank fields are welcome.</p></div></div><div class="media-grid"><div class="field"><label for="media-audience">Audience</label><textarea id="media-audience" lang="en" spellcheck="true" autocomplete="off" aria-describedby="media-audience-count" placeholder="Who would benefit from this?"></textarea><p id="media-audience-count" class="byte-count">0 / 600 UTF-8 bytes</p></div><div class="field"><label for="media-learning-goal">Learning goal</label><textarea id="media-learning-goal" lang="en" spellcheck="true" autocomplete="off" aria-describedby="media-learning-goal-count" placeholder="What should they understand or practice?"></textarea><p id="media-learning-goal-count" class="byte-count">0 / 600 UTF-8 bytes</p></div><div class="field"><label for="media-visual-style">Visual style</label><textarea id="media-visual-style" lang="en" spellcheck="true" autocomplete="off" aria-describedby="media-visual-style-count" placeholder="A useful visual approach, if any."></textarea><p id="media-visual-style-count" class="byte-count">0 / 600 UTF-8 bytes</p></div><div class="field"><label for="media-audio-style">Audio style</label><textarea id="media-audio-style" lang="en" spellcheck="true" autocomplete="off" aria-describedby="media-audio-style-count" placeholder="Tone, pacing or accessibility needs."></textarea><p id="media-audio-style-count" class="byte-count">0 / 600 UTF-8 bytes</p></div><div class="field wide"><label for="media-call-to-action">Call to action</label><textarea id="media-call-to-action" lang="en" spellcheck="true" autocomplete="off" aria-describedby="media-call-to-action-count" placeholder="An invitation you might include after review."></textarea><p id="media-call-to-action-count" class="byte-count">0 / 600 UTF-8 bytes</p></div></div></section>
+        </form>
+        <aside class="sidebar" aria-label="Review, export and import">
+          <section class="card" aria-labelledby="review-heading"><span class="visibility-badge" id="visibility-badge">Private draft</span><h2 id="review-heading">Keep a reviewable record</h2><p class="side-note">Your JSON contains your words, evidence labels and sources. It carries no approval or publication authority.</p><p class="check-state" id="validation-state" role="status" aria-live="polite" aria-atomic="true">Add a title to begin.</p><div class="export-actions"><button type="button" class="primary" id="download-entry" disabled>Download entry .json</button><button type="button" id="copy-brief" disabled>Copy diary brief</button><a href="#preview-heading">Review the plain-text preview</a></div><p class="small" id="export-size">Complete the required fields to prepare an export.</p><p class="action-status" id="export-status" role="status" aria-live="polite" aria-atomic="true"></p></section>
+          <section class="card" aria-labelledby="import-heading"><h2 id="import-heading">Continue from a file</h2><label for="import-file" class="field-label">Import a diary entry</label><input id="import-file" type="file" accept=".json,application/json" aria-describedby="import-note"><p class="small" id="import-note">Choose a valid entry JSON up to 64 KiB. A successful import replaces this draft. An invalid file leaves your current work intact.</p><p class="action-status" id="import-status" role="status" aria-live="polite" aria-atomic="true"></p></section>
+          <section class="card classification-card" aria-labelledby="labels-heading"><h2 id="labels-heading">What the labels mean</h2><ul class="classification-list"><li><strong>Source linked</strong>A reference is attached. Its accuracy has not been independently checked here.</li><li><strong>Owner reported</strong>A statement supplied by the person writing this entry.</li><li><strong>Planned</strong>An intention or proposed step, not a completed result.</li><li><strong>Fictional</strong>Illustrative or creative material, not a real-world observation.</li></ul><p class="small">Visibility and evidence labels are separate. A public candidate is still only a candidate for review.</p></section>
+        </aside>
+        <section class="card preview-card" aria-labelledby="preview-heading"><div class="section-heading"><div><h2 id="preview-heading" tabindex="-1">Your plain-text diary brief</h2><p>This is exactly what “Copy diary brief” copies once the entry is valid.</p></div></div><p class="preview-meta">Classification labels, source IDs and URLs stay with the text. Reference URLs are displayed as text.</p><label class="sr-only" for="preview">Diary brief preview, read only</label><textarea id="preview" readonly spellcheck="false" placeholder="Complete the required entry fields to prepare your brief."></textarea></section>
+      </div>
+    </main>
+    <footer><p id="persistence-note">This page uses memory only. Reloading or closing it loses your unsaved draft. There is no autosave, analytics, account connection, sending or publishing.</p><p>Native spellcheck depends on your browser dictionary and settings and may use its own service. This application makes no network requests. The separate spelling composer does not change ChatGPT’s input box.</p></footer>
+  </div>
+  <script id="jarvis-diary-core">
+"use strict";
+globalThis.JarvisDiary = (() => {
+  const MAX_PACKET_BYTES = 65536;
+  const TIMEZONE = "America/Los_Angeles";
+  const INITIATIVES = Object.freeze([
+    ["jarvis-tools", "Jarvis tools and assistant building"],
+    ["website-learning", "Education website and membership inquiries"],
+    ["affiliate-builder", "Affiliate website and membership platform"],
+    ["funding-customers", "Business financing customer journey"],
+    ["referral-partners", "Referral partner recruitment"],
+    ["publishing-library", "Publishing library and creative worlds"],
+    ["interactive-video", "Interactive video and teaching studio"],
+    ["linux-learning", "Linux and programming learning"],
+    ["robotics-simulation", "Robotics simulation and education"],
+    ["wearables-research", "Wearable technology concepts"],
+    ["business-operations", "Business operating system"],
+    ["personal-workflow", "Personal focus, access and continuity"]
+  ].map(pair => Object.freeze(pair)));
+  const VISIBILITIES = Object.freeze({ private:"Private draft", internal:"Internal draft", public_candidate:"Public candidate — review required" });
+  const STATES = Object.freeze({ source_linked:"Source linked — cited, not independently verified", owner_reported:"Owner reported — supplied by the owner", planned:"Planned — intention, not a completed result", fictional:"Fictional — illustrative material" });
+  const MEDIA_KEYS = Object.freeze(["audience","visual_style","audio_style","learning_goal","call_to_action"]);
+  const ENTRY_KEYS = Object.freeze(["schema_version","kind","entry_id","date","timezone","initiative_id","title","visibility","summary","observations","sources","next_action","media_notes"]);
+  const encoder = new TextEncoder();
+  const bytes = text => encoder.encode(text).length;
+  const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
+  class EntryError extends TypeError { constructor(message, path="") { super(message); this.name="EntryError"; this.path=path; } }
+  function fail(message,path) { throw new EntryError(message,path); }
+  function exact(record, keys, label, path="") {
+    if (!isRecord(record) || Object.keys(record).length !== keys.length || !keys.every(key => Object.hasOwn(record,key))) fail(`${label} has missing or unexpected fields.`,path);
+  }
+  function validUnicode(text) {
+    for (let i=0;i<text.length;i+=1) {
+      const unit=text.charCodeAt(i);
+      if (unit>=0xd800 && unit<=0xdbff) {
+        const next=text.charCodeAt(i+1);
+        if (!(next>=0xdc00 && next<=0xdfff)) return false;
+        i+=1;
+      } else if (unit>=0xdc00 && unit<=0xdfff) return false;
+    }
+    return true;
+  }
+  function textField(value,max,label,path,allowBlank=false) {
+    if (typeof value!=="string") fail(`${label} must be text.`,path);
+    if (!validUnicode(value)) fail(`${label} contains invalid Unicode.`,path);
+    if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(value)) fail(`${label} contains unsupported control characters.`,path);
+    // Python str.strip whitespace, excluding C0 already rejected above; FEFF is not whitespace.
+    if (!allowBlank && /^\p{White_Space}*$/u.test(value)) fail(`Add ${label.toLowerCase()}.`,path);
+    if (bytes(value)>max) fail(`${label} must be ${max.toLocaleString("en")} UTF-8 bytes or fewer.`,path);
+    return value;
+  }
+  function identifier(value,label,path) {
+    const match=typeof value==="string" ? /^[a-z][a-z0-9_.-]{1,47}$/u.exec(value) : null;
+    if (!match || match[0]!==value) fail(`${label} must use 2–48 lowercase identifier characters.`,path);
+    return value;
+  }
+  function validDate(value) {
+    if (typeof value!=="string" || value.length!==10 || !/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u.test(value)) return false;
+    const [year,month,day]=value.split("-").map(Number);
+    if (year<1 || month<1 || month>12 || day<1) return false;
+    const leap=year%4===0 && (year%100!==0 || year%400===0);
+    return day<=[31,leap?29:28,31,30,31,30,31,31,30,31,30,31][month-1];
+  }
+  function pacificDate(instant=new Date()) {
+    const parts=new Intl.DateTimeFormat("en-US",{ timeZone:TIMEZONE,year:"numeric",month:"2-digit",day:"2-digit" }).formatToParts(instant);
+    const part=kind=>parts.find(item=>item.type===kind).value;
+    return `${part("year").padStart(4,"0")}-${part("month")}-${part("day")}`;
+  }
+  function httpsURL(value,path) {
+    textField(value,1000,"Source URL",path);
+    const authority=/^https:\/\/([^/?#]+)/iu.exec(value);
+    if (!authority || authority[1].includes("@") || /[\p{White_Space}\u0000-\u001f\\]/u.test(value)) fail("Use an HTTPS source URL without credentials, whitespace or a custom port.",path);
+    let parsed;
+    try { parsed=new URL(value); } catch { fail("Use a valid HTTPS source URL.",path); }
+    if (parsed.protocol!=="https:" || !parsed.hostname || parsed.username || parsed.password || !["","443"].includes(parsed.port)) fail("Use an HTTPS source URL without credentials or a custom port.",path);
+    return value;
+  }
+  function cloneDraft(entry) {
+    return { ...entry, observations:entry.observations.map(item=>({...item,source_ids:[...item.source_ids]})), sources:entry.sources.map(item=>({...item})),media_notes:{...entry.media_notes} };
+  }
+  function validateEntry(entry) {
+    exact(entry,ENTRY_KEYS,"Diary entry");
+    if (entry.schema_version!==1 || entry.kind!=="jarvis.diary_entry") fail("Unsupported diary entry schema.");
+    identifier(entry.entry_id,"Entry ID","entry_id");
+    if (!validDate(entry.date)) fail("Choose a valid date in YYYY-MM-DD form, from year 0001 to 9999.","date");
+    if (entry.timezone!==TIMEZONE) fail("The entry timezone must be America/Los_Angeles.","timezone");
+    if (!INITIATIVES.some(([id])=>id===entry.initiative_id)) fail("Choose one of the twelve listed initiatives.","initiative_id");
+    textField(entry.title,180,"Entry title","title");
+    if (typeof entry.visibility!=="string" || !Object.hasOwn(VISIBILITIES,entry.visibility)) fail("Choose private, internal or public candidate visibility.","visibility");
+    textField(entry.summary,3000,"Daily summary","summary");
+    if (!Array.isArray(entry.sources) || entry.sources.length>5) fail("Use no more than five sources.","sources");
+    const sourceIDs=new Set();
+    entry.sources.forEach((source,index)=>{
+      const path=`sources.${index}`;
+      exact(source,["source_id","title","url"],"Source",path);
+      identifier(source.source_id,"Source ID",`${path}.source_id`);
+      if (sourceIDs.has(source.source_id)) fail("Every source needs a different source ID.",`${path}.source_id`);
+      sourceIDs.add(source.source_id);
+      textField(source.title,200,"Source title",`${path}.title`);
+      httpsURL(source.url,`${path}.url`);
+    });
+    if (!Array.isArray(entry.observations) || entry.observations.length<1 || entry.observations.length>8) fail("Keep between one and eight observations.","observations");
+    const observationIDs=new Set();
+    entry.observations.forEach((observation,index)=>{
+      const path=`observations.${index}`;
+      exact(observation,["observation_id","text","evidence_state","source_ids"],"Observation",path);
+      identifier(observation.observation_id,"Observation ID",`${path}.observation_id`);
+      if (observationIDs.has(observation.observation_id)) fail("Every observation needs a different observation ID.",`${path}.observation_id`);
+      observationIDs.add(observation.observation_id);
+      textField(observation.text,1000,"Observation text",`${path}.text`);
+      if (typeof observation.evidence_state!=="string" || !Object.hasOwn(STATES,observation.evidence_state)) fail("Choose a listed evidence classification.",`${path}.evidence_state`);
+      if (!Array.isArray(observation.source_ids) || observation.source_ids.length>5) fail("Select no more than five sources for an observation.",`${path}.source_ids`);
+      const linked=new Set();
+      observation.source_ids.forEach(id=>{
+        if (typeof id!=="string" || !sourceIDs.has(id) || linked.has(id)) fail("Observation references must be unique, known source IDs.",`${path}.source_ids`);
+        linked.add(id);
+      });
+      if (observation.evidence_state==="source_linked" && !linked.size) fail("Select at least one source for a source-linked observation.",`${path}.source_ids`);
+    });
+    textField(entry.next_action,1500,"Next action","next_action");
+    exact(entry.media_notes,MEDIA_KEYS,"Media notes","media_notes");
+    MEDIA_KEYS.forEach(key=>textField(entry.media_notes[key],600,`Media ${key.replaceAll("_"," ")}`,`media_notes.${key}`,true));
+    if (bytes(JSON.stringify(entry))>MAX_PACKET_BYTES) fail("The complete entry must be 64 KiB or smaller.");
+    return cloneDraft(entry);
+  }
+  function newDraft(date,entryId) {
+    if (!validDate(date)) fail("A valid Pacific date is required.");
+    identifier(entryId,"Entry ID","entry_id");
+    return { schema_version:1,kind:"jarvis.diary_entry",entry_id:entryId,date,timezone:TIMEZONE,initiative_id:INITIATIVES[0][0],title:"",visibility:"private",summary:"",observations:[{observation_id:"observation-1",text:"",evidence_state:"planned",source_ids:[]}],sources:[],next_action:"",media_notes:Object.fromEntries(MEDIA_KEYS.map(key=>[key,""])) };
+  }
+  function nextRowId(prefix,items,key) {
+    let index=1;
+    while (items.some(item=>item[key]===`${prefix}-${index}`)) index+=1;
+    return `${prefix}-${index}`;
+  }
+  function addObservation(entry) {
+    if (entry.observations.length>=8) fail("The entry already has eight observations.");
+    const result=cloneDraft(entry);
+    result.observations.push({observation_id:nextRowId("observation",result.observations,"observation_id"),text:"",evidence_state:"planned",source_ids:[]});
+    return result;
+  }
+  function removeObservation(entry,id) {
+    if (entry.observations.length<=1) fail("Keep at least one observation.");
+    if (!entry.observations.some(item=>item.observation_id===id)) fail("Observation not found.");
+    const result=cloneDraft(entry); result.observations=result.observations.filter(item=>item.observation_id!==id); return result;
+  }
+  function addSource(entry) {
+    if (entry.sources.length>=5) fail("The entry already has five sources.");
+    const result=cloneDraft(entry); result.sources.push({source_id:nextRowId("source",result.sources,"source_id"),title:"",url:""}); return result;
+  }
+  function removeSource(entry,id) {
+    if (!entry.sources.some(item=>item.source_id===id)) fail("Source not found.");
+    const result=cloneDraft(entry); result.sources=result.sources.filter(item=>item.source_id!==id);
+    result.observations.forEach(item=>{ item.source_ids=item.source_ids.filter(sourceId=>sourceId!==id); });
+    return result;
+  }
+  function setSourceLink(entry,observationId,sourceId,checked) {
+    if (typeof checked!=="boolean" || !entry.sources.some(item=>item.source_id===sourceId)) fail("Select a known source.");
+    const result=cloneDraft(entry); const observation=result.observations.find(item=>item.observation_id===observationId);
+    if (!observation) fail("Observation not found.");
+    const links=new Set(observation.source_ids); if (checked) links.add(sourceId); else links.delete(sourceId); observation.source_ids=[...links]; return result;
+  }
+  function parseUniqueJSON(text) {
+    if (typeof text!=="string" || !validUnicode(text)) fail("The imported file must contain valid UTF-8 JSON.");
+    if (bytes(text)>MAX_PACKET_BYTES) fail("Choose a JSON file no larger than 64 KiB.");
+    let position=0;
+    const bad=()=>fail("The imported file is not valid, unambiguous JSON.");
+    const skip=()=>{ while (/[\t\n\r ]/u.test(text[position] || "") && position<text.length) position+=1; };
+    function string() {
+      const start=position;
+      if (text[position++]!=='"') bad();
+      while (position<text.length) {
+        const char=text[position++];
+        if (char==='"') { try { return JSON.parse(text.slice(start,position)); } catch { bad(); } }
+        if (char==="\\") position+=1;
+        else if (char.charCodeAt(0)<32) bad();
+      }
+      bad();
+    }
+    function value(depth,key="") {
+      if (depth>12) fail("The imported JSON is nested too deeply.");
+      skip(); const char=text[position];
+      if (char==='"') return string();
+      if (char==="{") {
+        position+=1; const record=Object.create(null); skip();
+        if (text[position]==="}") { position+=1; return record; }
+        while (position<text.length) {
+          skip(); const key=string(); if (Object.hasOwn(record,key)) fail("The imported JSON contains a duplicate field.");
+          skip(); if (text[position++]!==":") bad(); record[key]=value(depth+1,key); skip();
+          const next=text[position++]; if (next==="}") return record; if (next!==",") bad();
+        }
+        bad();
+      }
+      if (char==="[") {
+        position+=1; const items=[]; skip(); if (text[position]==="]") { position+=1; return items; }
+        while (position<text.length) { items.push(value(depth+1)); skip(); const next=text[position++]; if (next==="]") return items; if (next!==",") bad(); }
+        bad();
+      }
+      for (const [token,result] of [["true",true],["false",false],["null",null]]) if (text.startsWith(token,position)) { position+=token.length; return result; }
+      const number=/-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?/uy; number.lastIndex=position; const match=number.exec(text);
+      if (match) { position=number.lastIndex; const result=Number(match[0]); if (!Number.isFinite(result)) bad(); if (key==="schema_version" && /[.eE]/u.test(match[0])) fail("The schema version must be a JSON integer."); return result; }
+      bad();
+    }
+    const result=value(0); skip(); if (position!==text.length) bad(); return result;
+  }
+  function parseEntry(text) { return validateEntry(parseUniqueJSON(text)); }
+  function tryImport(currentDraft,text) {
+    try { return {ok:true,entry:parseEntry(text),error:""}; }
+    catch (error) { return {ok:false,entry:currentDraft,error:error instanceof EntryError ? error.message : "The file could not be imported."}; }
+  }
+  function serializeEntry(entry) {
+    const validated=validateEntry(entry); const text=JSON.stringify(validated,null,2)+"\n";
+    if (bytes(text)>MAX_PACKET_BYTES) fail("The formatted entry must be 64 KiB or smaller.");
+    return text;
+  }
+  function buildPreview(entry) {
+    const valid=validateEntry(entry);
+    const initiative=INITIATIVES.find(([id])=>id===valid.initiative_id)[1];
+    const lines=["JARVIS — LIFE & BUSINESS DAILY DIARY",`VISIBILITY: ${VISIBILITIES[valid.visibility]}`,"Local draft. No publication approval or independent verification is implied.","",valid.title,`Date: ${valid.date} (${valid.timezone})`,`Entry ID: ${valid.entry_id}`,`Initiative: ${initiative} [${valid.initiative_id}]`,"","DAILY SUMMARY",valid.summary,"","OBSERVATIONS"];
+    valid.observations.forEach((item,index)=>lines.push(`${index+1}. [${STATES[item.evidence_state].toUpperCase()}]`, `Observation ID: ${item.observation_id}`,item.text,`Sources: ${item.source_ids.length ? item.source_ids.join(", ") : "None attached"}`,""));
+    lines.push("SOURCE REFERENCES — recorded, not fetched or verified");
+    if (!valid.sources.length) lines.push("No source references supplied.");
+    valid.sources.forEach(source=>lines.push(`[${source.source_id}] ${source.title}`,source.url));
+    lines.push("","NEXT ACTION — planning only",valid.next_action,"","OPTIONAL MEDIA NOTES");
+    MEDIA_KEYS.forEach(key=>lines.push(`${key.replaceAll("_"," ").toUpperCase()}: ${valid.media_notes[key] || "(not supplied)"}`));
+    if (valid.visibility==="public_candidate") lines.push("","PUBLIC CANDIDATE: eligible for a separate local media-draft review; this is not publication consent.");
+    return lines.join("\n");
+  }
+  return Object.freeze({MAX_PACKET_BYTES,TIMEZONE,INITIATIVES,VISIBILITIES,STATES,MEDIA_KEYS,ENTRY_KEYS,EntryError,bytes,validUnicode,validDate,pacificDate,httpsURL,validateEntry,newDraft,addObservation,removeObservation,addSource,removeSource,setSourceLink,parseUniqueJSON,parseEntry,tryImport,serializeEntry,buildPreview});
+})();
+  </script>
+  <script id="jarvis-diary-app">
+"use strict";
+(() => {
+  const core=globalThis.JarvisDiary;
+  const byId=id=>document.getElementById(id);
+  const fieldNodes=new Map();
+  let revision=0, importTicket=0, readyEntry=null;
+  function localEntryId() {
+    if (globalThis.crypto && typeof crypto.randomUUID==="function") return `entry-${crypto.randomUUID()}`;
+    return `entry-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,12)}`;
+  }
+  let draft=core.newDraft(core.pacificDate(),localEntryId());
+  const staticFields=[["entry-id","entry_id"],["entry-date","date"],["initiative","initiative_id"],["title","title"],["visibility","visibility"],["summary","summary"],["next-action","next_action"]];
+  const mediaFields=[["media-audience","audience"],["media-visual-style","visual_style"],["media-audio-style","audio_style"],["media-learning-goal","learning_goal"],["media-call-to-action","call_to_action"]];
+  const counts=[["title",180],["summary",3000],["next-action",1500],...mediaFields.map(([id])=>[id,600])];
+  function announce(id,message,error=false) { const node=byId(id); node.textContent=message; node.dataset.error=String(error); }
+  function option(value,label) { const node=document.createElement("option"); node.value=value; node.textContent=label; return node; }
+  core.INITIATIVES.forEach(([id,label])=>byId("initiative").append(option(id,label)));
+  function changed() { revision+=1; announce("export-status",""); refresh(); }
+  staticFields.forEach(([id,key])=>{
+    const node=byId(id); fieldNodes.set(key,node);
+    node.addEventListener("input",()=>{ draft[key]=node.value; changed(); });
+  });
+  mediaFields.forEach(([id,key])=>{
+    const node=byId(id); fieldNodes.set(`media_notes.${key}`,node);
+    node.addEventListener("input",()=>{ draft.media_notes[key]=node.value; changed(); });
+  });
+  byId("diary-form").addEventListener("submit",event=>event.preventDefault());
+  byId("theme").addEventListener("change",()=>{ const value=byId("theme").value; if (value==="auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=value; });
+  byId("generate-id").addEventListener("click",()=>{ draft.entry_id=localEntryId(); byId("entry-id").value=draft.entry_id; changed(); announce("export-status","Generated a new local entry ID. Your other fields are unchanged."); });
+  function field(container,{id,label,value,kind="text",rows=3,hint,path,onInput}) {
+    const wrapper=document.createElement("div"); wrapper.className="field";
+    const labelNode=document.createElement("label"); labelNode.htmlFor=id; labelNode.textContent=label;
+    const node=document.createElement(kind==="textarea" ? "textarea" : "input"); node.id=id; node.value=value;
+    if (kind!=="textarea") node.type=kind; else node.rows=rows;
+    node.autocomplete="off"; node.spellcheck=kind!=="url"; node.lang="en";
+    if (kind==="url") node.setAttribute("autocapitalize","off");
+    if (kind==="textarea") node.className="observation-text";
+    node.required=true;
+    wrapper.append(labelNode,node);
+    if (hint) { const note=document.createElement("p"); note.id=`${id}-hint`; note.className="hint"; note.textContent=hint; node.setAttribute("aria-describedby",note.id); wrapper.append(note); }
+    node.addEventListener("input",()=>{ onInput(node.value); changed(); });
+    fieldNodes.set(path,node); container.append(wrapper); return node;
+  }
+  function sourceLabel(source) { return `${source.source_id} · ${source.title || "Untitled source"}`; }
+  function updateSourceLabels() {
+    document.querySelectorAll("[data-source-label]").forEach(node=>{ const source=draft.sources.find(item=>item.source_id===node.dataset.sourceLabel); if (source) node.textContent=sourceLabel(source); });
+  }
+  function renderObservations() {
+    const container=byId("observations"); container.replaceChildren();
+    for (const key of fieldNodes.keys()) if (key.startsWith("observations.")) fieldNodes.delete(key);
+    draft.observations.forEach((observation,index)=>{
+      const row=document.createElement("fieldset"); row.className="repeater-row";
+      const legend=document.createElement("legend"); legend.textContent=`Observation ${index+1}`; row.append(legend);
+      const head=document.createElement("div"); head.className="row-head";
+      const id=document.createElement("span"); id.className="row-id"; id.textContent=observation.observation_id;
+      const remove=document.createElement("button"); remove.type="button"; remove.className="remove"; remove.textContent="Remove"; remove.setAttribute("aria-label",`Remove observation ${index+1}`); remove.disabled=draft.observations.length===1;
+      remove.addEventListener("click",()=>{ draft=core.removeObservation(draft,observation.observation_id); revision+=1; renderObservations(); refresh(); byId("add-observation").focus(); announce("export-status","Observation removed from the local draft."); });
+      head.append(id,remove); row.append(head);
+      const text=field(row,{id:`observation-text-${index}`,label:"Observation",kind:"textarea",value:observation.text,hint:"Up to 1,000 UTF-8 bytes.",path:`observations.${index}.text`,onInput:value=>{ draft.observations[index].text=value; }});
+      text.setAttribute("aria-describedby",`${text.id}-hint`);
+      const label=document.createElement("label"); label.htmlFor=`observation-state-${index}`; label.textContent="Evidence classification";
+      const state=document.createElement("select"); state.id=label.htmlFor;
+      Object.entries(core.STATES).forEach(([value,title])=>state.append(option(value,title))); state.value=observation.evidence_state;
+      state.addEventListener("change",()=>{ draft.observations[index].evidence_state=state.value; changed(); });
+      fieldNodes.set(`observations.${index}.evidence_state`,state); row.append(label,state);
+      const links=document.createElement("fieldset"); links.className="source-links";
+      const linkLegend=document.createElement("legend"); linkLegend.textContent="Attached sources"; links.append(linkLegend);
+      if (!draft.sources.length) { const note=document.createElement("p"); note.className="hint"; note.textContent="Add a source in section 3 to attach it here."; links.append(note); }
+      draft.sources.forEach((source,sourceIndex)=>{
+        const choice=document.createElement("label"); choice.className="source-choice";
+        const checkbox=document.createElement("input"); checkbox.type="checkbox"; checkbox.id=`link-${index}-${sourceIndex}`; checkbox.checked=observation.source_ids.includes(source.source_id);
+        const description=document.createElement("span"); description.dataset.sourceLabel=source.source_id; description.textContent=sourceLabel(source);
+        checkbox.addEventListener("change",()=>{ draft=core.setSourceLink(draft,observation.observation_id,source.source_id,checkbox.checked); changed(); });
+        choice.htmlFor=checkbox.id; choice.append(checkbox,description); links.append(choice);
+      });
+      fieldNodes.set(`observations.${index}.source_ids`,links); row.append(links); container.append(row);
+    });
+    byId("observation-count").textContent=`${draft.observations.length} of 8`; byId("add-observation").disabled=draft.observations.length>=8;
+  }
+  function renderSources() {
+    const container=byId("sources"); container.replaceChildren();
+    for (const key of fieldNodes.keys()) if (key.startsWith("sources.")) fieldNodes.delete(key);
+    draft.sources.forEach((source,index)=>{
+      const row=document.createElement("fieldset"); row.className="repeater-row";
+      const legend=document.createElement("legend"); legend.textContent=`Source ${index+1}`; row.append(legend);
+      const head=document.createElement("div"); head.className="row-head";
+      const id=document.createElement("span"); id.className="row-id"; id.textContent=source.source_id;
+      const remove=document.createElement("button"); remove.type="button"; remove.className="remove"; remove.textContent="Remove"; remove.setAttribute("aria-label",`Remove source ${index+1}`);
+      remove.addEventListener("click",()=>{ draft=core.removeSource(draft,source.source_id); revision+=1; renderSources(); renderObservations(); refresh(); byId("add-source").focus(); announce("export-status","Source removed and its references detached. Source-linked observations still need a source."); });
+      head.append(id,remove); row.append(head);
+      field(row,{id:`source-title-${index}`,label:"Source title",value:source.title,hint:"Up to 200 UTF-8 bytes.",path:`sources.${index}.title`,onInput:value=>{ draft.sources[index].title=value; updateSourceLabels(); }});
+      field(row,{id:`source-url-${index}`,label:"HTTPS URL",kind:"url",value:source.url,hint:"Up to 1,000 UTF-8 bytes. No account credentials or custom port.",path:`sources.${index}.url`,onInput:value=>{ draft.sources[index].url=value; }});
+      container.append(row);
+    });
+    byId("source-count").textContent=`${draft.sources.length} of 5`; byId("sources-empty").hidden=draft.sources.length>0; byId("add-source").disabled=draft.sources.length>=5;
+  }
+  function refresh() {
+    counts.forEach(([id,max])=>{ byId(`${id}-count`).textContent=`${core.bytes(byId(id).value).toLocaleString("en")} / ${max.toLocaleString("en")} UTF-8 bytes`; });
+    fieldNodes.forEach(node=>node.removeAttribute("aria-invalid"));
+    byId("visibility-badge").textContent=core.VISIBILITIES[draft.visibility];
+    const notes={private:"Private is the default. Files you download are ordinary local files, not encrypted or access-controlled by this page. Share them only when you choose.",internal:"Internal describes your intended audience. It does not grant anyone access or transmit the entry to a team.",public_candidate:"Public candidate permits a separate local media-draft review. It is not publication consent, a finished public artifact or permission to send anything."};
+    byId("visibility-note").textContent=notes[draft.visibility];
+    try {
+      readyEntry=core.validateEntry(draft); const serialized=core.serializeEntry(readyEntry);
+      byId("preview").value=core.buildPreview(readyEntry);
+      byId("validation-state").textContent="Entry checks passed. Review your classifications and sources before exporting.";
+      byId("export-size").textContent=`${core.bytes(serialized).toLocaleString("en")} / 65,536 UTF-8 bytes · ready for local export`;
+    } catch (error) {
+      readyEntry=null; byId("preview").value="";
+      byId("validation-state").textContent=error instanceof core.EntryError ? error.message : "This entry could not be validated.";
+      byId("export-size").textContent="Your draft stays in place. Complete the required fields to enable export.";
+      if (fieldNodes.has(error.path)) fieldNodes.get(error.path).setAttribute("aria-invalid","true");
+    }
+    byId("download-entry").disabled=!readyEntry; byId("copy-brief").disabled=!readyEntry;
+  }
+  function hydrate() {
+    staticFields.forEach(([id,key])=>{ byId(id).value=draft[key]; }); mediaFields.forEach(([id,key])=>{ byId(id).value=draft.media_notes[key]; });
+    renderSources(); renderObservations(); refresh();
+  }
+  byId("add-observation").addEventListener("click",()=>{ draft=core.addObservation(draft); revision+=1; renderObservations(); refresh(); byId(`observation-text-${draft.observations.length-1}`).focus(); announce("export-status","Added a planned observation."); });
+  byId("add-source").addEventListener("click",()=>{ draft=core.addSource(draft); revision+=1; renderSources(); renderObservations(); refresh(); byId(`source-title-${draft.sources.length-1}`).focus(); announce("export-status","Added a source row. Give it a title and HTTPS URL before export."); });
+  byId("download-entry").addEventListener("click",()=>{
+    try {
+      const text=core.serializeEntry(draft); const blob=new Blob([text],{type:"application/json;charset=utf-8"}); const url=URL.createObjectURL(blob);
+      const anchor=document.createElement("a"); anchor.href=url; anchor.download="jarvis-diary-entry.json"; document.body.append(anchor); anchor.click(); anchor.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+      announce("export-status","Diary JSON download requested. The file keeps your visibility and evidence labels.");
+    } catch { announce("export-status","The download could not be prepared. Check the entry fields and try again.",true); }
+  });
+  byId("copy-brief").addEventListener("click",async()=>{
+    let text;
+    try { text=core.buildPreview(draft); } catch { announce("export-status","Complete the entry checks before copying.",true); return; }
+    try {
+      if (!navigator.clipboard || typeof navigator.clipboard.writeText!=="function") throw new Error("unavailable");
+      await navigator.clipboard.writeText(text); announce("export-status","Diary brief copied with its evidence labels and sources.");
+    } catch {
+      byId("preview").value=text; byId("preview").focus(); byId("preview").select(); announce("export-status","Clipboard access was unavailable. Your brief is selected below; press Ctrl+C or ⌘C to copy it.");
+    }
+  });
+  byId("import-file").addEventListener("change",async()=>{
+    const input=byId("import-file"); const file=input.files && input.files[0]; if (!file) return;
+    const ticket=++importTicket; const startRevision=revision;
+    announce("import-status","Checking the selected local file…");
+    try {
+      if (file.size>core.MAX_PACKET_BYTES) { announce("import-status","Choose a JSON file no larger than 64 KiB. Your draft is unchanged.",true); return; }
+      const content=await file.arrayBuffer();
+      if (ticket!==importTicket) return;
+      if (content.byteLength>core.MAX_PACKET_BYTES) { announce("import-status","The file exceeds 64 KiB. Your draft is unchanged.",true); return; }
+      let text;
+      try { text=new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(content); } catch { announce("import-status","The file is not valid UTF-8. Your draft is unchanged.",true); return; }
+      const candidate=core.tryImport(draft,text);
+      if (!candidate.ok) { announce("import-status",`${candidate.error} Your draft is unchanged.`,true); return; }
+      if (revision!==startRevision) { announce("import-status","You edited this draft while the file was checked. Your changes are preserved; choose the file again to replace them.",true); return; }
+      draft=candidate.entry; revision+=1; hydrate(); announce("export-status",""); announce("import-status",`Imported a valid ${draft.visibility.replaceAll("_"," ")} entry. Nothing was published or sent.`);
+    } catch { if (ticket===importTicket) announce("import-status","The local file could not be read. Your draft is unchanged.",true); }
+    finally { if (ticket===importTicket) input.value=""; }
+  });
+  hydrate();
+})();
+  </script>
+</body>
+</html>

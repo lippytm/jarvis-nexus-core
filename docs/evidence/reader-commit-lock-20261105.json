@@ -1,0 +1,77 @@
+{
+  "asset_id": "codex",
+  "checks": {
+    "behavior": [
+      "two actual SQLite connections, rollback-journal DELETE mode",
+      "read-only BEGIN/SELECT holds shared lock",
+      "writer UPDATE executes then COMMIT raises SQLITE_BUSY",
+      "trace has exactly BEGIN IMMEDIATE, COMMIT, ROLLBACK; no automatic retry",
+      "no returned receipt or pending transaction; logical rows unchanged",
+      "restart retains original rows and proposed review",
+      "explicit retry after reader release succeeds without dispatch/retry authority",
+      "independent second record and paused/outcome_unknown profile retained; exports blocked"
+    ],
+    "focused": {
+      "passed": true,
+      "run": 1,
+      "seconds": 0.022
+    },
+    "full": {
+      "record_sha256": "b122a89a595dfc36564bd3d2c116914b3bc5efdaf5bdddf276895cc531f41af8",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 548,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "sensitivity": {
+      "caught": "in_transaction remained True",
+      "errors": 0,
+      "expected_failures": 1,
+      "isolated_prior_transaction_behavior": true,
+      "production_source_modified": false
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.reader-commit-lock.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "98fb2979f39ea74607ebe7848bb80a5bbf728a35",
+  "limitations": [
+    "synthetic records and deliberately held real reader lock; no Codex outage",
+    "no live authenticated delivery, lease, failover or retry controller",
+    "DELETE-mode SQLITE_BUSY does not cover all storage failures"
+  ],
+  "memory_revision": 163,
+  "mission_id": "reader-commit-lock-20261105",
+  "next_task": "independent exact-revision review; accepted registry audience/access policy remains pending",
+  "observed_gap": "Previous regression denied COMMIT through an authorizer; no reader-lock SQLITE_BUSY-at-commit test existed.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "b70964a2359065dda3c8ab7d1411d63337f498ac9831550ebe77224d6e3cf59b",
+  "report_sha256": {
+    "reports/reader-commit-lock-focused-20261105.txt": "1f595a73b2ed09c1daaeb8becdd5972805c2e54d319d1d1379fd724d863b04e4",
+    "reports/reader-commit-lock-full-20261105.json": "85fd6a978c2c326d390db562895c7a5b1c449f6d388759d3996834a7189e9553",
+    "reports/reader-commit-lock-sensitivity-20261105.txt": "a6dfda84dbe7215644a5fbaf357c3bae71ba7a110e1c96d05576c5c837579a2f",
+    "reports/reader-commit-lock-web-20261105.txt": "11965a080eb52115599e8d76a794ebe0e69dca4f3c2b8a05e5fdca4e0da9dbc0"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "scope": "one regression method plus this evidence; production code unchanged",
+  "source_sha256": {
+    "control_tower/handoffs.py": "22561e42a8e7f583e3ef6e148984a27a0c4d7dd33c7de76393d202ee8fbc50a1",
+    "tests/test_handoff_context.py": "5e180e957af737920a02e95acdc1bfba23a8b620587bbb874966a76531c3f204"
+  }
+}

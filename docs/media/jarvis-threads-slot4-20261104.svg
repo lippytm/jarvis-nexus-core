@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Conceptual return checklist with four empty boxes</title>
+  <desc id="desc">Unpublished Threads slot-4 artwork. Four unchecked boxes label Artifact, Actual checks, Unresolved limits and Continuation checkpoint. Owner review is also empty. Empty boxes do not imply completion or approval. Destination is unassigned. A prepared return does not authorize dispatch, purchases or publication.</desc>
+  <rect width="1080" height="1080" fill="#101d2c"/>
+  <g font-family="DejaVu Sans" fill="#f5f8fc">
+    <text x="48" y="70" font-size="34" font-weight="bold">ONE RETURN. FOUR REFERENCES.</text>
+    <text x="48" y="112" font-size="22" fill="#a9e0df">CONCEPTUAL EXAMPLE • UNPUBLISHED DRAFT</text>
+    <text x="48" y="164" font-size="22" fill="#b8d9e8">A draft return keeps evidence and limits together.</text>
+    <rect x="48" y="220" width="984" height="106" rx="16" fill="#20354c"/>
+    <rect x="72" y="247" width="48" height="48" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="148" y="282" font-size="30" font-weight="bold">Artifact</text>
+    <rect x="48" y="350" width="984" height="106" rx="16" fill="#20354c"/>
+    <rect x="72" y="377" width="48" height="48" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="148" y="412" font-size="30" font-weight="bold">Actual checks</text>
+    <rect x="48" y="480" width="984" height="106" rx="16" fill="#20354c"/>
+    <rect x="72" y="507" width="48" height="48" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="148" y="542" font-size="30" font-weight="bold">Unresolved limits</text>
+    <rect x="48" y="610" width="984" height="106" rx="16" fill="#20354c"/>
+    <rect x="72" y="637" width="48" height="48" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="148" y="672" font-size="30" font-weight="bold">Continuation checkpoint</text>
+    <text x="48" y="766" font-size="22" fill="#b8d9e8">Empty boxes do not imply completion or approval.</text>
+    <rect x="48" y="794" width="984" height="104" rx="16" fill="#20354c"/>
+    <text x="72" y="856" font-size="26">Owner review:</text>
+    <rect x="314" y="818" width="668" height="54" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+    <text x="48" y="956" font-size="22" fill="#b8d9e8">Destination: unassigned • No completed return depicted.</text>
+    <text x="48" y="1014" font-size="21" fill="#b8d9e8">A prepared return does not authorize dispatch, purchases or publication.</text>
+  </g>
+</svg>

@@ -1,0 +1,58 @@
+{
+  "authentication_or_live_dispatch": "not_established",
+  "baseline": {
+    "cases": [
+      "cancelled -> active",
+      "outcome_unknown -> execution_blocked",
+      "outcome_unknown changed attempts",
+      "outcome_unknown changed context_id"
+    ],
+    "errors_each": 0,
+    "failures_each": 8,
+    "methods_run_separately": 2,
+    "notes": "Each case failed index/load/backup rejection and no-published-backup assertions."
+  },
+  "baseline_commands": [
+    "python3 -m unittest discover -s tests -p test_handoff_context.py -k historical_terminal_holds",
+    "python3 -m unittest discover -s tests -p test_handoff_context.py -k historical_unknown_execution_binding"
+  ],
+  "change": "Shared checkpoint reader enforces existing write-path irreversible cancellation and frozen unknown-outcome state/attempt/context-ID invariants. No automatic repair, migration or new authority.",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "c8bd35438b2a9245c4dcaa1dd3a57cf00de3be77",
+  "local_verification": {
+    "errors": 0,
+    "failures": 0,
+    "record_sha256": "3a43945b31b361b4f757af9f5158e39fcdf6994559ad5e36bc15330d40f10f81",
+    "syntax_files": 73,
+    "tests": 508
+  },
+  "memory_source": "master Page sequence 118",
+  "mission_id": "checkpoint-hold-integrity-20261104",
+  "next_task": "Exact-content independent review; separately verify audience/access policy and owner acceptance of the one saved registry proposal before operational ingestion. Leases/failover remain planned.",
+  "observed_problem": "Retained rehashed cancelled or unknown-outcome checkpoints could imply forbidden later hold removal; unknown checkpoints could contradict the current frozen attempt/context identity. Index/load accepted and backup published contradictory synthetic history.",
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "db921b865940e3c0f48a7729c1275e0f5ffdea6bbb8faf50b167e1fed5eac2db",
+  "regressions": [
+    "Four damaged-history cases reject indexing, exact load and backup after read-only restart without source/independent/current-record changes or backup/temp files.",
+    "Valid paused history remains readable before an active unknown-outcome current profile, with retry=false and current hold unchanged."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_checkpoint_hold_integrity_repair",
+  "source_sha256": {
+    "control_tower/handoffs.py": "45b1c72f70fad694d089e6d79ff103acd75cb1b689bf818f0eaa0a7d385a1bed",
+    "tests/test_handoff_context.py": "2c69c620b3104ef1aa897ecf3390a874c10d83c221274d60bf75f241c5226edd"
+  }
+}

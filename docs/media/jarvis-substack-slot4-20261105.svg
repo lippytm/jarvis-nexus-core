@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+<title id="title">A blank draft return checklist</title>
+<desc id="desc">Unpublished conceptual Substack artwork. Draft only appears above four empty checkboxes labelled Artifact, Actual checks, Unresolved limits and Next action. Blank boxes do not imply completion or approval. Review pending; destination unassigned. No mission dispatch or release decision is depicted.</desc>
+<rect width="1400" height="1000" fill="#101d2c"/>
+<g font-family="DejaVu Sans" fill="#f5f8fc">
+<rect x="64" y="264" width="1272" height="104" rx="14" fill="#20354c"/><rect x="94" y="286" width="60" height="60" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="3"/>
+<rect x="64" y="388" width="1272" height="104" rx="14" fill="#20354c"/><rect x="94" y="410" width="60" height="60" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="3"/>
+<rect x="64" y="512" width="1272" height="104" rx="14" fill="#20354c"/><rect x="94" y="534" width="60" height="60" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="3"/>
+<rect x="64" y="636" width="1272" height="104" rx="14" fill="#20354c"/><rect x="94" y="658" width="60" height="60" rx="4" fill="#344e69" stroke="#b8d9e8" stroke-width="3"/>
+<text x="64" y="84" font-size="40" font-weight="bold">ONE TASK. A REVIEWABLE RETURN.</text>
+<text x="64" y="138" font-size="26">CONCEPTUAL EXAMPLE • UNPUBLISHED NOTE</text>
+<text x="64" y="210" font-size="34" font-weight="bold">Draft only</text>
+<text x="64" y="820" font-size="32" font-weight="bold">Review pending</text>
+<text x="64" y="876" font-size="24">Blank boxes do not imply completion or approval.</text>
+<text x="64" y="930" font-size="24">Destination: unassigned • No subscriber email authorized.</text>
+<text x="190" y="329" font-size="32" font-weight="bold">Artifact</text>
+<text x="190" y="453" font-size="32" font-weight="bold">Actual checks</text>
+<text x="190" y="577" font-size="32" font-weight="bold">Unresolved limits</text>
+<text x="190" y="701" font-size="32" font-weight="bold">Next action</text>
+</g>
+</svg>

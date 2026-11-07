@@ -1,0 +1,52 @@
+{
+  "authentication_or_live_dispatch": "not_established",
+  "change": "Optional queue_report(mission_id=...) and queue-report --mission. Filtered reports explicitly use schema version 2 and mission_id; default version-1 report and ledger/packet schemas unchanged. Unknown mission yields empty counts, not completion evidence.",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "1d8851d20efce37c73f44a2a57064f6282430e58",
+  "limitations": "Private classifications are not ACL authentication. Counts summarize proposed local state, not verified mission completion, worker activity or real failure/recovery metrics. Report digests are observations, not leases or release gates.",
+  "local_verification": {
+    "errors": 0,
+    "failures": 0,
+    "record_sha256": "2027daddea40b210a9dbd42b874ba3744f768acbd9914f69737975718739028e",
+    "syntax_files": 73,
+    "tests": 511
+  },
+  "memory_source": "master Page sequence 119",
+  "mission_id": "mission-queue-selection-20261104",
+  "next_task": "Exact-content independent review; separately verify audience/access policy and owner acceptance of the one saved registry proposal before operational ingestion.",
+  "observed_gap": "Queue reports could select one project but not one mission; a continuation needed unrelated bindings to find its own recorded state.",
+  "owner_release_approval": "not_granted",
+  "preimplementation_probe": {
+    "command": "python3 -m unittest discover -s tests -p test_handoff_context.py -k mission_queue",
+    "errors": 2,
+    "notes": "Absent mission keyword raised TypeError. Initial all-target fixture hit existing assistant budget; corrected to separate bounded synthetic configurations rather than changing production limits."
+  },
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "22810aef8363080b7f8861364968224a10ae7d066c892eccf5cbbf0d24adc8a0",
+  "regressions": [
+    "All 17 portable target IDs in selected synthetic mission survive read-only restart, with exact identity/hash/counts; other missions/contextless rows/private text and URLs omitted. Returned objects independent; database bytes unchanged.",
+    "Empty/invalid mission selection and default version-1 compatibility; source ledger unchanged.",
+    "Real CLI subprocess restart/0600 private-file round trip, no-overwrite conflict, invalid/missing database refusal without creation, database bytes unchanged."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_selective_private_queue_report",
+  "source_sha256": {
+    "control_tower/handoffs.py": "088eef2fbc831f38ee2f7f33792994233f0deb2690020b780ada462b9ff85304",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "48ee4545dae0e5501839698cb3b2dfa496fc784971dd19c6aff7d0fde426e0f1",
+    "scripts/jarvis_network.py": "89c2f0f80fcdf03a15631ce2103033cf797c14039d09416b1bf3531e32420db5",
+    "tests/test_handoff_context.py": "b5e88fb2e1d155500bc301a88f7516dd8fd26a37a1d410ca524a477748369365",
+    "tests/test_handoff_context_cli.py": "f9674e81041496c5d933fc8358382b319ad0591c2da1d47056183ac2865de954"
+  }
+}

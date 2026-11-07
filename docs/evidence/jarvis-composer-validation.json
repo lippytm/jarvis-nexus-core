@@ -1,0 +1,109 @@
+{
+  "component": "Jarvis portable draft composer",
+  "recorded_at": "2026-10-22T21:08:28.032269+00:00",
+  "baseline_commit": "575ebc777fae0165c93247e8c6da44c440539c4d",
+  "scope": "Self-contained HTML with local, explicitly selected typo corrections and a five-key draft export. No external assets, app network requests, persistence, publishing or account connections.",
+  "runtime": {
+    "node": "v24.19.0",
+    "dependencies": "Node built-ins only for retained tests; no application dependencies."
+  },
+  "tests": {
+    "commands": [
+      {
+        "command": "node --test tests/test_composer.mjs",
+        "exit_code": 0,
+        "reported_scope": "one test file"
+      },
+      {
+        "command": "node tests/test_composer.mjs",
+        "exit_code": 0,
+        "reported_scope": "34 individual node:test cases"
+      }
+    ],
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "log": "docs/evidence/jarvis-composer-node-tests.txt",
+    "execution_scope": "The authored pure module is extracted unchanged from the shipped HTML into an isolated VM with TextEncoder. Both inline scripts compile. No generated/untrusted code, provider calls or account sessions are executed.",
+    "coverage": [
+      "explicit selections and stale/forged correction rejection",
+      "brands, URLs, email and marked code preserved",
+      "bounded undo and clear recovery",
+      "exact five-key export and selector allowlists",
+      "20,000 UTF-8 byte boundaries and surrogate rejection",
+      "C0 controls except tab/LF/CR rejected; U+0085 blank handling",
+      "static asset, network, storage and HTML insertion restrictions"
+    ]
+  },
+  "cross_language": {
+    "fixtures": "docs/evidence/composer-draft-fixtures.json",
+    "valid_exports_accepted": 3,
+    "invalid_texts_rejected": 4,
+    "python_consumer": "control_tower.network_contract.validate_draft",
+    "python_consumer_file_sha256": "204e482a82cd700a47f15275e949200a2d1f9c26b22c8559402c485c0757fee2",
+    "result": "passed; actual exported draft dictionaries preserved by Python validation"
+  },
+  "structure_checks": {
+    "unique_ids": 28,
+    "reference_targets_checked": 9,
+    "balanced_html": true,
+    "source_order": "context, editor, review, handoff; same order at mobile breakpoint",
+    "button_types_explicit": true,
+    "diff_check_exit_code": 0
+  },
+  "browser_validation": {
+    "status": "blocked",
+    "authorized_install_invocations": 1,
+    "requested_runtime": "Existing Playwright chromium-headless-shell v1234 (Chrome 151.0.7922.34)",
+    "cache": "/tmp/jarvis-composer-browser",
+    "installer_exit_code": 1,
+    "observed_error": "Download reported 0 MiB; archive extraction failed with End of central directory record signature not found. The single installer invocation exhausted its internal retries.",
+    "additional_install_attempts": false,
+    "screenshots_produced": false,
+    "unverified": [
+      "rendered desktop/mobile layout",
+      "actual browser form interactions",
+      "native spelling underlines and dictionary behavior",
+      "clipboard browser integration",
+      "download interaction",
+      "assistive-technology behavior"
+    ]
+  },
+  "review_notes": [
+    "Independent review identified C0/U+0085 disagreement with the Python contract; fixed and covered by shared fixtures.",
+    "Independent DOM-path inspection found textContent/createTextNode/value use without an HTML insertion sink.",
+    "Root collaborator retains final integration/publication authority."
+  ],
+  "source_references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/spellcheck",
+    "https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText"
+  ],
+  "authority": "Local implementation and offline tests only; no commits, pushes, deployment, external site or account changes.",
+  "files": [
+    {
+      "path": "web/jarvis-composer.html",
+      "sha256": "51196d09ad9345ba12ac58dc71dd93718d88e298dd5dd91213ce5797f74741df",
+      "bytes": 33039
+    },
+    {
+      "path": "tests/test_composer.mjs",
+      "sha256": "4bc19c62cc28b003aab8a61dcce1b292f31d82fca23c667695178e770d553a99",
+      "bytes": 12945
+    },
+    {
+      "path": "docs/JARVIS_COMPOSER.md",
+      "sha256": "f9186c4c064245eea71942a8809a935d5c32155cf2aaca609a9f80f3ed77571d",
+      "bytes": 8099
+    },
+    {
+      "path": "docs/evidence/composer-draft-fixtures.json",
+      "sha256": "a6dfc93b6eb189a5e7442abfbc716b4e0828dbcc7eb7e4bed362d13ad278be15",
+      "bytes": 930
+    },
+    {
+      "path": "docs/evidence/jarvis-composer-node-tests.txt",
+      "sha256": "5dc59a2f98d0ea28dacab339de6b56f212f3b93935edce64b8e7423e547c544d",
+      "bytes": 3189
+    }
+  ]
+}

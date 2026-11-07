@@ -1,0 +1,152 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "refresh_source_bound_review_navigation",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Prepend source-bound reviewer navigation for retrieval/control revision selectors, duplicate-save retention, portable terminal cancellation and verifier report correctness. Retain earlier snapshots under a historical heading. PR metadata unchanged. No executable/schema/test changes.",
+  "checkpoint": {
+    "return_binding": "input source/memory and source/log hashes; final commit/CI in master Page receipt",
+    "state": "review_navigation_prepared",
+    "unfinished": "independent exact-revision findings and owner release gate"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_verifier_output",
+        "tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart",
+        "tests.test_handoff_context.ContextTests.test_duplicate_context_save_preserves_review_receipt_and_holds_after_restart",
+        "tests.test_handoff_context_cli.ContextCLITests.test_load_context_revision_cli_rejects_restored_content_before_output",
+        "tests.test_handoff_context_cli.ContextCLITests.test_control_revision_cli_rejects_restored_selection_and_retains_duplicate",
+        "tests.test_handoff_context_cli.ContextCLITests.test_guarded_cancellation_retains_all_portable_targets_after_restart"
+      ],
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 8
+    },
+    "source_link_validation": {
+      "historical_body_preserved": true,
+      "source_link_paths": [
+        "control_tower/handoffs.py",
+        "docs/HANDOFF_CONTEXT_PROFILE.md",
+        "docs/evidence/context-duplicate-20261106.json",
+        "docs/evidence/context-retrieval-20261106.json",
+        "docs/evidence/control-revision-20261106.json",
+        "docs/evidence/portable-cancel-20261106.json",
+        "docs/evidence/retrieval-cli-20261106.json",
+        "docs/evidence/verifier-hardlink-20261106.json",
+        "docs/evidence/verifier-output-20261106.json",
+        "docs/evidence/verifier-path-20261106.json",
+        "scripts/jarvis_network.py",
+        "scripts/verify_control_tower.py",
+        "tests/test_handoff_context.py",
+        "tests/test_handoff_context_cli.py",
+        "tests/test_verifier_output.py"
+      ],
+      "syntax_files": 74
+    },
+    "syntax": {
+      "errors": [],
+      "files_checked": 74
+    }
+  },
+  "configuration_version": "codex.review-handoff.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/verifier-hardlink-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_ci": {
+    "conclusion": "success",
+    "counts_from_retained_receipt": {
+      "container": 218,
+      "python": 573,
+      "syntax": 74,
+      "web": 181
+    },
+    "head_sha": "edb070f3786df7fbfc2a22db32f0fc9b548436d5",
+    "merge_checkout_sha": "f19ad8689a144a687ccb5746edebe7e387704067",
+    "pr_run": 42345507369,
+    "push_run": 42345503485
+  },
+  "input_pull_request": {
+    "changed_files": 429,
+    "commits": 202,
+    "draft": true,
+    "number": 5
+  },
+  "input_revision": "edb070f3786df7fbfc2a22db32f0fc9b548436d5",
+  "limitations": [
+    "Reviewer navigation is not independent review, accepted procedure or release approval. PR metadata remains historical.",
+    "Only focused behavior/syntax checks were rerun locally because source/tests did not change. Fresh documentation-commit CI belongs separately in the master receipt.",
+    "Concurrent filesystem mutation, authenticated registry audience/access and actual delivery remain unfinished; no worker/lease/retry/failover/reconnect controller installed.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/review-handoff-focused-20261106.txt": {
+      "sha256": "308db63ff6631db828859c53965a0f8dd3cee811ab90345b2c03156d1f17f006",
+      "text": "........\n----------------------------------------------------------------------\nRan 8 tests in 2.486s\n\nOK\n"
+    }
+  },
+  "memory_revision": 188,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "review-handoff-20261106",
+  "next_task": "Independent review of exact source/receipt boundaries; retain owner release and registry audience/access gates.",
+  "original_brief_sha256": "ed0436b23f8ff237a614dd29dd2c7b92ab891ac3092846965d45059406000a1d",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "c3edeeeb8bafcc1a75c62e0e30103c8de70b8f53bad2ff34412bf3b940aec71e",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "d64b88f14f5d2b4739fe1aa948f6241ebee956e80b95316e90f3be3a3fffd473",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "e6f78204873a8e3db8e1a6a76008a60872e1e0bc84f2895dfb3cc858a5760b6c",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md": "23dae7872bcf627aeb178993456949bc42e9de8de0439894bf994b6a75210782",
+    "docs/evidence/context-duplicate-20261106.json": "b1c9c18960d5031b5ea001f6fc4d74f51fdc0c2845fcdbf7b9b3a191a065c27c",
+    "docs/evidence/context-retrieval-20261106.json": "e69604fdc98aaecbc85d48138b0dc2402adb192c40945162140ff52a0f020e89",
+    "docs/evidence/control-revision-20261106.json": "4381d98d8d547c04a747c7b9b5997d2ac751eff4447dda9e4ec6b16ce308bb89",
+    "docs/evidence/portable-cancel-20261106.json": "933ad07a7ed92fbc55778ec67778b6b30960ef895dd78dddc30fcd45fda5aabc",
+    "docs/evidence/retrieval-cli-20261106.json": "539be8e94b53961185c9f4383c39132b842af13474d8c1e1c13db89b456ece17",
+    "docs/evidence/verifier-hardlink-20261106.json": "164c79f34f1f0a86d0b48352effe2ff639f7e489c50bf767215d0192bf17b2c6",
+    "docs/evidence/verifier-output-20261106.json": "2b383369f6fcff8c32aa0e6763997e86dbe14c171c125027b2333f20cdea9049",
+    "docs/evidence/verifier-path-20261106.json": "68422a8425d5785402bfa9fdd2c86e98b29cc951edf39b12c02451726a8646a7",
+    "scripts/jarvis_network.py": "fe92d968c7b1e29a8882c2b152caf28809ce889f08510fe0f6abfde706536735",
+    "scripts/verify_control_tower.py": "33429c5f7cf6547d93ac859cd7ca575ac16ba81642f916abdaa00c19c0a1f611",
+    "tests/test_handoff_context.py": "2a08d7d42c9f489cac9ff5b0bfa61e6383025901dac28c9163a51e9abf201690",
+    "tests/test_handoff_context_cli.py": "487160136e4de02c51b03c43e3e4101c00ae680948b13537c64a1d11ca107a9b",
+    "tests/test_verifier_output.py": "01b9a789043b333c717432da92abdf9738a3c9a74ab7fe8f78a8697e6314d785"
+  },
+  "tracked_patch_sha256": "64acb11ea5c6d14a6d5f0ed870ac2ec918f4c888bd8aabdddf4c4b0cf9204da5",
+  "visibility": "owner_private"
+}
