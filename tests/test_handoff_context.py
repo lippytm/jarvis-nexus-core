@@ -3073,6 +3073,34 @@ with HandoffLedger(sys.argv[1]) as ledger:
             expected_memory_revision=1, now=datetime(2026, 10, 28, 1, tzinfo=timezone.utc))
         return raw, observation, registry, args
 
+    def test_observation_revision_rejects_restored_context_for_both_bindings(self):
+        raw, observation, registry, args = self.configured_read()
+        loaded = self.ledger.load_context("github-read", expected_source_revision=REVISION,
+                                          expected_memory_revision=1)
+        original = loaded["profile"]
+        changed = deepcopy(original)
+        changed["execution"]["detail"] = "Synthetic intervening context."
+        self.ledger.save_context(changed, expected_revision=1)
+        self.ledger.save_context(original, expected_revision=2)
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        before = self.path.read_bytes()
+        plain = {k: v for k, v in args.items() if not k.startswith("expected_registry")}
+        for bind in (lambda **kw: self.ledger.bind_destination_observation("github-read", observation, **plain, **kw),
+                     lambda **kw: self.ledger.bind_configured_github_observation("github-read", observation, raw, registry, **args, **kw)):
+            for revision in (1, 2, 4, 0, True):
+                with self.subTest(revision=revision), self.assertRaisesRegex(ValueError, "context retrieval revision"):
+                    bind(expected_revision=revision)
+                self.assertEqual(self.path.read_bytes(), before)
+            current = bind(expected_revision=3)
+            self.assertEqual(current, bind())
+            result = current.get("destination_observation", current)
+            self.assertEqual(result["context_revision"], 3)
+            self.assertFalse(result["dispatch_authorized"])
+            self.assertEqual(self.ledger.load_context("github-read", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], original)
+            self.assertEqual(self.path.read_bytes(), before)
+
     def test_configured_read_preserves_legacy_receipt_and_holds_across_read_only_restart(self):
         raw, observation, registry, args = self.configured_read()
         before = list(self.ledger.db.iterdump())

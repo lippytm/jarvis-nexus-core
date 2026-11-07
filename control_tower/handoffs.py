@@ -786,12 +786,14 @@ class HandoffLedger:
                     "sender_authentication": "not_established", "external_actions": 0}
 
     def bind_destination_observation(self, handoff_id, observation, *, expected_sha256,
-                                     expected_source_revision, expected_memory_revision, now=None):
+                                     expected_source_revision, expected_memory_revision, now=None,
+                                     expected_revision=None):
         """Bind supplied read metadata to exact destination context; no authority."""
         require_digest(expected_sha256)
         report = connector_report([observation], now=now)
         loaded = self.load_context(handoff_id, expected_source_revision=expected_source_revision,
-                                   expected_memory_revision=expected_memory_revision)
+                                   expected_memory_revision=expected_memory_revision,
+                                   expected_revision=expected_revision)
         profile = loaded["profile"]
         if (profile["schema_version"] != 3 or loaded["context_sha256"] != expected_sha256
             or observation["connector"] != profile["platform"]
@@ -810,7 +812,7 @@ class HandoffLedger:
 
     def bind_configured_github_observation(self, handoff_id, observation, content, registry, *,
             expected_registry_sha256, expected_registry_revision, expected_sha256,
-            expected_source_revision, expected_memory_revision, now=None):
+            expected_source_revision, expected_memory_revision, now=None, expected_revision=None):
         """Check a supplied registry snapshot and retain its exact mapping in an envelope.
 
         This is a private, read-only configuration check, not authenticated registry
@@ -824,7 +826,7 @@ class HandoffLedger:
             raise ValueError("registry digest or revision mismatch")
         original = self.bind_destination_observation(handoff_id, observation,
             expected_sha256=expected_sha256, expected_source_revision=expected_source_revision,
-            expected_memory_revision=expected_memory_revision, now=now)
+            expected_memory_revision=expected_memory_revision, now=now, expected_revision=expected_revision)
         selected = next((entry for entry in registry["entries"] if all(
             entry[key] == original[key] for key in ("project_id", "platform", "destination_id"))), None)
         if selected is None or selected["platform"] != "github":

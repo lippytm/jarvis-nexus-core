@@ -1,0 +1,145 @@
+{
+  "acceptance_observations": [
+    "Both plain and configured GitHub binding reject stale/invalid stored selectors after restored-content revision 3; current selection equals default receipt. Read-only restart preserves exact paused/outcome_unknown context and every database byte.",
+    "Actual CLI rejects stale selection before output directory creation; current selection saves private 0600 receipt, refuses overwrite and preserves default bytes and ledger bytes. Existing blocked/unknown holds are not cleared and dispatch remains unauthorized."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_optional_observation_revision_selector",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional expected_revision to plain/configured observation binding and bind-observation --context-revision. Delegate strict revision comparison to existing load_context transaction. No receipt/profile/packet/storage schema change.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision observation-selection review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings tests.test_handoff_context_cli.ContextCLITests.test_observation_revision_cli_rejects_stale_selection_before_output",
+      "errors": 6,
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "Missing API keyword and CLI flag; subtests account for errors.",
+      "tests": 2
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "same two baseline tests after implementation",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/observation-revision-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/observation-revision-full-20261107.json",
+        "passed": true,
+        "record_sha256": "9464edf113658b5aea876538b642d8ebe96e54e5147256b361e945d9fda73245",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 586,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 586,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.observation-revision.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/export-runbook-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "ca88d7b25fca975731623bb54a2f26541f3a0013",
+  "limitations": [
+    "Synthetic observations and private configuration snapshots are not authenticated connections, accepted registry installation, provider delivery or live runtime evidence.",
+    "Optional point-in-time selector is not a lease or later-write/release gate; local labels/hashes do not authenticate approval.",
+    "No owner mission access, worker, automatic retry/failover/reconnect controller, permissions change, merge, deployment, dispatch, publication or spending. Paused mission/schedules untouched.",
+    "All 17 portable targets/business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/observation-revision-baseline-20261107.txt": {
+      "sha256": "acaff61dfa651d28c606ac92466ff5eb8d4e1266109b92a12274c56c586c0d4f",
+      "text": "EEEEEEF\n======================================================================\nERROR: test_observation_revision_rejects_restored_context_for_both_bindings (tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings) (revision=1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3093, in test_observation_revision_rejects_restored_context_for_both_bindings\n    bind(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3089, in <lambda>\n    for bind in (lambda **kw: self.ledger.bind_destination_observation(\"github-read\", observation, **plain, **kw),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.bind_destination_observation() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_observation_revision_rejects_restored_context_for_both_bindings (tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings) (revision=2)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3093, in test_observation_revision_rejects_restored_context_for_both_bindings\n    bind(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3089, in <lambda>\n    for bind in (lambda **kw: self.ledger.bind_destination_observation(\"github-read\", observation, **plain, **kw),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.bind_destination_observation() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_observation_revision_rejects_restored_context_for_both_bindings (tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings) (revision=4)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3093, in test_observation_revision_rejects_restored_context_for_both_bindings\n    bind(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3089, in <lambda>\n    for bind in (lambda **kw: self.ledger.bind_destination_observation(\"github-read\", observation, **plain, **kw),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.bind_destination_observation() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_observation_revision_rejects_restored_context_for_both_bindings (tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings) (revision=0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3093, in test_observation_revision_rejects_restored_context_for_both_bindings\n    bind(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3089, in <lambda>\n    for bind in (lambda **kw: self.ledger.bind_destination_observation(\"github-read\", observation, **plain, **kw),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.bind_destination_observation() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_observation_revision_rejects_restored_context_for_both_bindings (tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings) (revision=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3093, in test_observation_revision_rejects_restored_context_for_both_bindings\n    bind(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3089, in <lambda>\n    for bind in (lambda **kw: self.ledger.bind_destination_observation(\"github-read\", observation, **plain, **kw),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.bind_destination_observation() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_observation_revision_rejects_restored_context_for_both_bindings (tests.test_handoff_context.ContextTests.test_observation_revision_rejects_restored_context_for_both_bindings)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3095, in test_observation_revision_rejects_restored_context_for_both_bindings\n    current = bind(expected_revision=3)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 3089, in <lambda>\n    for bind in (lambda **kw: self.ledger.bind_destination_observation(\"github-read\", observation, **plain, **kw),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.bind_destination_observation() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nFAIL: test_observation_revision_cli_rejects_stale_selection_before_output (tests.test_handoff_context_cli.ContextCLITests.test_observation_revision_cli_rejects_stale_selection_before_output)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 92, in test_observation_revision_cli_rejects_stale_selection_before_output\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 1\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.264s\n\nFAILED (failures=1, errors=6)\n"
+    },
+    "reports/observation-revision-focused-20261107.txt": {
+      "sha256": "a6ffa911d03cf4d879d15da138914db486369a4abacf9ca1a016a6b124897746",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.579s\n\nOK\n"
+    },
+    "reports/observation-revision-full-20261107.json": {
+      "sha256": "3fdf56ba4528b6678104c3641648e3247284cc3cec56802a39494e8749262a80"
+    },
+    "reports/observation-revision-web-20261107.txt": {
+      "sha256": "530843f0837a0fc2ab72e488b0f6bfedfa7cf20bc4ba1fa74534e980b77ba3cb"
+    }
+  },
+  "memory_revision": 196,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "observation-revision-20261107",
+  "next_task": "Independent exact-revision plain/configured observation-selection review; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "problem": "Observation binding had no optional stored-revision selector. Content/source/memory can match again after A-to-B-to-A restoration; digest-only defaults remain valid and unchanged.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "37c644b30216f63bcb5ea90196a0acbb4dde8e978964fa3beab740437adc0dfa",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "1d26f3e42aac039431dca428e27767d053f6813b273a920d860e0e0d7dc0ef43",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "ea7258d0935d43e33ffd3ef501a47432e6b00443209de771ba848efd3bf651bd",
+    "scripts/jarvis_network.py": "2c8eac302f699a758588a4e6841a82780b8334da83301ee6bdde01b8ff52ee9f",
+    "tests/test_handoff_context.py": "7051a2fd89b86d48cdf17e00a83accc0b74d34a20f263b08fb289fa2c38a1518",
+    "tests/test_handoff_context_cli.py": "712d3e5a5887eed8c6a07d96730cea292bd63394cfc47c53ebb7b9db97b481d1"
+  },
+  "tracked_patch_sha256": "7dae629c7948e4bb9d06c9a4261d739734b5d93cb71441f5a3af35ac758780b9",
+  "visibility": "owner_private"
+}

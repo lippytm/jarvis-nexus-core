@@ -320,6 +320,7 @@ def main(argv=None):
     observation.add_argument("--digest", required=True)
     observation.add_argument("--source-revision", required=True)
     observation.add_argument("--memory-revision", type=int, required=True)
+    observation.add_argument("--context-revision", type=int, help="Require the exact selected stored context revision")
     observation.add_argument("--out", required=True)
     demo = commands.add_parser("demo")
     demo.add_argument("--out", required=True)
@@ -459,7 +460,7 @@ def main(argv=None):
                         include_review_state=args.include_review_state)
                 elif args.command == "bind-observation":
                     guards = dict(expected_sha256=args.digest, expected_source_revision=args.source_revision,
-                                  expected_memory_revision=args.memory_revision)
+                                  expected_memory_revision=args.memory_revision, expected_revision=args.context_revision)
                     if registry is not None:
                         result = ledger.bind_configured_github_observation(args.handoff, observation_packet,
                             response, registry, expected_registry_sha256=args.registry_digest,

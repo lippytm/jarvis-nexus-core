@@ -70,6 +70,41 @@ class ContextCLITests(unittest.TestCase):
         return ["inspect-registry", "--file", "registry.json", "--digest", digest(record),
                 "--registry-revision", "1", "--source-revision", REVISION]
 
+    def test_observation_revision_cli_rejects_stale_selection_before_output(self):
+        from datetime import datetime, timezone
+        checksum = self.controlled(execution="outcome_unknown")
+        original = deepcopy(self.profile)
+        self.profile["execution"]["detail"] = "Synthetic intervening context."
+        self.write(self.profile)
+        self.assertEqual(self.save(1).returncode, 0)
+        self.profile = original
+        self.write(original)
+        self.assertEqual(self.save(2).returncode, 0)
+        observation = read_observation("codex", observed_at=datetime.now(timezone.utc).isoformat(),
+            evidence_url="https://example.invalid/read", response_sha256="a" * 64,
+            scope="Synthetic read", source_revision=REVISION)
+        (self.root / "observation.json").write_text(json.dumps(observation))
+        before = self.db.read_bytes()
+        args = ("--read-only", "bind-observation", "--handoff", "cli-task", "--file", "observation.json",
+            "--digest", checksum, "--source-revision", REVISION, "--memory-revision", "1")
+        for revision in ("1", "4", "0"):
+            rejected = self.cli(*args, "--context-revision", revision, "--out", "rejected/read.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertIn("context retrieval revision", rejected.stderr)
+            self.assertFalse((self.root / "rejected").exists())
+            self.assertEqual(self.db.read_bytes(), before)
+        selected = self.cli(*args, "--context-revision", "3", "--out", "private/read.json")
+        self.assertEqual(selected.returncode, 0, selected.stderr)
+        output = self.root / "private/read.json"
+        content = output.read_bytes()
+        self.assertEqual(json.loads(content)["context_revision"], 3)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--context-revision", "3", "--out", "private/read.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        self.assertEqual(self.cli(*args, "--out", "default.json").returncode, 0)
+        self.assertEqual((self.root / "default.json").read_bytes(), content)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_registry_project_preflight_is_selective_without_ledger(self):
         from control_tower.network_contract import PROJECTS
         self.registry_input()

@@ -679,6 +679,15 @@ API. The output is the explicit configured-observation envelope described above;
 without registry options, earlier receipt formats and behavior remain unchanged.
 This does not load a trusted registry automatically or accept the proposed mapping.
 
+Optional `bind-observation --context-revision N` (API `expected_revision` on both
+observation-binding methods) pins the stored context revision through the existing
+retrieval transaction before constructing the receipt. It rejects stale selection
+after A changes to B and returns to A, even when content/source/memory match again.
+Use the stored revision, not memory revision. Omission preserves existing behavior
+and receipt schemas. Paused/unknown-outcome context may still be observed privately;
+the selector does not clear holds, authenticate configuration or authorize dispatch.
+This is a point-in-time read, not a lease or a later-write gate.
+
 ## Private registry preflight
 
 `inspect-registry` validates a supplied version-1 destination registry before any
