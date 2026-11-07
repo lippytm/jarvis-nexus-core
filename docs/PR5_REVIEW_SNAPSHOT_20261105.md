@@ -1,6 +1,59 @@
 # PR 5 review snapshots
 
-## Current review entry for November 6 2026
+## Current review entry for November 6 2026 late update
+
+Review source `edb070f3786df7fbfc2a22db32f0fc9b548436d5` on `feature/control-tower-foundation-20261021`,
+[draft PR #5](https://github.com/lippytm/jarvis-nexus-core/pull/5).
+The PR API reports 429 changed files and 202 commits at this input. This is a
+bounded review map for the changes since the earlier November 6 snapshot, not
+independent review or a release recommendation. PR metadata remains unchanged;
+its older milestone/test and bot-approval language is historical.
+
+| Review area | Exact source entry points | Acceptance questions |
+|---|---|---|
+| Selective retrieval | [load_context](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/control_tower/handoffs.py#L757), [CLI](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/scripts/jarvis_network.py), [profile contract](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/HANDOFF_CONTEXT_PROFILE.md) | Optional expected_revision / load-context --context-revision must reject stale A-to-B-to-A selection in the same read snapshot. Source, memory and digest guards remain separate. Omission preserves defaults and schemas. Private context cannot enter public retrieval; no later write/release gate or lease follows. |
+| Exact pause/cancel selection | [_set_context_control](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/scripts/jarvis_network.py#L76), [subprocess and portable tests](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/tests/test_handoff_context_cli.py) | Optional stored revision guards selection before compare-and-swap save. Fresh digest/memory cannot rescue an old stored selector. Current pause/cancel must retain unknown outcome, invalidate changed context review, preserve duplicates and refuse terminal cancellation resume. All 17 target IDs remain independent fixtures, not live agents/connections. |
+| Duplicate saves and restart | [Context tests](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/tests/test_handoff_context.py) | Identical current-revision saves preserve local review receipts/rows; stale CAS rejects. Read-only reopen retains pause/unknown outcome, independent Gemini context and private/public separation. Local labels and receipt hashes are not reviewer authentication. |
+| Verifier evidence paths | [Verifier](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/scripts/verify_control_tower.py#L25), [output regressions](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/tests/test_verifier_output.py) | Discovery/test Python streams go to the text report while stdout stays parseable JSON. Existing companion symlinks and multiply linked JSON/text outputs reject before checks/writes. Ordinary single-link replacement still works. Concurrent path replacement/link creation and parent changes remain unguarded; this is preflight, not race-proof isolation or log redaction. |
+
+### Evidence for the selected source
+
+[Push CI](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42345503485)
+checks `edb070f3786df7fbfc2a22db32f0fc9b548436d5`; [PR CI](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42345507369)
+checks merge `f19ad8689a144a687ccb5746edebe7e387704067`. Both passed
+573 Python tests, 74 syntax checks, 181 web and 218 container tests, plus Compose
+initialization/no-overwrite/replacement persistence. Unit artifacts:
+[push 13563780469](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42345503485/artifacts/13563780469)
+and [PR 13563616999](https://github.com/lippytm/jarvis-nexus-core/actions/runs/42345507369/artifacts/13563616999).
+These are input-source results; this documentation commit needs its own CI.
+
+Actual work receipts: [retrieval API](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/context-retrieval-20261106.json),
+[retrieval CLI](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/retrieval-cli-20261106.json),
+[control selector](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/control-revision-20261106.json),
+[portable cancellation](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/portable-cancel-20261106.json),
+[duplicate save](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/context-duplicate-20261106.json),
+[stream separation](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/verifier-output-20261106.json),
+[symlink preflight](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/verifier-path-20261106.json) and
+[hard-link repair](https://github.com/lippytm/jarvis-nexus-core/blob/edb070f3786df7fbfc2a22db32f0fc9b548436d5/docs/evidence/verifier-hardlink-20261106.json).
+Retain their initial failures and later passes separately. Temporary fixtures
+and overwritten sentinels are not actual owner file loss, platform delivery or
+measured reliability improvement.
+
+### Reviewer handoff
+
+Start with the tests named in this update's work receipt, inspect the bound
+source and report findings against that exact revision. Tests are implementation
+evidence, not independent approval. The owner retains the separate release gate.
+Accepted registry audience/access policy and authenticated delivery remain
+unfinished. No live worker, lease, automatic retry/failover/reconnect controller
+or receipt archive is established. All 17 portable targets and all 17 business
+areas remain in scope; seven source project IDs are a different inventory.
+Trading Bots stays research/backtesting/paper-only; RoboParty stays deferred.
+The actual paused mission, separately paused Studio cycle and newsletter schedule
+are unchanged. No merge, deployment, dispatch, publishing, spending or permission
+change is authorized by this brief. Earlier snapshots remain below.
+
+## Historical November 6 earlier snapshot
 
 Source `c1577c63e6a702b51500de8e3abe0f35b97ca2c6`, branch `feature/control-tower-foundation-20261021`,
 [draft PR #5](https://github.com/lippytm/jarvis-nexus-core/pull/5).
