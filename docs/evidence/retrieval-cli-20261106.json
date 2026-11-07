@@ -1,0 +1,135 @@
+{
+  "acceptance_observations": [
+    "Real subprocesses reject five stale/nonpositive stored revisions before output-directory creation; noninteger flag exits 2.",
+    "Stored revision 3 succeeds after edit-and-restore; same content digest is retained, local review remains proposed, unknown outcome and original profile are retained.",
+    "Output mode is 0600, repeated output refuses overwrite without byte change, omitted option gives identical saved bytes, database bytes remain unchanged."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "expose_existing_revision_guard_in_cli",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Expose existing load_context expected_revision as optional load-context --context-revision integer; preserve defaults and schemas. Document the CLI option.",
+  "checkpoint": {
+    "return_binding": "source/memory revision and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision review and authenticated registry/delivery acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_load_context_revision_cli_rejects_restored_content_before_output",
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "flag absent at input revision: argparse exit 2 instead of semantic stale rejection exit 1",
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_load_context_revision_cli_rejects_restored_content_before_output tests.test_handoff_context_cli.ContextCLITests.test_load_context_digest_cli_rejects_same_memory_edit_before_output",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/retrieval-cli-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/retrieval-cli-full-20261106.json",
+        "passed": true,
+        "record_sha256": "cd085893a4c325f179436aa82dfb3e7f178e72e374f4287e2e4106c187f5d667",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 570,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 570,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.retrieval-cli.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/context-retrieval-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "c690978ae80af73eab5d4e43cef2e98e86807f49",
+  "limitations": [
+    "Read snapshot only, not a lease or later write/release gate. No hold release or local review performed by retrieval.",
+    "Synthetic subprocess fixtures are not authenticated Codex delivery or an actual owner recovery incident.",
+    "No schema, authentication, worker, retry, failover or reconnect controller added.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/retrieval-cli-baseline-20261106.txt": {
+      "sha256": "c5f957af38e71011ef4c0596f33b8fa4e48186ebad514195d6b013abfd92c18d",
+      "text": "F\n======================================================================\nFAIL: test_load_context_revision_cli_rejects_restored_content_before_output (tests.test_handoff_context_cli.ContextCLITests.test_load_context_revision_cli_rejects_restored_content_before_output)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1390, in test_load_context_revision_cli_rejects_restored_content_before_output\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 1\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.244s\n\nFAILED (failures=1)\n"
+    },
+    "reports/retrieval-cli-focused-20261106.txt": {
+      "sha256": "32186b17e7f8333457c26cd1a4daeaee3f93d799134a23620873640d17fd377f",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 1.189s\n\nOK\n"
+    }
+  },
+  "memory_revision": 184,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "retrieval-cli-20261106",
+  "next_task": "Independent exact-revision API/CLI retrieval review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "e53b78f018fa0b11f21cc0e052fb3fbc3c8dfa23c3f8f4e993061c620b62cbd0",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "a83ccd01ace2751194370956d371f9ad0cd12330e8711caefdd207d414083ba5",
+    "scripts/jarvis_network.py": "21dcfa6bf1f37ce6a7b807769e3940a321465dc9c0c24edbdccc378063beb12f",
+    "tests/test_handoff_context_cli.py": "0021f5e4067360a5e601774c28d2ec92602bc55950afe1e216b92cf6bc17187f"
+  },
+  "tracked_patch_sha256": "9a2208b0db38d7033a49467c2bd75904988f4fb41b9c9e310f55665c8d93f571",
+  "visibility": "owner_private"
+}

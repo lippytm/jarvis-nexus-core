@@ -788,8 +788,9 @@ The `load_context` API also accepts optional `expected_revision`, a positive
 stored context revision checked in the same read transaction. This rejects stale
 selection after an edit is restored to the same content digest. It is separate
 from the profile's memory revision. Omission preserves existing behavior and the
-response schema. The CLI does not yet expose this retrieval revision option;
-the API guard does not freeze future state or change review or execution holds.
+response schema. The CLI exposes the same option as
+`load-context --context-revision N`; stale selection rejects before output creation.
+The guard does not freeze future state or change review or execution holds.
 
 The existing `jarvis_network.py demo --out FRESH-FILE.json` also includes a
 `context_recovery` observation from a second, synthetic `codex` handoff in its

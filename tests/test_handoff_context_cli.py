@@ -1372,6 +1372,44 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "legacy.json").read_bytes(), content)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_load_context_revision_cli_rejects_restored_content_before_output(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Temporary private retrieval edit."
+        self.write(changed)
+        self.assertEqual(self.save(revision=1).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(revision=2)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        before = self.db.read_bytes()
+        args = ("--read-only", "load-context", "--handoff", "cli-task", "--source-revision", REVISION,
+                "--memory-revision", "1", "--digest", checksum)
+        for revision in ("1", "2", "4", "0", "-1"):
+            rejected = self.cli(*args, "--context-revision", revision, "--out", "rejected/context.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertIn("context retrieval revision", rejected.stderr)
+            self.assertFalse((self.root / "rejected").exists())
+            self.assertNotIn("Temporary private", rejected.stderr + rejected.stdout)
+        invalid = self.cli(*args, "--context-revision", "not-an-integer", "--out", "rejected/context.json")
+        self.assertEqual(invalid.returncode, 2)
+        self.assertFalse((self.root / "rejected").exists())
+        accepted = self.cli(*args, "--context-revision", "3", "--out", "private/context.json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        output = self.root / "private/context.json"
+        content = output.read_bytes()
+        record = json.loads(content)
+        self.assertEqual(record["revision"], 3)
+        self.assertEqual(record["profile"], self.profile)
+        self.assertEqual(record["review_state"], "proposed")
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--context-revision", "3", "--out", "private/context.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        legacy = self.cli(*args, "--out", "legacy.json")
+        self.assertEqual(legacy.returncode, 0, legacy.stderr)
+        self.assertEqual((self.root / "legacy.json").read_bytes(), content)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_context_review_revision_cli_rejects_restored_content_without_changing_holds(self):
         checksum = self.controlled(execution="outcome_unknown")
         changed = {**self.profile, "execution": {**self.profile["execution"], "detail": "Temporary private edit."}}
