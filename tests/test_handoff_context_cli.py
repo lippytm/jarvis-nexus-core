@@ -303,6 +303,55 @@ class ContextCLITests(unittest.TestCase):
                 self.assertEqual(retained["control"]["state"], "paused")
                 self.assertEqual(retained["execution"], self.profile["execution"])
 
+    def test_guarded_cancellation_retains_all_portable_targets_after_restart(self):
+        retained = {}
+        with HandoffLedger(self.db) as ledger:
+            for target in sorted(TARGETS):
+                with self.subTest(target=target):
+                    swarm, handoff = "terminal-" + target, "cancel-" + target
+                    manifest = build_swarm("ai-jarvis", [target], swarm_id=swarm, source_revision=REVISION)
+                    staged = ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                        target=target, text="Synthetic portable cancellation task."), manifest,
+                        assistant_id=swarm + ".builder", handoff_id=handoff)
+                    profile = deepcopy(self.profile)
+                    profile.update(schema_version=3, handoff_id=handoff, mission_id=handoff,
+                        handoff_sha256=staged["handoff_sha256"], asset_id=swarm + ".builder",
+                        platform=target, destination_id="dest-" + target,
+                        control=dict(state="active", actor_id="local-controller", reason="Synthetic active task."))
+                    profile["execution"]["state"] = "outcome_unknown"
+                    saved = ledger.save_context(profile, expected_revision=0)
+                    args = dict(handoff_id=handoff, state="cancelled", actor_id="local-controller",
+                        reason="Synthetic terminal hold.", expected_source_revision=REVISION)
+                    cancelled = _set_context_control(ledger, **args,
+                        expected_sha256=saved["context_sha256"], expected_memory_revision=1, expected_revision=1)
+                    self.assertEqual(cancelled["revision"], 2)
+                    self.assertFalse(cancelled["duplicate"])
+                    for flag in ("dispatch_authorized", "retry_authorized", "external_actions"):
+                        self.assertFalse(cancelled[flag])
+                    guards = dict(expected_sha256=cancelled["context_sha256"], expected_memory_revision=2)
+                    before = tuple(ledger.db.iterdump())
+                    with self.assertRaisesRegex(ValueError, "context retrieval revision mismatch"):
+                        _set_context_control(ledger, **args, **guards, expected_revision=1)
+                    duplicate = _set_context_control(ledger, **args, **guards, expected_revision=2)
+                    self.assertTrue(duplicate["duplicate"])
+                    self.assertEqual(duplicate["revision"], 2)
+                    with self.assertRaisesRegex(ValueError, "cancelled handoff cannot resume"):
+                        _set_context_control(ledger, **{**args, "state": "paused"}, **guards, expected_revision=2)
+                    self.assertEqual(tuple(ledger.db.iterdump()), before)
+                    profile["memory_revision"] = 2
+                    profile["control"] = dict(state="cancelled", actor_id="local-controller", reason="Synthetic terminal hold.")
+                    retained[handoff] = profile
+        before = self.db.read_bytes()
+        with HandoffLedger(self.db, read_only=True) as restarted:
+            for handoff, expected in retained.items():
+                selected = restarted.load_context(handoff, expected_source_revision=REVISION,
+                    expected_memory_revision=2, expected_revision=2)
+                self.assertEqual(selected["profile"], expected)
+                self.assertEqual(selected["review_state"], "proposed")
+                self.assertEqual(selected["sender_authentication"], "not_established")
+            self.assertEqual(len(retained), len(TARGETS))
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_control_edit_rejects_concurrent_update_without_overwriting(self):
         checksum = self.controlled()
         with HandoffLedger(self.db) as ledger, HandoffLedger(self.db) as other:
