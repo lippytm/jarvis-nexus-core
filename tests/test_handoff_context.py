@@ -174,6 +174,48 @@ class ContextTests(unittest.TestCase):
                 self.assertEqual(checkpoint()["profile"], changed)
                 self.assertEqual(self.ledger.status()["return_count"], 1)
 
+    def test_oversized_stored_context_rejects_after_restart_before_json_parsing(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.approve()
+        original = self.ledger.db.execute("SELECT body FROM handoff_contexts").fetchone()[0]
+        ambiguous_size = original + " " * 65536
+        self.ledger.db.execute("UPDATE handoff_contexts SET body=?", (ambiguous_size,))
+        self.ledger.db.commit()
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        with self.assertRaisesRegex(ValueError, "stored context"):
+            self.load()
+        self.assertFalse(self.ledger.db.in_transaction)
+        self.assertEqual(self.path.read_bytes(), before)
+        self.ledger.close()
+        with sqlite3.connect(self.path) as writer:
+            writer.execute("UPDATE handoff_contexts SET body=?", (original,))
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        resumed = self.load()
+        self.assertEqual(resumed["profile"], self.profile)
+        self.assertEqual(resumed["review_state"], "locally_reviewed")
+
+    def test_stored_json_bounds_utf8_before_parse_and_keeps_boundary_records(self):
+        from unittest.mock import patch
+        from control_tower.handoffs import _stored_json
+        from control_tower.network_contract import MAX_PACKET_BYTES
+        # Exact raw-byte boundary remains parseable, including noncanonical whitespace.
+        boundary = '{}' + ' ' * (MAX_PACKET_BYTES - 2)
+        self.assertEqual(_stored_json(boundary), {})
+        self.assertEqual(_stored_json(boundary.encode()), {})
+        for oversized in (boundary + ' ', (boundary + ' ').encode(),
+                          json.dumps({"text": "é" * 40000}, ensure_ascii=False)):
+            with self.subTest(kind=type(oversized).__name__):
+                with patch("control_tower.handoffs.json.loads") as parser:
+                    with self.assertRaisesRegex(ValueError, "stored JSON"):
+                        _stored_json(oversized)
+                    parser.assert_not_called()
+        with self.assertRaises(ValueError):
+            _stored_json('{"key":1,"key":2}')
+
     def test_export_revision_match_does_not_bypass_holds_or_reviews(self):
         for state in ("paused", "cancelled", "outcome_unknown", "unreviewed"):
             with self.subTest(state=state):

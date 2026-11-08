@@ -27,6 +27,20 @@ labels are supplied classifications, not authenticated identities.
 
 ## Stored configuration integrity
 
+All six retained-record JSON decode sites share a pre-parse 64 KiB raw-body
+limit: swarm, handoff, return, current context, selected checkpoint and adjacent
+checkpoint. Text is counted as UTF-8 bytes; byte values are bounded directly.
+Oversized data rejects before JSON parsing, including excessive whitespace that
+would disappear during canonical hashing. The exact boundary and ordinary
+bounded records remain readable; duplicate object keys still reject. This adds
+no packet fields or storage migration. An oversized restored row stays an error
+to reconcile, not a reason to truncate it or initialize another ledger.
+
+SQLite has already fetched the row when this check runs. It bounds JSON parser
+input, not SQLite reads, total database size, filesystem replacement or blocking
+I/O. It neither repairs damaged data nor authenticates records or authorizes
+recovery, retry or dispatch.
+
 The shared handoff read path validates the registered swarm through the existing
 strict configuration validator, checks its saved identity/digest, and verifies
 the handoff's manifest/source revision, assistant, project and target. Reviews,

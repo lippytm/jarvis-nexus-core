@@ -1,0 +1,113 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "reproduce",
+    "bound_existing_stored_decoding",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "baseline": {
+    "errors": 0,
+    "expected_assertion_failures": 1,
+    "log": "F\n======================================================================\nFAIL: test_oversized_stored_context_rejects_after_restart_before_json_parsing (tests.test_handoff_context.ContextTests.test_oversized_stored_context_rejects_after_restart_before_json_parsing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 189, in test_oversized_stored_context_rejects_after_restart_before_json_parsing\n    with self.assertRaisesRegex(ValueError, \"stored context\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.012s\n\nFAILED (failures=1)\n"
+  },
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "One shared _stored_json helper enforces the existing 64 KiB packet budget before all six retained-record JSON decode sites. Text counts UTF-8 bytes; bytes count directly. Existing duplicate-key hook retained. No record fields/schema migration, truncation or automatic repair.",
+  "checkpoint": {
+    "return_binding": "input source/memory and artifact/check hashes; final commit and CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "existing_regressions": "seven-case stored duplicate-key restart check and v1 migration preservation",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.086s\n\nOK\n",
+      "tests": 4
+    },
+    "full_local": {
+      "evidence": "reports/r36-full-20261108.json",
+      "passed": true,
+      "record_sha256": "1a3aac31ee0887f87f920d3cc0eba36df9f3b4a5560a321bafaa79259df72d34",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 606,
+        "skipped": 0
+      }
+    },
+    "new_regressions": [
+      "oversized context rejects after read-only reopen with transaction cleanup and unchanged database bytes; restored valid original retains paused/outcome_unknown profile and local review",
+      "exact raw 64 KiB text/bytes boundary accepted; larger text/bytes and multibyte UTF-8 rejected before mocked parser is called; duplicate-key rejection retained"
+    ],
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.stored-json-bounds.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "control_tower/network_contract.py",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/registry-destination-20261108.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "cb5809711c253b627085cd87b7d16a0df9534209",
+  "limitations": [
+    "SQLite has already fetched the row: this bounds JSON parser input only, not SQLite reads, total database size, filesystem replacement or blocking I/O. Oversized restored rows remain errors to reconcile; no truncation/automatic repair. Normal bounded records and strict v1 schemas unchanged.",
+    "Synthetic fixture/mocks are not actual corruption recovery, authenticated storage, ACL isolation, live workers/connections/delivery or verified mission completion. No measured reliability or performance gain.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, migration, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, publication or spending."
+  ],
+  "memory_revision": 218,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_baseline_assertion_failures": 1,
+    "new_regressions": 2,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "unexpected_verification_errors": 0
+  },
+  "mission_id": "stored-json-preparse-bounds-20261108",
+  "observed_problem": "Oversized raw stored context with excessive whitespace was parsed and accepted because canonical hashing discarded the padding. Unlike imported packets, stored bodies had no pre-parse byte cap. Temporary synthetic row only; no actual owner corruption incident.",
+  "patch_sha256": "2dde8a50201623703e86b0c22e3edfd71862322377c12fbae9ea36538640cbf8",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "a7284a386b776e5a83190dab68a300f9564e4845adc31ccff214d24b5f455e74",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "b85de9598af98e8ed5e47b84e3055015d3219d7da8ff6080aed138e3e1a9d7c3",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "cf605ed80437e4e7b3d80c1961005c33b150d12a4b1691d393cb5e0ec546eb83",
+    "tests/test_handoff_context.py": "169522f00032ba3c743320fa737cf354b21b41c8e5b496733cbeeac386aa8435"
+  },
+  "verification_logs_sha256": {
+    "reports/r36-focused-20261108.txt": "22bd4a0268ec632dbbe91d10d5ec17280e49adf599dfa428370a63b48294160f",
+    "reports/r36-full-20261108.json": "9be575148548e1e01fcc162b553f27f4097e48c61b9cf212c7e71aeb793028d7",
+    "reports/r36-web-20261108.txt": "901f137218531f8e71cd90b3b719e35dbe1cfc2187b5fabaed97090a72c50f84"
+  },
+  "visibility": "owner_private"
+}

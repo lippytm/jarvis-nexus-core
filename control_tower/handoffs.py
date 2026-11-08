@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import sqlite3
 
-from control_tower.network_contract import (PROJECTS, TARGETS, canonical, digest, require_digest,
+from control_tower.network_contract import (PROJECTS, TARGETS, MAX_PACKET_BYTES, canonical, digest, require_digest,
     require_identifier, validate_draft, validate_return, _unique_object)
 from control_tower.swarm_factory import validate_swarm
 from control_tower.handoff_context import validate_context
@@ -20,6 +20,14 @@ from control_tower.connections import (connector_report, validate_destination_re
 MAX_HANDOFFS = 1000
 MAX_SWARMS = 100
 MAX_CONTEXT_CHECKPOINTS = 1000
+
+
+def _stored_json(body):
+    """Bound retained raw bytes before decoding; preserve strict object parsing."""
+    if (not isinstance(body, (str, bytes)) or len(body) > MAX_PACKET_BYTES
+        or isinstance(body, str) and len(body.encode("utf-8")) > MAX_PACKET_BYTES):
+        raise ValueError("stored JSON exceeds input bounds")
+    return json.loads(body, object_pairs_hook=_unique_object)
 
 
 def _now():
@@ -118,7 +126,7 @@ class HandoffLedger:
         if row is None:
             raise ValueError("unknown stored swarm")
         try:
-            manifest = validate_swarm(json.loads(row["body"], object_pairs_hook=_unique_object))
+            manifest = validate_swarm(_stored_json(row["body"]))
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored swarm configuration is invalid") from None
         if row["id"] != manifest["swarm_id"] or row["digest"] != manifest["manifest_sha256"]:
@@ -133,7 +141,7 @@ class HandoffLedger:
         if row["state"] not in {"pending_review", "reviewed", "export_prepared", "returned_unverified"}:
             raise ValueError("stored handoff state is invalid")
         try:
-            body = json.loads(row["body"], object_pairs_hook=_unique_object)
+            body = _stored_json(row["body"])
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored handoff is invalid") from None
         keys = {"schema_version", "kind", "handoff_id", "assistant_id", "swarm_id", "manifest_sha256",
@@ -172,7 +180,7 @@ class HandoffLedger:
         if stored is None:
             return
         try:
-            packet = validate_return(json.loads(stored["body"], object_pairs_hook=_unique_object))
+            packet = validate_return(_stored_json(stored["body"]))
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored return is invalid") from None
         if (digest(packet) != stored["digest"] or packet["return_id"] != stored["id"]
@@ -427,7 +435,7 @@ class HandoffLedger:
         if row is None:
             raise ValueError("handoff has no context")
         try:
-            profile = validate_context(json.loads(row["body"], object_pairs_hook=_unique_object), handoff)
+            profile = validate_context(_stored_json(row["body"]), handoff)
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored context is invalid") from None
         if digest(profile) != row["digest"] or type(row["revision"]) is not int or row["revision"] < 1:
@@ -453,7 +461,7 @@ class HandoffLedger:
             raise ValueError("unknown context checkpoint")
         _, handoff = self._handoff(handoff_id)
         try:
-            profile = validate_context(json.loads(row["body"], object_pairs_hook=_unique_object), handoff)
+            profile = validate_context(_stored_json(row["body"]), handoff)
         except (ValueError, TypeError, RecursionError):
             raise ValueError("stored context checkpoint is invalid") from None
         def outside_current(profile, revision, checksum):
@@ -484,7 +492,7 @@ class HandoffLedger:
             if neighbor is None:
                 continue
             try:
-                adjacent = validate_context(json.loads(neighbor["body"], object_pairs_hook=_unique_object), handoff)
+                adjacent = validate_context(_stored_json(neighbor["body"]), handoff)
             except (ValueError, TypeError, RecursionError):
                 raise ValueError("stored context checkpoint integrity mismatch") from None
             earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
