@@ -250,6 +250,47 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "absent").exists())
         self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
 
+    def test_guarded_registry_files_round_trip_all_existing_receipt_versions(self):
+        args = self.registry_input()
+        before = (self.root / "registry.json").read_bytes(), self.db.read_bytes()
+        scopes = [((), 1), (("--project", "ai-jarvis"), 2),
+                  (("--platform", "codex"), 3),
+                  (("--project", "ai-jarvis", "--platform", "codex"), 3)]
+        for index, (scope, version) in enumerate(scopes):
+            with self.subTest(scope=scope):
+                selected_args = ("--read-only", *args, *scope)
+                first = self.cli(*selected_args, database="absent/ledger.sqlite3")
+                self.assertEqual(first.returncode, 0, first.stderr)
+                record = json.loads(first.stdout)
+                self.assertEqual(record["schema_version"], version)
+                self.assertEqual(record["receipt_sha256"], digest(
+                    {k: v for k, v in record.items() if k != "receipt_sha256"}))
+                self.assertEqual(record["visibility"], "owner_private")
+                self.assertEqual(record["acceptance_state"], "proposed_unverified")
+                self.assertFalse(record["dispatch_authorized"])
+                self.assertEqual(record["external_actions"], 0)
+                guard = ("--expected-receipt-digest", record["receipt_sha256"])
+                guarded_name, default_name = f"private/guarded-{index}.json", f"private/default-{index}.json"
+                for name, extra in ((guarded_name, guard), (default_name, ())):
+                    saved = self.cli(*selected_args, *extra, "--out", name,
+                                     database="absent/ledger.sqlite3")
+                    self.assertEqual(saved.returncode, 0, saved.stderr)
+                    output = self.root / name
+                    self.assertEqual(json.loads(output.read_bytes()), record)
+                    self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+                content = (self.root / guarded_name).read_bytes()
+                self.assertEqual((self.root / default_name).read_bytes(), content)
+                duplicate = self.cli(*selected_args, *guard, "--out", guarded_name,
+                                     database="absent/ledger.sqlite3")
+                self.assertEqual(duplicate.returncode, 1)
+                self.assertEqual((self.root / guarded_name).read_bytes(), content)
+                fresh = self.cli(*selected_args, *guard, database="absent/ledger.sqlite3")
+                self.assertEqual(fresh.returncode, 0, fresh.stderr)
+                self.assertEqual(fresh.stdout, first.stdout)
+        self.assertFalse((self.root / "absent").exists())
+        self.assertFalse(list((self.root / "private").glob(".jarvis-write-*")))
+        self.assertEqual(((self.root / "registry.json").read_bytes(), self.db.read_bytes()), before)
+
     def test_registry_project_preflight_is_selective_without_ledger(self):
         from control_tower.network_contract import PROJECTS
         self.registry_input()

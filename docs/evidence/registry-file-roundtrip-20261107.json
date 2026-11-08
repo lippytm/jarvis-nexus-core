@@ -1,0 +1,127 @@
+{
+  "acceptance_observations": [
+    "Four scopes: aggregate v1, project-only v2, platform-only v3 and combined project/platform v3. Each recomputed receipt digest matches, visibility remains owner_private, acceptance proposed_unverified, dispatch false and external actions zero.",
+    "Twenty actual new-test CLI subprocesses verify eight successful saved files with mode 0600 and exact guarded/default byte equality, four overwrite refusals preserving files and four matching fresh-process guarded reads. No absent ledger or temporary publication files remain; registry and source ledger bytes unchanged.",
+    "Existing mismatch guard regression passes. No prior production defect is claimed; final verifier was allowed to finish without an overlapping retry."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_bounded_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "One regression for successful guarded file publication and fresh-process reuse across all existing registry-inspection receipt versions. Production, docs and schemas unchanged. Prior guard test covered version-3 successful stdout and rejected files, rather than successful saved files across versions.",
+  "checkpoint": {
+    "return_binding": "source/memory/log hashes; final commit and actual CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision registry receipt findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/registry-file-roundtrip-full-20261107.json",
+        "passed": true,
+        "record_sha256": "7a4243cfd752ba8e9648da3ee4f89828861d0e95d71271af1531ee0371262d8a",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 597,
+          "skipped": 0
+        }
+      }
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.registry-file-roundtrip.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md",
+    "docs/evidence/registry-receipt-guard-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "56865485f6fb7bd8f0949061f63bba387bc2f5aa",
+  "limitations": [
+    "Temporary private configuration fixtures and local file receipts, not authenticated registry/review, accepted memory facts, ACL isolation, live agents/connections, provider delivery or dispatch/release authority. Full-registry digest remains shared across scoped receipts.",
+    "No new store, live worker, lease, automatic retry/failover/reconnect controller, actual paused mission/Studio or Newsletter schedule change, permissions/credentials/public-access change, merge, deployment, messages, publication or spending.",
+    "All 17 portable targets/business areas retained; source project IDs separate. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/registry-file-roundtrip-focused-20261107.txt": {
+      "bytes": 100,
+      "sha256": "f0ee25f662b801f55e83a0d0310fe971d25dfeaf004faf48a991aea857921752",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 3.135s\n\nOK\n"
+    },
+    "reports/registry-file-roundtrip-full-20261107.txt": {
+      "bytes": 99026,
+      "sha256": "7ecbc142025e145a76d0ca879ff9af12b74f6c0ae1ad039733db934c24fa81b3"
+    },
+    "reports/registry-file-roundtrip-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/registry-file-roundtrip-summary-20261107.json": {
+      "bytes": 269,
+      "sha256": "72029c657af50aa3255b290078a4c360c14c78d6afc9f79317253459e85da09c",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 597, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/registry-file-roundtrip-full-20261107.json\", \"record_sha256\": \"7a4243cfd752ba8e9648da3ee4f89828861d0e95d71271af1531ee0371262d8a\"}\n"
+    },
+    "reports/registry-file-roundtrip-web-20261107.txt": {
+      "bytes": 39597,
+      "sha256": "7370f9d360d566864456bab069bb52f6de3e6c2ddda54b2bbea6c85aad2242b7"
+    }
+  },
+  "memory_revision": 208,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_overwrite_refusals": 4,
+    "new_regression_cli_processes": 20,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "verification_failures": 0
+  },
+  "mission_id": "guarded-registry-file-roundtrip-20261107",
+  "patch_sha256": "205e77f032f1a4bac13feaffdc449c434f971189e6af9ae80cacc600a10bcfeb",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "3be5297d1e4952f93a32d740c44b41db580e6b6fb687faff2c20e0395a12f968",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context_cli.py": "17c584137461e7fb7cc5c9bcc979cb02d543dc805f6d691293870c9f8aff1ae5"
+  },
+  "visibility": "owner_private"
+}
