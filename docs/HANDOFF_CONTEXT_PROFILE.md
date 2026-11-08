@@ -17,6 +17,18 @@ the exact receipt **file-byte SHA-256 including whitespace**, not its
 `record_sha256` body checksum. A pin copied from an untrusted file does not
 establish independent provenance or authenticated approval.
 
+Optional `--project`, `--mission`, `--asset` and `--platform` pin the expected
+task identity in addition to the required file-byte/source/memory guards.
+Supply all four or omit all four. API `_check_review_files` accepts the matching
+`expected_identity` dictionary with exactly `project_id`, `mission_id`, `asset_id`
+and `platform`; default `None` retains prior behavior. A partial identity or
+mismatch rejects before source files open, even if another valid task's receipt
+pins identical source files and revisions. Take expected identities from the
+intended task record, rather than copying a substituted receipt's labels.
+Matching guards add no output fields or version changes: successful v1 metadata
+is identical to an unguarded read. These supplied labels remain unauthenticated
+and establish neither independent review, ACL isolation nor release authority.
+
 ```sh
 python scripts/jarvis_network.py --root YOUR-PRIVATE-CHECKOUT --read-only check-review-files --file docs/evidence/evaluator-handoff-20261108.json --file-digest YOUR-RECEIPT-FILE-BYTE-SHA256 --source-revision 4a2eeac0965091f80f4a05721d5063996216dd2f --memory-revision 219 --out private/review-files-001.json
 ```

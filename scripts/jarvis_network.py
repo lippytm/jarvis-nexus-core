@@ -45,7 +45,8 @@ def _response_bytes(path):
     return content
 
 
-def _check_review_files(root, content, *, expected_file_sha256, source_revision, memory_revision):
+def _check_review_files(root, content, *, expected_file_sha256, source_revision, memory_revision,
+                        expected_identity=None):
     """Verify selected local file bytes in a pinned prepared receipt, not review."""
     if not isinstance(content, bytes) or len(content) > MAX_PACKET_BYTES:
         raise ValueError("review receipt must be bounded bytes")
@@ -56,6 +57,11 @@ def _check_review_files(root, content, *, expected_file_sha256, source_revision,
         raise ValueError("review source requires an exact commit SHA")
     if type(memory_revision) is not int or memory_revision < 1:
         raise ValueError("invalid review memory revision")
+    identity_keys = {"project_id", "mission_id", "asset_id", "platform"}
+    if expected_identity is not None and (not isinstance(expected_identity, dict)
+        or set(expected_identity) != identity_keys
+        or any(not isinstance(value, str) or not value for value in expected_identity.values())):
+        raise ValueError("complete expected review identity is required")
     try:
         receipt = json.loads(content.decode("utf-8"), object_pairs_hook=_unique_object)
     except (UnicodeError, ValueError, RecursionError):
@@ -75,6 +81,8 @@ def _check_review_files(root, content, *, expected_file_sha256, source_revision,
         raise ValueError("invalid review project or platform")
     for key in ("mission_id", "asset_id"):
         require_identifier(receipt.get(key), "review " + key)
+    if expected_identity is not None and any(receipt[key] != expected_identity[key] for key in identity_keys):
+        raise ValueError("review identity mismatch")
     sources = manifest.get("source_sha256")
     if not isinstance(sources, dict) or not 1 <= len(sources) <= 32:
         raise ValueError("review manifest requires one to 32 source files")
@@ -405,6 +413,10 @@ def main(argv=None):
     review_files.add_argument("--file-digest", required=True, help="Exact receipt file-byte SHA-256, including whitespace; not its body checksum")
     review_files.add_argument("--source-revision", required=True)
     review_files.add_argument("--memory-revision", type=int, required=True)
+    review_files.add_argument("--project", help="Expected project; supply with --mission, --asset and --platform")
+    review_files.add_argument("--mission", help="Expected mission; all four identity guards are required together")
+    review_files.add_argument("--asset", help="Expected asset label; does not authenticate the asset")
+    review_files.add_argument("--platform", help="Expected portable target; does not establish a connection")
     review_files.add_argument("--out")
     queue = commands.add_parser("queue-report")
     queue.add_argument("--project", choices=sorted(PROJECTS), required=True)
@@ -466,9 +478,11 @@ def main(argv=None):
         elif args.command == "catalog":
             result = {"projects": PROJECTS, "providers": provider_catalog(), "external_actions": 0}
         elif args.command == "check-review-files":
+            identity = dict(project_id=args.project, mission_id=args.mission, asset_id=args.asset, platform=args.platform)
             result = _check_review_files(root, _response_bytes(_local(root, args.file)),
                 expected_file_sha256=args.file_digest, source_revision=args.source_revision,
-                memory_revision=args.memory_revision)
+                memory_revision=args.memory_revision,
+                expected_identity=identity if any(value is not None for value in identity.values()) else None)
         elif args.command == "inspect-registry":
             result = inspect_destination_registry(load_packet(_local(root, args.file)),
                 expected_sha256=args.digest, expected_revision=args.registry_revision,

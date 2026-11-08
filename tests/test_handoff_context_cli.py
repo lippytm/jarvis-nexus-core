@@ -205,6 +205,75 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.db.read_bytes(), before)
         self.assertFalse((self.root / "absent").exists())
 
+    def test_review_files_expected_identity_guards_task_and_preserves_reports(self):
+        from scripts.jarvis_network import _check_review_files
+        receipt, content = self.review_files_input()
+        identity = {key: receipt[key] for key in ("project_id", "mission_id", "asset_id", "platform")}
+        guards = dict(expected_file_sha256=hashlib.sha256(content).hexdigest(),
+            source_revision=REVISION, memory_revision=2)
+        for target in sorted(TARGETS):
+            changed = deepcopy(receipt)
+            changed["platform"] = target
+            raw = json.dumps(changed).encode()
+            selected = {**guards, "expected_file_sha256": hashlib.sha256(raw).hexdigest()}
+            original = _check_review_files(self.root, raw, **selected)
+            self.assertEqual(_check_review_files(self.root, raw,
+                expected_identity={**identity, "platform": target}, **selected), original)
+            self.assertEqual(_check_review_files(self.root, raw, expected_identity=None, **selected), original)
+        for key, other in (("project_id", "linux-education"), ("mission_id", "other-mission"),
+                           ("asset_id", "other-engineer"), ("platform", "gemini")):
+            with self.subTest(key=key), patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaisesRegex(ValueError, "review identity mismatch"):
+                    _check_review_files(self.root, content, expected_identity={**identity, key: other}, **guards)
+                opener.assert_not_called()
+        for partial in ({}, {"project_id": "ai-jarvis"}, {**identity, "extra": "x"},
+                        {**identity, "asset_id": None}, True):
+            with self.subTest(identity=partial), patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaisesRegex(ValueError, "complete expected review identity"):
+                    _check_review_files(self.root, content, expected_identity=partial, **guards)
+                opener.assert_not_called()
+        # Another valid task can select identical bytes and revisions; its own
+        # correct file pin must not bypass the caller's intended task identity.
+        substituted = deepcopy(receipt)
+        substituted.update(project_id="linux-education", mission_id="other-mission")
+        raw = json.dumps(substituted).encode()
+        selected = {**guards, "expected_file_sha256": hashlib.sha256(raw).hexdigest()}
+        self.assertEqual(_check_review_files(self.root, raw, **selected)["files_checked"], 2)
+        with patch("scripts.jarvis_network.os.open") as opener:
+            with self.assertRaisesRegex(ValueError, "review identity mismatch"):
+                _check_review_files(self.root, raw, expected_identity=identity, **selected)
+            opener.assert_not_called()
+
+    def test_review_files_cli_expected_identity_refuses_wrong_or_partial_task(self):
+        _, content = self.review_files_input()
+        before = self.db.read_bytes()
+        args = ["--read-only", "check-review-files", "--file", "review.json", "--file-digest",
+            hashlib.sha256(content).hexdigest(), "--source-revision", REVISION, "--memory-revision", "2"]
+        identity = ["--project", "ai-jarvis", "--mission", "synthetic-review", "--asset", "codex",
+            "--platform", "codex"]
+        original = self.cli(*args, database="absent/ledger.sqlite3")
+        self.assertEqual(original.returncode, 0, original.stderr)
+        matched = self.cli(*args, *identity, "--out", "private/identity.json", database="absent/ledger.sqlite3")
+        self.assertEqual(matched.returncode, 0, matched.stderr)
+        path = self.root / "private/identity.json"
+        saved = path.read_bytes()
+        self.assertEqual(json.loads(saved), json.loads(original.stdout))
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        wrong = identity.copy()
+        wrong[wrong.index("--mission") + 1] = "other-mission"
+        refused = self.cli(*args, *wrong, "--out", "wrong.json", database="absent/ledger.sqlite3")
+        self.assertEqual(refused.returncode, 1)
+        self.assertIn("review identity mismatch", refused.stderr)
+        partial = self.cli(*args, "--project", "ai-jarvis", "--out", "partial.json")
+        self.assertEqual(partial.returncode, 1)
+        self.assertIn("complete expected review identity", partial.stderr)
+        self.assertFalse((self.root / "wrong.json").exists())
+        self.assertFalse((self.root / "partial.json").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertEqual((self.root / "review.json").read_bytes(), content)
+        self.assertEqual(path.read_bytes(), saved)
+
     def test_review_files_rejects_scope_paths_and_input_before_source_reads(self):
         from scripts.jarvis_network import _check_review_files
         receipt, content = self.review_files_input()
