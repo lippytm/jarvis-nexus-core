@@ -1866,6 +1866,52 @@ with HandoffLedger(sys.argv[1]) as ledger:
         self.assertEqual(self.load("mission-two")["profile"], neighbor)
         self.assertEqual(self.path.read_bytes(), database_bytes)
 
+    def test_platform_queue_snapshot_is_independent_of_other_platform_edits(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        review = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        other_saved = self.ledger.save_context(neighbor, expected_revision=0)
+        self.ledger.review_context("mission-two", reviewer_id="local-evaluator",
+            expected_sha256=other_saved["context_sha256"], expected_revision=1)
+        args = dict(project_id="ai-jarvis", include_review_state=True)
+        codex = self.ledger.queue_report(**args, platform="codex")
+        gemini = self.ledger.queue_report(**args, platform="gemini")
+        aggregate = self.ledger.queue_report(**args)
+        neighbor["memory_revision"] = 2
+        neighbor["execution"]["attempts"] = 2
+        neighbor["execution"]["detail"] = "Synthetic independent Gemini private note."
+        self.ledger.save_context(neighbor, expected_revision=1)
+        self.assertEqual(self.ledger.queue_report(**args, platform="codex",
+            expected_sha256=codex["report_sha256"]), codex)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**args, platform="gemini", expected_sha256=gemini["report_sha256"])
+        changed = self.ledger.queue_report(**args, platform="gemini")
+        self.assertFalse(changed["bindings"][0]["context_review_current"])
+        self.assertEqual(changed["recorded_attempts"], 2)
+        self.assertEqual(changed["bindings"][0]["context_revision"], 2)
+        self.assertTrue(codex["bindings"][0]["context_review_current"])
+        self.assertEqual(codex["recorded_attempts"], 1)
+        self.assertEqual(codex["control_states"]["paused"], 1)
+        self.assertEqual(codex["execution_states"]["outcome_unknown"], 1)
+        self.assertNotEqual(self.ledger.queue_report(**args)["report_sha256"], aggregate["report_sha256"])
+        self.assertNotIn("Gemini private note", json.dumps(changed))
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.queue_report(**args, platform="codex",
+            expected_sha256=codex["report_sha256"]), codex)
+        self.assertEqual(self.ledger.queue_report(**args, platform="gemini",
+            expected_sha256=changed["report_sha256"]), changed)
+        self.assertTrue(self.ledger.check_context_review_receipt("mission-one", review)["local_binding_matches"])
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two", expected_memory_revision=2)["profile"], neighbor)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_mission_queue_report_selects_all_portable_targets_after_restart(self):
         for index, target in enumerate(sorted(TARGETS)):
             identifier = "selected-" + target

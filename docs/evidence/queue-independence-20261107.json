@@ -1,0 +1,126 @@
+{
+  "acceptance_observations": [
+    "A reviewed synthetic Gemini context is edited to memory/stored revision 2 and recorded attempt count 2. Its prior selected queue snapshot rejects; its context review invalidates; its aggregate project snapshot changes.",
+    "The unchanged Codex platform snapshot still matches its exact digest and retains current local context review, one recorded attempt, paused control and outcome_unknown. Its separate local review receipt remains bound.",
+    "Fresh read-only reopen retains both selected snapshots and exact profiles with database bytes unchanged. Selected queue metadata omits the edited private note. These fixture edits are not actual provider attempts, authenticated reviews or completed missions."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_bounded_independence_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add one regression for valid independent platform edits after the completed queue selector. Production/docs/schema files unchanged. Previous selector coverage checked own-record changes and invalid neighbors, not stability of an exact selected snapshot after valid unselected-platform edits.",
+  "checkpoint": {
+    "return_binding": "source/memory/log hashes; final commit and actual CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision selected queue findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/queue-independence-full-20261107.json",
+        "passed": true,
+        "record_sha256": "6da1e905a91865271b5540c7629030c57b031cde4b1dc6d6fcc17f05e5cf6057",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 600,
+          "skipped": 0
+        }
+      }
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.queue-independence.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md",
+    "docs/evidence/queue-platform-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "ae0d8292f29f20ecfe8d21078a6734380fa6a399",
+  "limitations": [
+    "Synthetic temporary local ledger records; source counts/review labels are metadata, not authenticated identity, ACL isolation, live agents/connections, verified mission completion, delivery or dispatch/release authority. No production defect or measured reliability improvement is claimed.",
+    "No new store, migration, worker, lease, automatic retry/failover/reconnect controller, actual paused mission/Studio or Newsletter schedule change, permissions/credentials/public-access change, merge, deployment, messages, publication or spending.",
+    "All 17 portable targets/business areas retained; source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/queue-independence-focused-20261107.txt": {
+      "bytes": 100,
+      "sha256": "2def5aeac6b65b2581bff5adb7c7df030d387019f3d5c82880f178c6765609c4",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.153s\n\nOK\n"
+    },
+    "reports/queue-independence-full-20261107.txt": {
+      "bytes": 99569,
+      "sha256": "07f0a8d453042b506979d5c140f99c2aac4130160ea7c0cb85da1ce9344bf800"
+    },
+    "reports/queue-independence-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/queue-independence-summary-20261107.json": {
+      "bytes": 264,
+      "sha256": "bb4d906a6ba9e19b689baed41e8b58ccd00b0c14f61468436c7b8b9b26a7a26a",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 600, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/queue-independence-full-20261107.json\", \"record_sha256\": \"6da1e905a91865271b5540c7629030c57b031cde4b1dc6d6fcc17f05e5cf6057\"}\n"
+    },
+    "reports/queue-independence-web-20261107.txt": {
+      "bytes": 39591,
+      "sha256": "6d7824e391fc00e4d8bda0306bcc503dc5d84ce9ee7c0f7004138e982dbe06c2"
+    }
+  },
+  "memory_revision": 212,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "duplicate_development_attempts": 0,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "verification_failures": 0
+  },
+  "mission_id": "independent-platform-queue-snapshots-20261107",
+  "patch_sha256": "e3436c261786b860015270e28b543ba653f1b4a74b2d9057e5164a78abb2f8e4",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "d57718037e094c612706d88c7df9bc835f79633b1d347ddc2c02a22414b734ff",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context.py": "d4e2c5feff21fe9d867ebe426921a3e164a2996e83b5c3202e1b884014dafa3f"
+  },
+  "visibility": "owner_private"
+}
