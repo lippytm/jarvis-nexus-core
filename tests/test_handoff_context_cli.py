@@ -105,6 +105,85 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "default.json").read_bytes(), content)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_registry_destination_selection_requires_complete_scope_and_preserves_versions(self):
+        from control_tower.connections import inspect_destination_registry
+        self.registry_input()
+        registry = json.loads((self.root / "registry.json").read_text())
+        registry["entries"] += [dict(project_id=project, platform="codex", destination_id=destination,
+            resource_id="other-private-resource", allowed_actions=["read"])
+            for project, destination in (("ai-jarvis", "second-destination"),
+                                          ("linux-education", "private-destination"))]
+        guards = dict(expected_sha256=digest(registry), expected_revision=1, expected_source_revision=REVISION)
+        scope = dict(project_id="ai-jarvis", platform="codex")
+        legacy = inspect_destination_registry(registry, **scope, **guards)
+        self.assertEqual(legacy["entry_count"], 2)
+        self.assertEqual(inspect_destination_registry(registry, destination_id=None, **scope, **guards), legacy)
+        for target in sorted(TARGETS):
+            selected = inspect_destination_registry(registry, project_id="ai-jarvis", platform=target,
+                destination_id="private-destination", **guards)
+            self.assertEqual(selected["schema_version"], 4)
+            self.assertEqual(selected["entry_count"], 1)
+            self.assertEqual(selected["platform_counts"], {target: 1})
+            self.assertEqual(selected["destination_id"], "private-destination")
+            self.assertEqual(selected["visibility"], "owner_private")
+            self.assertFalse(selected["dispatch_authorized"])
+            self.assertNotIn("private-resource", json.dumps(selected))
+        first = inspect_destination_registry(registry, destination_id="private-destination", **scope, **guards)
+        self.assertEqual(inspect_destination_registry(registry, destination_id="private-destination",
+            expected_receipt_sha256=first["receipt_sha256"], **scope, **guards), first)
+        for destination in ("second-destination", "absent-destination"):
+            with self.assertRaisesRegex(ValueError, "receipt mismatch"):
+                inspect_destination_registry(registry, destination_id=destination,
+                    expected_receipt_sha256=first["receipt_sha256"], **scope, **guards)
+        empty = inspect_destination_registry(registry, destination_id="absent-destination", **scope, **guards)
+        self.assertEqual((empty["entry_count"], empty["platform_counts"]), (0, {}))
+        for partial in ({}, {"project_id": "ai-jarvis"}, {"platform": "codex"}):
+            with self.assertRaisesRegex(ValueError, "requires project and platform"):
+                inspect_destination_registry(registry, destination_id="private-destination", **partial, **guards)
+        for invalid in (True, "", "../private", 1):
+            with self.assertRaises(ValueError):
+                inspect_destination_registry(registry, destination_id=invalid, **scope, **guards)
+        damaged = deepcopy(registry)
+        damaged["entries"][-1]["allowed_actions"] = ["publish"]
+        with self.assertRaises(ValueError):
+            inspect_destination_registry(damaged, destination_id="private-destination", **scope,
+                **{**guards, "expected_sha256": digest(damaged)})
+        self.assertEqual(inspect_destination_registry(registry, **scope, **guards), legacy)
+
+    def test_registry_destination_cli_pins_private_files_without_opening_ledger(self):
+        args = self.registry_input()
+        before = (self.root / "registry.json").read_bytes(), self.db.read_bytes()
+        selected = ["--read-only", *args, "--project", "ai-jarvis", "--platform", "codex",
+            "--destination", "private-destination"]
+        first = self.cli(*selected, "--out", "private/selected.json", database="absent/ledger.sqlite3")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        path = self.root / "private/selected.json"
+        content = path.read_bytes()
+        report = json.loads(content)
+        self.assertEqual((report["schema_version"], report["entry_count"]), (4, 1))
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        pinned = [*selected, "--expected-receipt-digest", report["receipt_sha256"]]
+        second = self.cli(*pinned, "--out", "private/reused.json", database="absent/ledger.sqlite3")
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual((self.root / "private/reused.json").read_bytes(), content)
+        self.assertEqual((self.root / "private/reused.json").stat().st_mode & 0o777, 0o600)
+        changed = pinned.copy()
+        changed[changed.index("--destination") + 1] = "other-destination"
+        rejected = self.cli(*changed, "--out", "rejected.json", database="absent/ledger.sqlite3")
+        self.assertEqual(rejected.returncode, 1)
+        self.assertIn("receipt mismatch", rejected.stderr)
+        partial = selected.copy()
+        index = partial.index("--platform")
+        del partial[index:index + 2]
+        self.assertEqual(self.cli(*partial, "--out", "partial.json").returncode, 1)
+        self.assertEqual(self.cli(*pinned, "--out", "private/selected.json").returncode, 1)
+        self.assertFalse((self.root / "rejected.json").exists())
+        self.assertFalse((self.root / "partial.json").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(path.read_bytes(), content)
+        self.assertNotIn("opaque-private-resource", content.decode())
+        self.assertEqual(((self.root / "registry.json").read_bytes(), self.db.read_bytes()), before)
+
     def test_registry_platform_selection_is_versioned_private_and_guarded(self):
         from control_tower.connections import inspect_destination_registry
         args = self.registry_input()

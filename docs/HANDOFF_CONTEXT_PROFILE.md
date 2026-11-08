@@ -717,7 +717,7 @@ before filtering. Only counts are returned; resource mappings stay omitted and
 the receipt remains proposed/unverified, with no dispatch authorization.
 
 Optional `--expected-receipt-digest SHA256` (API `expected_receipt_sha256`)
-requires the exact inspection receipt, including its project/platform selection,
+requires the exact inspection receipt, including its project/platform/destination selection,
 before returning or writing output. Keep the existing whole-registry digest,
 source and revision guards too. Omission preserves the existing receipt bytes
 and versions. A matching digest is an integrity/selection check, not an
@@ -730,6 +730,20 @@ returns zero counts. The digest still pins the entire validated registry, so
 neighbor changes invalidate the supplied guard. Resource mappings remain omitted.
 Omitting both selectors retains the version-1 aggregate report. These source project IDs are
 separate from the master Page's seventeen business areas.
+
+Optional `--destination DESTINATION-ID` (API `destination_id`) requires both
+`--project` and `--platform`, since opaque destination IDs may be reused in other
+scopes. It intersects all three selectors and emits an explicit version-4
+inspection receipt containing the selected `destination_id`. A valid absent ID
+returns zero counts; it does not establish acceptance, completion or connection.
+Unselected destination IDs, entries and resource mappings remain omitted. Keep
+the receipt owner-private: it contains the selected identifier and the digest of
+the whole registry. Full-registry validation and source/revision/digest guards
+still run before filtering; malformed unselected entries cannot be hidden.
+Receipt pins distinguish destination selections even when their counts coincide.
+Omitting the option (API `None`) preserves existing version-1/2/3 receipts. This
+adds no fields to input registry v1 or handoff packets, opens no ledger and
+authorizes no storage acceptance, provider call, dispatch or hold release.
 
 ```sh
 python scripts/jarvis_network.py --root YOUR-PRIVATE-ROOT --read-only inspect-registry --file registry.json --digest YOUR-REGISTRY-SHA256 --source-revision YOUR-40-CHAR-SOURCE-SHA --registry-revision 1 --out private/registry-inspection-001.json

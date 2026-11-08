@@ -1,0 +1,112 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "extend_existing_registry_inspection",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "baseline": {
+    "log": "EF\n======================================================================\nERROR: test_registry_destination_selection_requires_complete_scope_and_preserves_versions (tests.test_handoff_context_cli.ContextCLITests.test_registry_destination_selection_requires_complete_scope_and_preserves_versions)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 120, in test_registry_destination_selection_requires_complete_scope_and_preserves_versions\n    self.assertEqual(inspect_destination_registry(registry, destination_id=None, **scope, **guards), legacy)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: inspect_destination_registry() got an unexpected keyword argument 'destination_id'\n\n======================================================================\nFAIL: test_registry_destination_cli_pins_private_files_without_opening_ledger (tests.test_handoff_context_cli.ContextCLITests.test_registry_destination_cli_pins_private_files_without_opening_ledger)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 159, in test_registry_destination_cli_pins_private_files_without_opening_ledger\n    self.assertEqual(first.returncode, 0, first.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,check-backup-digest,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --destination private-destination\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.064s\n\nFAILED (failures=1, errors=1)\n",
+    "result": "API unsupported keyword TypeError and CLI unknown --destination; expected feature absence, not a prior correctness defect"
+  },
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Optional API destination_id / CLI inspect-registry --destination intersects project/platform/destination and emits explicit v4 inspection receipt. Both project and platform required. Full-registry validation and exact source/revision/digest/pin guards retained. None/omission preserves v1/v2/v3 outputs; input v1 registry, strict handoff packets and storage schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory and artifact/check hashes; final commit and CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.950s\n\nOK\n",
+      "tests": 4
+    },
+    "full_local": {
+      "evidence": "reports/r35-full-20261108.json",
+      "passed": true,
+      "record_sha256": "057ba2820daae3b6453c09a2855ae332dbe14547eb73ead53556cf118b8effe9",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 604,
+        "skipped": 0
+      }
+    },
+    "new_regressions": [
+      "all 17 targets select one destination; mixed project/platform/destination intersections",
+      "same-count destination pins differ, missing scope/invalid IDs reject, absent valid ID returns zero",
+      "malformed unselected entry rejects before filtering; legacy output unchanged",
+      "fresh CLI private 0600 byte-identical saved reuse; mismatch/partial-scope/overwrite refusal; source/database bytes unchanged and absent database not created"
+    ],
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.registry-destination.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/stored-json-key-integrity-20261108.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "6e39ee4487524f099cb2698137a48784761de98e",
+  "limitations": [
+    "Synthetic proposed registry and fixture-derived pins only; no authenticated registry acceptance, ACL isolation, live worker/connection/delivery or verified mission completion. Receipt now echoes selected opaque destination and retains whole-registry digest, so must remain private. No resource mappings returned.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, schema migration, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, publication or spending."
+  ],
+  "memory_revision": 217,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_feature_absence_cases": 2,
+    "new_regressions": 2,
+    "portable_targets_checked": 17,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "unexpected_verification_errors": 0
+  },
+  "mission_id": "registry-destination-selection-20261108",
+  "observed_gap": "Registry inspection could select project/platform but not one destination among multiple resources. Explicit project/platform identity is required when selecting a reused opaque destination ID.",
+  "patch_sha256": "2cb16a438209fb6e9559f40dfd7184cd1ff6c98423eaf8df6f8fff4f86ef0747",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "906375da72408e39f1a0f08aa6ea9cf8e28c5c8f9757f1e43701e4d5c6e84a27",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/connections.py": "cd77b517dfc2da0b2770326eba807bcc9ac1dcb5f8b2c381c4d159c80c10a930",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "06efc8143ba548b7a9d42cd98fd6f3a59a968917e12216d4af5257b9018b6e2d",
+    "scripts/jarvis_network.py": "3bbf46cf4ee894aabd3983290e61f2d1840602bc44e555ba45719e8669cc46e0",
+    "tests/test_handoff_context_cli.py": "b8ef4c8462895d98582d9e7f1d1fe5e3fb3bf3c0b403b2ef796c9d8f726c5de6"
+  },
+  "verification_logs_sha256": {
+    "reports/r35-focused-20261108.txt": "9d6ecfe5d43182ccf2f013e1ffce6d9412a7362d65348f11b8814fa65992e757",
+    "reports/r35-full-20261108.json": "04eda8ec4b101017f122dcf32695c629a7e65b862b7bfd2a8cfc8cec1e6c521c",
+    "reports/r35-web-20261108.txt": "ee6b87abe7fd279942ab4d1b224b88a7cd9b76f64739f562a71a03dfb975abc9"
+  },
+  "visibility": "owner_private"
+}

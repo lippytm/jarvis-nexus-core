@@ -119,7 +119,7 @@ def validate_destination_registry(registry):
 
 def inspect_destination_registry(registry, *, expected_sha256, expected_revision,
                                  expected_source_revision, project_id=None, platform=None,
-                                 expected_receipt_sha256=None):
+                                 expected_receipt_sha256=None, destination_id=None):
     """Private metadata-only preflight; no storage, acceptance or authentication."""
     require_digest(expected_sha256)
     if expected_receipt_sha256 is not None:
@@ -129,13 +129,18 @@ def inspect_destination_registry(registry, *, expected_sha256, expected_revision
         raise ValueError("unknown registry inspection project")
     if platform is not None and (not isinstance(platform, str) or platform not in TARGETS):
         raise ValueError("unknown registry inspection platform")
+    if destination_id is not None:
+        require_identifier(destination_id, "registry inspection destination ID")
+        if project_id is None or platform is None:
+            raise ValueError("destination inspection requires project and platform")
     if (type(expected_revision) is not int or registry["revision"] != expected_revision
         or registry["source_revision"] != expected_source_revision
         or digest(registry) != expected_sha256):
         raise ValueError("registry digest, source or revision mismatch")
     entries = [entry for entry in registry["entries"]
                if (project_id is None or entry["project_id"] == project_id)
-               and (platform is None or entry["platform"] == platform)]
+               and (platform is None or entry["platform"] == platform)
+               and (destination_id is None or entry["destination_id"] == destination_id)]
     counts = {}
     for entry in entries:
         counts[entry["platform"]] = counts.get(entry["platform"], 0) + 1
@@ -149,6 +154,8 @@ def inspect_destination_registry(registry, *, expected_sha256, expected_revision
         result.update(schema_version=2, project_id=project_id)
     if platform is not None:
         result.update(schema_version=3, platform=platform)
+    if destination_id is not None:
+        result.update(schema_version=4, destination_id=destination_id)
     receipt = {**result, "receipt_sha256": digest(result)}
     if expected_receipt_sha256 is not None and receipt["receipt_sha256"] != expected_receipt_sha256:
         raise ValueError("registry inspection receipt mismatch; retrieve selected summary again")
