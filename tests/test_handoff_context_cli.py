@@ -303,6 +303,37 @@ class ContextCLITests(unittest.TestCase):
                         "expected_file_sha256": hashlib.sha256(raw).hexdigest()})
                 opener.assert_not_called()
 
+    def test_review_files_optional_git_head_guard_is_versioned_and_fail_closed(self):
+        from scripts.jarvis_network import _check_review_files
+        _, content = self.review_files_input()
+        guards = dict(expected_file_sha256=hashlib.sha256(content).hexdigest(),
+            source_revision=REVISION, memory_revision=2)
+        legacy = _check_review_files(self.root, content, **guards)
+        with patch("scripts.jarvis_network.subprocess.run") as git:
+            self.assertEqual(_check_review_files(self.root, content, verify_git_head=False, **guards), legacy)
+            git.assert_not_called()
+        result = subprocess.CompletedProcess([], 0, str(self.root) + "\n" + REVISION + "\n", "")
+        with patch("scripts.jarvis_network.subprocess.run", return_value=result) as git:
+            checked = _check_review_files(self.root, content, verify_git_head=True, **guards)
+            self.assertEqual(checked, {**legacy, "schema_version": 2,
+                "repository_revision_verification": "local_git_head_only"})
+            self.assertEqual(git.call_args.kwargs["timeout"], 2)
+            self.assertFalse(any(k.startswith("GIT_") for k in git.call_args.kwargs["env"]))
+        for response in (subprocess.CompletedProcess([], 1, "", "not a repository"),
+                         subprocess.CompletedProcess([], 0, str(self.root) + "\n" + "f" * 40 + "\n", ""),
+                         subprocess.CompletedProcess([], 0, str(self.root.parent) + "\n" + REVISION + "\n", "")):
+            with self.subTest(response=response), patch("scripts.jarvis_network.subprocess.run", return_value=response), \
+                 patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaisesRegex(ValueError, "Git HEAD"):
+                    _check_review_files(self.root, content, verify_git_head=True, **guards)
+                opener.assert_not_called()
+        for error in (FileNotFoundError(), subprocess.TimeoutExpired("git", 2)):
+            with patch("scripts.jarvis_network.subprocess.run", side_effect=error), \
+                 patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaisesRegex(ValueError, "Git HEAD"):
+                    _check_review_files(self.root, content, verify_git_head=True, **guards)
+                opener.assert_not_called()
+
     def test_review_files_bounds_size_and_post_read_time_budget(self):
         from scripts.jarvis_network import _check_review_files
         _, content = self.review_files_input()

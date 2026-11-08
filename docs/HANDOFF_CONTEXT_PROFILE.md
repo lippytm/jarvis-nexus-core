@@ -35,9 +35,22 @@ python scripts/jarvis_network.py --root YOUR-PRIVATE-CHECKOUT --read-only check-
 
 Point the root at the authorized tree whose selected files are being checked;
 the checker itself may come from a separately reviewed tools checkout. This
-does not perform a Git checkout, verify HEAD or prove that unselected files
+does not perform a Git checkout or, by default, verify HEAD, or prove that unselected files
 belong to the declared commit. Existing handoff manifests pin their own source
 snapshot; current changed files can correctly fail an older snapshot check.
+
+Optional `--verify-git-head` (API `verify_git_head=True`) requires Git to report
+this exact workspace root and the pinned source commit as HEAD before source
+files open. It runs only local `rev-parse`, with Git environment overrides
+removed, optional locks/fsmonitor disabled and a two-second subprocess timeout.
+Missing Git, timeout, a parent repository discovered from a subdirectory, or a
+stale HEAD refuses without a success report. No checkout or network occurs.
+The opted-in report is explicitly version 2 with
+`repository_revision_verification=local_git_head_only`; default false retains the
+same v1 report. This single HEAD observation does not freeze concurrent writers,
+verify clean status, hash unselected files, establish provenance/authentication,
+or grant review/release authority. A tool-only container without Git can still
+use the existing default byte check; it cannot pass the optional HEAD check.
 
 Receipt input is a regular file of at most 64 KiB. Select one to 32 files, each
 at most 4 MiB. Absolute/traversing paths, escape from the root and duplicate
@@ -54,7 +67,7 @@ digests and a checked-file count, omitting file contents and paths. Success is
 `selected_file_bytes_only`, with repository revision verification explicitly
 `not_performed`, independent review `not_established`, and release/dispatch
 authorization false. No review, release, registry acceptance, hold transition,
-retry, provider call or worker is established. The separate report is version 1;
+retry, provider call or worker is established. The default separate report is version 1 (opt-in HEAD check is version 2);
 strict handoff packets and storage schemas are unchanged.
 
 ## Stored scope

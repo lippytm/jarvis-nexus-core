@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import sqlite3
 import stat
+import subprocess
 import sys
 import tempfile
 import time
@@ -46,7 +47,7 @@ def _response_bytes(path):
 
 
 def _check_review_files(root, content, *, expected_file_sha256, source_revision, memory_revision,
-                        expected_identity=None):
+                        expected_identity=None, verify_git_head=False):
     """Verify selected local file bytes in a pinned prepared receipt, not review."""
     if not isinstance(content, bytes) or len(content) > MAX_PACKET_BYTES:
         raise ValueError("review receipt must be bounded bytes")
@@ -83,6 +84,21 @@ def _check_review_files(root, content, *, expected_file_sha256, source_revision,
         require_identifier(receipt.get(key), "review " + key)
     if expected_identity is not None and any(receipt[key] != expected_identity[key] for key in identity_keys):
         raise ValueError("review identity mismatch")
+    if type(verify_git_head) is not bool:
+        raise ValueError("Git HEAD guard must be boolean")
+    if verify_git_head:
+        # Local observation only: no checkout, hooks, network, or Git environment overrides.
+        environment = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        try:
+            observed = subprocess.run(["git", "--no-optional-locks", "-c", "core.fsmonitor=false",
+                "-C", str(root), "rev-parse", "--show-toplevel", "--verify", "HEAD^{commit}"],
+                capture_output=True, text=True, timeout=2, env=environment, check=False)
+        except (OSError, subprocess.TimeoutExpired):
+            raise ValueError("Git HEAD verification unavailable") from None
+        lines = observed.stdout.splitlines()
+        if (observed.returncode != 0 or len(lines) != 2
+            or Path(lines[0]).resolve() != root or lines[1] != source_revision):
+            raise ValueError("Git HEAD or repository root mismatch")
     sources = manifest.get("source_sha256")
     if not isinstance(sources, dict) or not 1 <= len(sources) <= 32:
         raise ValueError("review manifest requires one to 32 source files")
@@ -118,11 +134,11 @@ def _check_review_files(root, content, *, expected_file_sha256, source_revision,
                 checksum.update(block)
         if checksum.hexdigest() != expected:
             raise ValueError("review source file digest mismatch")
-    return dict(schema_version=1, kind="jarvis.review_files_check", project_id=receipt["project_id"],
+    return dict(schema_version=2 if verify_git_head else 1, kind="jarvis.review_files_check", project_id=receipt["project_id"],
         mission_id=receipt["mission_id"], asset_id=receipt["asset_id"], platform=receipt["platform"],
         source_revision=source_revision, memory_revision=memory_revision, receipt_file_sha256=expected_file_sha256,
         source_manifest_sha256=digest(manifest), files_checked=len(paths), visibility="owner_private",
-        verification="selected_file_bytes_only", repository_revision_verification="not_performed",
+        verification="selected_file_bytes_only", repository_revision_verification="local_git_head_only" if verify_git_head else "not_performed",
         independent_review="not_established", release_authorized=False, dispatch_authorized=False, external_actions=0)
 
 
@@ -409,6 +425,7 @@ def main(argv=None):
     backup_check.add_argument("--out", help="Save private check metadata to a fresh file")
     commands.add_parser("status")
     review_files = commands.add_parser("check-review-files", help="Verify selected local bytes in a pinned prepared review receipt; no evaluation")
+    review_files.add_argument("--verify-git-head", action="store_true", help="Require local Git root and HEAD to match the pinned source; version-2 report")
     review_files.add_argument("--file", required=True)
     review_files.add_argument("--file-digest", required=True, help="Exact receipt file-byte SHA-256, including whitespace; not its body checksum")
     review_files.add_argument("--source-revision", required=True)
@@ -482,7 +499,8 @@ def main(argv=None):
             result = _check_review_files(root, _response_bytes(_local(root, args.file)),
                 expected_file_sha256=args.file_digest, source_revision=args.source_revision,
                 memory_revision=args.memory_revision,
-                expected_identity=identity if any(value is not None for value in identity.values()) else None)
+                expected_identity=identity if any(value is not None for value in identity.values()) else None,
+                verify_git_head=args.verify_git_head)
         elif args.command == "inspect-registry":
             result = inspect_destination_registry(load_packet(_local(root, args.file)),
                 expected_sha256=args.digest, expected_revision=args.registry_revision,
