@@ -118,6 +118,62 @@ class ContextTests(unittest.TestCase):
                     observe()
                 self.assertFalse(self.ledger.db.in_transaction)
                 self.assertEqual(self.path.read_bytes(), before)
+    def test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records(self):
+        self.approve()
+        guards = dict(expected_source_revision=REVISION, expected_memory_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=digest(self.profile), **guards)
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Synthetic second checkpoint."
+        self.ledger.save_context(changed, expected_revision=1)
+        self.ledger.checkpoint_context("mission-one", expected_sha256=digest(changed), **guards)
+        returned = self.stage("returned-neighbor", target="gemini")
+        self.ledger.review("returned-neighbor", reviewer_id="local-evaluator",
+            expected_sha256=returned["handoff_sha256"])
+        self.ledger.export("returned-neighbor", expected_sha256=returned["handoff_sha256"])
+        self.ledger.import_return(dict(schema_version=1, kind="jarvis.return", return_id="result-one",
+            handoff_id="returned-neighbor", handoff_sha256=returned["handoff_sha256"],
+            source_provider="gemini", text="Synthetic unverified return.", evidence_urls=[]))
+        checkpoint = lambda: self.ledger.load_checkpoint("mission-one", 2,
+            expected_sha256=digest(changed), **guards)
+        cases = [
+            ("swarms", "id='memory-pilot'", self.ledger.status, False),
+            ("handoffs", "id='mission-one'", self.ledger.status, False),
+            ("returns", "id='result-one'", self.ledger.status, False),
+            ("handoff_contexts", "handoff_id='mission-one'", lambda: self.load(), False),
+            ("context_checkpoints", "revision=2", checkpoint, False),
+            ("context_checkpoints", "revision=1", checkpoint, False),
+            ("handoff_contexts", "handoff_id='mission-one'", lambda: self.load(), True),
+        ]
+        # Resolve bound status calls only after each fresh connection is opened.
+        for table, where, observe, nested in cases:
+            with self.subTest(table=table, where=where, nested=nested):
+                self.ledger.close()
+                with sqlite3.connect(self.path) as writer:
+                    original = writer.execute(f"SELECT body FROM {table} WHERE {where}").fetchone()[0]
+                    if nested:
+                        ambiguous = original.replace('"execution":{', '"execution":{"attempts":999,', 1)
+                    else:
+                        ambiguous = '{"schema_version":999,' + original[1:]
+                    self.assertNotEqual(ambiguous, original)
+                    self.assertEqual(json.loads(ambiguous), json.loads(original))
+                    writer.execute(f"UPDATE {table} SET body=? WHERE {where}", (ambiguous,))
+                before = self.path.read_bytes()
+                self.ledger = HandoffLedger(self.path, read_only=True)
+                with self.assertRaisesRegex(ValueError, "stored"):
+                    if table in {"swarms", "handoffs", "returns"}:
+                        self.ledger.status()
+                    else:
+                        observe()
+                self.assertFalse(self.ledger.db.in_transaction)
+                self.assertEqual(self.path.read_bytes(), before)
+                self.ledger.close()
+                with sqlite3.connect(self.path) as writer:
+                    writer.execute(f"UPDATE {table} SET body=? WHERE {where}", (original,))
+                self.ledger = HandoffLedger(self.path, read_only=True)
+                self.assertEqual(self.load()["profile"], changed)
+                self.assertEqual(checkpoint()["profile"], changed)
+                self.assertEqual(self.ledger.status()["return_count"], 1)
+
     def test_export_revision_match_does_not_bypass_holds_or_reviews(self):
         for state in ("paused", "cancelled", "outcome_unknown", "unreviewed"):
             with self.subTest(state=state):
