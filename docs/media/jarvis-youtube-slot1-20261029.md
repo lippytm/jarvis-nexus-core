@@ -4,7 +4,8 @@ Unpublished YouTube slot-1 script package, prepared October 30, 2026 for the
 existing October 29 editorial batch. Audience: Charles and future Jarvis
 collaborators. Proposed duration: 60 seconds. Narration, captions and shot
 directions are authored; a six-panel storyboard and PNG review preview are now
-prepared. No voice is recorded and no video is produced.
+prepared. A silent timing animatic is now retained below. No voice is recorded;
+this is not a finished video.
 
 ## Narration and shot plan
 
@@ -116,8 +117,9 @@ retains hashes, observed checks and renderer warnings. Calculated text/backgroun
 contrast is a source-color check, not a mobile or screen-reader accessibility test.
 This is a storyboard only: no voice, animation or finished video. A separate thumbnail review candidate is retained below.
 
-Next: exact narration/caption/storyboard owner review, then authorized recording,
-retiming and a local video preview. Channel/destination, device readability,
+Storyboard-stage checkpoint: exact narration/caption/storyboard owner review, then
+authorized recording and retiming. A silent timing preview has since been prepared
+below; recording and finished production remain unfinished. Channel/destination, device readability,
 accessibility, rights and upload acceptance remain unverified; nothing published.
 
 ## Slot 1 thumbnail review candidate
@@ -139,6 +141,71 @@ original campaign and storyboard artwork remain unchanged.
 
 This is a thumbnail candidate, not an accepted upload or a finished video. Exact
 art/copy owner review, rights, channel/destination, mobile readability, accessibility
-and platform acceptance remain pending. No voice, animation/video, upload or
+and platform acceptance remain pending. At thumbnail preparation, no voice, animation/video, upload or
 publication was produced. The PNG does not populate a platform alt-text field.
 The Daily Newsletter schedule and paused Studio Work Cycle remain unchanged.
+
+
+## Slot 1 silent timing animatic
+
+The [60-second silent MP4 review preview](exports/youtube-20261029/slot-1-silent-animatic.mp4)
+puts the existing six storyboard panels on screen for ten seconds each and burns
+in all twelve exact proposed SRT cues for five seconds each. Every frame says
+“SILENT TIMING ANIMATIC · UNPUBLISHED · NO RECORDED VOICE.” Empty evidence and
+review fields remain empty. This is a concrete timing preview, not a narrated or
+finished video, an accepted platform upload or a published post.
+
+The [editable SVG filmstrip](jarvis-youtube-slot1-animatic-20261108.svg) holds twelve
+1280×720 cue groups, `cue-01` through `cue-12`, plus copies of the original six
+vector panels. Original storyboard, SRT, narration, upload copy, thumbnail and
+campaign are unchanged. The working 1280×720, H.264/yuv420p, 24 fps canvas is an
+editorial review choice; no platform formatting requirement is asserted. The MP4
+has no audio stream. Timing is still proposed and must be checked against an
+authorized recording. No voice, music, footage, private record or provider call
+was added.
+
+To reproduce the preview from the repository root with installed Inkscape/FFmpeg,
+choose a fresh scratch directory and an absent output filename. The commands
+below refuse to overwrite an existing video; generated PNGs are intermediate
+review frames. Pin the input commit and compare source/output hashes from the
+[actual render receipt](../evidence/youtube-slot1-animatic-20261108.json). Different
+renderer/encoder versions may produce different bytes.
+
+```bash
+work_dir=$(mktemp -d)
+for cue in $(seq -w 1 12); do
+  inkscape docs/media/jarvis-youtube-slot1-animatic-20261108.svg \
+    --export-id-only --export-id="cue-$cue" --export-width=1280 \
+    --export-filename="$work_dir/cue-$cue.png" || exit 1
+done
+ffmpeg -hide_banner -loglevel error -nostdin -n \
+  -framerate 1/5 -start_number 1 -i "$work_dir/cue-%02d.png" \
+  -t 60 -r 24 -c:v libx264 -tune stillimage -preset medium -crf 26 \
+  -pix_fmt yuv420p -an -map_metadata -1 \
+  -metadata title='Slot 1 silent timing animatic - unpublished review' \
+  -movflags +faststart "$work_dir/slot-1-silent-animatic.mp4"
+```
+
+Local checks cover XML/internal resources, exact panel/caption retention, source
+hashes, text bounds, PNG decode/dimensions, encoded duration/frame count/no audio,
+full video decode and assistant inspection of decoded cue frames. These checks
+do not establish device accessibility, recorded narration timing, rights clearance,
+independent review or owner release approval. Source-color contrast checks are
+not accessibility certification. Renderer warnings and actual tool versions are
+retained in the receipt.
+
+Preparation input: `417abfb554a9288de8789db6e29e10e42e34ed45`; master memory
+revision 224; project/mission `ai-jarvis` / `jarvis-media-20261029`; preparing asset
+and configuration `codex` / `codex.media-animatic.v1`; intended platform `youtube`,
+channel/destination unassigned; permitted action `prepare_draft`; one asset,
+zero provider calls, paid services, agents or automatic retries. These are scoped
+preparation labels, not installation, authentication or accepted memory facts.
+This guide, filmstrip, MP4, receipt and resulting development commit are the local
+return binding/checkpoint. Independent and owner exact-content review are pending.
+
+Next: review this exact preview alongside the narration/SRT, then authorized
+recording, caption retiming and finished production. Preserve this silent candidate
+until replaced through review. Channel/destination, rights, target-device
+readability, accessibility and upload acceptance remain unverified. No upload,
+publication or schedule change occurred; the Daily Newsletter and paused Studio
+Work Cycle remain unchanged. All other slots remain independent.
