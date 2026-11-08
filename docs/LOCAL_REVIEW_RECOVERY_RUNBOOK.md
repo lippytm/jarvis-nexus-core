@@ -6,6 +6,8 @@ Inspection template updated against source
 `6a24084c5b5a1eaec65e9f3bc450be14f285bd89` and master memory revision 178.
 Export reconciliation added against source
 `e4800d7fdac5691c607266265af6e00089205c38` and master memory revision 195.
+Registry-inspection receipt reuse added against source
+`2583a09358690c5e8a9ee37b878485bbb1567b5b` and master memory revision 209.
 This is navigation for the existing local ledger, not an accepted operating
 policy, authenticated approval or permission to release work.
 
@@ -49,9 +51,60 @@ refuses overwrite. Never put credentials in these values or evidence records.
 | `RECEIPT_SHA256` | Receipt body digest, excluding its own checksum | `check-review-receipt --receipt-digest` |
 | Queue `report_sha256` | One selected metadata snapshot | Optional queue `--expected-report-digest` |
 | File byte SHA-256 | Exact serialized bytes, including whitespace | External artifact retention; not `--receipt-digest` |
+| `REGISTRY_SHA256` | Entire canonical proposed registry, including unselected entries | `inspect-registry --digest` |
+| `INSPECTION_SHA256` | Selected inspection receipt, excluding its own checksum | `inspect-registry --expected-receipt-digest` |
 
 `CONTEXT_REVISION` is the stored ledger revision. `MEMORY_REVISION` belongs to the
 context profile. Neither replaces `SOURCE_REVISION`, the recorded source SHA.
+
+## Prepare and reuse a selective registry inspection
+
+**Proposed addition — independent and owner review pending.** This preflight
+does not open or change a ledger, accept a registry or contact a provider. Use
+only the authorized private registry for the selected mission. Keep its exact
+source/revision and whole-registry digest from the retained work record;
+`REGISTRY_FILE` is relative to `TASK_ROOT`. The seven source project keys and
+seventeen portable target IDs are separate from the seventeen business areas.
+
+Prepare a fresh owner-private summary with both selectors explicit:
+
+```sh
+python scripts/jarvis_network.py --root "$TASK_ROOT" --read-only inspect-registry --file "$REGISTRY_FILE" --digest "$REGISTRY_SHA256" --source-revision "$REGISTRY_SOURCE_REVISION" --registry-revision "$REGISTRY_REVISION" --project "$PROJECT_ID" --platform "$PLATFORM_ID" --out reports/registry-selection-001.json
+```
+
+Compare the receipt's registry/source/revision/configuration identity, project,
+platform, count and visibility with the intended scope. The saved file is
+mode 0600 and refuses overwrite; it omits resource/destination mappings. Counts
+describe supplied specifications, not connected agents or completed work. Retain
+the summary as proposed evidence. A known empty scope is a zero-count summary,
+not a failed command or a verified connection.
+
+For subsequent reuse, `INSPECTION_SHA256` must be the `receipt_sha256` retained
+with the exact reviewed selection. A file's byte hash is different. Reading a
+self-declared digest from an arbitrary file does not establish independent
+provenance, authenticated review or owner approval. When no trusted review/pin
+exists, label the first summary unpinned; do not claim a successful pinned check.
+
+Reinspect with the same explicit selectors and a fresh output name:
+
+```sh
+python scripts/jarvis_network.py --root "$TASK_ROOT" --read-only inspect-registry --file "$REGISTRY_FILE" --digest "$REGISTRY_SHA256" --source-revision "$REGISTRY_SOURCE_REVISION" --registry-revision "$REGISTRY_REVISION" --project "$PROJECT_ID" --platform "$PLATFORM_ID" --expected-receipt-digest "$INSPECTION_SHA256" --out reports/registry-selection-002.json
+```
+
+| Observed result | Bounded next action |
+| --- | --- |
+| Exact receipt matches | Retain both files and the actual command receipt; matching bytes do not authorize dispatch or establish authentication. |
+| Registry/source/revision or inspection digest mismatches | Preserve the failed check and intended pin; reconcile changed data or selectors. Do not remove a guard merely to obtain success. |
+| Output already exists | Preserve it and inspect the prior receipt. Existing-file preflight may reject before registry inspection; do not infer which later check would pass. |
+| Missing/unreadable input or uncertain I/O | Preserve unfinished work and the error; do not initialize a ledger, invent acceptance or overlap retries. |
+
+The optional guard adds no receipt fields: aggregate v1, project-only v2 and
+platform-selected v3 formats remain distinct. Omitting a selector changes the
+selected receipt and may invalidate its pin even when counts happen to match.
+Full-registry guards remain required. No check changes review state, execution
+holds, permissions, schedules or external-action limits, and it does not freeze
+the registry for a future write. A real authorized authenticated storage/delivery
+receipt is still needed before claiming operational shared connections.
 
 ## Observe the existing mission privately
 
