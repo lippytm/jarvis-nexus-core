@@ -8,6 +8,8 @@ Export reconciliation added against source
 `e4800d7fdac5691c607266265af6e00089205c38` and master memory revision 195.
 Registry-inspection receipt reuse added against source
 `2583a09358690c5e8a9ee37b878485bbb1567b5b` and master memory revision 209.
+Platform-selected queue rechecks added against source
+`31709ff09208c8c2fcdfbd1fbfcf4a2b70100ec6` and master memory revision 213.
 This is navigation for the existing local ledger, not an accepted operating
 policy, authenticated approval or permission to release work.
 
@@ -49,7 +51,7 @@ refuses overwrite. Never put credentials in these values or evidence records.
 |---|---|---|
 | `CONTEXT_SHA256` | Exact canonical saved context digest | `inspect-recovery --digest` |
 | `RECEIPT_SHA256` | Receipt body digest, excluding its own checksum | `check-review-receipt --receipt-digest` |
-| Queue `report_sha256` | One selected metadata snapshot | Optional queue `--expected-report-digest` |
+| `QUEUE_REPORT_SHA256` | Selected queue report body digest, excluding its own checksum | Queue `--expected-report-digest` |
 | File byte SHA-256 | Exact serialized bytes, including whitespace | External artifact retention; not `--receipt-digest` |
 | `REGISTRY_SHA256` | Entire canonical proposed registry, including unselected entries | `inspect-registry --digest` |
 | `INSPECTION_SHA256` | Selected inspection receipt, excluding its own checksum | `inspect-registry --expected-receipt-digest` |
@@ -108,10 +110,12 @@ receipt is still needed before claiming operational shared connections.
 
 ## Observe the existing mission privately
 
-From the repository root, select metadata for the actual project and mission:
+From the repository root, select metadata for the actual project, mission and
+portable target. `PLATFORM_ID` must be the exact retained target, such as `codex`;
+it is separate from ChatGPT, the OpenAI API and GitHub:
 
 ```sh
-python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only queue-report --project "$PROJECT_ID" --mission "$MISSION_ID" --include-review-state --out reports/queue-observation-001.json
+python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only queue-report --project "$PROJECT_ID" --mission "$MISSION_ID" --platform "$PLATFORM_ID" --include-review-state --out reports/queue-observation-001.json
 ```
 
 This does not modify the ledger. The private report may contain project and
@@ -119,6 +123,35 @@ destination identifiers; retain it within its authorized audience. A local
 review flag is not authenticated identity, owner approval or a completed mission.
 Seven source project keys and seventeen portable targets do not replace the
 master Page's seventeen business areas.
+
+Retain the version-4 report's project, mission, platform, source/memory/context
+revisions, local review flags and `report_sha256` with the work receipt. Set
+`QUEUE_REPORT_SHA256` from that exact retained selection for a subsequent check;
+the file's byte digest is different. A pin taken from a synthetic or unreviewed
+file exercises consistency only, not independent provenance or approval.
+
+Recheck the same selection in a fresh read-only process and output file:
+
+```sh
+python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only queue-report --project "$PROJECT_ID" --mission "$MISSION_ID" --platform "$PLATFORM_ID" --include-review-state --expected-report-digest "$QUEUE_REPORT_SHA256" --out reports/queue-observation-002.json
+```
+
+| Observed result | Bounded next action |
+| --- | --- |
+| Exact selected report matches | Retain both private files and the command receipt. Read-only inspection changes no attempts, reviews or holds. |
+| Scope, selected membership, context/revision, state or local review changes | Preserve the stale-check refusal and intended pin; retrieve fresh authorized metadata for review. Do not remove selectors or guards to manufacture a match. |
+| Valid record on another platform changes | The selected snapshot may remain identical. That match says nothing about the other platform's current state. |
+| Selected scope is empty | Record zero matching handoffs, not mission completion or a connected/ready agent. |
+| Output exists or ledger is missing/unreadable | Retain existing evidence and the error. Do not overwrite it, initialize a replacement ledger or overlap retries. |
+
+Changing or omitting platform, mission or review-state selection changes the
+report contract and can invalidate the pin even when counts coincide. Existing
+v1/v2/v3 reports remain available when their opt-ins are omitted. Malformed
+context elsewhere in the selected project still rejects before platform
+filtering. A successful snapshot check is point-in-time: it neither freezes a
+future write nor permits dispatch, unpause, retry or release. Private report
+identifiers still require authorized storage; omitted profile text is not ACL
+isolation or authenticated shared memory.
 
 ## Check a receipt that actually exists
 
