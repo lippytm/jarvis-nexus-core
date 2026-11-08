@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from control_tower.handoffs import HandoffLedger
 from control_tower.connections import verify_github_commit_response, validate_destination_registry, inspect_destination_registry
-from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, canonical, load_packet, digest, require_digest, require_identifier, require_text
+from control_tower.network_contract import MAX_PACKET_BYTES, PROJECTS, TARGETS, canonical, load_packet, digest, require_digest, require_identifier, require_text, _unique_object
+from control_tower.validation import json_record_errors
 from control_tower.network_demo import demonstrate_network
 from control_tower.provider_catalog import provider_catalog
 from control_tower.swarm_factory import build_swarm
@@ -42,6 +43,79 @@ def _response_bytes(path):
     if len(content) > MAX_PACKET_BYTES:
         raise ValueError("response input exceeds 64 KiB")
     return content
+
+
+def _check_review_files(root, content, *, expected_file_sha256, source_revision, memory_revision):
+    """Verify selected local file bytes in a pinned prepared receipt, not review."""
+    if not isinstance(content, bytes) or len(content) > MAX_PACKET_BYTES:
+        raise ValueError("review receipt must be bounded bytes")
+    require_digest(expected_file_sha256)
+    if hashlib.sha256(content).hexdigest() != expected_file_sha256:
+        raise ValueError("review receipt file digest mismatch")
+    if not isinstance(source_revision, str) or len(source_revision) != 40 or any(c not in "0123456789abcdef" for c in source_revision):
+        raise ValueError("review source requires an exact commit SHA")
+    if type(memory_revision) is not int or memory_revision < 1:
+        raise ValueError("invalid review memory revision")
+    try:
+        receipt = json.loads(content.decode("utf-8"), object_pairs_hook=_unique_object)
+    except (UnicodeError, ValueError, RecursionError):
+        raise ValueError("invalid review receipt JSON") from None
+    if json_record_errors(receipt) or not isinstance(receipt, dict):
+        raise ValueError("invalid review receipt record")
+    manifest = receipt.get("checks", {}).get("source_manifest") if isinstance(receipt.get("checks"), dict) else None
+    if (type(receipt.get("schema_version")) is not int or receipt["schema_version"] != 1
+        or receipt.get("record_type") != "actual_work_receipt" or receipt.get("visibility") != "owner_private"
+        or not isinstance(manifest, dict) or receipt.get("input_revision") != source_revision
+        or manifest.get("source_revision") != source_revision
+        or type(receipt.get("memory_revision")) is not int or receipt["memory_revision"] != memory_revision
+        or type(manifest.get("memory_revision")) is not int or manifest["memory_revision"] != memory_revision):
+        raise ValueError("review receipt source, memory or profile mismatch")
+    if (not isinstance(receipt.get("project_id"), str) or receipt["project_id"] not in PROJECTS
+        or not isinstance(receipt.get("platform"), str) or receipt["platform"] not in TARGETS):
+        raise ValueError("invalid review project or platform")
+    for key in ("mission_id", "asset_id"):
+        require_identifier(receipt.get(key), "review " + key)
+    sources = manifest.get("source_sha256")
+    if not isinstance(sources, dict) or not 1 <= len(sources) <= 32:
+        raise ValueError("review manifest requires one to 32 source files")
+    paths, seen = [], set()
+    for name, checksum in sources.items():
+        if not isinstance(name, str) or ".." in Path(name).parts:
+            raise ValueError("invalid review source path")
+        path = _local(root, name)
+        require_digest(checksum)
+        if path in seen:
+            raise ValueError("duplicate resolved review source")
+        seen.add(path)
+        paths.append((path, checksum))
+    deadline = time.monotonic() + 10
+    flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
+    for path, expected in paths:
+        size, checksum = 0, hashlib.sha256()
+        with os.fdopen(os.open(path, flags), "rb") as handle:
+            metadata = os.fstat(handle.fileno())
+            if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 4 * 1024 * 1024:
+                raise ValueError("review source must be a regular file of at most 4 MiB")
+            while True:
+                if time.monotonic() > deadline:
+                    raise ValueError("review file time budget exceeded")
+                block = handle.read(65536)
+                if time.monotonic() > deadline:
+                    raise ValueError("review file time budget exceeded")
+                size += len(block)
+                if size > 4 * 1024 * 1024:
+                    raise ValueError("review source exceeds 4 MiB")
+                if not block:
+                    break
+                checksum.update(block)
+        if checksum.hexdigest() != expected:
+            raise ValueError("review source file digest mismatch")
+    return dict(schema_version=1, kind="jarvis.review_files_check", project_id=receipt["project_id"],
+        mission_id=receipt["mission_id"], asset_id=receipt["asset_id"], platform=receipt["platform"],
+        source_revision=source_revision, memory_revision=memory_revision, receipt_file_sha256=expected_file_sha256,
+        source_manifest_sha256=digest(manifest), files_checked=len(paths), visibility="owner_private",
+        verification="selected_file_bytes_only", repository_revision_verification="not_performed",
+        independent_review="not_established", release_authorized=False, dispatch_authorized=False, external_actions=0)
 
 
 def _write(path, record, *, packet_output=False):
@@ -326,6 +400,12 @@ def main(argv=None):
     backup_check.add_argument("--digest", required=True)
     backup_check.add_argument("--out", help="Save private check metadata to a fresh file")
     commands.add_parser("status")
+    review_files = commands.add_parser("check-review-files", help="Verify selected local bytes in a pinned prepared review receipt; no evaluation")
+    review_files.add_argument("--file", required=True)
+    review_files.add_argument("--file-digest", required=True, help="Exact receipt file-byte SHA-256, including whitespace; not its body checksum")
+    review_files.add_argument("--source-revision", required=True)
+    review_files.add_argument("--memory-revision", type=int, required=True)
+    review_files.add_argument("--out")
     queue = commands.add_parser("queue-report")
     queue.add_argument("--project", choices=sorted(PROJECTS), required=True)
     queue.add_argument("--mission", help="Select one mission's recorded metadata (version-2 report)")
@@ -370,7 +450,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "check-backup-digest", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "check-backup-digest", "check-review-files", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -385,6 +465,10 @@ def main(argv=None):
                                  source_revision=args.source_revision)
         elif args.command == "catalog":
             result = {"projects": PROJECTS, "providers": provider_catalog(), "external_actions": 0}
+        elif args.command == "check-review-files":
+            result = _check_review_files(root, _response_bytes(_local(root, args.file)),
+                expected_file_sha256=args.file_digest, source_revision=args.source_revision,
+                memory_revision=args.memory_revision)
         elif args.command == "inspect-registry":
             result = inspect_destination_registry(load_packet(_local(root, args.file)),
                 expected_sha256=args.digest, expected_revision=args.registry_revision,

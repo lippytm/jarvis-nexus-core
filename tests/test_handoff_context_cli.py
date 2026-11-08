@@ -105,6 +105,92 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "default.json").read_bytes(), content)
         self.assertEqual(self.db.read_bytes(), before)
 
+    def review_files_input(self):
+        sources = {"first.txt": b"Synthetic first source.\n", "second.txt": b"Synthetic second source.\n"}
+        for name, content in sources.items():
+            (self.root / name).write_bytes(content)
+        receipt = dict(schema_version=1, record_type="actual_work_receipt", project_id="ai-jarvis",
+            mission_id="synthetic-review", asset_id="codex", platform="codex", visibility="owner_private",
+            input_revision=REVISION, memory_revision=2, checks=dict(source_manifest=dict(
+                source_revision=REVISION, memory_revision=2,
+                source_sha256={name: hashlib.sha256(body).hexdigest() for name, body in sources.items()})))
+        content = json.dumps(receipt).encode()
+        (self.root / "review.json").write_bytes(content)
+        return receipt, content
+
+    def test_review_files_cli_checks_pinned_bytes_without_ledger_or_approval(self):
+        _, content = self.review_files_input()
+        before = self.db.read_bytes()
+        args = ["--read-only", "check-review-files", "--file", "review.json", "--file-digest",
+            hashlib.sha256(content).hexdigest(), "--source-revision", REVISION, "--memory-revision", "2"]
+        first = self.cli(*args, "--out", "private/check.json", database="absent/ledger.sqlite3")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        path = self.root / "private/check.json"
+        saved = path.read_bytes()
+        result = json.loads(saved)
+        self.assertEqual(result["files_checked"], 2)
+        self.assertEqual(result["repository_revision_verification"], "not_performed")
+        self.assertEqual(result["verification"], "selected_file_bytes_only")
+        self.assertFalse(result["release_authorized"])
+        self.assertFalse(result["dispatch_authorized"])
+        self.assertNotIn("first.txt", saved.decode())
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        second = self.cli(*args, database="absent/ledger.sqlite3")
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual(json.loads(second.stdout), result)
+        self.assertEqual(self.cli(*args, "--out", "private/check.json").returncode, 1)
+        (self.root / "second.txt").write_text("Changed local source.")
+        failed = self.cli(*args, "--out", "mismatch.json", database="absent/ledger.sqlite3")
+        self.assertEqual(failed.returncode, 1)
+        self.assertIn("source file digest mismatch", failed.stderr)
+        self.assertFalse((self.root / "mismatch.json").exists())
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(path.read_bytes(), saved)
+        self.assertEqual((self.root / "review.json").read_bytes(), content)
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_review_files_rejects_scope_paths_and_input_before_source_reads(self):
+        from scripts.jarvis_network import _check_review_files
+        receipt, content = self.review_files_input()
+        guards = dict(expected_file_sha256=hashlib.sha256(content).hexdigest(),
+            source_revision=REVISION, memory_revision=2)
+        for changes in (dict(expected_file_sha256="0" * 64), dict(source_revision="f" * 40),
+                        dict(memory_revision=3), dict(memory_revision=True)):
+            with self.subTest(changes=changes), patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaises(ValueError):
+                    _check_review_files(self.root, content, **{**guards, **changes})
+                opener.assert_not_called()
+        for bad in (b"x" * 65537, b"[]", b'{"same":1,"same":2}'):
+            with self.subTest(content=bad[:30]), patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaises(ValueError):
+                    _check_review_files(self.root, bad, **{**guards,
+                        "expected_file_sha256": hashlib.sha256(bad).hexdigest()})
+                opener.assert_not_called()
+        for names in ({"../escape": "a" * 64}, {"/absolute": "a" * 64}, {},
+                      {str(i): "a" * 64 for i in range(33)},
+                      {"first.txt": "a" * 64, "./first.txt": "a" * 64}):
+            changed = deepcopy(receipt)
+            changed["checks"]["source_manifest"]["source_sha256"] = names
+            raw = json.dumps(changed).encode()
+            with self.subTest(names=names), patch("scripts.jarvis_network.os.open") as opener:
+                with self.assertRaises(ValueError):
+                    _check_review_files(self.root, raw, **{**guards,
+                        "expected_file_sha256": hashlib.sha256(raw).hexdigest()})
+                opener.assert_not_called()
+
+    def test_review_files_bounds_size_and_post_read_time_budget(self):
+        from scripts.jarvis_network import _check_review_files
+        _, content = self.review_files_input()
+        guards = dict(expected_file_sha256=hashlib.sha256(content).hexdigest(),
+            source_revision=REVISION, memory_revision=2)
+        with patch("scripts.jarvis_network.time.monotonic", side_effect=[0, 0, 11]):
+            with self.assertRaisesRegex(ValueError, "time budget"):
+                _check_review_files(self.root, content, **guards)
+        with (self.root / "first.txt").open("wb") as handle:
+            handle.truncate(4 * 1024 * 1024 + 1)
+        with self.assertRaisesRegex(ValueError, "4 MiB"):
+            _check_review_files(self.root, content, **guards)
+
     def test_registry_destination_selection_requires_complete_scope_and_preserves_versions(self):
         from control_tower.connections import inspect_destination_registry
         self.registry_input()

@@ -6,6 +6,45 @@ packets remain unchanged. An optional `jarvis.handoff_context` record lives in
 the same SQLite database. A `jarvis.context_envelope` export binds the original
 handoff and its digest to the separately versioned context and its digest.
 
+## Private prepared-review file intake
+
+`check-review-files` verifies only the local source-file bytes selected by an
+existing author-prepared work receipt's `checks.source_manifest`. It opens no
+ledger and executes no checked source. The receipt must be private schema-1
+`actual_work_receipt` JSON; its outer input/memory revisions and nested manifest
+must match the supplied source/memory guards. The required `--file-digest` is
+the exact receipt **file-byte SHA-256 including whitespace**, not its
+`record_sha256` body checksum. A pin copied from an untrusted file does not
+establish independent provenance or authenticated approval.
+
+```sh
+python scripts/jarvis_network.py --root YOUR-PRIVATE-CHECKOUT --read-only check-review-files --file docs/evidence/evaluator-handoff-20261108.json --file-digest YOUR-RECEIPT-FILE-BYTE-SHA256 --source-revision 4a2eeac0965091f80f4a05721d5063996216dd2f --memory-revision 219 --out private/review-files-001.json
+```
+
+Point the root at the authorized tree whose selected files are being checked;
+the checker itself may come from a separately reviewed tools checkout. This
+does not perform a Git checkout, verify HEAD or prove that unselected files
+belong to the declared commit. Existing handoff manifests pin their own source
+snapshot; current changed files can correctly fail an older snapshot check.
+
+Receipt input is a regular file of at most 64 KiB. Select one to 32 files, each
+at most 4 MiB. Absolute/traversing paths, escape from the root and duplicate
+resolved paths reject before source opens. Files are opened nonblocking, checked
+as regular files, and hashed in 64 KiB chunks with a shared ten-second budget
+checked before and after reads, including EOF. Blocking OS I/O can still exceed
+that budget. This neither freezes files against concurrent changes nor provides
+ACL isolation or protection against concurrent filesystem replacement.
+
+Any mismatch/error produces no successful check report; preserve the intended
+pin and evidence rather than removing guards to obtain success. Optional output
+uses the existing atomic private 0600/no-overwrite writer. It contains identity,
+digests and a checked-file count, omitting file contents and paths. Success is
+`selected_file_bytes_only`, with repository revision verification explicitly
+`not_performed`, independent review `not_established`, and release/dispatch
+authorization false. No review, release, registry acceptance, hold transition,
+retry, provider call or worker is established. The separate report is version 1;
+strict handoff packets and storage schemas are unchanged.
+
 ## Stored scope
 
 - Project, mission, source commit, asset and platform identities bind to the
