@@ -207,6 +207,49 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse((self.root / "absent").exists())
         self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
 
+    def test_registry_inspection_receipt_guard_pins_scope_before_output(self):
+        from control_tower.connections import inspect_destination_registry
+        args = self.registry_input()
+        path = self.root / "registry.json"
+        registry = json.loads(path.read_text())
+        guards = dict(expected_sha256=digest(registry), expected_revision=1,
+                      expected_source_revision=REVISION)
+        selected = inspect_destination_registry(registry, platform="codex", **guards)
+        checksum = selected["receipt_sha256"]
+        before = path.read_bytes(), self.db.read_bytes()
+        self.assertEqual(inspect_destination_registry(registry, platform="codex",
+            expected_receipt_sha256=checksum, **guards), selected)
+        for scope in ({}, {"platform": "gemini"}, {"platform": "codex", "project_id": "ai-jarvis"}):
+            with self.subTest(scope=scope), self.assertRaisesRegex(ValueError, "inspection receipt"):
+                inspect_destination_registry(registry, expected_receipt_sha256=checksum, **scope, **guards)
+        with self.assertRaises(ValueError):
+            inspect_destination_registry(registry, expected_receipt_sha256="invalid", **guards)
+        output = self.root / "private/existing.json"
+        output.parent.mkdir()
+        output.write_bytes(b"KEEP")
+        for scope in ((), ("--platform", "gemini"), ("--platform", "codex", "--project", "ai-jarvis")):
+            for destination in ("private/existing.json", "rejected/summary.json"):
+                rejected = self.cli(*args, *scope, "--expected-receipt-digest", checksum,
+                    "--out", destination, database="absent/ledger.sqlite3")
+                self.assertEqual(rejected.returncode, 1, rejected.stderr)
+                # Existing-file preflight may reject before registry inspection.
+                self.assertIn("output already exists" if destination == "private/existing.json"
+                              else "inspection receipt", rejected.stderr)
+                self.assertEqual(rejected.stdout, "")
+                self.assertEqual(output.read_bytes(), b"KEEP")
+                self.assertFalse((self.root / "rejected").exists())
+        valid_args = (*args, "--platform", "codex", "--expected-receipt-digest", checksum)
+        first = self.cli(*valid_args, database="absent/ledger.sqlite3")
+        second = self.cli(*valid_args, database="absent/ledger.sqlite3")
+        legacy = self.cli(*args, "--platform", "codex", database="absent/ledger.sqlite3")
+        for result in (first, second, legacy):
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout), selected)
+        self.assertEqual(first.stdout, legacy.stdout)
+        self.assertEqual(first.stdout, second.stdout)
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual((path.read_bytes(), self.db.read_bytes()), before)
+
     def test_registry_project_preflight_is_selective_without_ledger(self):
         from control_tower.network_contract import PROJECTS
         self.registry_input()

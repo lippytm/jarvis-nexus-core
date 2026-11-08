@@ -705,6 +705,13 @@ registry is still validated and checked against the original digest/revisions
 before filtering. Only counts are returned; resource mappings stay omitted and
 the receipt remains proposed/unverified, with no dispatch authorization.
 
+Optional `--expected-receipt-digest SHA256` (API `expected_receipt_sha256`)
+requires the exact inspection receipt, including its project/platform selection,
+before returning or writing output. Keep the existing whole-registry digest,
+source and revision guards too. Omission preserves the existing receipt bytes
+and versions. A matching digest is an integrity/selection check, not an
+authenticated review, registry acceptance or dispatch/release authorization.
+
 Optional `--project PROJECT-ID` (API `project_id`) selects one known source
 project and emits an explicit version-2 inspection receipt with `project_id`.
 Entry/platform counts cover only that project; a known project with no entries

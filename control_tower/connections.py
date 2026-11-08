@@ -118,9 +118,12 @@ def validate_destination_registry(registry):
 
 
 def inspect_destination_registry(registry, *, expected_sha256, expected_revision,
-                                 expected_source_revision, project_id=None, platform=None):
+                                 expected_source_revision, project_id=None, platform=None,
+                                 expected_receipt_sha256=None):
     """Private metadata-only preflight; no storage, acceptance or authentication."""
     require_digest(expected_sha256)
+    if expected_receipt_sha256 is not None:
+        require_digest(expected_receipt_sha256)
     registry = validate_destination_registry(registry)
     if project_id is not None and (not isinstance(project_id, str) or project_id not in PROJECTS):
         raise ValueError("unknown registry inspection project")
@@ -146,7 +149,10 @@ def inspect_destination_registry(registry, *, expected_sha256, expected_revision
         result.update(schema_version=2, project_id=project_id)
     if platform is not None:
         result.update(schema_version=3, platform=platform)
-    return {**result, "receipt_sha256": digest(result)}
+    receipt = {**result, "receipt_sha256": digest(result)}
+    if expected_receipt_sha256 is not None and receipt["receipt_sha256"] != expected_receipt_sha256:
+        raise ValueError("registry inspection receipt mismatch; retrieve selected summary again")
+    return receipt
 
 
 def verify_github_commit_response(content, observation, repository):
