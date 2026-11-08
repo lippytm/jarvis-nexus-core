@@ -149,6 +149,62 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual((self.root / "review.json").read_bytes(), content)
         self.assertEqual(self.db.read_bytes(), before)
 
+    @unittest.skipUnless(os.name == "posix" and hasattr(os, "mkfifo"), "POSIX FIFO/symlink fixture")
+    def test_review_files_cli_rejects_special_files_and_escapes_without_outputs(self):
+        receipt, content = self.review_files_input()
+        before = self.db.read_bytes()
+        first = self.root / "first.txt"
+        original = first.read_bytes()
+        second = (self.root / "second.txt").read_bytes()
+        receipt_path = self.root / "review.json"
+        with TemporaryDirectory(prefix="review-outside-") as directory:
+            outside = Path(directory)
+            (outside / "source.txt").write_bytes(original)
+            (outside / "receipt.json").write_bytes(content)
+            for case in ("source-fifo", "source-directory", "source-escape", "receipt-fifo", "receipt-escape"):
+                with self.subTest(case=case):
+                    target = receipt_path if case.startswith("receipt-") else first
+                    target.unlink()
+                    if case.endswith("fifo"):
+                        os.mkfifo(target)
+                    elif case.endswith("directory"):
+                        target.mkdir()
+                    else:
+                        target.symlink_to(outside / ("receipt.json" if case.startswith("receipt-") else "source.txt"))
+                    args = ["--read-only", "check-review-files", "--file", "review.json", "--file-digest",
+                        hashlib.sha256(content).hexdigest(), "--source-revision", REVISION,
+                        "--memory-revision", "2", "--out", "rejected/" + case + ".json"]
+                    result = self.cli(*args, database="absent/ledger.sqlite3")
+                    self.assertEqual(result.returncode, 1, result.stderr)
+                    self.assertEqual(result.stdout, "")
+                    self.assertEqual(json.loads(result.stderr)["external_actions"], 0)
+                    self.assertNotIn(str(outside), result.stderr)
+                    self.assertFalse((self.root / "rejected").exists())
+                    self.assertFalse((self.root / "absent").exists())
+                    self.assertEqual(self.db.read_bytes(), before)
+                    self.assertEqual((self.root / "second.txt").read_bytes(), second)
+                    self.assertEqual((outside / "source.txt").read_bytes(), original)
+                    self.assertEqual((outside / "receipt.json").read_bytes(), content)
+                    if target.is_dir() and not target.is_symlink():
+                        target.rmdir()
+                    else:
+                        target.unlink()
+                    target.write_bytes(content if target == receipt_path else original)
+        # An ordinary empty source remains valid; zero bytes are not a special file.
+        first.write_bytes(b"")
+        receipt["checks"]["source_manifest"]["source_sha256"]["first.txt"] = hashlib.sha256(b"").hexdigest()
+        content = json.dumps(receipt).encode()
+        receipt_path.write_bytes(content)
+        accepted = self.cli("--read-only", "check-review-files", "--file", "review.json", "--file-digest",
+            hashlib.sha256(content).hexdigest(), "--source-revision", REVISION, "--memory-revision", "2",
+            database="absent/ledger.sqlite3")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        report = json.loads(accepted.stdout)
+        self.assertEqual(report["files_checked"], 2)
+        self.assertFalse(report["release_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertFalse((self.root / "absent").exists())
+
     def test_review_files_rejects_scope_paths_and_input_before_source_reads(self):
         from scripts.jarvis_network import _check_review_files
         receipt, content = self.review_files_input()

@@ -1,0 +1,120 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "add_bounded_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "One POSIX-only CLI regression: source FIFO, source directory, source symlink escape, receipt FIFO and receipt symlink escape refuse; an ordinary empty source succeeds. Existing per-process timeout15s bounds the harness. Production code, docs and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory and artifact/check hashes; final commit and CI in master Page",
+    "state": "special_file_regression_verified_locally",
+    "unfinished": "actual evaluator findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.587s\n\nOK\n",
+      "skipped": 0,
+      "tests": 4
+    },
+    "full_local": {
+      "evidence": "reports/r39-full-20261108.json",
+      "passed": true,
+      "record_sha256": "1be4c152b793cec82b79921d3bd4ce16d017b768e83a7afff5ae49c86a358865",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 610,
+        "skipped": 0
+      }
+    },
+    "new_regression": {
+      "actual_cli_subprocesses": 6,
+      "all_returned_within_harness_timeout": true,
+      "error_output_omits_outside_fixture_path": true,
+      "escape_fixtures_have_expected_bytes": true,
+      "existing_ledger_bytes_unchanged": true,
+      "expected_refusals": 5,
+      "harness_timeout_seconds": 15,
+      "no_absent_ledger_created": true,
+      "no_failure_reports_or_output_directory": true,
+      "outside_fixture_source_and_receipt_bytes_unchanged": true,
+      "release_authorized": false,
+      "unselected_source_bytes_unchanged": true,
+      "valid_empty_source_successes": 1
+    },
+    "production_source_bytes_unchanged": true,
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.review-intake-regression.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/review-files-checker-20261108.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "17b32b2fe498c48a53158460e5a355ea90552afe",
+  "limitations": [
+    "Temporary synthetic POSIX fixtures only; no production bug repaired, security audit/certification, actual owner incident, measured reliability/performance improvement or cross-platform special-file guarantee. On non-POSIX systems this new test skips; actual local run had zero skips.",
+    "Harness subprocess timeouts do not create a production I/O supervisor or eliminate documented concurrent filesystem replacement/OS blocking limits. Source checker remains selected-file-bytes only; Git HEAD verification and independent review not performed, no release/dispatch authority.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, migration, worker, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, social posting or spending."
+  ],
+  "memory_revision": 222,
+  "metrics": {
+    "actual_evaluator_dispatches": 0,
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_fixture_refusals": 5,
+    "new_regressions": 1,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "synthetic_cli_subprocesses": 6,
+    "unexpected_verification_errors": 0,
+    "valid_fixture_successes": 1
+  },
+  "mission_id": "review-intake-special-files-20261108",
+  "observed_gap": "New review-file checker had digest/path/size/time tests, but actual FIFO, directory and escaping symlink inputs were not covered by its CLI regression. No production defect or prior incident claimed.",
+  "patch_sha256": "d839d8b8c20eacb4a83737f9247f62681cf6acb9d31d1209bc61c1e22560780e",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "653d5f88d3197436f6bae7858392a361e836708ead338c17b8d482d236ea98ad",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "scripts/jarvis_network.py": "a56ee48e2cc16299e8207932f4f46b6b2c3aeb64c2b29ce11391de060bee0bb4",
+    "tests/test_handoff_context_cli.py": "60a521faf24c1efcb446a718492984ac14fc3d0a83cf472f50c627ac8e5afc37"
+  },
+  "verification_logs_sha256": {
+    "reports/r39-focused-20261108.txt": "f9cf60ae899f51dbb394aa51fde9edbb90cb17a274201cf66e66a8c454e65412",
+    "reports/r39-full-20261108.json": "717d848ed10044d4ea4f3ec3594d622798380a532922b32452b7b1411207ae38",
+    "reports/r39-web-20261108.txt": "cf8519d835d1c78bb7198c15c970bd06026aa51149372d9077d3ec28d0123655"
+  },
+  "visibility": "owner_private"
+}
