@@ -1,0 +1,106 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "reproduce",
+    "repair_existing_reader",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Revalidate the four existing stored states in shared _handoff reader before parsing content; invalid state raises fixed ValueError. No new state, packet/schema or migration. Add restart regression across status, queue and context read transactions with database-byte preservation.",
+  "checkpoint": {
+    "return_binding": "input source/memory and artifact/check hashes; final commit and CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.166s\n\nOK\n",
+      "tests": 2
+    },
+    "full_local": {
+      "evidence": "reports/r33-full-20261107.json",
+      "passed": true,
+      "record_sha256": "6d289e8b0ee507e0f77ddb0df84a3860d211e8fe4840321705179c943dbfe96b",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 601,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.state-integrity.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/queue-runbook-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "failures": {
+    "clean_reproduction": "FEF\n======================================================================\nERROR: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart) (reader=<function ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart.<locals>.<lambda> at 0x7f505c9d7a60>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 118, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    observe()\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 113, in <lambda>\n    lambda: self.ledger.queue_report(project_id=\"ai-jarvis\"),\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/handoffs.py\", line 331, in queue_report\n    handoffs[row[\"state\"]] += 1\n    ~~~~~~~~^^^^^^^^^^^^^^\nKeyError: 'unrecognized'\n\n======================================================================\nFAIL: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart) (reader=<bound method HandoffLedger.status of <control_tower.handoffs.HandoffLedger object at 0x7f505c6558b0>>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 117, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    with self.assertRaisesRegex(ValueError, \"stored handoff state\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart) (reader=<function ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart.<locals>.<lambda> at 0x7f505c23c720>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 117, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    with self.assertRaisesRegex(ValueError, \"stored handoff state\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.017s\n\nFAILED (failures=2, errors=1)\n",
+    "clean_reproduction_result": "2 expected assertion failures (status/context accepted) and 1 KeyError (queue); after fix all pass",
+    "initial_log": "FEFF\n======================================================================\nERROR: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart) (reader=<function ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart.<locals>.<lambda> at 0x7f4333e0fa60>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 114, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    observe()\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 109, in <lambda>\n    lambda: self.ledger.queue_report(project_id=\"ai-jarvis\"),\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/handoffs.py\", line 331, in queue_report\n    handoffs[row[\"state\"]] += 1\n    ~~~~~~~~^^^^^^^^^^^^^^\nKeyError: 'unrecognized'\n\n======================================================================\nFAIL: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart) (reader=<bound method HandoffLedger.status of <control_tower.handoffs.HandoffLedger object at 0x7f4333e60950>>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 113, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    with self.assertRaisesRegex(ValueError, \"stored handoff state\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart) (reader=<function ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart.<locals>.<lambda> at 0x7f43335047c0>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 113, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    with self.assertRaisesRegex(ValueError, \"stored handoff state\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_unknown_stored_handoff_state_rejects_private_readers_after_restart (tests.test_handoff_context.ContextTests.test_unknown_stored_handoff_state_rejects_private_readers_after_restart)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 120, in test_unknown_stored_handoff_state_rejects_private_readers_after_restart\n    self.assertEqual(self.load()[\"revision\"], 3)\nAssertionError: 1 != 3\n\n----------------------------------------------------------------------\nRan 1 test in 0.029s\n\nFAILED (failures=3, errors=1)\n",
+    "initial_test_insertion": "Initial edit accidentally attached four prior-test restart assertions to the new test. Corrected before clean reproduction; original test preserved. Initial log retained below."
+  },
+  "input_revision": "4fbcf70f65e7c846dc57dd1b312600cddeea4d59",
+  "limitations": [
+    "Regression deliberately bypasses CHECK only in a temporary synthetic ledger; no real corruption incident, authenticated recovery, ACL isolation, live worker/connection/delivery or verified mission completion established.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, migration, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, publication or spending."
+  ],
+  "memory_revision": 215,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "provider_dispatches": 0,
+    "readers_checked": 3,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "synthetic_invalid_records": 1,
+    "unexpected_initial_test_edit_errors": 1
+  },
+  "mission_id": "stored-handoff-state-validation-20261107",
+  "observed_problem": "With normal SQLite CHECK deliberately bypassed in a synthetic fixture, an unrecognized stored handoff state passes status/context reads and crashes queue_report with KeyError. No actual owner database corruption observed.",
+  "patch_sha256": "154b43654545c011e521affaf6eaa5f1e4cfa76b600c1dda0c7221602ac1175d",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "f46723f731b4cfbbac5740bb3a86d35c46353a89bc9631d23382c4ff0a753ef8",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "73437809f8fe7c4e21f509ef2eff1d848c350f780d0fe0a0c261f5c7211f737d",
+    "tests/test_handoff_context.py": "411618277a51263409519023ea5abb5237ee8cc12963ed930890ead485fad175"
+  },
+  "verification_logs_sha256": {
+    "reports/r33-focused-20261107.txt": "0de00add7fb05307b00c4586d927026af283085e6f81c4a80d70d6ef7c87af67",
+    "reports/r33-full-20261107.json": "9544e2f7a4dfae4d4ada6d8deb5aa869aac5fbc964ffd89a1aec8204c3e4663f",
+    "reports/r33-web-20261107.txt": "9961b9630a55ac97108972e6b741659f06a2ef3dec41c433417c8e7ffb755db5"
+  },
+  "visibility": "owner_private"
+}

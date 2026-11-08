@@ -100,6 +100,24 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.load()["profile"], self.profile)
         self.assertEqual(self.load()["revision"], 3)
 
+    def test_unknown_stored_handoff_state_rejects_private_readers_after_restart(self):
+        self.approve()
+        # Simulate an invalid restored row; normal SQLite writes enforce CHECK.
+        self.ledger.db.execute("PRAGMA ignore_check_constraints=ON")
+        self.ledger.db.execute("UPDATE handoffs SET state='unrecognized' WHERE id='mission-one'")
+        self.ledger.db.commit()
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        for observe in (self.ledger.status,
+                        lambda: self.ledger.queue_report(project_id="ai-jarvis"),
+                        lambda: self.ledger.load_context("mission-one",
+                            expected_source_revision=REVISION, expected_memory_revision=1)):
+            with self.subTest(reader=observe):
+                with self.assertRaisesRegex(ValueError, "stored handoff state"):
+                    observe()
+                self.assertFalse(self.ledger.db.in_transaction)
+                self.assertEqual(self.path.read_bytes(), before)
     def test_export_revision_match_does_not_bypass_holds_or_reviews(self):
         for state in ("paused", "cancelled", "outcome_unknown", "unreviewed"):
             with self.subTest(state=state):

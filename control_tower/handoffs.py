@@ -130,6 +130,8 @@ class HandoffLedger:
         row = self.db.execute("SELECT * FROM handoffs WHERE id=?", (handoff_id,)).fetchone()
         if row is None:
             raise ValueError("unknown handoff")
+        if row["state"] not in {"pending_review", "reviewed", "export_prepared", "returned_unverified"}:
+            raise ValueError("stored handoff state is invalid")
         try:
             body = json.loads(row["body"])
         except (ValueError, TypeError, RecursionError):
