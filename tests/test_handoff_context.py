@@ -1805,6 +1805,67 @@ with HandoffLedger(sys.argv[1]) as ledger:
         with self.assertRaises(ValueError):
             self.ledger.load_checkpoint("mission-one", 1, **args)
 
+    def test_platform_queue_selection_retains_holds_guards_and_legacy_reports(self):
+        args = dict(project_id="ai-jarvis")
+        unconfigured = self.ledger.queue_report(**args, platform="codex")
+        self.assertEqual(unconfigured["execution_states"]["without_context"], 1)
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        self.ledger.save_context(neighbor, expected_revision=0)
+        legacy = self.ledger.queue_report(**args)
+        self.assertEqual(legacy["schema_version"], 1)
+        self.assertEqual(self.ledger.queue_report(**args, platform=None), legacy)
+        self.assertEqual(legacy["handoff_count"], 2)
+        damaged = {**neighbor, "memory_revision": True}
+        self.ledger.db.execute("UPDATE handoff_contexts SET body=?,digest=? WHERE handoff_id=?",
+            (json.dumps(damaged), digest(damaged), "mission-two"))
+        try:
+            with self.assertRaisesRegex(ValueError, "stored context"):
+                self.ledger.queue_report(**args, platform="codex")
+        finally:
+            self.ledger.db.execute("UPDATE handoff_contexts SET body=?,digest=? WHERE handoff_id=?",
+                (json.dumps(neighbor), digest(neighbor), "mission-two"))
+        for target in sorted(TARGETS):
+            selected = self.ledger.queue_report(**args, platform=target)
+            self.assertEqual(selected["schema_version"], 4)
+            self.assertEqual(selected["platform"], target)
+            self.assertEqual(selected["handoff_count"], int(target in {"codex", "gemini"}))
+            self.assertTrue(all(b["platform"] == target for b in selected["bindings"]))
+            self.assertFalse(selected["dispatch_authorized"])
+            self.assertEqual(selected["completion_verification"], "not_established")
+        selected_args = {**args, "platform": "codex", "mission_id": "mission-one", "include_review_state": True}
+        first = self.ledger.queue_report(**selected_args)
+        self.assertEqual(first["recorded_attempts"], 1)
+        self.assertEqual(first["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(first["control_states"]["paused"], 1)
+        self.assertEqual(first["bindings"][0]["context_review_current"], False)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**{**selected_args, "platform": "gemini"},
+                expected_sha256=first["report_sha256"])
+        before = tuple(self.ledger.db.iterdump())
+        for invalid in ("unknown", "", True, 1, []):
+            with self.assertRaises(ValueError):
+                self.ledger.queue_report(**args, platform=invalid)
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        self.profile["memory_revision"] = 2
+        self.profile["execution"]["detail"] = "Synthetic retained reconciliation note."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**selected_args, expected_sha256=first["report_sha256"])
+        current = self.ledger.queue_report(**selected_args)
+        self.ledger.close()
+        database_bytes = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.queue_report(**selected_args,
+            expected_sha256=current["report_sha256"]), current)
+        self.assertEqual(self.load(expected_memory_revision=2)["profile"], self.profile)
+        self.assertEqual(self.load("mission-two")["profile"], neighbor)
+        self.assertEqual(self.path.read_bytes(), database_bytes)
+
     def test_mission_queue_report_selects_all_portable_targets_after_restart(self):
         for index, target in enumerate(sorted(TARGETS)):
             identifier = "selected-" + target

@@ -300,12 +300,15 @@ class HandoffLedger:
                     "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
                     "model_calls": 0, "external_actions": 0}
 
-    def queue_report(self, *, project_id, mission_id=None, expected_sha256=None, include_review_state=False):
+    def queue_report(self, *, project_id, mission_id=None, expected_sha256=None, include_review_state=False,
+                     platform=None):
         """Private counts of recorded states, never live worker/completion metrics."""
         if type(include_review_state) is not bool:
             raise ValueError("include-review-state must be boolean")
         if not isinstance(project_id, str) or project_id not in PROJECTS:
             raise ValueError("unknown project")
+        if platform is not None and (not isinstance(platform, str) or platform not in TARGETS):
+            raise ValueError("unknown queue platform")
         if mission_id is not None:
             require_identifier(mission_id, "mission ID")
         if expected_sha256 is not None:
@@ -322,6 +325,8 @@ class HandoffLedger:
                 has_context = self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone()
                 selected = self._context(row["id"]) if has_context else None
                 if mission_id is not None and (selected is None or selected[1]["mission_id"] != mission_id):
+                    continue
+                if platform is not None and body["draft"]["target"] != platform:
                     continue
                 handoffs[row["state"]] += 1
                 binding = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
@@ -354,6 +359,8 @@ class HandoffLedger:
                 result.update(schema_version=2, mission_id=mission_id)
             if include_review_state:
                 result.update(schema_version=3, review_authority="local_record_only_not_identity_authentication")
+            if platform is not None:
+                result.update(schema_version=4, platform=platform)
             report = {**result, "report_sha256": digest(result)}
             if expected_sha256 is not None and report["report_sha256"] != expected_sha256:
                 raise ValueError("queue report is stale; retrieve current metadata again")

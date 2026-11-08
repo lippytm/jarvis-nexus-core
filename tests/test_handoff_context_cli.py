@@ -702,6 +702,42 @@ class ContextCLITests(unittest.TestCase):
         self.assertIn("read-only", json.loads(refused.stderr)["error"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_platform_queue_snapshot_is_private_guarded_and_read_only(self):
+        self.controlled(execution="outcome_unknown")
+        before = self.db.read_bytes()
+        args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "cli-task",
+                "--platform", "codex", "--include-review-state")
+        selected = self.cli(*args)
+        self.assertEqual(selected.returncode, 0, selected.stderr)
+        record = json.loads(selected.stdout)
+        self.assertEqual(record["schema_version"], 4)
+        self.assertEqual(record["platform"], "codex")
+        self.assertEqual(record["handoff_count"], 1)
+        self.assertEqual(record["execution_states"]["outcome_unknown"], 1)
+        self.assertFalse(record["dispatch_authorized"])
+        self.assertIn("context_review_current", record["bindings"][0])
+        guarded = (*args, "--expected-report-digest", record["report_sha256"])
+        saved = self.cli(*guarded, "--out", "private/queue.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        output = self.root / "private/queue.json"
+        content = output.read_bytes()
+        self.assertEqual(json.loads(content), record)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*guarded, "--out", "private/queue.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        empty_args = tuple("gemini" if value == "codex" else value for value in args)
+        rejected = self.cli(*empty_args, "--expected-report-digest", record["report_sha256"],
+                            "--out", "rejected/queue.json")
+        self.assertEqual(rejected.returncode, 1)
+        self.assertIn("queue report is stale", rejected.stderr)
+        self.assertFalse((self.root / "rejected").exists())
+        empty = self.cli(*empty_args)
+        self.assertEqual(empty.returncode, 0, empty.stderr)
+        self.assertEqual(json.loads(empty.stdout)["handoff_count"], 0)
+        self.assertEqual(self.cli(*args, database="absent/ledger.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "absent").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_queue_review_state_private_snapshot_invalidates_on_review(self):
         saved = json.loads(self.save().stdout)
         args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--mission", "cli-task", "--include-review-state")

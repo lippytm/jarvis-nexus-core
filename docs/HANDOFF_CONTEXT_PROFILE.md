@@ -112,6 +112,17 @@ that imported returns are authenticated or completed work.
 
 ## Private project queue report
 
+Optional `queue-report --platform TARGET-ID` (API `queue_report(platform=...)`)
+selects one of the seventeen portable targets and emits an explicit version-4
+report with `platform`. It may combine with mission and local review-state
+selection. Counts, recorded attempts and bindings cover only that intersection;
+a known empty target returns zero counts. The selected report digest binds its
+scope and current recorded state. Existing project/context integrity checks run
+before platform filtering, so malformed unselected platform context in the
+project cannot be hidden. Omission preserves existing version-1/2/3 reports.
+Selection neither changes execution holds nor establishes completion,
+authentication, a live worker or permission to dispatch.
+
 Use `python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read-only queue-report --project ai-jarvis`
 to summarize one existing project's recorded handoff, execution and control states
 from a single transaction. Version-1 jarvis.queue_report is a separate report;
@@ -123,7 +134,7 @@ The report is always owner_private and changes no holds, reviews or attempts.
 
 Add `--mission existing-mission-id` to select only that mission's contextual
 records within the project. This explicitly emits a version-2 `jarvis.queue_report`
-with a top-level `mission_id`; without the option, the version-1 result is unchanged.
+with a top-level `mission_id`; without other opt-ins, omitting it preserves version 1.
 Contextless and other-mission records are excluded from filtered counts/bindings.
 An unknown mission returns an empty report, not proof that the mission completed.
 The same private-file, no-overwrite and read-only rules apply. This is selective
@@ -133,7 +144,7 @@ Opt in to `--include-review-state` (API `include_review_state=True`) for a
 version-3 report with `handoff_review_current` and `context_review_current` on each
 binding. A contextless record has a null context-review value. Review labels and
 private text are omitted; `review_authority` explicitly says these are local records,
-not identity authentication. Version-1/2 output remains unchanged without this flag.
+not identity authentication. Without platform selection, omitting this flag preserves version-1/2 output.
 Review-state changes invalidate a version-3 snapshot even when context content is
 unchanged. These booleans do not establish owner approval, lineage eligibility or
 release authority; holds and dispatch restrictions remain in force.

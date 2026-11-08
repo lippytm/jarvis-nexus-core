@@ -329,6 +329,7 @@ def main(argv=None):
     queue = commands.add_parser("queue-report")
     queue.add_argument("--project", choices=sorted(PROJECTS), required=True)
     queue.add_argument("--mission", help="Select one mission's recorded metadata (version-2 report)")
+    queue.add_argument("--platform", help="Select one portable target in a version-4 report; may combine with --mission")
     queue.add_argument("--include-review-state", action="store_true", help="Include local exact-review status (version-3 report)")
     queue.add_argument("--expected-report-digest", help="Refuse a changed queue snapshot before saving output")
     queue.add_argument("--out", help="Save private report to a fresh file instead of printing its contents")
@@ -496,7 +497,8 @@ def main(argv=None):
                         expected_memory_revision=args.memory_revision)
                 elif args.command == "queue-report":
                     result = ledger.queue_report(project_id=args.project, mission_id=args.mission,
-                        expected_sha256=args.expected_report_digest, include_review_state=args.include_review_state)
+                        expected_sha256=args.expected_report_digest, include_review_state=args.include_review_state,
+                        platform=args.platform)
                 elif args.command == "destination-status":
                     result = ledger.destination_status(project_id=args.project, platform=args.platform,
                         destination_id=args.destination, include_digest=args.include_digest,

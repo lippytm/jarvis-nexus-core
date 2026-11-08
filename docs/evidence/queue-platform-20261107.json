@@ -1,0 +1,164 @@
+{
+  "acceptance_observations": [
+    "All 17 target IDs produce independent selected or empty version-4 reports; contextless Codex remains explicitly without_context. Default and explicit None legacy reports are equal.",
+    "Paused outcome_unknown Codex state and recorded attempts remain intact across exact-snapshot guards and read-only reopen; independent Gemini context remains unchanged. Wrong target or later selected context revision rejects old report digest. Invalid selectors do not mutate logical records.",
+    "Whole-project context validation precedes platform filtering: rehashed malformed Gemini memory revision rejects a Codex report. Actual CLI file output is mode 0600/no-overwrite, wrong-scope snapshot rejects before new output, empty selection succeeds, absent ledger rejects without creation and database bytes remain unchanged."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "extend_optional_versioned_queue_selection",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Optional queue_report(platform=...) / queue-report --platform selects recorded states, counts, attempts and bindings for one target. Explicit version-4 report adds platform and combines mission/review-state selectors. Omission preserves versions 1/2/3; storage and strict packet schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory/log hashes; final commit and actual CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision selected queue findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "api_baseline": {
+      "errors": 1,
+      "exit_code": 1,
+      "reason": "expected new keyword absent",
+      "tests": 1
+    },
+    "cli_baseline": {
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "new CLI flag absent",
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "final_focused": {
+      "additional_check": "malformed unselected Gemini context still rejects selected Codex report",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 4
+    },
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 4
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/queue-platform-full-20261107.json",
+        "passed": true,
+        "record_sha256": "02370b912b7bec258f90bfbafc5941aee47a80f978a4d18bb1815496dee050cf",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 599,
+          "skipped": 0
+        }
+      }
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.queue-platform.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md",
+    "docs/evidence/registry-runbook-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "108bab196b69fbde5fc2b2534f0912b129fdb824",
+  "limitations": [
+    "Synthetic local ledger records; selected counts/attempts are recorded metadata, not verified mission completion, worker metrics, authenticated identity/connections, delivery or dispatch/release authority. Existing report digest is a snapshot, not a future-write lease.",
+    "No new store, migration, worker, lease, automatic retry/failover/reconnect controller, actual paused mission/Studio or Newsletter schedule change, permission/credential/public-access change, merge, deployment, messages, publication or spending.",
+    "All 17 portable targets/business areas retained; source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/queue-platform-baseline-20261107.txt": {
+      "bytes": 875,
+      "sha256": "25fd698f39ac177ebbccda12185d4a09058fdf6e347991d1c703ba28a4de0854",
+      "text": "E\n======================================================================\nERROR: test_platform_queue_selection_retains_holds_guards_and_legacy_reports (tests.test_handoff_context.ContextTests.test_platform_queue_selection_retains_holds_guards_and_legacy_reports)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 1810, in test_platform_queue_selection_retains_holds_guards_and_legacy_reports\n    unconfigured = self.ledger.queue_report(**args, platform=\"codex\")\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.queue_report() got an unexpected keyword argument 'platform'\n\n----------------------------------------------------------------------\nRan 1 test in 0.008s\n\nFAILED (errors=1)\n"
+    },
+    "reports/queue-platform-cli-baseline-20261107.txt": {
+      "bytes": 1342,
+      "sha256": "7aaaeffc178247d0717cd37c6f7736f658c4b630602f81f7207f3e5d8400c75d",
+      "text": "F\n======================================================================\nFAIL: test_cli_platform_queue_snapshot_is_private_guarded_and_read_only (tests.test_handoff_context_cli.ContextCLITests.test_cli_platform_queue_snapshot_is_private_guarded_and_read_only)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 711, in test_cli_platform_queue_snapshot_is_private_guarded_and_read_only\n    self.assertEqual(selected.returncode, 0, selected.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,check-backup-digest,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --platform codex\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.190s\n\nFAILED (failures=1)\n"
+    },
+    "reports/queue-platform-final-focused-20261107.txt": {
+      "bytes": 102,
+      "sha256": "f23217af7d7195b27db5c166e1d8c343390e50be3231bd4d417abe2abcb2d480",
+      "text": "....\n----------------------------------------------------------------------\nRan 4 tests in 1.333s\n\nOK\n"
+    },
+    "reports/queue-platform-focused-20261107.txt": {
+      "bytes": 102,
+      "sha256": "161cdb542094cf80a927570eed92a34bf4e39c889b41f1f4742bdebaaad6de38",
+      "text": "....\n----------------------------------------------------------------------\nRan 4 tests in 1.332s\n\nOK\n"
+    },
+    "reports/queue-platform-full-20261107.txt": {
+      "bytes": 99390,
+      "sha256": "7c0aa7ec1a526f7be21e0926353348e8f4cd4ffb9bca391fe428d1829d0ff009"
+    },
+    "reports/queue-platform-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/queue-platform-summary-20261107.json": {
+      "bytes": 260,
+      "sha256": "7f8882b8bcad0d6f3b302f01294c43f978ca22ef399a203cdec135aa475718da",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 599, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/queue-platform-full-20261107.json\", \"record_sha256\": \"02370b912b7bec258f90bfbafc5941aee47a80f978a4d18bb1815496dee050cf\"}\n"
+    },
+    "reports/queue-platform-web-20261107.txt": {
+      "bytes": 39590,
+      "sha256": "6225a82aa4ef7a22a4bbd02bbad6dea936fe362ee2fd1972ae617bbbb78efa72"
+    }
+  },
+  "memory_revision": 211,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_missing_feature_failures": 2,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "unexpected_final_verification_failures": 0
+  },
+  "mission_id": "selective-platform-queue-20261107",
+  "patch_sha256": "6d8937a314814c14d35b3f10d04298d426a885f939d30367240c09007672f8c9",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "5524d53cb1385c98eea4fd805982f7107418e8cbbc979328cc44e77a50456eab",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "01e8850f3be0bab03acb2a3f251cd54ca19e228a007839dd1c45a0119c794368",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "b5734b86f0b3847c9c733eb23db6ac01d4bdc6f23a01198e39812d22fa92176e",
+    "scripts/jarvis_network.py": "212565cc12f8ba15bd2b9cbc6ee4e5bd29a545ac156e24d0de3afa220246fe79",
+    "tests/test_handoff_context.py": "ef6e5289706ebaa27c720f0f91d9138a5e25e0d3732d8c7a1060035bfb35bdb2",
+    "tests/test_handoff_context_cli.py": "42cbef97e018c10da151ccd723379293a2b4eb7b7a29fa94c30c45a0f547493a"
+  },
+  "visibility": "owner_private"
+}
