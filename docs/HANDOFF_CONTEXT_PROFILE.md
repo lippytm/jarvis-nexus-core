@@ -190,6 +190,19 @@ that imported returns are authenticated or completed work.
 
 ## Private project queue report
 
+Optional `queue-report --destination DESTINATION-ID` (API `destination_id=...`)
+requires explicit platform scope and emits a separate version-5 queue report.
+Project/platform/destination and optional mission selectors intersect; contextless
+and older contexts without that destination are excluded, not treated as ready.
+Counts, attempts, bindings, review flags and digest cover only the selection.
+A changed selector or selected record invalidates an expected report digest;
+valid edits to another destination do not change this snapshot. Existing stored
+integrity validation still precedes filtering. Omission/default `None` preserves
+version-1/2/3/4 reports exactly. No strict packet/database migration occurs.
+This private local metadata filter does not authenticate a destination, grant
+access, prove completion, change pause/cancel/unknown holds or authorize dispatch.
+
+
 Optional `queue-report --platform TARGET-ID` (API `queue_report(platform=...)`)
 selects one of the seventeen portable targets and emits an explicit version-4
 report with `platform`. It may combine with mission and local review-state

@@ -1023,6 +1023,28 @@ class ContextCLITests(unittest.TestCase):
         self.assertIn("read-only", json.loads(refused.stderr)["error"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_cli_destination_queue_requires_platform_and_preserves_private_snapshot(self):
+        self.controlled(execution="execution_blocked")
+        before = self.db.read_bytes()
+        args = ("--read-only", "queue-report", "--project", "ai-jarvis", "--platform", "codex",
+            "--destination", "synthetic-codex-workspace", "--include-review-state")
+        result = self.cli(*args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["schema_version"], 5)
+        self.assertEqual(report["execution_states"]["execution_blocked"], 1)
+        saved = self.cli(*args, "--expected-report-digest", report["report_sha256"], "--out", "private/destination-queue.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        path = self.root / "private/destination-queue.json"
+        self.assertEqual(json.loads(path.read_bytes()), report)
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        for changed in (tuple(x for x in args if x not in {"--platform", "codex"}),
+                        tuple("other-destination" if x == "synthetic-codex-workspace" else x for x in args)):
+            failed = self.cli(*changed, "--expected-report-digest", report["report_sha256"], "--out", "refused.json")
+            self.assertEqual(failed.returncode, 1, failed.stderr)
+            self.assertFalse((self.root / "refused.json").exists())
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_cli_platform_queue_snapshot_is_private_guarded_and_read_only(self):
         self.controlled(execution="outcome_unknown")
         before = self.db.read_bytes()

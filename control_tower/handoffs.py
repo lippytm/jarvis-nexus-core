@@ -311,7 +311,7 @@ class HandoffLedger:
                     "model_calls": 0, "external_actions": 0}
 
     def queue_report(self, *, project_id, mission_id=None, expected_sha256=None, include_review_state=False,
-                     platform=None):
+                     platform=None, destination_id=None):
         """Private counts of recorded states, never live worker/completion metrics."""
         if type(include_review_state) is not bool:
             raise ValueError("include-review-state must be boolean")
@@ -319,6 +319,10 @@ class HandoffLedger:
             raise ValueError("unknown project")
         if platform is not None and (not isinstance(platform, str) or platform not in TARGETS):
             raise ValueError("unknown queue platform")
+        if destination_id is not None:
+            require_identifier(destination_id, "destination ID")
+            if platform is None:
+                raise ValueError("queue destination selection requires platform scope")
         if mission_id is not None:
             require_identifier(mission_id, "mission ID")
         if expected_sha256 is not None:
@@ -337,6 +341,9 @@ class HandoffLedger:
                 if mission_id is not None and (selected is None or selected[1]["mission_id"] != mission_id):
                     continue
                 if platform is not None and body["draft"]["target"] != platform:
+                    continue
+                if destination_id is not None and (selected is None
+                    or selected[1].get("destination_id") != destination_id):
                     continue
                 handoffs[row["state"]] += 1
                 binding = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
@@ -371,6 +378,8 @@ class HandoffLedger:
                 result.update(schema_version=3, review_authority="local_record_only_not_identity_authentication")
             if platform is not None:
                 result.update(schema_version=4, platform=platform)
+            if destination_id is not None:
+                result.update(schema_version=5, destination_id=destination_id)
             report = {**result, "report_sha256": digest(result)}
             if expected_sha256 is not None and report["report_sha256"] != expected_sha256:
                 raise ValueError("queue report is stale; retrieve current metadata again")

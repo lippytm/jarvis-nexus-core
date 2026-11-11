@@ -1921,6 +1921,51 @@ with HandoffLedger(sys.argv[1]) as ledger:
         with self.assertRaises(ValueError):
             self.ledger.load_checkpoint("mission-one", 1, **args)
 
+    def test_destination_queue_snapshot_is_scoped_independent_and_restart_safe(self):
+        self.profile = self.destination_profile("selected-destination")
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        self.save()
+        self.stage("mission-two")
+        neighbor = self.context("mission-two")
+        neighbor.update(schema_version=3, destination_id="neighbor-destination",
+            control=dict(state="cancelled", actor_id="local-controller", reason="Synthetic hold."))
+        self.ledger.save_context(neighbor, expected_revision=0)
+        args = dict(project_id="ai-jarvis", platform="codex", include_review_state=True)
+        for scope in ({}, dict(mission_id="mission-one"), dict(include_review_state=True), args):
+            scope = {"project_id": "ai-jarvis", **scope}
+            self.assertEqual(self.ledger.queue_report(**scope),
+                self.ledger.queue_report(**scope, destination_id=None))
+        selected = self.ledger.queue_report(**args, destination_id="selected-destination")
+        self.assertEqual(selected["schema_version"], 5)
+        self.assertEqual(selected["handoff_count"], 1)
+        self.assertEqual(selected["control_states"]["paused"], 1)
+        self.assertEqual(selected["execution_states"]["outcome_unknown"], 1)
+        self.assertEqual(selected["bindings"][0]["handoff_id"], "mission-one")
+        self.assertFalse(selected["dispatch_authorized"])
+        self.assertNotIn("Synthetic hold", json.dumps(selected))
+        for target in sorted(TARGETS):
+            report = self.ledger.queue_report(project_id="ai-jarvis", platform=target,
+                destination_id="selected-destination", mission_id="mission-one")
+            self.assertEqual(report["handoff_count"], int(target == "codex"))
+        for destination in ("neighbor-destination", "absent-destination"):
+            with self.assertRaisesRegex(ValueError, "queue report is stale"):
+                self.ledger.queue_report(**args, destination_id=destination,
+                    expected_sha256=selected["report_sha256"])
+        for platform, destination in ((None, "selected-destination"), ("codex", ""), ("codex", True)):
+            with self.assertRaises(ValueError):
+                self.ledger.queue_report(project_id="ai-jarvis", platform=platform, destination_id=destination)
+        neighbor["memory_revision"] = 2
+        neighbor["execution"]["detail"] = "Synthetic neighbor edit."
+        self.ledger.save_context(neighbor, expected_revision=1)
+        self.assertEqual(self.ledger.queue_report(**args, destination_id="selected-destination",
+            expected_sha256=selected["report_sha256"]), selected)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.queue_report(**args, destination_id="selected-destination"), selected)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_platform_queue_selection_retains_holds_guards_and_legacy_reports(self):
         args = dict(project_id="ai-jarvis")
         unconfigured = self.ledger.queue_report(**args, platform="codex")
