@@ -2,7 +2,8 @@
 
 Unpublished YouTube script and storyboard draft, prepared October 29, 2026 for
 Charles and future Jarvis collaborators. Proposed duration: 60 seconds. Timing
-is an editorial plan; no narration has been recorded and no video rendered.
+is an editorial plan. A silent timing animatic is now retained below; narration
+and finished video production remain unfinished.
 
 ## Narration and shot plan
 
@@ -87,11 +88,12 @@ version of the strict handoff/context schemas. No operational ledger was edited.
 | Source memory revision | Not supplied; no authenticated memory retrieval is asserted |
 | Visibility / permitted action | Proposed public candidate / prepare_draft only |
 | Budget / retry | One package; no paid service, provider call or external action; no automatic retry |
-| Review / execution | Owner release pending; local artifact preparation only; no recording, rendering or publishing |
+| Review / execution at original preparation | Owner release pending; local artifact preparation only; no recording, rendering or publishing at that stage |
 | Resume checkpoint | These three sibling files plus the source assignment and resulting development commit |
 
-Next production step: review this exact copy and storyboard, record narration,
-then retime captions and render a local preview under a separately bounded task.
+Original production checkpoint: review exact copy/storyboard, record narration,
+then retime captions. A separate silent timing preview has since been prepared
+below; authorized recording and finished production are still unfinished.
 No schedule or persistent worker was created.
 
 ## Slot 2 thumbnail review candidate
@@ -118,5 +120,76 @@ campaign and storyboard SVG/PNG remain unchanged.
 
 This is a thumbnail candidate, not an accepted upload or finished video. Exact
 art/copy owner review, rights, channel/destination, device/accessibility and platform
-acceptance remain pending. No narration, video, upload or publication was produced.
+acceptance remain pending. At thumbnail preparation, no narration, video, upload
+or publication was produced.
 The Daily Newsletter schedule and paused Studio Work Cycle remain unchanged.
+
+
+## Slot 2 silent timing animatic
+
+The [60-second silent MP4 review preview](exports/youtube-20261029/slot-2-silent-animatic.mp4)
+uses the six existing storyboard panels and all thirteen exact proposed SRT cues.
+Cue durations remain 4, 4, 4, 6, 5, 5, 5, 5, 4, 4, 4, 5 and 5 seconds; panel
+boundaries remain 0, 8, 18, 28, 38, 50 and 60 seconds. The
+[editable SVG filmstrip](jarvis-youtube-slot2-animatic-20261112.svg) holds thirteen
+1280×720 cue groups (`cue-01` through `cue-13`) and copies of the original panels.
+No recorded voice, music, footage, private record or provider call was added.
+
+The preview has 1,440 H.264/yuv420p frames at 24 fps and no audio stream. Every
+card says “SILENT TIMING ANIMATIC · UNPUBLISHED · NO RECORDED VOICE.” Original
+service-unverified/review-required labels remain. This is a timed review candidate,
+not a narrated/finished video, accepted upload or published post. The canvas and
+encoding are editorial review choices, not verified platform requirements. Original
+script/shot plan, SRT, upload copy, campaign, storyboard and thumbnail are retained;
+these guide status notes do not claim a recording or final delivery.
+
+Reproduce with installed Inkscape/FFmpeg from the repository root into a fresh
+scratch directory. These durations are taken from the unchanged proposed SRT,
+not recorded speech. The explicit fps filter and frame-count cap avoid the early
+transitions/short output detected in the initial encode. Tail padding supplies
+only the final still when needed; verify all cue boundaries and the final duration
+after encoding. Different tool versions may change bytes.
+
+```bash
+work_dir=$(mktemp -d)
+durations=(4 4 4 6 5 5 5 5 4 4 4 5 5)
+for index in "${!durations[@]}"; do
+  cue=$(printf '%02d' "$((index + 1))")
+  inkscape docs/media/jarvis-youtube-slot2-animatic-20261112.svg \
+    --export-id-only --export-id="cue-$cue" --export-width=1280 \
+    --export-filename="$work_dir/cue-$cue.png" || exit 1
+  printf "file 'cue-%s.png'\nduration %s\n" "$cue" "${durations[$index]}" >> "$work_dir/frames.txt"
+done
+printf "file 'cue-13.png'\n" >> "$work_dir/frames.txt"
+ffmpeg -hide_banner -v error -nostdin -n -f concat -safe 0 \
+  -i "$work_dir/frames.txt" -vf 'fps=24,tpad=stop_mode=clone:stop_duration=2' \
+  -t 60 -frames:v 1440 -c:v libx264 -tune stillimage -preset medium -crf 26 \
+  -pix_fmt yuv420p -an -map_metadata -1 \
+  -metadata title='Slot 2 silent timing animatic - unpublished review' \
+  -movflags +faststart "$work_dir/slot-2-silent-animatic.mp4"
+```
+
+[Actual render evidence](../evidence/youtube-slot2-animatic-20261112.json) retains
+source/output hashes, variable timing, tool versions, renderer warnings and the
+initial rejected encode. Final checks include XML/internal-resource restrictions,
+exact panel/caption retention, 88 text-width bounds, thirteen PNG decodes, full
+video decode, duration/frame count/no-audio verification and twenty-six decoded
+first/last-frame cue associations. The assistant inspected a decoded contact sheet
+and three full-size source cards. These checks do not certify device readability,
+accessibility, rights clearance or platform acceptance.
+
+Preparation input: `b960647a6dab32ec8df88136471e054f5e33a609`; master memory
+revision 230; project/mission `ai-jarvis` / `jarvis-media-20261029`; preparing
+asset/configuration `codex` / `codex.media-animatic.v1`; intended platform
+`youtube`, channel/destination unassigned; `prepare_draft` only. Budget: one
+asset, no agents, paid services/provider calls or automatic retries. One initial
+encode failed timing QA; the retained correction belongs to this same bounded
+preparation, not an operational retry or running worker. Guide/SVG/MP4/receipt
+and resulting development commit are the return binding/checkpoint. Independent
+and owner exact-content review are pending; no new strict packet or memory store.
+
+Next: review the exact preview with narration/SRT, then authorized recording,
+caption retiming and finished production. Channel/destination, rights, target-device
+readability/accessibility and upload acceptance remain unverified. No upload or
+publication occurred. The paused Studio Work Cycle and Daily Newsletter schedule
+remain unchanged; all other slots remain independent.
