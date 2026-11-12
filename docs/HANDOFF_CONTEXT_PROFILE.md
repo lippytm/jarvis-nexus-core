@@ -203,6 +203,15 @@ This private local metadata filter does not authenticate a destination, grant
 access, prove completion, change pause/cancel/unknown holds or authorize dispatch.
 
 
+The destination queue restored-content regression exercises a reviewed paused /
+unknown-outcome context, a temporary same-memory-revision edit and restoration of
+identical profile bytes. Even after a new local review, the original review receipt
+and v5 queue pin must remain stale because the context revision advanced. A second
+destination on the same platform remains unchanged; read-only restart retains the
+new pin, both holds and database bytes. An in-memory mutation that omits context
+revision from v5 queue hashing is rejected by this regression. These are synthetic
+local checks, not authenticated review or evidence of live mission recovery.
+
 Optional `queue-report --platform TARGET-ID` (API `queue_report(platform=...)`)
 selects one of the seventeen portable targets and emits an explicit version-4
 report with `platform`. It may combine with mission and local review-state

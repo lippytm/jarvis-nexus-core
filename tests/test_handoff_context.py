@@ -1921,6 +1921,67 @@ with HandoffLedger(sys.argv[1]) as ledger:
         with self.assertRaises(ValueError):
             self.ledger.load_checkpoint("mission-one", 1, **args)
 
+    def test_destination_queue_restored_content_cannot_revive_old_review_or_snapshot(self):
+        self.profile = self.destination_profile("reviewed-destination")
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.stage("mission-two")
+        neighbor = self.context("mission-two")
+        neighbor.update(schema_version=3, destination_id="independent-destination",
+            control=dict(state="cancelled", actor_id="local-controller", reason="Synthetic hold."))
+        self.ledger.save_context(neighbor, expected_revision=0)
+        args = dict(project_id="ai-jarvis", platform="codex", include_review_state=True)
+        chosen = {**args, "destination_id": "reviewed-destination"}
+        other = {**args, "destination_id": "independent-destination"}
+        independent = self.ledger.queue_report(**other)
+        pending = self.ledger.queue_report(**chosen)
+        first_review = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=saved["context_sha256"], expected_revision=1, include_receipt=True)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**chosen, expected_sha256=pending["report_sha256"])
+        reviewed = self.ledger.queue_report(**chosen)
+        self.assertTrue(reviewed["bindings"][0]["context_review_current"])
+        original = deepcopy(self.profile)
+        self.profile["execution"]["detail"] = "Synthetic temporary private change."
+        self.ledger.save_context(self.profile, expected_revision=1)
+        self.assertFalse(self.ledger.queue_report(**chosen)["bindings"][0]["context_review_current"])
+        restored = self.ledger.save_context(original, expected_revision=2)
+        self.assertEqual(restored["context_sha256"], saved["context_sha256"])
+        self.assertEqual(restored["revision"], 3)
+        with self.assertRaises(ValueError):
+            self.ledger.check_context_review_receipt("mission-one", first_review)
+        current_review = self.ledger.review_context("mission-one", reviewer_id="local-evaluator",
+            expected_sha256=restored["context_sha256"], expected_revision=3, include_receipt=True)
+        with self.assertRaises(ValueError):
+            self.ledger.check_context_review_receipt("mission-one", first_review)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**chosen, expected_sha256=reviewed["report_sha256"])
+        current = self.ledger.queue_report(**chosen)
+        self.assertEqual(current["schema_version"], 5)
+        self.assertEqual(current["bindings"][0]["context_revision"], 3)
+        self.assertTrue(current["bindings"][0]["context_review_current"])
+        self.assertFalse(current["dispatch_authorized"])
+        self.assertEqual(current["control_states"]["paused"], 1)
+        self.assertEqual(current["execution_states"]["outcome_unknown"], 1)
+        self.assertNotIn("Synthetic temporary", json.dumps(current))
+        self.assertEqual(self.ledger.queue_report(**other,
+            expected_sha256=independent["report_sha256"]), independent)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.queue_report(**chosen,
+            expected_sha256=current["report_sha256"]), current)
+        with self.assertRaisesRegex(ValueError, "queue report is stale"):
+            self.ledger.queue_report(**chosen, expected_sha256=reviewed["report_sha256"])
+        with self.assertRaises(ValueError):
+            self.ledger.check_context_review_receipt("mission-one", first_review)
+        self.assertTrue(self.ledger.check_context_review_receipt("mission-one", current_review)["local_binding_matches"])
+        self.assertEqual(self.ledger.queue_report(**other), independent)
+        self.assertEqual(self.load()["profile"], original)
+        self.assertEqual(self.load("mission-two")["profile"], neighbor)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_destination_queue_snapshot_is_scoped_independent_and_restart_safe(self):
         self.profile = self.destination_profile("selected-destination")
         self.profile["control"]["state"] = "paused"
