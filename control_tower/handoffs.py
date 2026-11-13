@@ -20,6 +20,7 @@ from control_tower.connections import (connector_report, validate_destination_re
 MAX_HANDOFFS = 1000
 MAX_SWARMS = 100
 MAX_CONTEXT_CHECKPOINTS = 1000
+MAX_CONTEXT_REVIEW_RECEIPTS = 1000
 
 
 def _stored_json(body):
@@ -72,14 +73,15 @@ class HandoffLedger:
                 version = self.db.execute("PRAGMA user_version").fetchone()[0]
                 tables = {r[0] for r in self.db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
                 legacy_tables = {"swarms", "handoffs", "returns"}
-                if (version not in (0, 1, 2, 3) or (version == 0 and tables)
+                if (version not in (0, 1, 2, 3, 4) or (version == 0 and tables)
                     or (version == 1 and tables != legacy_tables)
                     or (version == 2 and tables != legacy_tables | {"handoff_contexts"})
-                    or (version == 3 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints"})):
+                    or (version == 3 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints"})
+                    or (version == 4 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints", "context_review_receipts"})):
                     raise ValueError("unsupported or unrelated ledger database")
                 if read_only:
-                    if version not in (2, 3):
-                        raise ValueError("read-only inspection requires an existing version-2 or version-3 ledger; migration is separate")
+                    if version not in (2, 3, 4):
+                        raise ValueError("read-only inspection requires an existing version-2/3/4 ledger; migration is separate")
                     return
                 self.db.execute("CREATE TABLE IF NOT EXISTS swarms (id TEXT PRIMARY KEY, digest TEXT NOT NULL, body TEXT NOT NULL)")
                 self.db.execute("""CREATE TABLE IF NOT EXISTS handoffs (
@@ -95,7 +97,7 @@ class HandoffLedger:
                     handoff_id TEXT PRIMARY KEY REFERENCES handoffs(id),
                     revision INTEGER NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
                     reviewer_id TEXT, reviewed_digest TEXT)""")
-                self.db.execute("PRAGMA user_version=3" if version == 3 else "PRAGMA user_version=2")
+                self.db.execute("PRAGMA user_version=" + str(version if version in (3, 4) else 2))
         except BaseException:
             self.db.close()
             raise
@@ -462,7 +464,7 @@ class HandoffLedger:
         if type(revision) is not int or revision < 1:
             raise ValueError("invalid checkpoint revision")
         current, current_profile = self._context(handoff_id)
-        if self.db.execute("PRAGMA user_version").fetchone()[0] != 3:
+        if self.db.execute("PRAGMA user_version").fetchone()[0] not in (3, 4):
             raise ValueError("ledger has no retained context checkpoints")
         row = self.db.execute("SELECT * FROM context_checkpoints WHERE handoff_id=? AND revision=?",
                               (handoff_id, revision)).fetchone()
@@ -537,7 +539,8 @@ class HandoffLedger:
             self.db.execute("""CREATE TABLE IF NOT EXISTS context_checkpoints (
                 handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
                 digest TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(handoff_id,revision))""")
-            self.db.execute("PRAGMA user_version=3")
+            if self.db.execute("PRAGMA user_version").fetchone()[0] != 4:
+                self.db.execute("PRAGMA user_version=3")
             duplicate = self.db.execute("SELECT 1 FROM context_checkpoints WHERE handoff_id=? AND revision=?",
                                         (handoff_id, row["revision"])).fetchone() is not None
             if not duplicate:
@@ -561,7 +564,7 @@ class HandoffLedger:
         with self._transaction():
             _, handoff = self._handoff(handoff_id)
             records = []
-            if self.db.execute("PRAGMA user_version").fetchone()[0] == 3:
+            if self.db.execute("PRAGMA user_version").fetchone()[0] in (3, 4):
                 rows = self.db.execute("SELECT revision FROM context_checkpoints WHERE handoff_id=? ORDER BY revision LIMIT ?",
                                        (handoff_id, MAX_CONTEXT_CHECKPOINTS + 1)).fetchall()
                 if len(rows) > MAX_CONTEXT_CHECKPOINTS:
@@ -868,7 +871,11 @@ class HandoffLedger:
         return {**result, "receipt_sha256": digest(result)}
 
     def review_context(self, handoff_id, *, reviewer_id, expected_sha256, expected_revision=None,
-                       include_receipt=False):
+                       include_receipt=False, archive_receipt=False):
+        if type(archive_receipt) is not bool or archive_receipt and (not include_receipt or expected_revision is None):
+            raise ValueError("archive requires an exact returned review receipt")
+        if archive_receipt and self.read_only:
+            raise ValueError("read-only inspection cannot archive reviews")
         require_identifier(reviewer_id, "reviewer label")
         require_digest(expected_sha256)
         if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
@@ -883,10 +890,92 @@ class HandoffLedger:
                 raise ValueError("context review revision mismatch")
             if row["digest"] != expected_sha256 or reviewer_id == profile["asset_id"]:
                 raise ValueError("context review requires exact content and a distinct label")
+            receipt = None
+            if archive_receipt:
+                self.db.execute("""CREATE TABLE IF NOT EXISTS context_checkpoints (
+                    handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
+                    digest TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(handoff_id,revision))""")
+                self.db.execute("""CREATE TABLE IF NOT EXISTS context_review_receipts (
+                    handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
+                    reviewer_id TEXT NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
+                    PRIMARY KEY(handoff_id,revision,reviewer_id))""")
+                self.db.execute("PRAGMA user_version=4")
+                archived = self.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=? AND reviewer_id=?",
+                    (handoff_id, row["revision"], reviewer_id)).fetchone()
+                if archived is not None:
+                    receipt = self._archived_context_review(archived)
+                else:
+                    if self.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0] >= MAX_CONTEXT_REVIEW_RECEIPTS:
+                        raise ValueError("context review archive limit reached")
+                    receipt = _context_review_receipt(handoff_id, row, profile, reviewer_id, _now())
+                    self.db.execute("INSERT INTO context_review_receipts VALUES (?,?,?,?,?)",
+                        (handoff_id, row["revision"], reviewer_id, receipt["receipt_sha256"], canonical(receipt).decode()))
             self.db.execute("UPDATE handoff_contexts SET reviewer_id=?,reviewed_digest=? WHERE handoff_id=?",
                             (reviewer_id, expected_sha256, handoff_id))
             if include_receipt:
-                return _context_review_receipt(handoff_id, row, profile, reviewer_id, _now())
+                return receipt if archive_receipt else _context_review_receipt(handoff_id, row, profile, reviewer_id, _now())
+
+    def _archived_context_review(self, archived):
+        """Validate retained metadata as history; this does not establish current review."""
+        try:
+            receipt = _stored_json(archived["body"])
+            if json_record_errors(receipt) or not isinstance(receipt, dict):
+                raise ValueError("invalid archive JSON")
+            current, profile = self._context(archived["handoff_id"])
+            revision = archived["revision"]
+            version, memory = receipt["context_schema_version"], receipt["memory_revision"]
+            if (type(revision) is not int or not 1 <= revision <= current["revision"]
+                or type(version) is not int or version not in (1, 2, 3) or version > profile["schema_version"]
+                or type(memory) is not int or not 1 <= memory <= profile["memory_revision"]
+                or receipt["execution_state"] not in {"pending", "execution_blocked", "outcome_unknown"}
+                or receipt["control_state"] not in ({"legacy_uncontrolled"} if version == 1 else {"active", "paused", "cancelled"})):
+                raise ValueError("archive history mismatch")
+            require_identifier(archived["reviewer_id"], "archived reviewer label")
+            if archived["reviewer_id"] == profile["asset_id"]:
+                raise ValueError("archive reviewer mismatch")
+            require_identifier(receipt["configuration_version"], "archived configuration version")
+            require_digest(receipt["context_sha256"])
+            recorded = datetime.fromisoformat(receipt["recorded_at"])
+            if recorded.tzinfo is None or recorded.utcoffset() is None:
+                raise ValueError("archive timestamp requires timezone")
+            historical = {**profile, "schema_version": version, "memory_revision": memory,
+                "configuration_version": receipt["configuration_version"],
+                "destination_id": profile.get("destination_id") if version == 3 else None,
+                "execution": {"state": receipt["execution_state"]}, "control": {"state": receipt["control_state"]}}
+            expected = _context_review_receipt(archived["handoff_id"],
+                {"revision": revision, "digest": receipt["context_sha256"]}, historical,
+                archived["reviewer_id"], receipt["recorded_at"])
+            if revision == current["revision"] and canonical(receipt) != canonical(
+                _context_review_receipt(archived["handoff_id"], current, profile,
+                    archived["reviewer_id"], receipt["recorded_at"])):
+                raise ValueError("archive does not match current context")
+            if archived["digest"] != receipt["receipt_sha256"] or canonical(receipt) != canonical(expected):
+                raise ValueError("archive checksum or binding mismatch")
+            return receipt
+        except (ValueError, TypeError, KeyError, RecursionError):
+            raise ValueError("stored context review receipt is invalid") from None
+
+    def load_context_review_receipt(self, handoff_id, *, expected_revision, expected_sha256, reviewer_id):
+        """Recover an original archived local receipt, without re-review or dispatch."""
+        require_digest(expected_sha256)
+        require_identifier(reviewer_id, "reviewer label")
+        if type(expected_revision) is not int or expected_revision < 1:
+            raise ValueError("invalid expected archived review revision")
+        with self._transaction():
+            current, _ = self._context(handoff_id)
+            if (current["revision"] != expected_revision or current["digest"] != expected_sha256
+                or current["reviewed_digest"] != current["digest"] or current["reviewer_id"] != reviewer_id):
+                raise ValueError("archived review requires exact current review binding")
+            if self.db.execute("PRAGMA user_version").fetchone()[0] != 4:
+                raise ValueError("ledger has no context review archive")
+            archived = self.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=? AND reviewer_id=?",
+                (handoff_id, expected_revision, reviewer_id)).fetchone()
+            if archived is None:
+                raise ValueError("context review receipt was not archived")
+            receipt = self._archived_context_review(archived)
+            if receipt["context_sha256"] != expected_sha256:
+                raise ValueError("archived review digest mismatch")
+            return receipt
 
     def check_context_review_receipt(self, handoff_id, receipt):
         """Check a saved local receipt against one current snapshot; no authority."""

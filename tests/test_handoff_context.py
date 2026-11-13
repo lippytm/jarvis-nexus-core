@@ -1921,6 +1921,115 @@ with HandoffLedger(sys.argv[1]) as ledger:
         with self.assertRaises(ValueError):
             self.ledger.load_checkpoint("mission-one", 1, **args)
 
+    def test_review_archive_preserves_version_three_history_and_legacy_receipt_shape(self):
+        saved = self.save()
+        self.ledger.checkpoint_context("mission-one", expected_sha256=saved["context_sha256"],
+            expected_source_revision=REVISION, expected_memory_revision=1)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 3)
+        args = dict(expected_sha256=saved["context_sha256"], expected_revision=1, reviewer_id="local-evaluator")
+        before = tuple(self.ledger.db.iterdump())
+        for flags in (dict(archive_receipt=True), dict(archive_receipt=1, include_receipt=True)):
+            with self.assertRaises(ValueError):
+                self.ledger.review_context("mission-one", **args, **flags)
+        self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+        receipt = self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        self.assertEqual(receipt["schema_version"], 1)
+        self.assertEqual(receipt["context_schema_version"], 1)
+        self.assertIsNone(receipt["destination_id"])
+        self.assertEqual(receipt["visibility"], "owner_private")
+        self.assertEqual(receipt["control_state"], "legacy_uncontrolled")
+        self.ledger.close()
+        self.ledger = HandoffLedger(self.path)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 4)
+        self.assertEqual(self.ledger.load_context_review_receipt("mission-one", **args), receipt)
+        self.assertEqual(len(self.ledger.list_checkpoints("mission-one")["checkpoints"]), 1)
+        wrong = {**receipt, "memory_revision": 2}
+        wrong["receipt_sha256"] = digest({k: v for k, v in wrong.items() if k != "receipt_sha256"})
+        self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=?", (json.dumps(wrong),wrong["receipt_sha256"]))
+        with self.assertRaisesRegex(ValueError, "stored context review"):
+            self.ledger.load_context_review_receipt("mission-one", **args)
+
+    def test_archived_review_receipt_recovers_committed_ack_loss_without_replay(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"], expected_revision=1)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.ledger.review_context("mission-one", **args, include_receipt=True)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        connection = self.ledger.db
+        class LostAcknowledgement:
+            def __getattr__(self, name):
+                return getattr(connection, name)
+            def commit(self):
+                connection.commit()
+                raise KeyboardInterrupt("synthetic committed review acknowledgement lost")
+        self.ledger.db = LostAcknowledgement()
+        try:
+            with patch("control_tower.handoffs._now", return_value="2026-11-13T19:00:00+00:00"):
+                with self.assertRaises(KeyboardInterrupt):
+                    self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        finally:
+            self.ledger.db = connection
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 4)
+        self.ledger.checkpoint_context("mission-one", expected_source_revision=REVISION,
+            expected_memory_revision=1, expected_revision=1, expected_sha256=saved["context_sha256"])
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 4)
+        receipt = self.ledger.load_context_review_receipt("mission-one", **args)
+        self.assertEqual(receipt["recorded_at"], "2026-11-13T19:00:00+00:00")
+        self.assertEqual(self.ledger.review_context("mission-one", **args, include_receipt=True,
+            archive_receipt=True), receipt)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 1)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.load_context_review_receipt("mission-one", **args), receipt)
+        self.assertTrue(self.ledger.check_context_review_receipt("mission-one", receipt)["local_binding_matches"])
+        self.assertEqual(len(self.ledger.list_checkpoints("mission-one")["checkpoints"]), 1)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertFalse(receipt["retry_authorized"])
+        self.assertFalse(receipt["dispatch_authorized"])
+        self.assertNotIn("example.invalid", json.dumps(receipt))
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_archive_migration_rolls_back_and_retains_independent_history_and_backups(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.destination_profile()
+        saved = self.save()
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"], expected_revision=1)
+        with patch("control_tower.handoffs.MAX_CONTEXT_REVIEW_RECEIPTS", 0):
+            with self.assertRaisesRegex(ValueError, "archive limit"):
+                self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.assertFalse(self.ledger.db.execute("SELECT 1 FROM sqlite_master WHERE name='context_review_receipts'").fetchone())
+        self.assertFalse(self.load()["review_state"] == "locally_reviewed")
+        first = self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        self.stage("mission-two")
+        neighbor = self.context("mission-two")
+        other_saved = self.ledger.save_context(neighbor, expected_revision=0)
+        other_args = dict(reviewer_id="local-evaluator", expected_sha256=other_saved["context_sha256"], expected_revision=1)
+        other = self.ledger.review_context("mission-two", **other_args, include_receipt=True, archive_receipt=True)
+        self.profile["memory_revision"] = 2
+        self.profile["configuration_version"] = "updated-scope.v2"
+        self.ledger.save_context(self.profile, expected_revision=1)
+        with self.assertRaisesRegex(ValueError, "exact current review"):
+            self.ledger.load_context_review_receipt("mission-one", **args)
+        self.assertEqual(self.ledger.load_context_review_receipt("mission-two", **other_args), other)
+        archived = self.ledger.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one'").fetchone()
+        self.assertEqual(self.ledger._archived_context_review(archived), first)
+        backup_path = self.path.parent / "archive-backup.sqlite3"
+        _backup(self.ledger.db, backup_path)
+        with HandoffLedger(backup_path, read_only=True) as backup:
+            self.assertEqual(backup.db.execute("PRAGMA user_version").fetchone()[0], 4)
+            self.assertEqual(backup.load_context_review_receipt("mission-two", **other_args), other)
+        self.ledger.db.execute("UPDATE context_review_receipts SET body='{}' WHERE handoff_id='mission-two'")
+        with self.assertRaisesRegex(ValueError, "stored context review"):
+            self.ledger.load_context_review_receipt("mission-two", **other_args)
+        with self.assertRaisesRegex(ValueError, "stored context review"):
+            _backup(self.ledger.db, self.path.parent / "refused-backup.sqlite3")
+        self.assertFalse((self.path.parent / "refused-backup.sqlite3").exists())
+
     def test_destination_queue_restored_content_cannot_revive_old_review_or_snapshot(self):
         self.profile = self.destination_profile("reviewed-destination")
         self.profile["control"]["state"] = "paused"

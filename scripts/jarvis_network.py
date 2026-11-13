@@ -259,8 +259,8 @@ def _backup(connection, path):
         with closing(sqlite3.connect(temporary)) as destination:
             connection.backup(destination, pages=128, progress=progress, sleep=0.01)
             version = destination.execute("PRAGMA user_version").fetchone()[0]
-            if version not in (2, 3):
-                raise ValueError("backup requires a version-2 or version-3 ledger; retain legacy backups before migration")
+            if version not in (2, 3, 4):
+                raise ValueError("backup requires a version-2/3/4 ledger; retain legacy backups before migration")
             if destination.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
                 raise ValueError("backup SQLite integrity check failed")
             if destination.execute("PRAGMA foreign_key_check").fetchone() is not None:
@@ -271,9 +271,15 @@ def _backup(connection, path):
             contexts = checked.db.execute("SELECT handoff_id FROM handoff_contexts").fetchall()
             for row in contexts:
                 checked._context(row["handoff_id"])
-            if version == 3:
+            if version in (3, 4):
                 for row in checked.db.execute("SELECT handoff_id,revision FROM context_checkpoints").fetchall():
                     checked._checkpoint(row["handoff_id"], row["revision"])
+            if version == 4:
+                receipts = checked.db.execute("SELECT * FROM context_review_receipts LIMIT 1001").fetchall()
+                if len(receipts) > 1000:
+                    raise ValueError("context review archive limit exceeded")
+                for archived in receipts:
+                    checked._archived_context_review(archived)
         checksum = hashlib.sha256()
         with temporary.open("rb") as handle:
             for block in iter(lambda: handle.read(65536), b""):
@@ -312,7 +318,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=str(ROOT))
     parser.add_argument("--database", default="reports/jarvis-network.sqlite3")
-    parser.add_argument("--read-only", action="store_true", help="Inspect an existing version-2/3 ledger without database writes")
+    parser.add_argument("--read-only", action="store_true", help="Inspect an existing version-2/3/4 ledger without database writes")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("init-ledger")
     catalog = commands.add_parser("catalog")

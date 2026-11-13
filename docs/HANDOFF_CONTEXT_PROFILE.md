@@ -173,7 +173,7 @@ python scripts/jarvis_network.py --root /data --database handoffs.sqlite3 --read
 It uses SQLite mode=ro, skips schema setup/migration and uses read transactions.
 Only inspection and backup commands are accepted; export, review, initialization
 and other ledger writes are refused. Inspection may still save a requested
-private output file. An existing version-2 or version-3 ledger is required; retain a backup
+private output file. An existing version-2/3/4 ledger is required; retain a backup
 and use the normal writable path separately for a version-1 migration. Defaults
 and valid old records are unchanged. This protects against database writes
 through this connection, not concurrent writers, filesystem replacement or
@@ -999,17 +999,18 @@ state. The receipt is owner-private, checksum-bound and explicitly unauthenticat
 with no dispatch or retry authority. It omits profile text and reference URLs.
 Legacy contexts have a null destination; default API calls still return None and
 CLI responses keep their existing shape. No strict packet/storage schema changes.
-Retain the returned receipt privately if needed: the ledger persists its existing
-review binding, not a new receipt archive or authenticated approval. Changed
+By default, retain the returned receipt privately: the ledger persists its existing
+review binding, not a receipt archive or authenticated approval. The separate opt-in
+archive API below changes this storage behavior only when requested. Changed
 context can invalidate that binding; this historical receipt is no future gate.
 
 
-Transaction failures, including Python interrupts during the transaction body or commit, attempt rollback of pending ledger writes before propagating the exception. Before a commit completes, successful rollback leaves no review update for a later commit to publish. If SQLite completes the commit before the caller receives its acknowledgement, an interruption can instead leave a committed review with no returned receipt; rollback cannot undo that completed commit. Inspect the same existing ledger read-only before considering any explicit retry. Neither an exception nor an absent receipt proves rollback, and the ledger has no receipt archive to reconstruct the original timestamp. This cleanup performs no retry or dispatch; transaction failure is not evidence of a provider/runtime outage. Rollback itself may fail on unusable storage/connection; abrupt process termination cannot run Python cleanup.
+Transaction failures, including Python interrupts during the transaction body or commit, attempt rollback of pending ledger writes before propagating the exception. Before a commit completes, successful rollback leaves no review update for a later commit to publish. If SQLite completes the commit before the caller receives its acknowledgement, an interruption can instead leave a committed review with no returned receipt; rollback cannot undo that completed commit. Inspect the same existing ledger read-only before considering any explicit retry. Neither an exception nor an absent receipt proves rollback, and an unarchived review has no original receipt timestamp to recover. This cleanup performs no retry or dispatch; transaction failure is not evidence of a provider/runtime outage. Rollback itself may fail on unusable storage/connection; abrupt process termination cannot run Python cleanup.
 
 `review-context --include-receipt --context-revision N --out private/review.json` saves the versioned receipt through the existing private (0600), fsynced, no-overwrite writer. Output paths stay inside `--root`; missing flags, existing outputs and stale revisions reject before review mutation. Without `--out`, existing stdout responses remain unchanged. Saved receipts contain metadata and local reviewer labels, not authenticated owner approval, profile text or dispatch authority. Review commit and file publication are separate operations: a later file I/O or directory-fsync failure may leave a committed review and possibly a complete output. Inspect both before any explicit retry; no automatic replay or atomic database/file transaction is implemented.
 
 
-`HandoffLedger.check_context_review_receipt(handoff_id, receipt)` checks a saved version-1 receipt against one current ledger snapshot, including exact stored context revision, content and reviewer binding. It works on an existing read-only ledger after restart and returns metadata only. Unknown fields, altered flags/types, invalid timezone timestamps, digest mismatch, invalidated review and edited/restored stale revisions reject. This API does not alter schemas, review state or execution holds. The CLI exposes this through `check-review-receipt --handoff ID --file private/review.json [--receipt-digest SHA256] [--out private/check.json]`. The command always opens the existing ledger read-only, including without `--read-only`; that flag is also accepted. Receipt input uses the existing bounded JSON loader and root-relative paths. Optional check output uses the private no-overwrite writer. Missing ledgers, invalid receipts and stale bindings fail without creating a database or check output. The check is local consistency, not receipt authenticity: timestamps are not archived/attested, hashes are unkeyed, and no owner release, retry or dispatch authority follows. A changed receipt and matching ledger controlled by the same party cannot establish independent approval.
+`HandoffLedger.check_context_review_receipt(handoff_id, receipt)` checks a saved version-1 receipt against one current ledger snapshot, including exact stored context revision, content and reviewer binding. It works on an existing read-only ledger after restart and returns metadata only. Unknown fields, altered flags/types, invalid timezone timestamps, digest mismatch, invalidated review and edited/restored stale revisions reject. This API does not alter schemas, review state or execution holds. The CLI exposes this through `check-review-receipt --handoff ID --file private/review.json [--receipt-digest SHA256] [--out private/check.json]`. The command always opens the existing ledger read-only, including without `--read-only`; that flag is also accepted. Receipt input uses the existing bounded JSON loader and root-relative paths. Optional check output uses the private no-overwrite writer. Missing ledgers, invalid receipts and stale bindings fail without creating a database or check output. The check is local consistency, not receipt authenticity: default receipts have no archived timestamp; archived timestamps are not independently attested, hashes are unkeyed, and no owner release, retry or dispatch authority follows. A changed receipt and matching ledger controlled by the same party cannot establish independent approval.
 
 
 Direct saved-review receipt API input now passes the existing shared JSON-record validator before timestamp parsing, hashing or transaction entry: finite acyclic JSON, UTF-8/64 KiB bounds, depth/node limits and known sensitive-field-name restrictions. These checks align direct API calls with existing ingestion conventions; they are not a general PII detector or identity authentication. Valid saved receipts and their schemas remain unchanged.
@@ -1021,3 +1022,43 @@ The existing `demo` command now reports a `context_recovery.review_receipt_check
 Optional `--receipt-digest` pins the receipt's canonical `receipt_sha256`, not the file's byte hash. A mismatch or malformed expected digest rejects before ledger open and output creation; the normal receipt-integrity/current-binding checks still apply after a match. Defaults accept any internally consistent receipt matching the current local binding. Pinning detects a substituted receipt (including a changed, rehashed timestamp) only when the expected digest was retained independently; it does not attest the timestamp, authenticate a reviewer or grant release/retry/dispatch authority.
 
 Optional `inspect-recovery --context-revision N` (API `expected_revision`) pins the selected stored context revision in the same read transaction as the digest/source/memory checks. It rejects an old request after content A changes to B and returns to A at a later stored revision, even when its digest and memory revision are restored. Use the stored `revision`, not `memory_revision`. Omitting it preserves existing behavior and the version-1 inspection output. This is a read-time guard, not a lease, authentication, owner release or retry/dispatch authority; existing holds remain intact.
+
+
+## Opt-in local context-review receipt archive
+
+`HandoffLedger.review_context(..., include_receipt=True, expected_revision=N,
+archive_receipt=True)` stores the returned version-1 metadata receipt in the
+**same SQLite transaction** as the exact local review. This API-only option
+explicitly upgrades a version-2 or version-3 ledger to version 4, preserving all
+existing rows and checkpoints. Default calls retain their prior return shape and
+version-2/3 storage behavior. Strict handoff/context packets are unchanged. No
+CLI archive flag, worker, provider dispatch or authentication service is added.
+
+The existing ledger gains `context_review_receipts`, keyed by handoff/context
+revision/reviewer label, with a checksum and bounded JSON body. At most 1,000
+receipts are retained. Repeating an archived review for the same tuple returns
+the original receipt/timestamp, not a new synthetic history entry. A failed
+archive limit or validation rolls back the review and any schema upgrade.
+Historical receipts remain after context edits; they do not approve current work.
+
+After an uncertain commit acknowledgement, inspect the same existing ledger via
+`load_context_review_receipt(handoff_id, expected_revision=N,
+expected_sha256=CONTEXT_SHA256, reviewer_id=LABEL)`. It works after read-only
+restart, returns the original metadata receipt only for the exact current
+context/reviewer binding, and does not re-review, clear holds, increment attempts
+or authorize retry/dispatch. Missing archives, stale revisions/digests, changed
+reviewer bindings and corrupt receipts refuse. The archived timestamp is local
+recorded evidence, not independently authenticated identity or release approval.
+
+Version-4 reopen preserves the schema; checkpoint capture/list/load and checked
+backups retain version 4 and receipt rows. Backup validation checks every bounded
+archived receipt as historical metadata, including invalidated prior reviews; a
+corrupt archive refuses backup publication. Older software that supports only
+versions 2/3 must refuse this database. Retain a pre-upgrade backup and use current
+tools for further backups; no downgrade or automatic restore is provided.
+
+This is a bounded local recovery control, not an authenticated shared store,
+permission/ACL isolation, receipt authenticity proof, lease/failover system or
+measured reliability improvement. Secrets and profile/reference text are excluded
+from receipts. Independent evaluation and owner exact-revision release review
+remain separate and pending.

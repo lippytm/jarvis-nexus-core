@@ -1,0 +1,110 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "control_tower/handoffs.py": "796aa86c09d798bfc828c60b3fc5de17f0f7ed2d4c5db6705cb3f3f947a0e4f5",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "7052ccd092574d5db2da4625d2f542a4ed68ac34928ea674af33733b825c231d",
+    "scripts/jarvis_network.py": "90f7e2f2ab355f16d3ed38de187e3b5a0ff527d61b5646895528992eee621bba",
+    "tests/test_handoff_context.py": "97eb6220433d3144ec1c9d38ff4e5371a9a313b020d549b1466918bf961d4322"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "API-only archive_receipt=True with include_receipt and exact revision atomically retains bounded v1 metadata receipt and review binding in existing ledger. Explicit version-4 upgrade adds context_review_receipts and preserves checkpoints. Default calls unchanged. Guarded load_context_review_receipt recovers original current-bound receipt after read-only restart without re-review. Archived tuple is idempotent; invalidated history retained but not current approval; cap 1000, checkpoint and checked backup support.",
+  "checkpoint": {
+    "next": "Independent migration/recovery review and owner exact-revision release review; authenticated shared registry/audience acceptance remains unfinished.",
+    "state": "archive_api_candidate_checked"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "exit_code": 0,
+      "log_sha256": "69796c8069b47be836df270a88b29823ad41a084acbab76d06c1d4ae5f567053",
+      "tests": 3
+    },
+    "full": {
+      "evidence": "reports/r47-full.json",
+      "passed": true,
+      "record_sha256": "4f531304b4b7247eb60cb435fa4cc90fd48ddf33ac800ba4572076cca7197cfd",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 619,
+        "skipped": 0
+      }
+    },
+    "new_regressions": [
+      "A real synthetic SQLite commit followed by injected KeyboardInterrupt loses acknowledgement; original fixed fixture timestamp/receipt recovers after read-only reopen without replay and with unchanged database bytes.",
+      "Version-2 archive migration/limit failure rolls back schema and review; identical archived tuple deduplicates; independent handoff and changed configuration history retained; invalidated old review rejects current retrieval; version-4 backup reopens and corrupt archive refuses backup publication.",
+      "Version-3 upgrade preserves existing checkpoint and legacy schema-1 receipt shape/private/null-destination metadata; incomplete/invalid archive flags and rehashed inconsistent archive fields reject."
+    ],
+    "syntax_final": {
+      "files": 74,
+      "passed": true
+    },
+    "test_only_injection": "KeyboardInterrupt after SQLite commit is synthetic; no actual provider/runtime outage or failed dispatch inferred.",
+    "web": {
+      "failures": 0,
+      "log_sha256": "176a212715640f9f6dd8c0be9da086761f64779803f2d40a09e545f17f950852",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "75eef482781a1da9ca7124caf7a71e188245eca3",
+  "limitations": [
+    "API-only initial archive implementation; no CLI archive flag, hosted worker or operational owner database migration.",
+    "Local labels and hashes are not authentication, independently attested timestamps, ACL isolation or owner release approval.",
+    "Exact current binding required for recovery; retained history is not approval for edited work.",
+    "Older v2/v3-only tools must reject v4; pre-upgrade backups retained by operator; no automatic downgrade/restore.",
+    "No strict handoff/context packet field additions or parallel memory store.",
+    "No live-provider dispatch/installation, lease/failover/reconnect controller or measured reliability gain.",
+    "All 17 portable targets/business areas retained; seven source PROJECTS distinct.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deployment/publication/messages/spending/permissions/credentials/public access or paused Studio/Newsletter schedule change."
+  ],
+  "memory_revision": 234,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts_observed": 0,
+    "synthetic_commit_ack_loss_cases": 1
+  },
+  "mission_id": "local-review-archive-20261113",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Latest slot-2 render and CI complete; no active retry or duplicate candidate. Funding/comedy fixes retained.",
+  "problem": "Unarchived context review can commit before its returned receipt is received; original timestamp cannot then be recovered from review binding alone.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "31e5a14d07fb9359d059a57748e2b9e556de1512104d08521b42e8f030a02563",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "control_tower/handoffs.py",
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}
