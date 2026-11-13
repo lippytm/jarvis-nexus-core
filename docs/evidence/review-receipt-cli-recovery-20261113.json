@@ -1,0 +1,111 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "632b86297fb5bf5e5ef218075af26281f1fed513d7d12aff0f11a0b0d9e3bd46",
+    "scripts/jarvis_network.py": "9d38762038a56a0e5d3e4128d0354972426137cbe855b03e988b28f0b96856e0",
+    "tests/test_handoff_context_cli.py": "9184f979096fad3a03d216c7d75aac8a37faa4673b0f3a1ef6ed35bf59762037"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Add load-review-receipt requiring handoff, reviewer label, exact context digest and stored revision. Always open existing ledger read-only; use existing guarded recovery API and private no-overwrite output writer. No archive creation flag, schema or default behavior change.",
+  "checkpoint": {
+    "next": "Independent exact-revision archive/API/CLI recovery review, then owner release review before operational use; authenticated registry/audience acceptance remains unfinished.",
+    "state": "cli_recovery_candidate_checked"
+  },
+  "checks": {
+    "baseline": {
+      "corrected_log_sha256": "f0c9198530959e76217d298fe1a3a56720f08519518e1762c795757f7e35cb74",
+      "corrected_result": "Both new tests fail for missing CLI command before implementation.",
+      "initial_log_sha256": "73915b2c0d0f2ba65a4280435ae4bf7f456ea84e95016e0aa301d1a0c498bc11",
+      "initial_result": "One fixture error used digest from before pause edit; one missing-command failure. Fixed fixture to use saved paused digest."
+    },
+    "diff_check": "passed",
+    "fixtures": "Synthetic private records and local reviewer labels, not authenticated independent review, actual lost process acknowledgement or live-provider recovery.",
+    "focused": {
+      "exit_code": 0,
+      "log_sha256": "5013bb91c50f0954d34b28b1c5038eaf386ae080ea59263c378ea780db675e16",
+      "tests": 2
+    },
+    "full": {
+      "evidence": "reports/r48-full.json",
+      "passed": true,
+      "record_sha256": "c3bb7a72af25b6a499d2089f19b2c88f22860634c00d1f4ade2c28c9e1187562",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 621,
+        "skipped": 0
+      }
+    },
+    "new_regressions": [
+      "Original archived timestamp/receipt recovers in fresh CLI subprocesses, with and without explicit read-only flag; private 0600 output refuses overwrite, metadata excludes context references, paused/unknown outcome and all ledger bytes remain unchanged.",
+      "Version-2 unarchived binding refuses without migration/output; exact old revision refuses after edit/restore and re-review despite identical digest; invalid revision/digest/reviewer, missing required selectors and absent ledger refuse; current archived receipt still succeeds."
+    ],
+    "syntax_final": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "e86c2871a394371664fd0c2de0b315abb44c7356f8e099275fd2b39af1c1d924",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "3473210693adb2cdc772a453887afe021c79b5c2",
+  "limitations": [
+    "Recovery read only; archive creation remains API-only opt-in. No operational owner database was migrated.",
+    "Local labels, unkeyed hashes and recorded timestamps do not authenticate reviewer identity or establish release/retry/dispatch authority.",
+    "No new packet/schema fields, parallel memory store, hosted worker, live platform handoff, lease/failover/reconnect controller or reliability improvement claim.",
+    "No independently reviewed or accepted procedure is established by this developer evidence.",
+    "All 17 portable targets and master business areas retained; seven source PROJECTS remain separate.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/credentials/permissions/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 235,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_candidates": 0,
+    "failed_engineering_check_runs_before_fix": 2,
+    "operational_dispatches": 0,
+    "revision_conflicts_observed": 0
+  },
+  "mission_id": "review-receipt-cli-recovery-20261113",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master receipt 235 and current draft PR #5/comments. Archive API and its CI completed; no active retry. Funding/comedy correctness repairs retained.",
+  "problem": "Archived local context-review receipts can be recovered only through Python API; existing CLI cannot perform this read after restart.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "3390cfaf96c9fe663a9e025ee66803df1bde6ef22c47946e5f1187012eec44f3",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context_cli.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

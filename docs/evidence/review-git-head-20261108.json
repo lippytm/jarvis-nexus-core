@@ -1,0 +1,130 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "6ee749f0cde3882479ffd10da88d7ab79c3c571755dd0378c829e843b6740684",
+    "scripts/jarvis_network.py": "da516affe82f55443b93ddd68dfee8755301b80a699941b2911085442a8d52cd",
+    "tests/test_handoff_context_cli.py": "d0c15e91829d06e54f6e8a9e0ff847e9cdf2a58b53581af80780440707952406"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Optional verify_git_head API and --verify-git-head CLI; root plus HEAD must match before file opens. Git environment overrides removed, optional locks/fsmonitor disabled, two-second timeout. Opt-in v2 report; default v1 report unchanged. Missing Git/timeout/stale/root mismatch fail closed.",
+  "checkpoint": {
+    "completed": "opt-in root/HEAD guard",
+    "next": "Independent evaluator findings bound to source and task; then owner exact-revision review. Authenticated registry/audience acceptance remains unfinished."
+  },
+  "checks": {
+    "actual_git_cli": [
+      {
+        "case": "default",
+        "exit_code": 0
+      },
+      {
+        "case": "matching",
+        "exit_code": 0
+      },
+      {
+        "case": "stale_HEAD",
+        "exit_code": 1,
+        "stderr": "{\"error\": \"Git HEAD or repository root mismatch\", \"external_actions\": 0}"
+      },
+      {
+        "fixture_source_revision": "7f5fb19293e288c03971153690fccf7bcc9aff45",
+        "git_environment_override_ignored": true,
+        "ledger_created": false,
+        "private_output_mode": "0600",
+        "unchanged_receipt": true
+      }
+    ],
+    "baseline": {
+      "log_sha256": "56ebcac4d598fbca38d1fd775d6524ae7b3fb683ffea58b9958a67ec8ac9a43f",
+      "new_test_failed": "missing subprocess integration before implementation"
+    },
+    "diff_check": "passed",
+    "focused": {
+      "exit_code": 0,
+      "log_sha256": "cce9996c6aebef56897a15111d9d97577c38a5db8b44d3dd6bc7a8e01e99299d",
+      "tests": 3
+    },
+    "full": {
+      "evidence": "reports/r42-full.json",
+      "passed": true,
+      "record_sha256": "902b486fdc5262ea399bb2d5c029f0702e87800ed712c67e4ee4b753a0e09b39",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 613,
+        "skipped": 0
+      }
+    },
+    "mocked_regression": [
+      "default invokes no Git and preserves v1 metadata",
+      "matching v2 report differs only in explicit version/verification",
+      "stale HEAD, wrong root, missing repository, missing executable, timeout reject before source opens"
+    ],
+    "verification_corrections": [
+      "Initial manual fixture used --db instead of existing --database; argparse rejected it before inspection; corrected fixture passed. No operational retry or record replacement."
+    ],
+    "web": {
+      "failures": 0,
+      "log_sha256": "893f6fb826649a625dc468e5543eb9f9a9300f6b2d797e0843e163e949074dad",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_checks_passed",
+  "input_revision": "4176da7600a6ef427c716b5b064c0c17402fd61f",
+  "limitations": [
+    "Single local HEAD observation, not a snapshot or concurrent-writer lock.",
+    "Does not verify clean status or unselected files; supplied receipt/task identities remain unauthenticated.",
+    "Git is an optional executable dependency; missing Git refuses optional check; default bytes-only inspection remains usable.",
+    "No new strict packet fields, storage schema migration, memory store, lease, worker, automatic recovery, live connection or delivery.",
+    "All 17 portable targets and 17 business areas retained; seven source PROJECTS distinct.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No main/merge/deployment/publication/messages/spending/permission/credential/schedule change."
+  ],
+  "memory_revision": 225,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_candidates": 0,
+    "failed_operational_dispatches": 0,
+    "reliability_gain": "not claimed",
+    "revision_conflicts_observed": 0
+  },
+  "mission_id": "review-git-head-20261108",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_branch_write"
+  ],
+  "platform": "codex",
+  "problem": "Prepared review-file intake explicitly did not check local Git HEAD; add opt-in local root/HEAD consistency check.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "27e6f4dc31043f5bd2265aa60176132f522844d6ef36cb11b6d1fa8ddd39bdc1",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context_cli.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "development_commit_ci": "master Page final cycle receipt"
+  },
+  "review": "author checks only; no evaluator dispatch or approval",
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

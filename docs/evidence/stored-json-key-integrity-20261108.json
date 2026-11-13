@@ -1,0 +1,107 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "reproduce",
+    "repair_existing_readers",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Reuse the existing network-contract unique-object hook at all six ledger JSON decoding sites: swarm, handoff, return, current context, selected checkpoint and adjacent checkpoint. No schema/packet fields, state or migration added. Regression checks root/nested keys after reopen, transaction cleanup and unchanged invalid database bytes; restoring original rows verifies ordinary records still load.",
+  "checkpoint": {
+    "return_binding": "input source/memory and artifact/check hashes; final commit and CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "includes": "new seven-case restart regression and existing v1 migration preservation test",
+      "log": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.118s\n\nOK\n",
+      "tests": 2
+    },
+    "full_local": {
+      "evidence": "reports/r34-full-20261108.json",
+      "passed": true,
+      "record_sha256": "08db4047e5df9a5f32a9b87c03134e701c71f53ba34a63b9e609987680ae2663",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 602,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.stored-json.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "control_tower/network_contract.py",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/handoff-state-integrity-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "02e66080f8e60e0bb3181854c9839a9b83ec7c56",
+  "limitations": [
+    "Synthetic edited local SQLite records only; no actual corruption incident, authenticated storage/recovery, ACL isolation, live worker/connection/delivery or verified mission completion established. Hashes and strict parsing do not authenticate a writer.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, schema migration, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, publication or spending."
+  ],
+  "memory_revision": 216,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_baseline_assertion_failures": 7,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "synthetic_ambiguous_records": 7,
+    "unexpected_verification_errors": 0
+  },
+  "mission_id": "stored-json-key-integrity-20261108",
+  "observed_problem": "Plain json.loads silently discarded duplicate stored object keys before canonical hashing. Seven synthetic conflicting-key fixtures retained the original parsed value/digest and were accepted. No actual owner record corruption observed.",
+  "patch_sha256": "6d48781333a2d4bb3ac2373bd5ca9d6580a8dcf44a6aa84af5a96b768ae52bdb",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "c8ca4a6f8dfe0cb1d022b05716a2d75048a9964dfd5db99b16a4707a7e8ff9d0",
+  "record_type": "actual_work_receipt",
+  "reproduction": {
+    "errors": 0,
+    "expected_assertion_failures": 7,
+    "log": "FFFFFFF\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='swarms', where=\"id='memory-pilot'\", nested=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='handoffs', where=\"id='mission-one'\", nested=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='returns', where=\"id='result-one'\", nested=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='handoff_contexts', where=\"handoff_id='mission-one'\", nested=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='context_checkpoints', where='revision=2', nested=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='context_checkpoints', where='revision=1', nested=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records (tests.test_handoff_context.ContextTests.test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records) (table='handoff_contexts', where=\"handoff_id='mission-one'\", nested=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 162, in test_duplicate_stored_json_keys_reject_after_restart_without_rewriting_records\n    with self.assertRaisesRegex(ValueError, \"stored\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.056s\n\nFAILED (failures=7)\n"
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "d87d75ca2e7fcec589c327a211a410ba6b3fd9d50fecb32c0a9da9160e4c9f38",
+    "tests/test_handoff_context.py": "96b78dfefeb3d997bb93a8ebaf29d703a9aab3fa7b0ab0963d365e94d6f56cf0"
+  },
+  "verification_logs_sha256": {
+    "reports/r34-focused-20261108.txt": "6745558e6ded2bb2dc402101cac307a4bdf00f16c5255c6cd09c39a4edeea57c",
+    "reports/r34-full-20261108.json": "c4713d2335ca598c9377d6937895515071be2f6f1bd4292a0b13db0ea79842b3",
+    "reports/r34-web-20261108.txt": "0ff94a95ed3f633c9595ed64f21cc22168455828ce31d5cf76606dd4c3fc878c"
+  },
+  "visibility": "owner_private"
+}

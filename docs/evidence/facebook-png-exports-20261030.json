@@ -1,0 +1,200 @@
+{
+  "account_access_verified": false,
+  "channel": "facebook",
+  "costs_measured": false,
+  "export_options": [
+    "--export-area-page",
+    "--export-type=png"
+  ],
+  "exports": [
+    {
+      "alt_text_sha256": "75067529ef2b724b52021ea4b614dc81bb04b1061c4eaa3992a6f58c8385b9d2",
+      "bytes": 106618,
+      "caption_sha256": "13ee2bf1ad0d1d7eeaf48b5c2b5c43811a592a5be474e44fc447e70f13545631",
+      "chunks": [
+        "IHDR",
+        "pHYs",
+        "tEXt",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IEND"
+      ],
+      "dimensions": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "opaque": true,
+      "png": "docs/media/exports/facebook-20261029/slot-1.png",
+      "png_sha256": "f28ab4e911dbeade8315ca1e07f58980fbc0dc4ce6b2d75077472d3409bc5e21",
+      "post_id": "jarvis-media-20261029.facebook.1",
+      "renderer_exit_code": 0,
+      "renderer_note": "Existing first export retained after Software-metadata check correction; no overwrite.",
+      "slot": 1,
+      "source": "docs/media/jarvis-facebook-slot1-20261029.svg",
+      "source_sha256": "b6aeedee1afd9b9cc6a9fa8a6f16651c7df9d69691a1e23ef195062b27e1423d",
+      "text_metadata": [
+        "Software=www.inkscape.org"
+      ],
+      "visual_review": "assistant_full_image_inspection_not_independent_human_review"
+    },
+    {
+      "alt_text_sha256": "d530f6dc977da1834b5dfa096fec98a84ffee2762d9b88c2402c1c3e6d8a939f",
+      "bytes": 106668,
+      "caption_sha256": "fd0dee3f6a5ce275c7fd351bcf54f61c66651f285f71ae5f90ab82a48d12a835",
+      "chunks": [
+        "IHDR",
+        "pHYs",
+        "tEXt",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IEND"
+      ],
+      "dimensions": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "opaque": true,
+      "png": "docs/media/exports/facebook-20261029/slot-2.png",
+      "png_sha256": "2be220794b4ef55711195d7b964acbad56d762603ce77e5c3aba5584bc9142d9",
+      "post_id": "jarvis-media-20261029.facebook.2",
+      "renderer_exit_code": 0,
+      "renderer_note": "** (inkscape:8): WARNING **: 18:40:28.534: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "slot": 2,
+      "source": "docs/media/jarvis-facebook-slot2-20261029.svg",
+      "source_sha256": "5e1fe45a9b87e1ad40496066bdf5129569826411c9fed4c9c850226e8c334fd6",
+      "text_metadata": [
+        "Software=www.inkscape.org"
+      ],
+      "visual_review": "assistant_full_image_inspection_not_independent_human_review"
+    },
+    {
+      "alt_text_sha256": "800103e8acb4bffd24bf9ddf167ab42e88d164a2c28155ff482cc38a8f7dff88",
+      "bytes": 115358,
+      "caption_sha256": "6cb2ce3f056bc01fea23e662cc669adefd868c0f5b9341e23c633acec4742bb7",
+      "chunks": [
+        "IHDR",
+        "pHYs",
+        "tEXt",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IEND"
+      ],
+      "dimensions": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "opaque": true,
+      "png": "docs/media/exports/facebook-20261029/slot-3.png",
+      "png_sha256": "0ab924f3c47d3407b6694881c1d9c6b10773e378937233b3f352ac243ee2f36a",
+      "post_id": "jarvis-media-20261029.facebook.3",
+      "renderer_exit_code": 0,
+      "renderer_note": "** (inkscape:17): WARNING **: 18:40:28.774: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "slot": 3,
+      "source": "docs/media/jarvis-facebook-slot3-20261029.svg",
+      "source_sha256": "35d5694271ebed5006e4a8c60401bb7ebf62aea838fa56aaa4082ff30ed52daf",
+      "text_metadata": [
+        "Software=www.inkscape.org"
+      ],
+      "visual_review": "assistant_full_image_inspection_not_independent_human_review"
+    },
+    {
+      "alt_text_sha256": "7ded6af7a25bf2df23a300a7bb727b347bedeb713daf3b2d2ba4d7b86d2c33f2",
+      "bytes": 125118,
+      "caption_sha256": "179c317be0e1968af7a91ddc469560a753be43d3f65e825601808950866c1abe",
+      "chunks": [
+        "IHDR",
+        "pHYs",
+        "tEXt",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IDAT",
+        "IEND"
+      ],
+      "dimensions": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "opaque": true,
+      "png": "docs/media/exports/facebook-20261029/slot-4.png",
+      "png_sha256": "21b63fd47e5aebe9fa19e1e12fd8f784663923a7de27702bb1283a484940cd68",
+      "post_id": "jarvis-media-20261029.facebook.4",
+      "renderer_exit_code": 0,
+      "renderer_note": "** (inkscape:26): WARNING **: 18:40:29.025: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "slot": 4,
+      "source": "docs/media/jarvis-facebook-slot4-20261029.svg",
+      "source_sha256": "0c6831ec7e1b6538c30b9883d432a54b9a7e21a73c686a2b6dc8401786aeafbe",
+      "text_metadata": [
+        "Software=www.inkscape.org"
+      ],
+      "visual_review": "assistant_full_image_inspection_not_independent_human_review"
+    }
+  ],
+  "guide_sha256": "eeb5ea70396ae6b89a417c00a6cb2b1b384b3885b5e09906af58c9412432154f",
+  "input_revision": "099cae013b7152c082d99e4ce16a58af41576b7a",
+  "mission_id": "jarvis-media-20261029",
+  "platform_acceptance": "not_verified",
+  "preparation_failure": "Initial no-text-metadata assertion rejected standard Software=www.inkscape.org; inspected/allowlisted exact field and resumed without re-export/overwrite of slot 1.",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "f29d8b38a8b8029cf7f42b3a57061a99ad0650f474e26d7be71b6d3c35194135",
+  "renderer": "Inkscape 1.2.2 (b0a8486541, 2022-12-01)",
+  "schema_version": 1,
+  "scope": "local_unpublished_png_export_candidate_checks",
+  "source_art_captions_alt_text_unchanged": true,
+  "source_brief_sha256": "f869d14e447fb8cb5669442bd5068d371cc62f24019b49efc5684513c085c1b9"
+}

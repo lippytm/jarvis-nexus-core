@@ -1,0 +1,97 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_draft_test_documentation",
+    "run_checks",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed; runbook remains proposed procedure",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "One deterministic postcommit acknowledgement-loss regression and two documentation corrections; production code and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory revision and source hashes; final commit/CI retained in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision review; authenticated registry/delivery and audience/access acceptance remain unfinished"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "assertions": [
+        "same interrupt propagated",
+        "commit once then rollback once",
+        "no returned receipt",
+        "no open transaction",
+        "read-only reopen sees durable locally_reviewed state",
+        "paused/outcome_unknown profile unchanged",
+        "independent neighbor unchanged",
+        "export remains blocked",
+        "read-only database bytes unchanged"
+      ],
+      "errors": 0,
+      "failures": 0,
+      "tests": 3
+    },
+    "full": {
+      "record_sha256": "2a86bdb5f85447197cba5d5f22231c0e92d9339d273a9057c2b79fbf227f8f7a",
+      "syntax": {
+        "errors": [],
+        "files_checked": 73
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 562,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.commit-ack-boundary.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "finding": "The context document incorrectly generalized precommit rollback to every interrupted commit. A real SQLite commit followed by an injected KeyboardInterrupt returns no receipt but leaves a durable local review. Existing cleanup cannot undo a completed commit.",
+  "fixture_mechanism": "A delegating connection wrapper performs the real SQLite commit, then raises the same KeyboardInterrupt object. Existing transaction cleanup attempts rollback; no automatic retry. This models the boundary, not an actual owner incident or driver/hardware fault.",
+  "focused_log": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.048s\n\nOK\n",
+  "input_revision": "79c77fe6bcac9331195fe3cd1d2fd823a6deb699",
+  "limitations": [
+    "Synthetic acknowledgement-loss injection around a real local commit; no live provider or actual owner mission execution.",
+    "No receipt archive, original timestamp reconstruction, automatic reconciliation/retry/dispatch controller or authentication.",
+    "Rollback/storage may fail and abrupt process termination cannot run Python cleanup.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only, RoboParty deferred."
+  ],
+  "memory_revision": 175,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "observed_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_interrupt_scenarios": 1,
+    "test_failures": 0
+  },
+  "mission_id": "commit-ack-boundary-20261106",
+  "next_task": "independent exact-revision review of commit-outcome semantics and proposed recovery procedure; preserve original paused mission",
+  "patch_sha256": "6aae82371bec738ac0f716d1aa3fade2d994e3570b41d85bea269a8e4f6a039a",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "79db63f16d1efbcd2851d81925976f2ea1ec3602a414cbbb2ba25a303eb4a2b3",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "42ce7064e7239a6350d575d7f0947dc737a968816b6e819710153f60cc8ca264",
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "846deb24cd33f533b0d24e534667102806472ccedc8447563c81f5bbf97258df",
+    "tests/test_handoff_context.py": "b5e9d9e14107c465f1332f8d4d02a6eef7cda609103491930e7f1cbb899fed1a"
+  },
+  "visibility": "owner_private"
+}

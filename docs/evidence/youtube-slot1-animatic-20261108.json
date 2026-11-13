@@ -1,0 +1,911 @@
+{
+  "approval_state": "candidate_only; independent and owner exact-content/release review pending",
+  "artifact_sha256": {
+    "docs/media/exports/youtube-20261029/slot-1-silent-animatic.mp4": "48ec0444019f09ac9f9b8fc93d010c0560fd8d56a0de748011397faa89e31363",
+    "docs/media/jarvis-youtube-slot1-20261029.md": "944b205334e26bbe7e5af49b9487c8bfd7effc762abb43deada71b32beb2a426",
+    "docs/media/jarvis-youtube-slot1-animatic-20261108.svg": "78859c5928afa7c445e0b77cc24c07c89276e9199c87a560fad94942f3841f17"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "provider_calls": 0,
+    "purchases": 0
+  },
+  "checkpoint": {
+    "next": "Review this exact silent preview with narration/SRT before recording; prepared engineering evaluator handoff remains independently unfinished.",
+    "state": "candidate_prepared",
+    "unfinished": "independent/owner review, authorized recording, retiming and finished production"
+  },
+  "checks": {
+    "all_frames_decode_exit_code": 0,
+    "assistant_visual_inspection": {
+      "contact_sheet": "all twelve decoded cards inspected in one 2 by 6 contact sheet",
+      "decoded_cues": 12,
+      "full_size_source_cues": [
+        1,
+        6,
+        12
+      ],
+      "observed": "no clipping/overlap or changed conceptual fields observed; not device/accessibility acceptance"
+    },
+    "cue_intervals_seconds": [
+      [
+        0,
+        5
+      ],
+      [
+        5,
+        10
+      ],
+      [
+        10,
+        15
+      ],
+      [
+        15,
+        20
+      ],
+      [
+        20,
+        25
+      ],
+      [
+        25,
+        30
+      ],
+      [
+        30,
+        35
+      ],
+      [
+        35,
+        40
+      ],
+      [
+        40,
+        45
+      ],
+      [
+        45,
+        50
+      ],
+      [
+        50,
+        55
+      ],
+      [
+        55,
+        60
+      ]
+    ],
+    "decoded_cue_frames": 12,
+    "exact_panels_retained": 6,
+    "exact_srt_cues_retained": 12,
+    "local_full_suite": "not rerun for media/docs-only change; GitHub CI receipts will be linked separately at the final revision",
+    "mean_absolute_rgb_difference": [
+      1.7315234375,
+      1.7418938078703705,
+      1.7041120515046295,
+      1.5934458188657408,
+      1.6802517361111111,
+      1.6091493055555555,
+      1.7188664641203701,
+      1.6774905960648148,
+      1.8065180121527777,
+      1.7767791521990741,
+      1.7143391927083333,
+      1.672408130787037
+    ],
+    "relevant_behavior": {
+      "command": "python -m unittest tests.test_funding_route_integrity tests.test_organic_marketing tests.test_space_alien_comedy_affiliate",
+      "exit_code": 0,
+      "log_sha256": "246de32d37df1bc3a6799de73f4c03453ddf2449b7fd536e7ee064042aa5a3b7",
+      "skips": 0,
+      "tests": 22
+    },
+    "render": {
+      "encoder_exit_code": 0,
+      "ffmpeg": "7.1.5-0+deb13u1",
+      "inkscape": "Inkscape 1.4 (e7c3feb100, 2024-10-09)",
+      "log_sha256": {
+        "render-01.log": "ca994297576465bc379f705e7d43965082d699ac18fec2f7d8f98dc2d61ceb80",
+        "render-02.log": "80c2f23350f52cd6337e4f29af2b3bae9d29000a17343b878946b5dbe252c411",
+        "render-03.log": "0423cb858120b73a3c2c4515eae0fb0fd81336d8058a865509ad0aa37e0899e1",
+        "render-04.log": "bf84b41afe392c9b498d9836c92284bec718d4950a4abba81037987e080c82bc",
+        "render-05.log": "8b358b504f54f45df449b81db366d00d31f4a8dbdfc730276c205e7ecd1fcda9",
+        "render-06.log": "3b7c25877ce03b6084aa5e208a34cb969c721e08f8d172dc2bc5230321fe8b1f",
+        "render-07.log": "7c628da6206bc0dce6a40a673f473b7a766cc52ed5c7dbc5a24da45000b07f27",
+        "render-08.log": "a390b6abdcd18645a6986d04304a77e966bc67589f86abb3d49b0e12bf1f92a5",
+        "render-09.log": "dd3d3b274e427363667f3fb747e71c4b43aca211019b54ff820f1ed1d1217341",
+        "render-10.log": "956e5fa6b985436db89a03dd184b5f0d0219586a30ec7c4f613879abbaf9dcb4",
+        "render-11.log": "e36e77c071e0d2653fc59af6b1478c7be3d1b43a68f3df97b5e83fccc624eafe",
+        "render-12.log": "969b4c9bd987325c99197d639c466e4a1a9abbff44e53fe8790b1d922b4f54fb"
+      },
+      "pngs": 12,
+      "renderer_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "warning_classes": [
+        "Failed to wrap PangoFT2FontMap",
+        "Failed to wrap GtkRecentManager"
+      ]
+    },
+    "syntax": {
+      "command": "AST parse of git ls-files *.py",
+      "files": 74,
+      "passed": true
+    },
+    "text_bounds_checks": 84,
+    "text_measurements": [
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 1,
+        "left_px": 389.40625,
+        "right_px": 890.59375,
+        "text": "Returning to an AI coding task?",
+        "width_px": 501.1875
+      },
+      {
+        "cue": 1,
+        "left_px": 444.546875,
+        "right_px": 835.453125,
+        "text": "Start with three records:",
+        "width_px": 390.90625
+      },
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 1,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "00\u201305s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 2,
+        "left_px": 314.4921875,
+        "right_px": 965.5078125,
+        "text": "the source revision, the changed artifact",
+        "width_px": 651.015625
+      },
+      {
+        "cue": 2,
+        "left_px": 458.8515625,
+        "right_px": 821.1484375,
+        "text": "and the actual checks.",
+        "width_px": 362.296875
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 2,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "05\u201310s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 3,
+        "left_px": 405.59375,
+        "right_px": 874.40625,
+        "text": "The source revision identifies",
+        "width_px": 468.8125
+      },
+      {
+        "cue": 3,
+        "left_px": 328.3203125,
+        "right_px": 951.6796875,
+        "text": "the starting code. Keep it with the task",
+        "width_px": 623.359375
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 3,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "10\u201315s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 4,
+        "left_px": 393.1640625,
+        "right_px": 886.8359375,
+        "text": "so the next person can inspect",
+        "width_px": 493.671875
+      },
+      {
+        "cue": 4,
+        "left_px": 447.015625,
+        "right_px": 832.984375,
+        "text": "the same starting point.",
+        "width_px": 385.96875
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 4,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "15\u201320s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 5,
+        "left_px": 312.8359375,
+        "right_px": 967.1640625,
+        "text": "The artifact shows the proposed change.",
+        "width_px": 654.328125
+      },
+      {
+        "cue": 5,
+        "left_px": 360.8359375,
+        "right_px": 919.1640625,
+        "text": "If its content changes after review,",
+        "width_px": 558.328125
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 5,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "20\u201325s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 6,
+        "left_px": 467.3515625,
+        "right_px": 812.6484375,
+        "text": "ask for a fresh review",
+        "width_px": 345.296875
+      },
+      {
+        "cue": 6,
+        "left_px": 469.234375,
+        "right_px": 810.765625,
+        "text": "of that exact version.",
+        "width_px": 341.53125
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 6,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "25\u201330s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 7,
+        "left_px": 357.109375,
+        "right_px": 922.890625,
+        "text": "The check receipt records what ran",
+        "width_px": 565.78125
+      },
+      {
+        "cue": 7,
+        "left_px": 368.125,
+        "right_px": 911.875,
+        "text": "and where. Keep failed or blocked",
+        "width_px": 543.75
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 7,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "30\u201335s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 8,
+        "left_px": 325.859375,
+        "right_px": 954.140625,
+        "text": "checks visible, with the unfinished task",
+        "width_px": 628.28125
+      },
+      {
+        "cue": 8,
+        "left_px": 487.9375,
+        "right_px": 792.0625,
+        "text": "and its checkpoint.",
+        "width_px": 304.125
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 8,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "35\u201340s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 9,
+        "left_px": 312.0,
+        "right_px": 968.0,
+        "text": "These records support a review decision.",
+        "width_px": 656.0
+      },
+      {
+        "cue": 9,
+        "left_px": 324.9296875,
+        "right_px": 955.0703125,
+        "text": "A deployed service, connected account",
+        "width_px": 630.140625
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 9,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "40\u201345s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 10,
+        "left_px": 418.0390625,
+        "right_px": 861.9609375,
+        "text": "or delivered post still needs",
+        "width_px": 443.921875
+      },
+      {
+        "cue": 10,
+        "left_px": 353.8359375,
+        "right_px": 926.1640625,
+        "text": "its own evidence and authorization.",
+        "width_px": 572.328125
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 10,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "45\u201350s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 11,
+        "left_px": 305.6953125,
+        "right_px": 974.3046875,
+        "text": "Before your next handoff, name one task,",
+        "width_px": 668.609375
+      },
+      {
+        "cue": 11,
+        "left_px": 456.2421875,
+        "right_px": 823.7578125,
+        "text": "pin its starting revision",
+        "width_px": 367.515625
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 11,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "50\u201355s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 913.625,
+        "text": "Three records for a reviewable Jarvis task",
+        "width_px": 849.625
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 799.21875,
+        "text": "Conceptual placeholders \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 735.21875
+      },
+      {
+        "cue": 12,
+        "left_px": 406.8828125,
+        "right_px": 873.1171875,
+        "text": "and keep the artifact, checks",
+        "width_px": 466.234375
+      },
+      {
+        "cue": 12,
+        "left_px": 411.21875,
+        "right_px": 868.78125,
+        "text": "and remaining gap together.",
+        "width_px": 457.5625
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 12,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "55\u201360s",
+        "width_px": 78.46875
+      }
+    ],
+    "unchanged_input_sha256": {
+      "docs/media/jarvis-youtube-slot1-20261029.srt": "1eda61ef8c057e29cbc737dd0de2926cf8a5285cf6f55b3de0632a1215ef9732",
+      "docs/media/jarvis-youtube-slot1-storyboard-20261104.svg": "7605ad86597962b12e6fab7add5ee1a04a6094bc1f0819f94276ccc4e943bb3c",
+      "docs/media/jarvis-youtube-slot1-thumbnail-20261105.svg": "358cff07ac82a9eb002fd038e94f24d705f018313c08fb655b8cc7cbf0a21f2c",
+      "examples/portfolio/jarvis-daily-media-20261029.json": "85198c4457dcffd5ff028d8009e5bc2562b974bd0295891f9bbf2b083214fccd"
+    },
+    "verification_correction": {
+      "cause": "panel XML comparison included group tail separator whitespace: newline versus two newlines",
+      "initial_failed_assertions": 1,
+      "render_retries": 0,
+      "resolution": "normalize only the two group tail separators to None; all six exact element contents/attributes then match except explicit group id/placement adaptation",
+      "unchanged_outputs": true
+    },
+    "video": {
+      "format": {
+        "bit_rate": "57654",
+        "duration": "60.000000",
+        "filename": "docs/media/exports/youtube-20261029/slot-1-silent-animatic.mp4",
+        "format_long_name": "QuickTime / MOV",
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "nb_programs": 0,
+        "nb_stream_groups": 0,
+        "nb_streams": 1,
+        "probe_score": 100,
+        "size": "432407",
+        "start_time": "0.000000",
+        "tags": {
+          "compatible_brands": "isomiso2avc1mp41",
+          "encoder": "Lavf61.7.103",
+          "major_brand": "isom",
+          "minor_version": "512",
+          "title": "Slot 1 silent timing animatic - unpublished review"
+        }
+      },
+      "streams": [
+        {
+          "avg_frame_rate": "24/1",
+          "bit_rate": "55226",
+          "bits_per_raw_sample": "8",
+          "chroma_location": "left",
+          "closed_captions": 0,
+          "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+          "codec_name": "h264",
+          "codec_tag": "0x31637661",
+          "codec_tag_string": "avc1",
+          "codec_type": "video",
+          "coded_height": 720,
+          "coded_width": 1280,
+          "display_aspect_ratio": "16:9",
+          "disposition": {
+            "attached_pic": 0,
+            "captions": 0,
+            "clean_effects": 0,
+            "comment": 0,
+            "default": 1,
+            "dependent": 0,
+            "descriptions": 0,
+            "dub": 0,
+            "forced": 0,
+            "hearing_impaired": 0,
+            "karaoke": 0,
+            "lyrics": 0,
+            "metadata": 0,
+            "multilayer": 0,
+            "non_diegetic": 0,
+            "original": 0,
+            "still_image": 0,
+            "timed_thumbnails": 0,
+            "visual_impaired": 0
+          },
+          "duration": "60.000000",
+          "duration_ts": 737280,
+          "extradata_size": 47,
+          "field_order": "progressive",
+          "film_grain": 0,
+          "has_b_frames": 2,
+          "height": 720,
+          "id": "0x1",
+          "index": 0,
+          "is_avc": "true",
+          "level": 31,
+          "nal_length_size": "4",
+          "nb_frames": "1440",
+          "pix_fmt": "yuv420p",
+          "profile": "High",
+          "r_frame_rate": "24/1",
+          "refs": 1,
+          "sample_aspect_ratio": "1:1",
+          "start_pts": 0,
+          "start_time": "0.000000",
+          "tags": {
+            "encoder": "Lavc61.19.101 libx264",
+            "handler_name": "VideoHandler",
+            "language": "und",
+            "vendor_id": "[0][0][0][0]"
+          },
+          "time_base": "1/12288",
+          "width": 1280
+        }
+      ]
+    },
+    "xml_internal_resources_passed": true
+  },
+  "configuration_version": "codex.media-animatic.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md at input revision",
+    "master Page sequence 224 shared Hermes/Fabric/MemPalace requirement and prior cycle receipt",
+    "docs/media/jarvis-youtube-slot1-20261029.md",
+    "docs/media/jarvis-youtube-slot1-20261029.srt",
+    "docs/media/jarvis-youtube-slot1-storyboard-20261104.svg"
+  ],
+  "destination": "unassigned",
+  "evidence_class": "actual local SVG render, video encode/decode and checks; no platform upload/acceptance/delivery evidence",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "observed_stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n",
+    "target": "codex"
+  },
+  "execution_state": "local_render_and_checks_completed",
+  "goal": "Produce one inspectable silent timing animatic from the existing slot-1 storyboard and exact proposed SRT cues.",
+  "input_revision": "417abfb554a9288de8789db6e29e10e42e34ed45",
+  "limitations": [
+    "Silent animatic, not a narrated or finished video or published post.",
+    "Proposed SRT timing is not verified against a recording.",
+    "No rights, channel/destination, target-device accessibility or platform acceptance established.",
+    "No live-provider handoff, authentication, shared runtime, worker, lease, automatic restart/failover or deployment established.",
+    "No schema/store migration; strict packets and existing common profile unchanged.",
+    "All 17 portable targets and master business areas retained; seven source PROJECTS remain a distinct inventory.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No permission/credential/public access change, publication, messages, spending, merge, deployment or schedule change."
+  ],
+  "memory_revision": 224,
+  "memory_source": "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32",
+  "metrics": {
+    "blocked_mission": "recording/finished-video/release acceptance unfinished",
+    "costs_recovery_time_review_effort": "unmeasured; no reliability improvement inferred",
+    "duplicate_candidates": 0,
+    "encoding_failures": 0,
+    "mission_completed": "one silent timing candidate",
+    "render_retries": 0,
+    "revision_conflicts_before_preparation": 0,
+    "verification_attempt_corrections": 1
+  },
+  "mission_id": "jarvis-media-20261029",
+  "permitted_actions": [
+    "prepare_draft",
+    "local_render",
+    "verify",
+    "authorized_development_branch_write"
+  ],
+  "platform": "youtube",
+  "prior_work": "Latest receipt 417abfb5 complete, no active run. Funding-route/comedy correctness already repaired; 22 relevant regressions rerun. Prepared independent evaluator handoff still awaits findings; no evaluator dispatch repeated. No previous slot-1 animatic found among tracked media paths.",
+  "project_id": "ai-jarvis",
+  "record_kind": "actual_work_receipt",
+  "record_sha256": "c61b9e249946e2c44496b021ddb6c9950fec9a76e08b1f26637d46097d0338da",
+  "render_recipe": "docs/media/jarvis-youtube-slot1-20261029.md#slot-1-silent-timing-animatic",
+  "return_binding": {
+    "artifacts": [
+      "docs/media/jarvis-youtube-slot1-20261029.md",
+      "docs/media/jarvis-youtube-slot1-animatic-20261108.svg",
+      "docs/media/exports/youtube-20261029/slot-1-silent-animatic.mp4"
+    ],
+    "development_commit_and_ci": "recorded in guarded master Page cycle receipt after authorized branch write",
+    "evidence": "docs/evidence/youtube-slot1-animatic-20261108.json"
+  },
+  "schema_version": 1,
+  "visibility": "private_work_receipt; creative artifact is a proposed public candidate, unpublished"
+}

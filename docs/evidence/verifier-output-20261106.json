@@ -1,0 +1,114 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_draft_diagnostics_fix",
+    "test",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "Redirect Python stdout/stderr during discovery and test execution into the existing text-report stream. Keep summary/report schemas, failure counts, exit codes and demo gating unchanged. One regression exercises noisy discovery, stdout/stderr, success/failure, checksum and complete log retention.",
+  "checkpoint": {
+    "return_binding": "input source/memory revision and source hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent diagnostics review; authenticated registry/delivery and audience/access acceptance remain unfinished"
+  },
+  "checks": {
+    "baseline": {
+      "exit_code": 1,
+      "reason": "JSONDecodeError for noisy success/failure fixture summaries",
+      "subtest_errors": 2,
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "tests": 1
+    },
+    "full": {
+      "expected_diagnostic_in_text_report": true,
+      "record_sha256": "f1c9f2abfc92dcbea58ef8463cfd0c95682a428898ef6fa4468fe2475b189d9c",
+      "stderr_bytes": 0,
+      "stdout_summary": {
+        "evidence": "reports/verifier-output-full-20261106.json",
+        "passed": true,
+        "record_sha256": "f1c9f2abfc92dcbea58ef8463cfd0c95682a428898ef6fa4468fe2475b189d9c",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 566,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 566,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.verifier-output.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "input_revision": "1c207e1f4f585eae83a712b1197dd917eb610a45",
+  "limitations": [
+    "Captures Python streams during discovery/tests only, not OS file descriptors or inherited subprocess/native output. No log redaction or new isolation boundary.",
+    "Fixture failure is intentional; no actual owner mission failure/provider outage inferred.",
+    "No queue/profile schema change, authentication, worker/retry/failover/reconnect controller or live delivery.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/verifier-output-baseline-20261106.txt": {
+      "sha256": "f47e9b9abe79356990591befcd4cb1d2e8377159aba2c9555c0c2137c989525c",
+      "text": "EE\n======================================================================\nERROR: test_noisy_success_and_failure_keep_json_summary_and_complete_log (tests.test_verifier_output.VerifierOutputTests.test_noisy_success_and_failure_keep_json_summary_and_complete_log) (failing=False)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 40, in test_noisy_success_and_failure_keep_json_summary_and_complete_log\n    summary = json.loads(stdout.getvalue())\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 356, in raw_decode\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\njson.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n\n======================================================================\nERROR: test_noisy_success_and_failure_keep_json_summary_and_complete_log (tests.test_verifier_output.VerifierOutputTests.test_noisy_success_and_failure_keep_json_summary_and_complete_log) (failing=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 40, in test_noisy_success_and_failure_keep_json_summary_and_complete_log\n    summary = json.loads(stdout.getvalue())\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 356, in raw_decode\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\njson.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n\n----------------------------------------------------------------------\nRan 1 test in 0.012s\n\nFAILED (errors=2)\n"
+    },
+    "reports/verifier-output-focused-20261106.txt": {
+      "sha256": "a9737d36e97e253c4c5c8c2c01ccfbe550909d17b13e2615aff5689762cb559b",
+      "text": ".\n----------------------------------------------------------------------\nRan 1 test in 0.013s\n\nOK\n"
+    }
+  },
+  "memory_revision": 180,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_revision_conflicts": 0,
+    "production_verification_failures": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "verifier-output-20261106",
+  "next_task": "independent exact-revision diagnostics-output review; do not duplicate this repair",
+  "platform": "codex",
+  "problem": "Python stdout prints during discovery or tests contaminate the verifier JSON summary; stderr diagnostic prints also bypass the retained text report. A deterministic noisy suite reproduced JSONDecodeError on success and failure paths.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "df3f648aa0a1c54df79b919c272b706ede58650b822f0d8bee9ebfce161beb2d",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "scripts/verify_control_tower.py": "be7592f9d37184d570748b796548720ed6db844a07784754fd990f45f8122c4c",
+    "tests/test_verifier_output.py": "2f829b2fbe2d0acdfad9505fcf32a97643b8742fdd5ed31e8b658040145c9d71"
+  },
+  "tracked_patch_sha256": "b006992e3cc9aca6099e3908ee9dbcf4dee88bb1d6fcc1f1c56f725c906b7c4e",
+  "visibility": "owner_private"
+}

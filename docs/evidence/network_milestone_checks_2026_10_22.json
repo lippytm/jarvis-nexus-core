@@ -1,0 +1,58 @@
+{
+  "recorded_at": "2026-10-22T21:11:11.086286+00:00",
+  "scope": "Final local integration verification of frozen source; no browser or live account tests.",
+  "python_command": "python3 scripts/verify_control_tower.py --out docs/evidence/network_milestone_2026_10_22.json",
+  "python_exit_code": 0,
+  "python_syntax_files": 34,
+  "python_tests": {
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "run": 121,
+    "skipped": 0
+  },
+  "python_evidence_record_sha256": "d837fbd1829b626843ffe056620680baa555e731e461921de16218aaf01cf3a3",
+  "node_ci_command": "node --test --test-reporter=tap tests/test_composer.mjs > reports/composer-tests.txt 2>&1",
+  "node_ci_exit_code": 0,
+  "node_ci_reporting_scope": "one test-file wrapper in this runtime",
+  "node_case_command": "node tests/test_composer.mjs",
+  "node_case_exit_code": 0,
+  "node_individual_cases_passed": 34,
+  "frozen_source_hashes_rechecked": 37,
+  "synthetic_network": {
+    "inactive_assistant_specifications": 35,
+    "projects": 7,
+    "targets": 12,
+    "model_calls": 0,
+    "external_actions": 0,
+    "external_agents_started": 0,
+    "returned_content_state": "returned_unverified"
+  },
+  "guarded_demo": {
+    "same_normalized_result_as_recorded_demo": true,
+    "comparison_note": "Python route destination tuples were normalized to JSON lists before comparison. The first strict Python/JSON representation comparison differed only on these types; no source change was required.",
+    "blocked_boundaries": [
+      "socket.create_connection",
+      "socket.socket.connect",
+      "socket.socket.connect_ex",
+      "urllib.request.urlopen",
+      "subprocess.Popen"
+    ],
+    "attempted_operations": 0,
+    "scope": "The complete synthetic demo completed with these operations replaced by fail-fast guards; this is offline boundary verification, not live integration verification."
+  },
+  "files": [
+    {
+      "path": "docs/evidence/network_milestone_2026_10_22.json",
+      "sha256": "66ee74380a7047097fc793d09d6b3869cd9c9a21b8feca294b01b3ccd8a317d2"
+    },
+    {
+      "path": "docs/evidence/network_milestone_2026_10_22.txt",
+      "sha256": "b026b7b0beae1fb3bd2fe9201d189f5d63b7562d65fbf5ad6e297f51adde8bfd"
+    },
+    {
+      "path": "docs/evidence/network_milestone_node_2026_10_22.txt",
+      "sha256": "01680d2a0353957456cd664b3641975d194e68f51746d2d40a64b2826b1c9850"
+    }
+  ]
+}

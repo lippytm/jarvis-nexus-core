@@ -1,0 +1,144 @@
+{
+  "acceptance_observations": [
+    "Each target cancels at selected revision 1, producing revision 2/memory 2 with no dispatch/retry authority.",
+    "Stale revision 1 rejects despite fresh digest/memory, current duplicate stays at revision 2, cancelled-to-paused edit rejects. All logical rows/schema remain unchanged by those attempts.",
+    "Read-only restart retains every independent profile including destination, handoff and mission identity, unknown outcome, checkpoint, budgets and proposed review. Database bytes unchanged during restart reads."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_portable_cancellation_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add one regression for exact-revision terminal cancellation across all seventeen portable target IDs. Production source and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent cancellation/portability review and authenticated registry/delivery acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_guarded_cancellation_retains_all_portable_targets_after_restart",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 1
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/portable-cancel-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/portable-cancel-full-20261106.json",
+        "passed": true,
+        "record_sha256": "9c1aed5d30a85f3fefbd238b1546cbf847cf078fbd0cac293a063f85ce35f2b7",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 572,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 572,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.portable-cancel.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/control-revision-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "f697da8fc8dfd534876e02117d4e138cdb8c2fd7",
+  "limitations": [
+    "Synthetic temporary records are not seventeen live agents, authenticated connections or actual platform delivery. Original owner mission untouched.",
+    "No baseline production defect asserted; coverage of existing implementation only.",
+    "No schema, live worker, retry/failover/reconnect controller added. All 17 business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/portable-cancel-focused-20261106.txt": {
+      "sha256": "adb749034da7ea4867dbc677d30ebf9c3f7c4c058f335dd637edff2be89c1361",
+      "text": ".\n----------------------------------------------------------------------\nRan 1 test in 0.373s\n\nOK\n"
+    }
+  },
+  "memory_revision": 186,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_duplicate_cancellations": 17,
+    "synthetic_stale_revision_rejections": 17,
+    "synthetic_target_records": 17,
+    "synthetic_terminal_resume_rejections": 17
+  },
+  "mission_id": "portable-cancel-20261106",
+  "next_task": "Independent exact-revision cancellation/portability review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "93b4908e9b4bf40bfef48503defa51b28e93a4498d7d66e2f05b6cdada35d3be",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context_cli.py": "487160136e4de02c51b03c43e3e4101c00ae680948b13537c64a1d11ca107a9b"
+  },
+  "target_ids": [
+    "chatgpt",
+    "claude",
+    "claude-cowork",
+    "codex",
+    "facebook",
+    "gemini",
+    "github",
+    "hostinger",
+    "instagram",
+    "linkedin",
+    "openai",
+    "perplexity",
+    "slack",
+    "substack",
+    "threads",
+    "youtube",
+    "zapier"
+  ],
+  "tracked_patch_sha256": "9c7e81a8b7977dcb76fcfac63f18dd46db254077ca02b3082eae70319ca35b68",
+  "visibility": "owner_private"
+}

@@ -1,0 +1,51 @@
+{
+  "asset_id": "codex",
+  "baseline": {
+    "assertion_failures": 7,
+    "cases": [
+      "memory revision regression",
+      "attempt regression",
+      "mismatched neighbor digest"
+    ],
+    "log_sha256": "ab4966ed202f4ef81f27e238fa55743868faaaeb3bf9406f3cbf6f27616121ae",
+    "new_methods": 1
+  },
+  "checks": {
+    "focused_regression": "1 method passed; 3 rejected captures preserve all five table snapshots, independent/current records and transaction closure; restored history permits new/duplicate capture and read-only restart",
+    "local_verifier_record_sha256": "08ac1a36140332ca5da6612f889e882da6a8477d2bb9f686ba9989a3f5007333",
+    "python_tests": 529,
+    "syntax_files": 73,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "compatibility": "No packet, receipt or schema change; no history repair; at most two indexed neighbor reads per validation.",
+  "configuration_version": "codex.engineering-review.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "evidence_class": "local synthetic regression and actual codex execution; no installed service or reliability improvement measured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "0521719ae69f648b5d6211cb4b1f43ab1ec4665a",
+  "memory_source": "master Page sequence 135",
+  "mission_id": "checkpoint-capture-integrity-20261104",
+  "next_task": "Exact-revision independent review; preserve original paused checkpoint and proposed registry; no automatic retry or dispatch.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "draft development on feature/control-tower-foundation-20261021; no merge or dispatch",
+  "problem": "New retained checkpoint captures skipped the validator used for duplicate captures and reads.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "5fc82de7161dd373bad7ca6eb5a7c510f86a6281f42ed5fe1ddf582d11b019c6",
+  "registry_acceptance": "unchanged_pending",
+  "repair": "Run existing bounded checkpoint validation for both new and duplicate captures inside the same transaction; invalid adjacent history rolls back new insertion.",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "cffebfd5deca61eb4ae86b98711ecd19610603ce0ff02146f6ceccc933f56eec",
+    "tests/test_handoff_context.py": "1e5063062f67df16628b0b4e653ffa502e32f7ff61106970437ea48430d0254c"
+  }
+}

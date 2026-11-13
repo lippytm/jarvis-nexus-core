@@ -1,0 +1,57 @@
+{
+  "authentication_live_dispatch": "not_established",
+  "boundedness": "One child, 5-second readiness timeout, 10-second completion timeout, 5-second cleanup timeout and kill/communicate cleanup. No supervisor, lease, failover or restart controller. Windows skips this POSIX pipe-readiness test.",
+  "change": "One POSIX pipe-barrier regression starts an actual second Python process before checkpoint transaction commit, observes its BEGIN IMMEDIATE request, then commits capture and checks schema 3, original checkpoint and paused/unknown current profile after reopen.",
+  "checks": {
+    "focused_passed": true,
+    "focused_tests": 1,
+    "local_python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "run": 524,
+      "skipped": 0
+    },
+    "mutation": "Deliberate schema-version read before lock: new test failed once, child rejected unsupported/unrelated ledger. Not a failure on current production source.",
+    "mutation_exit_code": 1,
+    "mutation_log_sha256": "92ed8ae04b510f877c9d7411499cf7176cc83dd37d5651a6f3a56f744612953f",
+    "production_source_restored_exactly": true,
+    "syntax_files": 73,
+    "verifier_record_sha256": "4f00a020007902f46480df7400b2412d892d49e971cec4663035d0e6e620a296",
+    "web_failures": 0,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.engineering-test.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "47615c94128f89afedd7c6891ad6f01ac5c6c123",
+  "limitations": "Synthetic temporary ledgers and a local Python subprocess only; no timing, scheduler fairness, throughput, live connection or recovery reliability claim.",
+  "memory_source": "master Page sequence 130",
+  "mission_id": "checkpoint-process-open-20261104",
+  "next_task": "Exact-revision independent review; preserve one registry proposal until owner acceptance and audience/access-policy verification allow operational adapter work.",
+  "observed_gap": "Existing schema-upgrade regressions controlled same-process interleavings; no separate-process opener during uncommitted capture was covered. The production lock fix already exists.",
+  "original_paused_checkpoint_changed": false,
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "production_or_storage_schema_change": false,
+  "project_id": "ai-jarvis",
+  "record_sha256": "ba315d2ed99c06843833e2b4e8b42fa3c74b9b3b342f3e24fa0915f696fd1f0e",
+  "registry_accepted": false,
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_real_process_schema_upgrade_regression",
+  "source_sha256": {
+    "control_tower/handoffs.py": "85fc314456e189114673bdfc0477a2e755f55aa01c84b3e0fecac7ce9bf58ca7",
+    "tests/test_handoff_context.py": "d493024b9bebf136e8e21b4dc3a4fdcd98cc32361138597cb540bafe6f552e5b"
+  }
+}

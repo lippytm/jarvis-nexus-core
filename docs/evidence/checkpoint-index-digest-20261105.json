@@ -1,0 +1,74 @@
+{
+  "asset_id": "codex",
+  "change": "Opt-in version-2 checkpoint index digest plus exact expected-digest rejection; default version-1 index, database schemas and strict v1 packets unchanged.",
+  "checks": {
+    "focused": "2 tests passed in 0.632s",
+    "full": {
+      "record_sha256": "d01c672418f6024c8068aa7bc0d7e4b7954ca6679a94692bfd1a2dfbbab1cd2f",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 539,
+        "skipped": 0
+      }
+    },
+    "new_methods": 2,
+    "sensitivity": "Isolated copy without new stale guard: 2 expected failures, zero errors; repository untouched",
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.checkpoint-index.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "163dc0809560b8309d4bd11f627b2224be2b7431",
+  "limitations": [
+    "Synthetic local recovery/CLI fixtures, not authenticated storage or live delivery",
+    "Digest covers listed history only; current context edits without capture and review changes are excluded",
+    "A matching read snapshot is not a lease or future release gate",
+    "Original paused mission/receipts unchanged; historical timeout remains separate"
+  ],
+  "logs_sha256": {
+    "checkpoint-index-digest-focused-20261105.txt": "d44de5461822dd620a001e90053c22127ded62d4ca21ffd2328b5b32baaa2472",
+    "checkpoint-index-digest-full-20261105.txt": "b1ba86816f0893f3b6972d0b22024b72933be98ed0d6dda40d77cb59225ce438",
+    "checkpoint-index-digest-mutant-20261105.txt": "57390dde5b7d4c34c15beb3867af6eab728a0201004126995e6d2393b437695e",
+    "checkpoint-index-digest-web-20261105.txt": "709e4a3e92dbc5702cf0dace4238bd4ed216acf41104fa6fd11a03ba86699202"
+  },
+  "memory_source": "master Page sequence 156",
+  "mission_id": "checkpoint-index-digest-20261105",
+  "next_task": "Exact-revision independent review; authenticated registry acceptance and audience/access policy remain pending; do not repeat this implementation.",
+  "observed_gap": "Checkpoint indexes had private selective retrieval but no expected-digest guard for changed history before output publication.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft-only implementation, CLI, tests, profile documentation and evidence on named branch",
+  "project_id": "ai-jarvis",
+  "record_sha256": "4254eda53da49e9d59cef0fce2bbec2404b76cb2c8ae0d29c763ff72d80519df",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/handoffs.py": "09156469b370d8d5c2509c5969dfe58d5fa0ab459ff4d5655cfe4ac7dd83bf3a",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "e09f5e46210d8f096b5e15ba8d13977e8d9bf1f8faf9efd1852bd909b623c995",
+    "scripts/jarvis_network.py": "9b0cff63e90ed7b869a98b2c4e0a68547cfae80f54743774c14387e249a02ee4",
+    "tests/test_handoff_context.py": "69782abbec2dff055d4c930ac527605919dffe2b3d5315e006446a637faf8a9e",
+    "tests/test_handoff_context_cli.py": "9768653fb12827723dc6dcb0cc75c3caafd9e91917c54aaf25e1b3b27595a773"
+  },
+  "source_before_sha256": {
+    "control_tower/handoffs.py": "db5d70ccfbaa7b75455d414fb78d9e6224e0629a9ab015bf76aac8a2419b6a04",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "6b6be3d486ee2ddd5576f4bc8cea9d433ac08416668275024c778993c198241d",
+    "scripts/jarvis_network.py": "91ab6552a5dde71305550cb879b45e633f86a0f676300874809bd906dc156221",
+    "tests/test_handoff_context.py": "06fcf203afec12c43adb8ef22075a9f5114b518c1e7c853839604491391cca33",
+    "tests/test_handoff_context_cli.py": "ce23c76cdb4fa763796cfcf6302e2fd9b5c0032bcfbdbe057619f6e2ec909cf6"
+  }
+}

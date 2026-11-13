@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic checkpoint sentences A and B: a proposed exercise</title>
+  <desc id="desc">Two original synthetic cards differ in one sentence: Save draft A becomes Save draft B. Version A is assumed reviewed only for the exercise. The changed B sentence is underlined and labelled Edited checkpoint note. Proposed exercise; no new run reported. Review is pending and destination unassigned. No private record, live account, authenticated reviewer or release approval is depicted.</desc>
+  <rect width="1400" height="1000" fill="#101d2c"/>
+  <g font-family="DejaVu Sans" fill="#f5f8fc">
+    <text x="64" y="84" font-size="40" font-weight="bold">ONE SENTENCE. A NEW REVIEW.</text>
+    <text x="64" y="138" font-size="26" fill="#a9e0df">SYNTHETIC A/B NOTES • UNPUBLISHED NOTE</text>
+    <text x="64" y="208" font-size="28">Proposed exercise; no new run reported.</text>
+    <rect x="64" y="268" width="616" height="340" rx="16" fill="#20354c"/>
+    <text x="96" y="326" font-size="30" font-weight="bold">Version A</text>
+    <text x="96" y="398" font-size="26">Checkpoint note:</text>
+    <text x="96" y="460" font-size="32" font-weight="bold">Save draft A.</text>
+    <text x="96" y="556" font-size="24" fill="#b8d9e8">Assume A reviewed for this exercise.</text>
+    <rect x="720" y="268" width="616" height="340" rx="16" fill="#20354c"/>
+    <text x="752" y="326" font-size="30" font-weight="bold">Version B</text>
+    <text x="752" y="398" font-size="26">Checkpoint note:</text>
+    <text x="752" y="460" font-size="32" font-weight="bold">Save draft B.</text>
+    <line x1="752" y1="476" x2="1000" y2="476" stroke="#f5f8fc" stroke-width="3"/>
+    <text x="752" y="556" font-size="24" fill="#b8d9e8">Edited checkpoint note</text>
+    <text x="64" y="694" font-size="28">Proposed check: retain B after reopening.</text>
+    <text x="64" y="746" font-size="28">Require a fresh context review.</text>
+    <text x="64" y="808" font-size="28" font-weight="bold">Review pending</text>
+    <text x="64" y="862" font-size="24" fill="#b8d9e8">Destination: unassigned</text>
+    <text x="64" y="912" font-size="24" fill="#b8d9e8">Local labels do not authenticate a reviewer.</text>
+    <text x="64" y="962" font-size="24" fill="#b8d9e8">No private record, live account or release approval depicted.</text>
+  </g>
+</svg>

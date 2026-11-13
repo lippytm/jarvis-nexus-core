@@ -1,0 +1,109 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "control_tower/handoffs.py": "c390a8d4563e2c122e497caadae7f38ccaac92d8b1d51c6a3bdd02869754cbf9",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bb85e4db8dde4bb18d4dd035b5e737a1d254840705782d97880dbc89027e0315",
+    "scripts/jarvis_network.py": "de28900bedde95426cac9bf52c4c6cb4988eefcb60a4e43117ffec7ccfe77ba2",
+    "tests/test_handoff_context.py": "f7cafe786cc33039427fcb274d7c012a4946bf200f78bc51e7b41d8dd5e5c6d8",
+    "tests/test_handoff_context_cli.py": "aab42a497e240016a4128542afc7c53ab35f4d3944042203fb2b89b1ea7b2280"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Optional destination_id / --destination requires platform scope; explicit version-5 separate report with intersected project/platform/destination/mission counts and digest. Default None preserves v1-v4 reports. Existing validation precedes filtering; no database or strict packet migration.",
+  "checkpoint": {
+    "next": "Independent source/task-bound evaluation and owner exact-revision review; authenticated registry/audience acceptance remains unfinished.",
+    "state": "candidate_built_and_checked"
+  },
+  "checks": {
+    "baseline": {
+      "expected_failure": "TypeError: queue_report unexpected destination_id keyword",
+      "log_sha256": "e1e435bc576bd7666ad3dd66296ce496b3b8348bade8c3719b0d7236a1e1bcc1"
+    },
+    "diff_check": "passed",
+    "focused": {
+      "exit_code": 0,
+      "log_sha256": "5ba5a02ebc7053cba2faca970d61d791e9f5703e3a0f1337c420a93b51018c56",
+      "tests": 3
+    },
+    "full": {
+      "evidence": "reports/r44-full.json",
+      "passed": true,
+      "record_sha256": "eed4aa1c0430b32d8e80235a44d2faec5b4cc5cf20424e1aa68ec18f7341d9c7",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 615,
+        "skipped": 0
+      }
+    },
+    "new_regressions": [
+      "All seventeen portable targets accept destination selection; matching/empty intersections and v1-v4 default None reports retained.",
+      "Paused/outcome_unknown selection is distinct from cancelled neighboring destination; valid neighbor edits preserve selection digest through read-only restart and unchanged database bytes.",
+      "Changed destination/absent destination with old pin rejects; invalid/missing platform scope refuses.",
+      "Actual CLI blocked-state/private 0600 output, exact snapshot pin, missing platform and changed destination refusal without error output; original ledger bytes unchanged."
+    ],
+    "web": {
+      "failures": 0,
+      "log_sha256": "c55f8d4aeb49f256ffbcd88422781231f69ee9f5a215a81ae63153aa07da1c6b",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_checks_passed",
+  "input_revision": "e2f2c253364bcded10e85162fb4014f9e48b257c",
+  "limitations": [
+    "Synthetic local fixtures; not authenticated accounts/destinations, live mission execution, delivery or independent review.",
+    "Owner-private report selection does not grant ACL isolation or public publishing access.",
+    "No changes to holds/reviews/attempts, credentials/permissions, leases/workers/failover/storage schemas or strict packets.",
+    "No completion or reliability gain inferred from metadata counts or tests.",
+    "All 17 portable targets and business areas retained; seven source PROJECTS remain separate.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No main/merge/deployment/messages/publication/spending or paused Studio/Newsletter schedule change."
+  ],
+  "memory_revision": 228,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts_observed": 0
+  },
+  "mission_id": "destination-queue-20261111",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Cancelled PR CI reconciled in previous receipt; no unfinished active retry. Funding/comedy correctness already repaired; no duplicate candidate created.",
+  "problem": "Queue report can scope a platform but cannot isolate destinations sharing that platform.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "1a52c60f8c23fbfddeac59c822b535d6055b2c03a36f9a2e3ce01627198600b6",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "control_tower/handoffs.py",
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context.py",
+      "tests/test_handoff_context_cli.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_and_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

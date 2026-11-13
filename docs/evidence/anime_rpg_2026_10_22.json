@@ -1,0 +1,383 @@
+{
+  "composer_runtime_tests": "separate Node web test job covers composer, portfolio, diary, RPG and media-player helpers; HTML/JS hashes included here",
+  "github_checkout_sha": null,
+  "independent_human_security_review": "not_performed",
+  "live_integrations_tested": false,
+  "observed_at": "2026-10-22T22:34:02.639363+00:00",
+  "production_deployment": "not_performed",
+  "python_version": "3.12.14",
+  "record_sha256": "f16468ab9e08993c951ae4adafa8150f439696393c356e7d28d1a2f25157bb16",
+  "schema_version": 1,
+  "scope": "syntax_offline_unit_tests_and_synthetic_demo",
+  "source_sha256": {
+    ".github/workflows/control-tower-tests.yml": "7be9fb040e12d1e1a0934e43b2a7cfbc7c3ef09b62d3260153d1ecac36af228f",
+    "control_tower/attribution.py": "f7a347edfe6603eed5099ffb606da5d20da38ebae93a7d45280546dcd4cfa897",
+    "control_tower/briefing.py": "c74739d95340a2a14899e33ca515200517ec8373fecb0d934b8015abd79ad1ce",
+    "control_tower/builder.py": "8ef01a1a05bfcefd6b408190972e0cd22357368c99335cbd3ab752551a62bde5",
+    "control_tower/campaigns.py": "cf8de4685c13623c7f3ab185bac7cabd132b64554d4d218a5770409a49a51f1a",
+    "control_tower/connections.py": "9e82124fd9c6706ba7e3991c8059e197b35acaf3baa9cdf3f4ad968fd141c24f",
+    "control_tower/dashboard.py": "7fe88ae82e7ae2817aff14b1a9ecb16a06975e5ade35c0e8844f62b2917164b2",
+    "control_tower/demo.py": "cb5c245f0f0a62e421dec541b507ae7088c89f970226e5d481eb313643e2227e",
+    "control_tower/diary.py": "54618070ccfbe724d5cdecea77093f87b1f1cb9d840f9ca7b07acd7c68993b19",
+    "control_tower/diary_store.py": "75e60c7c014c96d54fa0168090c1e565dc1a66b6427bd83253d4bc22d13a20a8",
+    "control_tower/episode.py": "682d5c067f3758638992c38a6e726e5e273839d838eed16e553c63e5cee21bf3",
+    "control_tower/episode_render.py": "b5611f5f5d09cccb061442c595b8acd9a167466cacd6b5b8cc441f2f407ece09",
+    "control_tower/evaluator.py": "5a2347d9be3f526539b1d5345f8249d45fd0bd743cca4c7859fe0688f8943a6c",
+    "control_tower/events.py": "54e827513bbb49bd9afa809114c53abe03011e8cb488069186b744ade3e9ca54",
+    "control_tower/funnels.py": "bf76037d3140d689951583cb705c12e6c831558ea5aff7aaf24e3424b85fd8c1",
+    "control_tower/handoffs.py": "8b4e1208573f30a6f8d5a0936e29614fceca36efb62af14ece14bf0eccf9304d",
+    "control_tower/hostinger_live.py": "695a02bebb08ad5c9d8ba85426dd58ad8ee576018757ade34df73a115383c452",
+    "control_tower/hostinger_probe.py": "b72a40a4b928f13bfcee4ad31ce76a84b31884bedbaf92fe28c7044783437ae1",
+    "control_tower/journeys.py": "d75ad86ae1456405383446991f49579a596bcc949e25be3f80e5265f1a7374cf",
+    "control_tower/media.py": "f2c2c446de20f87690bbbfd625edb7d515aafb2ae3d094307a78cb153c1fd6aa",
+    "control_tower/media_render.py": "23d63e77038e540539f9f511404e9da0fca8eb576554de94595b4286e56835e2",
+    "control_tower/missions.py": "7e7a087fdd39a46ac75ffbacdf14c098563219eb3b0c9e39b37936b2cbb3dfff",
+    "control_tower/network_contract.py": "204e482a82cd700a47f15275e949200a2d1f9c26b22c8559402c485c0757fee2",
+    "control_tower/network_demo.py": "39333d859cd5740b3e00e16dd02feba529021346169f36a5983f6e2c41787908",
+    "control_tower/orchestrator.py": "9dd90bb0e988687ff59db837fb9c03c4376e6024fe6241028fd4ff1578e69b4e",
+    "control_tower/portfolio.py": "3fa395dea80b1a7090596eb9a3671d0a360633b0eb68b21151090428ac1382f3",
+    "control_tower/portfolio_demo.py": "d80019791454da30930d65cd8c80192c52dce4f97049684c893fe6c96486698d",
+    "control_tower/provider_catalog.py": "97bcb8e135ecb0e57b9bc2ee256b65775313bda22a769ebfc74c6e0521d59121",
+    "control_tower/roundtrip.py": "58b776b711b5b4a17efd66c2683a0a2495016cf43ce0900480bfcebf41ccd8bd",
+    "control_tower/swarm_factory.py": "c6784d81883ffa695aaa0c0e998d15a06800243d817c59f089bbf2c3ededed03",
+    "control_tower/validation.py": "d36e33036d889694e1715688f5a325aeedb0488e43747f31f032578238323677",
+    "scripts/jarvis_diary.py": "039d18a530088497e11f8af0513e27bc42af6df2d487b3a0989380de9f4a1c2d",
+    "scripts/jarvis_episode.py": "cba2868b293f5d0efc3924cee47f2771033dec75addf09d93a7550e81f98a512",
+    "scripts/jarvis_hostinger.py": "f392974d46b313e801d894c4eedb5b903b7c4d8c5580031a683814d2a1b51da6",
+    "scripts/jarvis_network.py": "dfedb3030851b0d4892893363c794ece15860b2c965b75bd57fb93b2f8f66c85",
+    "scripts/jarvis_portfolio.py": "2545953e1349ee9999c194e373699cc9611b31415ac9ac5b214e21d76890a467",
+    "scripts/verify_control_tower.py": "b99b2c0b1cd09084558f241b4f6b8242ea3bf102969d7986c163974f171ef4c6",
+    "tests/test_builder_evaluator.py": "4ba8bfd14528d0bf00e64c2db7cb94c49ff80c70099c9dfab5cbb76083b63dac",
+    "tests/test_composer.mjs": "4bc19c62cc28b003aab8a61dcce1b292f31d82fca23c667695178e770d553a99",
+    "tests/test_connection_observations.py": "54692d0b65eb3518abab078907e9db18f2e50c608e147f2fda95de52389503fa",
+    "tests/test_connections.py": "ecbd389b9fbd7c86b73bfd4d8c1e50260017819781c6319dcaadb55e2d2d6527",
+    "tests/test_control_tower_extensions.py": "68f27f7304a4d09ba01ce3644339965641edd0c01606494654bc2e9458403296",
+    "tests/test_demo.py": "1850940d6c25e3171a3249e0f59d86def45223e793370542f84d46a3ca9efba7",
+    "tests/test_diary.py": "617ff850e662d27e4de742a2d4bd471d88ed2a01e126b9efc329bb7d63d31f05",
+    "tests/test_diary_cli.py": "ee499ac498a75fae8568630d324a0ea78b566cf154d288037f935fb46c5af1d1",
+    "tests/test_diary_media.py": "762acf6ead4931130510c60a945fe007f2d6f68904d47cfe0d01f3b047fa7cdf",
+    "tests/test_diary_store.py": "b86eba0e801e5d78eb459f51000a8aa6d48f7128ac944064252ae7b3851fcaa3",
+    "tests/test_diary_workbench.mjs": "0092ed07f2df868b444b8ecf728d3887520345a9b65ff0b736b0057af29aad88",
+    "tests/test_episode.py": "4838428ee5a187e45a8c68ec7375e9a6c7aecb7c8920f893bfa9b2d811edb749",
+    "tests/test_episode_render.py": "20a86759fdad01a00d8eaf8c9ede7eae71849e3497d1ea69ec0a9c24b674b698",
+    "tests/test_events.py": "c381e3d92975713220d3f97b2e991e7a3a0e1108e6f06deba5e38587563bda10",
+    "tests/test_funnels_dashboard.py": "94dbddfed93b97a040b422c6024ee0c294ddec488a1fce1af9f4fc75337e7670",
+    "tests/test_hostinger_live.py": "7fba5fbc9e85036fef34385435ba602c24bee581f740a0ff35ce0454bf0af714",
+    "tests/test_hostinger_probe.py": "540744406d22f6c38f71307b2beaa5c9a3b43d72bfacfa18c7e5059293042887",
+    "tests/test_input_hardening.py": "a3a75edd0ccc7b81d6890eeda73fd05a6b27635a7971c7aa7a83f2dd0f6efedd",
+    "tests/test_journeys.py": "a2fb6b379b0c756994de7da405aa39915abe297bf9099f439ce33f57923d329f",
+    "tests/test_media_player.mjs": "7b863cf96cf28cd437c4babac6a4be76f370bc9f3a8dad01acdb321fcc199dbc",
+    "tests/test_network.py": "4d0e0abd7edeab397bf867351dddd02f51c668e64a341d260f088c4dd6169e13",
+    "tests/test_portfolio_missions.py": "834ad151dd483c959c8d3889e04acd5cc0685734192b3a27fcc811301e4959ac",
+    "tests/test_provider_catalog.py": "b84d0b34e0f2f39f511e3c00b6dbe1266cbd0ed2ed1d3cb2f6f5b90dd59ee18f",
+    "tests/test_roundtrip.py": "9a1ffad5a8940a19ded660b0c2dd62493d02a6c773835455432b5a5280323139",
+    "tests/test_rpg_workbench.mjs": "69a72b376956995fb00430786390dea5105fa652fc0450f0bb48ac790c6b3062",
+    "tests/test_workbench.mjs": "72ba38312cfb93152db11f36a5be603141cbaedf3aa6ba7ba1b4486b808c088d",
+    "web/jarvis-composer.html": "51196d09ad9345ba12ac58dc71dd93718d88e298dd5dd91213ce5797f74741df",
+    "web/jarvis-diary.html": "38b4689efa045c489778c8dd7e351cc2627913dcca57eb4e6d63c4d5647a2798",
+    "web/jarvis-rpg.html": "f0b1bb7fef3bfd58245d8d39db46b9599ce81a1ef40358dfa48b93f44b80146a",
+    "web/jarvis-workbench.html": "7013b59fe66704e1a55d86133d03e0f5e205c0a96cb0eb047fdebdfab8ebf6bb"
+  },
+  "syntax": {
+    "errors": [],
+    "files_checked": 57
+  },
+  "synthetic_demo": {
+    "assistant_network": {
+      "export_prepared": true,
+      "external_actions": 0,
+      "external_agents_started": 0,
+      "inactive_assistant_specifications": 35,
+      "ledger": {
+        "external_actions": 0,
+        "handoffs": [
+          {
+            "duplicate": false,
+            "external_actions": 0,
+            "handoff_id": "demo-handoff",
+            "handoff_sha256": "04d47db4062c3a3751ff5c12e932ce2a8be3f876cd72b666b362d99b65e84fbb",
+            "sender_authentication": "not_established",
+            "state": "returned_unverified"
+          }
+        ],
+        "mode": "local_ledger",
+        "model_calls": 0,
+        "return_count": 1,
+        "swarm_count": 1
+      },
+      "mode": "local_synthetic_fixture",
+      "model_calls": 0,
+      "project_count": 7,
+      "reopen_retry_is_duplicate": true,
+      "return_state": "returned_unverified",
+      "swarm_manifest_sha256": {
+        "ai-evolutionary-evolutions": "02050deff4d854b3cc84b28d040f896cf9b86e336afebdf1d70d4a389c7c2dee",
+        "ai-jarvis": "5f9e0bdbcbcbbabc3724abf035ce83008f962d7cacea42f784ab7f1aeb6a8760",
+        "business-operations": "0c1beb1acd533d26701ec97a424d9c3568fabaaed140df093400ede87941161b",
+        "funding-affiliates": "dd1a10e211cb8441aed1a52a642bc00ea4e0823038482f78cfd4ad62891b0010",
+        "linux-education": "dd4719b57b5e5bf74ba38edc4a8c5616dcf80f369ed563f0e224cbf51b56e6f9",
+        "publishing-studio": "7b752eda646a2f27f20617b198964606cb69327d19ad391e7990ca2c67d6bd43",
+        "robotics-research": "65f6d05bf47bc6dba2969f0d237f77ee72428133aa15e8cacfc7838751cb17cb"
+      },
+      "target_provider_count": 12
+    },
+    "builder_candidate": {
+      "filename": "synthetic_validator.py",
+      "sha256": "a25b1b7bcf1dbe90f1b3322aaa9f819655c47e2e6de0fa44296926be37ae3df5"
+    },
+    "connectors": {
+      "airtable": {
+        "purpose": "project and evidence records",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "chatgpt": {
+        "purpose": "reviewed manual assistant handoffs",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "claude": {
+        "purpose": "coding and independent review",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "facebook": {
+        "purpose": "consented promotion",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "gemini": {
+        "purpose": "cross-model research",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "github": {
+        "purpose": "repository QA and PR reviews",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "hostinger": {
+        "purpose": "landing pages and membership forms",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "hubspot": {
+        "purpose": "consented CRM routing",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "instagram": {
+        "purpose": "consented promotion",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "linkedin": {
+        "purpose": "consented outreach and attribution",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "openai": {
+        "purpose": "separately configured API assistant work",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "substack": {
+        "purpose": "newsletter and membership referrals",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "threads": {
+        "purpose": "consented promotion",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      },
+      "youtube": {
+        "purpose": "video draft and attribution planning",
+        "runtime_available": "unknown",
+        "status": "unverified",
+        "write_gate": "owner_review"
+      }
+    },
+    "dashboard": {
+      "environment": "read_only_sandbox",
+      "metrics": {
+        "cost_usd": "unavailable",
+        "memberships": "unavailable",
+        "optins": "unavailable",
+        "referrals": "unavailable",
+        "verified_commissions_usd": "unavailable",
+        "visits": "unavailable"
+      },
+      "projects": [
+        {
+          "evidence_url": null,
+          "name": "Hostinger",
+          "status": "unknown"
+        }
+      ]
+    },
+    "external_actions": 0,
+    "membership_journey": {
+      "counts": {
+        "accepted": 3,
+        "duplicate": 0,
+        "rejected": 0
+      },
+      "external_actions": 0,
+      "live_commissions": "unavailable",
+      "live_memberships": "unavailable",
+      "live_revenue": "unavailable",
+      "members": {
+        "synthetic-member-1": {
+          "access_active": true,
+          "confirmed_amount_minor": 500,
+          "currency": "USD",
+          "entitlement_id": "synthetic-access-right-1",
+          "kind": "member",
+          "last_occurred_at": "2026-10-22T12:00:00-07:00",
+          "marketing_opt_in": false,
+          "payment_id": "synthetic-receipt-1",
+          "refunded_amount_minor": 0,
+          "service_consent": true,
+          "source": "linkedin",
+          "status": "active"
+        }
+      },
+      "mode": "synthetic_only",
+      "provider_authentication": "not_performed",
+      "records": [
+        {
+          "errors": [],
+          "event_id": "synthetic-signup-1",
+          "index": 0,
+          "status": "accepted"
+        },
+        {
+          "errors": [],
+          "event_id": "synthetic-payment-1",
+          "index": 1,
+          "status": "accepted"
+        },
+        {
+          "errors": [],
+          "event_id": "synthetic-access-1",
+          "index": 2,
+          "status": "accepted"
+        }
+      ],
+      "referrals": {},
+      "status": "reconciled",
+      "synthetic_metrics": {
+        "active_access_count": 1,
+        "confirmed_amount_minor": 500,
+        "currency": "USD",
+        "customer_redirect_count": 0,
+        "net_amount_minor": 500,
+        "partner_request_count": 0,
+        "refunded_amount_minor": 0
+      }
+    },
+    "mode": "synthetic_only",
+    "portfolio_planning": {
+      "campaign_samples": [
+        {
+          "actual_metrics": null,
+          "channel_briefs": 7,
+          "initiative_id": "funding-customers",
+          "journey_kind": "funding_customer",
+          "referral_parameter_preserved": true,
+          "url_status": "not_live_checked"
+        },
+        {
+          "actual_metrics": null,
+          "channel_briefs": 7,
+          "initiative_id": "referral-partners",
+          "journey_kind": "funding_partner",
+          "referral_parameter_preserved": true,
+          "url_status": "not_live_checked"
+        }
+      ],
+      "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9",
+      "external_actions": 0,
+      "external_agents_started": 0,
+      "inactive_role_drafts": 60,
+      "initiative_count": 12,
+      "live_metrics": null,
+      "mode": "local_synthetic_planning",
+      "model_calls": 0,
+      "project_count": 7,
+      "source_context_revision": "a67e743e8b32e552ccddd9e16a2108fe2f816274"
+    },
+    "roundtrip": {
+      "accepted_count": 3,
+      "attribution": {
+        "facebook:visits": 1,
+        "linkedin:visits": 1,
+        "threads:visits": 1
+      },
+      "deployment": "not_deployed",
+      "duplicate_count": 0,
+      "fixture_only": true,
+      "independent_qa": "not_run",
+      "proposed_tasks": [
+        "candidate-1"
+      ],
+      "rejected": [],
+      "sha256": "4839c80ba10125214cab857a0b6764195ac30d654da749c1d0c3a566b3805b92",
+      "status": "Hostinger connection: unknown"
+    },
+    "routes": [
+      {
+        "action": "membership_registration_review",
+        "source": "linkedin",
+        "status": "sandbox_only"
+      },
+      {
+        "action": "provider_redirect_review",
+        "destinations": [
+          "https://lippytmai.getbizfunds.com",
+          "https://www.7figurescredit.com?a_aid=lippytm"
+        ],
+        "source": "facebook",
+        "status": "sandbox_only"
+      },
+      {
+        "action": "provider_redirect_review",
+        "destinations": [
+          "https://lendtrack.ai/join/lippytmai",
+          "https://join.7figurespartners.com/?a_aid=lippytm"
+        ],
+        "source": "threads",
+        "status": "sandbox_only"
+      }
+    ],
+    "static_evaluation": {
+      "deployment": "not_deployed",
+      "errors": [],
+      "execution": "not_run",
+      "independent_security_audit": false,
+      "passed": true,
+      "review_scope": "exact_template_and_static_checks"
+    }
+  },
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "run": 273,
+    "skipped": 0
+  }
+}

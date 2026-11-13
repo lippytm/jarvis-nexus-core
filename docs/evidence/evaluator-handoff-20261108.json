@@ -1,0 +1,113 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_existing_review_entry",
+    "verify_exact_source_and_commands",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering/documentation; applicable write checks pending; author preparation only, independent exact-revision evaluation and owner release review not performed",
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Extend existing review entry with 13 exact-source links/blob-byte hashes, concrete evaluation questions and limits, eight-test command and requested exact-revision evaluator return. Entire prior review entry retained verbatim as historical material. No production/test/packet/schema change, new process/agent or actual evaluator dispatch.",
+  "checkpoint": {
+    "return_binding": "input source/memory and exact file hashes; final commit and CI in master Page",
+    "state": "review_handoff_prepared",
+    "unfinished": "actual independent evaluator findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "document_command": {
+      "commands_executed": 1,
+      "exit_code": 0,
+      "log": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.934s\n\nOK\n",
+      "named_tests": 8
+    },
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.931s\n\nOK\n",
+      "tests": 8
+    },
+    "full_local_suite": "not repeated for documentation-only work; actual final CI recorded in master Page",
+    "receipt_bodies_rehashed": 4,
+    "source_links_verified": 13,
+    "source_manifest": {
+      "historical_body_retained_verbatim": true,
+      "memory_revision": 219,
+      "original_review_entry_sha256": "c497413023929679be6c4ecd49c717e0eb022e3b0032dd2beed5980ba197eee9",
+      "source_revision": "4a2eeac0965091f80f4a05721d5063996216dd2f",
+      "source_sha256": {
+        "control_tower/connections.py": "cd77b517dfc2da0b2770326eba807bcc9ac1dcb5f8b2c381c4d159c80c10a930",
+        "control_tower/handoffs.py": "b85de9598af98e8ed5e47b84e3055015d3219d7da8ff6080aed138e3e1a9d7c3",
+        "control_tower/network_contract.py": "b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7",
+        "docs/CODEX_JARVIS_READINESS.md": "2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757",
+        "docs/HANDOFF_CONTEXT_PROFILE.md": "cf605ed80437e4e7b3d80c1961005c33b150d12a4b1691d393cb5e0ec546eb83",
+        "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "c8294c88acd56eb65f2aaa4a1c67d02e104d89fe3415edf5d973fda07c202c51",
+        "docs/evidence/handoff-state-integrity-20261107.json": "b65e9c93180a01729b87292edced91a49091a1b876ae0ae69e6da7a5a01382ea",
+        "docs/evidence/registry-destination-20261108.json": "a1b198e1b30d9effdd040b626fb576303074290ea959c807ca7baaad49bc7d13",
+        "docs/evidence/stored-json-bounds-20261108.json": "ec3fb0eba4467390a5e02a6f6a0ee02afc76d860a71756303f0b4ab2ffe094eb",
+        "docs/evidence/stored-json-key-integrity-20261108.json": "770f403ad6bf670ba9f8e15aa2f65b457bd558adcf35a8022d6ee693522eeffa",
+        "scripts/jarvis_network.py": "3bbf46cf4ee894aabd3983290e61f2d1840602bc44e555ba45719e8669cc46e0",
+        "tests/test_handoff_context.py": "169522f00032ba3c743320fa737cf354b21b41c8e5b496733cbeeac386aa8435",
+        "tests/test_handoff_context_cli.py": "b8ef4c8462895d98582d9e7f1d1fe5e3fb3bf3c0b403b2ef796c9d8f726c5de6"
+      }
+    },
+    "syntax": {
+      "errors": 0,
+      "files": 74
+    }
+  },
+  "configuration_version": "codex.evaluator-handoff.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/stored-json-bounds-20261108.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "4a2eeac0965091f80f4a05721d5063996216dd2f",
+  "limitations": [
+    "Author-prepared review packet and author-run checks are not independent review, whole-PR approval, reviewer authentication, accepted operating policy, live platform delivery or certification. No finding about unreviewed areas is asserted. Source/file hashes do not authenticate a reviewer.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, migration, worker, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, publication or spending."
+  ],
+  "memory_revision": 219,
+  "metrics": {
+    "actual_evaluator_dispatches": 0,
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "focused_tests": 8,
+    "prepared_handoffs": 1,
+    "provider_dispatches": 0,
+    "receipt_records_rehashed": 4,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "source_paths_verified": 13,
+    "unexpected_verification_errors": 0
+  },
+  "mission_id": "focused-evaluator-handoff-20261108",
+  "observed_gap": "Existing current review entry was source-bound to 23401d7/master memory206 and did not cover later fully scoped registry inspection or stored state/JSON/parser guards. Independent review remains pending; prepare a bounded exact-source handoff rather than claim it occurred.",
+  "patch_sha256": "fdc8c8b5e6b2d004d21739f742d83900cf70fc369e67d2aef786ee77b39563f6",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "0d1d5ea0e1ab68db1a7861a8eab6d130a51f2cbe3c80b39a74375ae95c046d63",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md": "c69abcf8004b9eb52f093fa0352d089e2451350ad24942360faa7f822030bc8c"
+  },
+  "visibility": "owner_private"
+}

@@ -1,0 +1,67 @@
+{
+  "asset_id": "codex",
+  "change": "HandoffLedger.check_context_review_receipt verifies saved receipt digest/shape through canonical comparison with exact current binding; shared private builder retains existing receipt output. API only; no CLI, schema migration or authority change.",
+  "checks": {
+    "behavior": [
+      "JSON roundtrip/reopen for legacy and destination-bound records",
+      "read-only database byte preservation and unchanged execution/control holds",
+      "reject recomputed-digest field/type/visibility/authority tampering and unknown fields",
+      "reject changed reviewer binding, invalidated review and A-to-B-to-A restored-content stale revision after restart"
+    ],
+    "focused": {
+      "passed": true,
+      "run": 2,
+      "seconds": 0.054
+    },
+    "full": {
+      "record_sha256": "32cce94a4e655bd72bb5706941d4f9d2919634b6b45b5fa3fb2a28aff3efbeb6",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 553,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.saved-review-check.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "3ac47c01fb361ab416f534551555d9f273a32310",
+  "limitations": [
+    "local consistency only; unkeyed receipt digest and reviewer labels do not authenticate identity",
+    "recorded_at is syntactically validated but not archived/attested; altered valid timestamp can be recomputed",
+    "no retry, dispatch, release grant, authenticated registry or installed recovery controller",
+    "file publication and review commit remain separate operations"
+  ],
+  "memory_revision": 166,
+  "mission_id": "saved-review-check-20261106",
+  "next_task": "independent exact-revision review; registry audience/access acceptance remains pending",
+  "observed_gap": "Saved receipts lacked built-in read-only comparison against current ledger review after restart.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "e76238d148ae61d9d462fdbf62460f2b87662d66464d50d64c8358528d8f15a2",
+  "reports_sha256": {
+    "reports/saved-review-check-focused-20261106.txt": "3e39a271b4e22ba476b007c78d7a0ca7986f7c0b700745f6b0d3afbe53c72c35",
+    "reports/saved-review-check-full-20261106.json": "fc3b0207df4945fec17f1d3db2b50b4e990a551dc46f303c6ebea9cf4efaca10",
+    "reports/saved-review-check-web-20261106.txt": "fb8f1bdae7aa5f2dc8a91504a641209fe7dcccc7ff8e235e5a27504a9af1d505"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "f34df9f2c930dfca1d43210ed4031cab649519a5d7761e43e61574fbdb822bf9",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "78aaa5afd0daa21538fc90f706d34663678539cffbcd2d7b3e2e6cbe72a5d61e",
+    "tests/test_handoff_context.py": "3653f42dc5d5496b64625e5861ddde2d22fd718eefccf45721210dd1754e3a6f"
+  }
+}

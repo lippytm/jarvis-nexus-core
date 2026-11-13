@@ -1,0 +1,131 @@
+{
+  "acceptance_observations": [
+    "Independent closed seed copies begin reviewed. Both injected failures return code 1, no stdout, fixed OSError metadata and no temporary file; exactly the selected fsync call count proves no implicit replay.",
+    "Read-only restart observes export_prepared, exact private context and current local review despite failed file publication acknowledgement. Execution remains blocked with checkpoint retained.",
+    "File fsync failure leaves no output; directory fsync failure leaves complete checksum-bound version-1 envelope at 0600. Repeating the existing output request refuses overwrite and preserves every logical row and file byte.",
+    "Original independent seed ledger bytes remain unchanged after each case."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_export_sync_failure_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add POSIX regression for real CLI export transaction followed by injected file/directory fsync failures. Production source and schemas unchanged; no baseline defect asserted.",
+  "checkpoint": {
+    "return_binding": "source/memory revisions and source/log hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent export publication recovery review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_export_fsync_failures_retain_committed_state_and_reconcilable_file tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/export-fsync-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/export-fsync-full-20261107.json",
+        "passed": true,
+        "record_sha256": "121408bd02234984ba516a11e3f7f08d5921656ea5efea438d3c99cb17a2dcf3",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 584,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 584,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.export-fsync.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md",
+    "docs/evidence/export-selection-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "8b6d5892f56c0851ed24706328bfbd21ddf6c6db",
+  "limitations": [
+    "Synthetic local POSIX error injection, not a real owner incident, power/process loss or measured runtime recovery.",
+    "Database commit and file publication remain separate; export_prepared is not proof of a delivered file, provider dispatch or completed mission. Local reviewer labels/hashes do not authenticate approval.",
+    "No worker, lease, automatic retry/failover/reconnect controller, permissions change, dispatch, merge, deployment, publication or spending. Actual paused mission and schedules untouched.",
+    "All 17 targets/business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/export-fsync-focused-20261107.txt": {
+      "sha256": "c69dacdc4c4df1d4b0b99c460467f1e8fb8c203bff4e02fb22b2fa97ac43b507",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.850s\n\nOK\n"
+    },
+    "reports/export-fsync-full-20261107.json": {
+      "sha256": "f345fad1231593ec703cd9c843e59d9a5ee73c972c4c6eb54c03dff8388979c3"
+    },
+    "reports/export-fsync-web-20261107.txt": {
+      "sha256": "aaaf2ef2c5c7d8f162673005e173c1a5a1c29f4741571d3d877685a8015eb0d5"
+    }
+  },
+  "memory_revision": 194,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_fsync_failures": 2
+  },
+  "mission_id": "export-fsync-20261107",
+  "next_task": "Independent exact-revision review of export publication/recovery boundary; registry audience/access acceptance remains unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "f9383e62a48986376e0d6b4f718d922e0dff77d97410f061a7d7d8d2b797aa77",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context_cli.py": "925bcf64dd4a225d49338b03d05f9582d581d2660ee65f2b7fc86fa8cd3d79bd"
+  },
+  "tracked_patch_sha256": "abe30873c44d1b4af66e85bcf94c6fe4aea97ab6c86a3740b5ce9d93e4fb1a47",
+  "visibility": "owner_private"
+}

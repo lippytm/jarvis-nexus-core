@@ -1,0 +1,199 @@
+FILE test_composer.log
+✔ both authored scripts compile independently (3.089627ms)
+✔ native English spellcheck is requested without app autocorrection (0.318841ms)
+✔ the page blocks connections and has no external assets or storage code (0.401104ms)
+✔ a review offers corrections without mutating its input (4.978774ms)
+✔ the limited list leaves correct words, brands and unknown words unchanged (1.053908ms)
+✔ URL destinations, email addresses, handles and hashtags remain unchanged (0.240433ms)
+✔ backtick fenced code is excluded while surrounding prose is reviewed (0.277819ms)
+✔ tilde fences and unfinished fenced code are conservatively preserved (0.191148ms)
+✔ inline code supports multiple backticks and protects unfinished code (0.335345ms)
+✔ HTML code and attributes are protected; ordinary text remains reviewable (0.393013ms)
+✔ indented code, common code signatures, calls and paths are protected (0.191639ms)
+✔ compound words, code identifiers, accents and mixed-case terms are not rewritten (0.124047ms)
+✔ lowercase, title case and uppercase correction styles are preserved (0.113361ms)
+✔ only the chosen occurrence changes (0.293612ms)
+✔ multiple corrections apply safely despite changing offsets and duplicate selections (0.173511ms)
+✔ Unicode preceding a correction does not corrupt offsets (2.278785ms)
+✔ stale suggestions and forged replacement text are rejected (0.542307ms)
+✔ a correction that would exceed the export byte limit is rejected atomically (1.616877ms)
+✔ empty and unknown prose has no locally known suggestions (0.115323ms)
+✔ the draft contract has exactly its five authorized keys and preserves text (0.333212ms)
+✔ all agreed project IDs are supported, with no extra project identifiers (0.204568ms)
+✔ provider IDs include each handoff destination and distinguish OpenAI API from ChatGPT (0.182265ms)
+✔ unknown, missing and incorrectly typed selectors are rejected (0.414335ms)
+✔ export rejects whitespace-only drafts without trimming valid text (0.201844ms)
+✔ C0 controls other than tab, line feed and carriage return are rejected (0.437439ms)
+✔ the 20,000-byte boundary is inclusive for ASCII (0.4308ms)
+✔ UTF-8 byte limits count multibyte characters and emoji correctly (0.411289ms)
+✔ invalid surrogate text is rejected instead of silently replaced on export (0.498261ms)
+✔ non-string draft values are rejected (0.293853ms)
+✔ character count uses Unicode code points and bytes remain a separate measure (1.303465ms)
+✔ review JSON survives serialization without creating authority or connection fields (0.115524ms)
+✔ the shared JavaScript-to-Python fixtures match actual exports and rejection rules (0.310549ms)
+✔ undo restores chosen corrections and cleared text (0.198959ms)
+✔ editor history ignores duplicate records and respects its bounded capacity (0.229656ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.439833
+
+FILE test_diary_workbench.log
+✔ both actual shipped modules compile (2.360178ms)
+✔ a new local draft is private with one planned observation and no invented content (1.418308ms)
+✔ the form lists the existing twelve initiatives without inventing or merging destinations (1.492079ms)
+✔ exports contain exactly the thirteen entry keys and preserve authored text (0.405632ms)
+✔ schema, extra authority fields and missing top-level fields are rejected (0.559523ms)
+✔ identifier full matches accept only two to forty-eight ASCII identifier characters (0.715488ms)
+✔ Gregorian dates are strict across leap years, centuries and calendar bounds (0.427745ms)
+✔ today is derived in Pacific time across both standard and daylight time (13.494179ms)
+✔ visibility is a closed intention label and never adds publishing authority (0.577821ms)
+✔ required title, summary and next-action limits are inclusive UTF-8 byte limits (3.750173ms)
+✔ blank detection matches Python whitespace including U+0085 without rewriting text (1.28745ms)
+✔ C0 controls are rejected except tab, LF and CR in text fields (1.065196ms)
+✔ strict Unicode validation rejects lone surrogates and preserves valid scalar values (0.531721ms)
+✔ text fields do not coerce booleans, numbers, arrays or null into strings (0.474585ms)
+✔ one to eight observations are accepted and zero or nine are rejected (0.259501ms)
+✔ observation IDs are unique and observation objects have exactly four fields (0.876672ms)
+✔ observation text is nonblank and bounded at one thousand UTF-8 bytes (0.206902ms)
+✔ evidence states are closed labels and source-linked notes require references (0.61027ms)
+✔ zero to five sources are accepted and more than five are rejected (0.363528ms)
+✔ source IDs are unique and source records have exactly three fields (0.220783ms)
+✔ source titles are nonblank and bounded at two hundred UTF-8 bytes (0.194994ms)
+✔ HTTPS source URLs preserve their original case and allowed default port (0.419182ms)
+✔ URL credential, whitespace, custom-port and malformed-authority cases are rejected (0.548337ms)
+✔ the source URL byte limit is exactly one thousand without fetching it (0.214634ms)
+✔ observation references must be unique known IDs, with no invented source (0.744923ms)
+✔ media notes have five exact keys, allow blanks and enforce six-hundred-byte bounds (1.089492ms)
+✔ validated values are copies that cannot mutate the original draft (0.201494ms)
+✔ adding observations creates unique planned rows and enforces the row cap (0.410218ms)
+✔ removing observations preserves other content and keeps at least one row (0.201403ms)
+✔ adding sources creates unique stable labels and enforces five rows (0.234954ms)
+✔ source removal detaches references without upgrading or downgrading evidence classification (0.269517ms)
+✔ source selection is explicit, duplicate-free and leaves classification unchanged (0.27915ms)
+✔ changing an initiative preserves the global entry content (0.306492ms)
+✔ serialized entries round-trip with labels, IDs, Unicode and sources intact (0.859405ms)
+✔ JSON import rejects duplicate and escaped duplicate object keys (0.55746ms)
+✔ import preserves Python integer-type semantics for schema version tokens (0.390228ms)
+✔ JSON import rejects malformed syntax, nonfinite numbers and trailing content (0.495777ms)
+✔ the bounded JSON parser handles legal JSON scalars, arrays, escapes and null-prototype keys (0.222174ms)
+✔ raw import bytes are bounded before JSON parsing at exactly sixty-four KiB (3.33016ms)
+✔ invalid imported Unicode is rejected whether raw or escaped (0.277719ms)
+✔ an invalid import leaves the current unfinished draft and every nested value intact (0.414134ms)
+✔ a successful import returns a validated replacement without altering the previous draft (0.461305ms)
+✔ the brief retains all four evidence classifications and recorded sources as plain text (0.357058ms)
+✔ private and public-candidate previews keep visibility separate from evidence and consent (0.254124ms)
+✔ native form structure includes explicit labels, spellcheck and local companion links (0.450629ms)
+✔ the application has no external assets, networking, persistence or HTML injection sinks (0.490559ms)
+✔ the real import path decodes UTF-8 strictly and preserves edits made during file reading (1.441097ms)
+✔ shared fixtures are twelve actual valid exports and explicitly rejected contract cases (4.228093ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 48
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62.632899
+
+FILE test_media_player.log
+✔ the shipped player helper compiles without DOM or network dependencies (1.912373ms)
+✔ reading lenses preserve evidence labels and source ordering (0.987769ms)
+✔ unknown lenses do not silently upgrade records to verified (0.177017ms)
+✔ the timeline uses inclusive starts and exclusive ends (0.137917ms)
+✔ invalid timeline input cannot select a scene (0.21929ms)
+✔ label practice reports an exact label match without certifying truth (0.267643ms)
+✔ practice and filtering do not modify the source records (0.167623ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10.98737
+
+FILE test_rpg_workbench.log
+✔ both actual shipped scripts compile without a DOM or generated-code execution (2.160376ms)
+✔ the shipped public pilot exactly matches its tracked source and dated revision (3.713527ms)
+✔ the embedded episode content digest verifies independently against its authored data (1.138496ms)
+✔ public editions reject private/internal sources and unknown or untyped audiences (0.583699ms)
+✔ explicit owner editions retain prominent source labels in progress and both briefs (8.655896ms)
+✔ episode schema, hashes and local-only framing are strict without extra authority fields (0.872776ms)
+✔ world order, quest mapping and planned status cannot become business completion (1.239038ms)
+✔ scene sequence, fiction framing and linked-source references remain explicit (1.379199ms)
+✔ episode text uses strict Unicode, byte-bounded titles and code-point-bounded voiceover (1.08167ms)
+✔ source URLs require bounded HTTPS references without credentials or custom ports (1.409304ms)
+✔ initial progress records only the initially displayed world and empty quest notes (0.445021ms)
+✔ opening worlds selects their corresponding quest once without mutating prior state (0.52412ms)
+✔ quest selection preserves the mapping and rejects unknown or wrongly typed IDs (2.368049ms)
+✔ each quest preserves its own notes when switching and source states remain unchanged (0.452262ms)
+✔ exploration toggles are reversible, duplicate-free and never mutate the episode (1.124525ms)
+✔ progress exports exactly eleven keys including source classification and no completion field (3.43704ms)
+✔ progress cannot change its episode, audience, source visibility or exploration scope (5.238166ms)
+✔ visited and explored lists reject duplicates, unknown IDs and unvisited-world claims (5.842616ms)
+✔ quest notes accept blank text, preserve Unicode and enforce exactly one thousand UTF-8 bytes (5.409093ms)
+✔ quest briefs carry planned status, episode references and the note without creating claims (1.670998ms)
+✔ MP4 selection checks local metadata bounds and rejects format, size and newline tricks (0.32498ms)
+✔ local captions are bounded UTF-8 VTT with a header and at least one timed cue (5.366969ms)
+✔ packaging hooks accept only explicit bitmap, MP4 and VTT base64 data-URI shapes (0.276447ms)
+✔ the actual DOM source has native video controls, no autoplay and keyboard-labelled notes (0.463368ms)
+✔ source hooks are unique and the shipped interface imports only MP4/VTT media (0.640355ms)
+✔ untrusted episode and note values use text sinks, with no network or persistence API (0.440414ms)
+✔ the actual media path is user initiated, clears stale captions and revokes local URLs (0.222836ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 67.81545
+
+FILE test_workbench.log
+✔ both shipped authored scripts compile (1.702706ms)
+✔ the complete embedded catalog matches the tracked catalog without drift (1.61839ms)
+✔ the catalog content digest verifies without implying author authentication (0.803672ms)
+✔ a catalog with live metrics, wrong schema or external actions is rejected (0.626053ms)
+✔ missing, duplicate and unknown initiative or project IDs are rejected (0.511441ms)
+✔ catalog plans, gaps and destination assignments must be explicit (0.958164ms)
+✔ the education site and unassigned affiliate platform remain separate (0.184418ms)
+✔ financing customers and referral partners retain different journeys and references (0.170808ms)
+✔ search is case-insensitive and includes useful catalog details (0.912795ms)
+✔ project filtering returns the assigned initiatives without moving them (0.625813ms)
+✔ journey filters keep education, financing and partner work distinct (0.216897ms)
+✔ combined filters and unmatched terms return no invented fallback initiative (0.229386ms)
+✔ invalid or oversized filter input is rejected (0.198128ms)
+✔ mission export has exactly the six request keys and preserves the objective (0.422677ms)
+✔ all 12 initiative IDs and all 12 draft targets are accepted (0.266402ms)
+✔ unknown and incorrectly typed initiative and target IDs are rejected (0.403268ms)
+✔ timeboxes accept only the four integer choices (1.730438ms)
+✔ the ASCII objective limit is exactly 2,000 UTF-8 bytes (0.350018ms)
+✔ UTF-8 byte limits account for multibyte characters and emoji (0.289426ms)
+✔ blank objectives include Unicode whitespace and U+0085 (0.211959ms)
+✔ C0 controls are rejected except tab, LF and CR (0.361354ms)
+✔ invalid surrogate text cannot be silently normalized during export (0.160031ms)
+✔ non-string objectives are rejected (0.255785ms)
+✔ character and byte counts remain distinct (0.141523ms)
+✔ request validation rejects extra authority fields, missing fields and wrong schema (0.400995ms)
+✔ the plain-text brief includes the chosen request, plan, gaps and boundaries (0.295736ms)
+✔ a brief cannot substitute another initiative or accept an invalid request (0.306912ms)
+✔ the affiliate brief does not inherit education or financing URLs (0.276487ms)
+✔ per-initiative memory starts with explicit empty drafts and returns copies (0.150877ms)
+✔ switching initiatives retains separate in-memory objectives and choices (0.200512ms)
+✔ in-progress text is preserved for editing but still must pass export validation (0.473473ms)
+✔ the workbench has no network, persistence, external assets or HTML insertion sinks (0.480744ms)
+✔ the objective has native English spelling and the separate composer link is local (0.156736ms)
+✔ shared JavaScript-to-Python fixtures match actual exports and rejection rules (0.761578ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26.662557

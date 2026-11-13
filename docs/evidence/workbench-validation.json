@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "kind": "jarvis.workbench_validation",
+  "validated_at_utc": "2026-10-22T21:40:39.332050+00:00",
+  "baseline_commit": "a67e743e8b32e552ccddd9e16a2108fe2f816274",
+  "scope": "Offline authored portfolio planning UI, pure-helper tests and shared request validation; no live integration or deployment",
+  "runtime": {
+    "node": "v24.19.0",
+    "python": "3.12.14"
+  },
+  "node": {
+    "commands": [
+      {
+        "command": "node --test --test-reporter=tap tests/test_workbench.mjs",
+        "exit_code": 0
+      },
+      {
+        "command": "node tests/test_workbench.mjs",
+        "exit_code": 0
+      }
+    ],
+    "individual_cases": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "actual_output": "docs/evidence/workbench-node-tests.txt"
+  },
+  "shared_contract": {
+    "fixture": "docs/evidence/workbench-request-fixtures.json",
+    "consumer": "control_tower.missions.validate_mission_request",
+    "valid_exports_accepted_unchanged": 12,
+    "invalid_exports_rejected": 11,
+    "unexpected_acceptances": 0
+  },
+  "structure": {
+    "unique_static_ids": 51,
+    "label_and_aria_references": 19,
+    "broken_references": 0,
+    "balanced_markup": true,
+    "static_buttons_with_explicit_type": 3,
+    "inline_scripts": 3,
+    "focusable_skip_target": true,
+    "hrefs": [
+      "#initiative-detail",
+      "jarvis-composer.html"
+    ]
+  },
+  "catalog": {
+    "source": "examples/portfolio/catalog.json",
+    "embedded_value_equals_source": true,
+    "initiatives": 12,
+    "project_areas": 7,
+    "draft_targets": 12,
+    "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9",
+    "live_metrics": null,
+    "external_actions": 0
+  },
+  "existing_composer": {
+    "source_tests_docs_unchanged_from_baseline": true,
+    "html_sha256": "51196d09ad9345ba12ac58dc71dd93718d88e298dd5dd91213ce5797f74741df"
+  },
+  "independent_review": {
+    "reviewer": "/root/verify_news",
+    "status": "passed offline review",
+    "verified": "34 Node cases; 12 exports accepted unchanged and 11 invalid records rejected by Python; catalog parity; DOM/export/initiative boundary review",
+    "concrete_blockers": []
+  },
+  "limits": [
+    "No browser installation attempted in this milestone; prior headless Chromium download failed.",
+    "Rendered desktop/mobile layout, native spelling, real clipboard/download and assistive-technology behavior remain unverified.",
+    "No network calls, storage, analytics, live account sessions, model/provider calls, mission execution, commits or remote changes were performed by the workbench implementation/validation."
+  ],
+  "sha256": {
+    "web/jarvis-workbench.html": "7013b59fe66704e1a55d86133d03e0f5e205c0a96cb0eb047fdebdfab8ebf6bb",
+    "tests/test_workbench.mjs": "72ba38312cfb93152db11f36a5be603141cbaedf3aa6ba7ba1b4486b808c088d",
+    "docs/JARVIS_WORKBENCH.md": "72bf472e9bd55ff17e5d71e53261124f091819a0b6b25415843d6150f0d108b3",
+    "docs/evidence/workbench-request-fixtures.json": "c9dbce445cfd04d6ea7c29436fe137ea966324597f42a1d1617ece7ed45168b2",
+    "docs/evidence/workbench-node-tests.txt": "2bc5240abcfa20c1c1016692bb1ce4c64af59912c0c854df991c412e2cf80b89",
+    "examples/portfolio/catalog.json": "99c661ce7d2405e4ce251c968e67b4f3a282a9c02c4de892028c4c5ae0de6ed8",
+    "control_tower/missions.py": "7e7a087fdd39a46ac75ffbacdf14c098563219eb3b0c9e39b37936b2cbb3dfff"
+  }
+}

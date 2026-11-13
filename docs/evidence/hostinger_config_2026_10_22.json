@@ -1,0 +1,13 @@
+{
+  "connection_status": "unverified",
+  "credential_environment_variable": "HOSTINGER_API_TOKEN",
+  "credential_present": false,
+  "credential_validation": "presence_only",
+  "live_access_verified": false,
+  "mode": "check_config",
+  "provider": "hostinger",
+  "schema_version": 1,
+  "status": "configuration_checked",
+  "transport_calls": 0,
+  "writes_requested": 0
+}

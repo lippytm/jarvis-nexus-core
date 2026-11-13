@@ -1,0 +1,56 @@
+{
+  "asset_id": "codex",
+  "change": "Link the four actual artwork review sections, state retained source/export counts and preserve all release/accessibility/account limits.",
+  "checks": {
+    "guide_and_campaign_unchanged": true,
+    "index_after_sha256": "0aef7dbc8dc49d331accef6a2d16da6a57cc1b9ede2a414d72c0ed025f42b15d",
+    "index_before_sha256": "41f3b79e7dddea800262373d27218623d4121d0bbfa12954ef1c715c0e017f7f",
+    "index_links_checked": [
+      "media/jarvis-threads-four-slots-20261029.md",
+      "media/jarvis-threads-four-slots-20261029.md#slot-1-artwork-candidate",
+      "media/jarvis-threads-four-slots-20261029.md#slot-2-artwork-candidate",
+      "media/jarvis-threads-four-slots-20261029.md#slot-3-artwork-candidate",
+      "media/jarvis-threads-four-slots-20261029.md#slot-4-artwork-candidate"
+    ],
+    "new_artwork_anchor_links": 4,
+    "new_unit_tests": 0,
+    "png_files_verified": 4,
+    "retained_source_export_sha256": {
+      "docs/media/exports/threads-20261029/slot-1.png": "82063b818aa1b800b8feca265aa5d0fd6880d923502a7c9bcbd9d23db48c6e5b",
+      "docs/media/exports/threads-20261029/slot-2.png": "f44d97510f904900ad0813440acf4e2cba2eb0a59a924a4b95c0563bdf280bd1",
+      "docs/media/exports/threads-20261029/slot-3.png": "a98d91ded77b7f69dc005ebe37c0c14aed9eb237fbe8afed7d176d9fb7853d4f",
+      "docs/media/exports/threads-20261029/slot-4.png": "6b733803625b03e96b2e426ef3c2d9d07617be009e4232a05d4d461e2bf2fe79",
+      "docs/media/jarvis-threads-slot1-20261104.svg": "5961f8ae8858008b34c4e21a66c946e7e46804b301d6106747b17919080e0584",
+      "docs/media/jarvis-threads-slot2-20261104.svg": "aaa64683b88af64347f75bd2492565a7559aabd237ca152878bf115fc605fadb",
+      "docs/media/jarvis-threads-slot3-20261104.svg": "40a85f750a9dfd5b3eecc2517d0d1b322cc8a4269485adcbc7917fdbd2e53dcb",
+      "docs/media/jarvis-threads-slot4-20261104.svg": "e8550fed0c9b6a42cc0d5cfec3efa67447376abf5dbf341fc3d63f5eaed5bf9c"
+    },
+    "svg_files_verified": 4,
+    "syntax_files": 73,
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.doc-reconciliation.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "evidence_class": "actual local path/anchor, XML, PNG decode and byte-hash checks; no new artwork or runtime behavior change",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "42554cc840308a3bc0a075f5d5f3ac89d9088b26",
+  "memory_source": "master Page sequence 142",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact artwork/discussion/alt-text owner/destination/accessibility review; do not regenerate retained candidates or repeat completed index reconciliation.",
+  "observed_gap": "Index paragraph described authored copy/visual specifications but omitted the four subsequently retained SVG/PNG review candidates.",
+  "owner_release_approval": "not_granted",
+  "project_id": "ai-jarvis",
+  "record_sha256": "4e11e7afb7535bed040f5719766c5d3c9e6a1e1e247a2717421243cf780fa72c",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "Threads candidate discovery in docs/DAILY_MEDIA_BRIEFS.md only; no source/artwork changes"
+}

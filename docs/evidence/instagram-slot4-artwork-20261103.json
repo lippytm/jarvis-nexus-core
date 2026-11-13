@@ -1,0 +1,100 @@
+{
+  "account_access_verified": false,
+  "canvas": [
+    1080,
+    1080
+  ],
+  "canvas_status": "creative_choice_not_verified_platform_requirement",
+  "cards": [
+    {
+      "alt_text": "The opening card selects an existing unfinished task rather than creating overlapping work.",
+      "card": 1,
+      "main_text": "Make one unfinished task reviewable.",
+      "preview_sha256": "9a87bec4fa02b1032b75996db247c27f3e26697b087cd5ae9fbd128c8c235983",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:8): WARNING **: 01:20:52.920: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot4-card1-20261031.svg",
+      "source_sha256": "059df56f1268732ba5dfd15dad81fb73924db9c2d2251fe0229d1223d9ce50b8"
+    },
+    {
+      "alt_text": "A bounded work brief identifies what should be done, its source revision, allowed action and intended destination.",
+      "card": 2,
+      "main_text": "Name the task, starting version, permitted action and destination.",
+      "preview_sha256": "f6d69a1513143a2ee36169fea2e735d035afd6b947b6678883033f3362a67c37",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:16): WARNING **: 01:20:53.234: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot4-card2-20261031.svg",
+      "source_sha256": "deb4da2e32e675c3ffb7bd9a7025fc43f49eb28c224ee651aa196e23736a5c76"
+    },
+    {
+      "alt_text": "A conceptual return bundle contains the output artifact, observed checks, unresolved limits and a continuation checkpoint.",
+      "card": 3,
+      "main_text": "Example return: artifact + actual checks + limits + checkpoint.",
+      "preview_sha256": "0cd225e209569fd2f62fa97d406d3fbcd94c174fb2761b5e14243ffc2a6016bb",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:24): WARNING **: 01:20:53.552: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot4-card3-20261031.svg",
+      "source_sha256": "067c49e69f7beaca8245892d24ea2fdb5ef69fbad2d31f4ffab871eecd4c1b7e"
+    },
+    {
+      "alt_text": "The card distinguishes proposed observations from accepted project facts and keeps release authority with the owner.",
+      "card": 4,
+      "main_text": "A proposal is not an accepted fact. Review the exact result before release.",
+      "preview_sha256": "e0ac93024a3f2269f6d75e1c37161d64c23b130c4d947766801daf0cfb02e45a",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:32): WARNING **: 01:20:53.880: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot4-card4-20261031.svg",
+      "source_sha256": "99f0ad8839f8cd683621254b7cd3f52e9d1c9742dd543263f210dec8db631620"
+    },
+    {
+      "alt_text": "A closing question asks for one existing task suitable for a bounded review exercise.",
+      "card": 5,
+      "main_text": "Which unfinished task could you make reviewable today?",
+      "preview_sha256": "3e90dc51f1ad8f9e0086b199421a2b92aad04c926ef6120ff929f7a69d4a034a",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:40): WARNING **: 01:20:54.216: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot4-card5-20261031.svg",
+      "source_sha256": "aabd97641ace8fb9d7547b22a7529791b696c4dc88db8691bc4db2dd1c2b922a"
+    }
+  ],
+  "channel": "instagram",
+  "checks": [
+    "Exact visible main/alt text and SVG title/description match source.",
+    "Empty task fields and Review decision box; card 3 visibly labelled Conceptual example.",
+    "No scripts/images/foreignObject/use/links/events/external resources.",
+    "Text wrapping verified with actual DejaVu Sans regular/bold widths.",
+    "Five original preview hashes unchanged; full PNG decode at 1080x1080."
+  ],
+  "completion_date": "2026-11-03",
+  "continuation": "Retained interrupted Oct-31 candidate and five original preview hashes; no regeneration/overwrite/duplicate. Current command probe, source/preview/text/XML/font/decode/syntax verification on Nov-3.",
+  "copy_unchanged": true,
+  "costs_measured": false,
+  "earlier_fifteen_svg_sources_unchanged": true,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "guide_sha256": "1339ce759dfe1ccd96c0f5291a479c9dea387e8eceec95d3f1669fa9c24f8f07",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "343d37414f2dd3416971bff052a0ce8d65b0926c",
+  "mission_id": "jarvis-media-20261029",
+  "mobile_or_screen_reader_checks": "not_performed",
+  "next_task": "Exact caption/art/alt-text owner review and destination/accessibility/export confirmation; all twenty source cards now prepared.",
+  "owner_approval": "not_granted",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.instagram.4",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "c9829eb9d88d9eed99c46e622383a7fee2b94fb57b857194077eddc468968f82",
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "schema_version": 1,
+  "scope": "local_unpublished_svg_artwork_candidates",
+  "slot_4_copy_sha256": "cae30d1e049bc13a12c0ec0a64c2d52fa85444de0c66cdaa6ed04845a2a3a995",
+  "source_brief_sha256": "10750233ecfa3f212fd1acf25fdabc2b4220a075caf5b45492440cbde7cd58bc",
+  "visual_review": "All five original rendered previews individually inspected by assistant; no clipping/overlap observed. Not independent human review."
+}

@@ -1,0 +1,44 @@
+{
+  "scope": "direct Node execution of authored helper tests; not native browser validation",
+  "node_version": "v24.19.0",
+  "files": [
+    {
+      "path": "tests/test_composer.mjs",
+      "sha256": "4bc19c62cc28b003aab8a61dcce1b292f31d82fca23c667695178e770d553a99",
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "path": "tests/test_workbench.mjs",
+      "sha256": "72ba38312cfb93152db11f36a5be603141cbaedf3aa6ba7ba1b4486b808c088d",
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "path": "tests/test_diary_workbench.mjs",
+      "sha256": "0092ed07f2df868b444b8ecf728d3887520345a9b65ff0b736b0057af29aad88",
+      "tests": 48,
+      "pass": 48,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "path": "tests/test_media_player.mjs",
+      "sha256": "7b863cf96cf28cd437c4babac6a4be76f370bc9f3a8dad01acdb321fcc199dbc",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "total_cases": 123,
+  "failed": 0,
+  "skipped": 0,
+  "ci_style_runner_file_groups": 4,
+  "ci_style_runner_log": "diary_multimedia_web_2026_10_22.txt",
+  "individual_case_log": "diary_multimedia_web_cases_2026_10_22.txt"
+}

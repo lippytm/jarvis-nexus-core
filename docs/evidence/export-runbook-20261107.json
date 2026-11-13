@@ -1,0 +1,119 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "document_proposed_export_reconciliation",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "draft engineering authorized; write checks pending; procedure remains proposed and independent/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Extend existing proposed local review runbook with manual envelope export reconciliation: file absence/complete file versus committed export_prepared, exact-selector private read-only observations, mismatches and limits. Production source/tests/schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/command evidence hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision procedure review; registry audience/access acceptance"
+  },
+  "checks": {
+    "actual_procedure": {
+      "command": "PYTHONPATH=. python reports/export-runbook-check-20261107.py",
+      "exit_code": 0,
+      "observations": {
+        "actual_owner_mission_accessed": false,
+        "cases": [
+          {
+            "blocked_checkpoint_retained": true,
+            "commands_passed": 2,
+            "export_prepared": true,
+            "external_actions": 0,
+            "fsync_failure": 1,
+            "output_present": false,
+            "overwrite_refused": true,
+            "private_reports": true,
+            "read_only_database_bytes_unchanged": true
+          },
+          {
+            "blocked_checkpoint_retained": true,
+            "commands_passed": 2,
+            "export_prepared": true,
+            "external_actions": 0,
+            "fsync_failure": 2,
+            "output_present": true,
+            "overwrite_refused": true,
+            "private_reports": true,
+            "read_only_database_bytes_unchanged": true
+          }
+        ],
+        "kind": "actual_synthetic_procedure_check"
+      },
+      "script": "import json, os\nfrom contextlib import redirect_stdout, redirect_stderr\nfrom io import StringIO\nfrom pathlib import Path\nfrom unittest.mock import patch\nfrom scripts.jarvis_network import main\nfrom tests.test_handoff_context_cli import ContextCLITests, REVISION\n\nresults=[]\nfor fail_at in (1,2):\n    fixture=ContextCLITests(); fixture.setUp()\n    try:\n        checksum=fixture.controlled()\n        assert fixture.cli('review','--handoff','cli-task','--reviewer','local-reviewer','--digest',fixture.profile['handoff_sha256']).returncode==0\n        assert fixture.review_context(checksum).returncode==0\n        calls=[]; real=os.fsync\n        def fail_sync(fd):\n            calls.append(fd)\n            if len(calls)==fail_at: raise OSError('Synthetic export sync failure')\n            return real(fd)\n        with patch('scripts.jarvis_network.os.fsync',side_effect=fail_sync),redirect_stdout(StringIO()),redirect_stderr(StringIO()):\n            code=main(['--root',str(fixture.root),'--database','ledger.sqlite3','export-context','--handoff','cli-task','--digest',checksum,'--source-revision',REVISION,'--memory-revision','1','--context-revision','1','--out','private/envelope.json'])\n        assert code==1 and len(calls)==fail_at\n        output=fixture.root/'private/envelope.json'; envelope=output.read_bytes() if output.exists() else None\n        assert (envelope is not None)==(fail_at==2)\n        before=fixture.db.read_bytes()\n        queue=fixture.cli('--read-only','queue-report','--project','ai-jarvis','--mission','cli-task','--include-review-state','--out','reports/export-queue-001.json')\n        recovery=fixture.cli('--read-only','inspect-recovery','--handoff','cli-task','--digest',checksum,'--source-revision',REVISION,'--memory-revision','1','--context-revision','1','--out','reports/export-recovery-001.json')\n        assert queue.returncode==recovery.returncode==0,(queue.stderr,recovery.stderr)\n        q=json.loads((fixture.root/'reports/export-queue-001.json').read_bytes()); r=json.loads((fixture.root/'reports/export-recovery-001.json').read_bytes())\n        binding=q['bindings'][0]; item=r['lineage'][0]\n        assert q['handoff_count']==1 and binding['state']==item['handoff_state']=='export_prepared'\n        assert binding['context_sha256']==item['context']['context_sha256']==checksum\n        assert binding['context_revision']==item['context']['revision']==1\n        assert binding['context_review_current'] and item['context']['review_current']\n        assert item['context']['execution_state']=='execution_blocked' and item['context']['checkpoint_present']\n        assert not q['dispatch_authorized'] and not r['retry_authorized']\n        assert fixture.db.read_bytes()==before\n        assert (output.read_bytes() if output.exists() else None)==envelope\n        assert all((fixture.root/p).stat().st_mode & 0o777==0o600 for p in ['reports/export-queue-001.json','reports/export-recovery-001.json'])\n        assert fixture.cli('--read-only','queue-report','--project','ai-jarvis','--mission','cli-task','--include-review-state','--out','reports/export-queue-001.json').returncode==1\n        assert fixture.db.read_bytes()==before\n        results.append(dict(fsync_failure=fail_at,commands_passed=2,export_prepared=True,output_present=output.exists(),blocked_checkpoint_retained=True,read_only_database_bytes_unchanged=True,private_reports=True,overwrite_refused=True,external_actions=0))\n    finally: fixture.tearDown()\nprint(json.dumps(dict(kind='actual_synthetic_procedure_check',cases=results,actual_owner_mission_accessed=False)))\n",
+      "script_sha256": "98ce26c0a6f2feec6ce927bba3df03260852e6b141895ce97313d7365ea1ba84"
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_export_fsync_failures_retain_committed_state_and_reconcilable_file tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.813s\n\nOK\n",
+      "tests": 2
+    },
+    "local_full_suite": "not repeated for documentation-only change; fresh commit CI recorded in master Page",
+    "syntax": {
+      "errors": 0,
+      "files": 74,
+      "method": "ast.parse all control_tower/scripts/tests Python modules"
+    }
+  },
+  "configuration_version": "codex.export-runbook.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/export-fsync-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "e4800d7fdac5691c607266265af6e00089205c38",
+  "limitations": [
+    "Proposed procedure, not accepted operating policy or independently reviewed approval. Fixture execution is distinct from actual owner incident/recovery.",
+    "Separate snapshots do not freeze concurrent edits; neither read-only command validates the exported file or authenticates approval. Database and file publication are not atomic.",
+    "No actual owner mission access, worker, lease, automatic retry/failover/reconnect controller, permissions change, merge, deployment, dispatch, publication or spending. Paused mission/schedules untouched.",
+    "All 17 portable targets/business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "memory_revision": 195,
+  "metrics": {
+    "actual_synthetic_read_only_commands": 4,
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_fault_injections": 2
+  },
+  "mission_id": "export-runbook-20261107",
+  "next_task": "Independent exact-revision procedure and export recovery review; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "11f0a19f4e729f27a8917958dde31dbc7c17f8121e9835ce7beb22562b21fb0e",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "438271035115d556df2ea63c45d5b003546aa90cd22a91524945ef645a727d6f"
+  },
+  "tracked_patch_sha256": "bf6d0f0b9677e882188ead89ba21cfa7b09af23a761d8e5cd7cfe4c902211e3b",
+  "visibility": "owner_private"
+}

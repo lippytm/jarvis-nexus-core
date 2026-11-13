@@ -1,0 +1,68 @@
+{
+  "asset_id": "codex",
+  "change": "check-review-receipt --handoff ID --file receipt.json [--out check.json] always opens existing ledger read-only and reuses bounded JSON loader/path/private output guards; --read-only also accepted. No ledger API/schema or authority change.",
+  "checks": {
+    "behavior": [
+      "actual subprocess restart verifies saved receipt using existing API",
+      "database and original receipt bytes unchanged with and without --read-only",
+      "optional 0600 output matches stdout check metadata; no raw context/reviewer text",
+      "existing output refuses overwrite",
+      "missing ledger creates no database/directory",
+      "duplicate-key JSON, bad digest and stale receipt reject with no output or ledger writes"
+    ],
+    "focused": {
+      "passed": true,
+      "run": 2,
+      "seconds": 1.248
+    },
+    "full": {
+      "record_sha256": "0ce23a276de68b888543d10174b042234d961048ed1b906c65edcecaad007a74",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 555,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.saved-review-cli.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "1d94a808f1ade11d5f4c9c581d0cc080c45b29b4",
+  "limitations": [
+    "local consistency only, not identity authentication, owner approval or live provider delivery",
+    "timestamps not archived/attested; unkeyed hashes do not authenticate receipts",
+    "no retry/dispatch/release authority, accepted registry or worker added"
+  ],
+  "memory_revision": 167,
+  "mission_id": "saved-review-cli-20261106",
+  "next_task": "independent exact-revision review; accepted registry audience/access policy remains pending",
+  "observed_gap": "Saved-review receipt consistency API was not exposed by the existing CLI.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "212fa93850f633dff1fe7461c872c233b47d601249c5e76e715b05bd898d63fe",
+  "reports_sha256": {
+    "reports/saved-review-cli-focused-20261106.txt": "1d2b3c736562ed3a0ae821de5d0a81fa37aad39942a2283d781f18a6c8914b8e",
+    "reports/saved-review-cli-full-20261106.json": "0561023fcef3d216c9934b45b6dff3dcae21d4c44c1a792c325e89c4282d1415",
+    "reports/saved-review-cli-web-20261106.txt": "0c225df98d122ba048276818bb9693eb1a31b38594386be95d8252f712d2e4db"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "a93d4b22a5768f8f37447b795fafc42cdab7da6ac38f0df8e68a4cd8287a4895",
+    "scripts/jarvis_network.py": "d5bc6e4cc90ff61bf5da71bec5091f3fe7a2dcbeb2af11d792ac00f86b2c418d",
+    "tests/test_handoff_context_cli.py": "4e20f4bdd2df0d6ebabf43549506dee85bb10a7695c67b699850ef2bac2e8d79"
+  }
+}

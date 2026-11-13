@@ -1,0 +1,124 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/substack-20261029/slot-1.png": "7649b03f982cd330518b70f5fae8cdff5a591f38d6f469dc74ad8b4eea15fdd9",
+    "docs/media/jarvis-substack-four-slots-20261029.md": "3b954285d4899f686f62ee9c04c0cbaa7fd13f1225ba87ae49e30544cd569845",
+    "docs/media/jarvis-substack-slot1-20261105.svg": "b530ed689c09621233e634853b0f753b19977cec98022dd9432b4162414e10bc"
+  },
+  "checks": {
+    "campaign_and_other_slots_unchanged": true,
+    "empty_region_sha256": {
+      "artifact": "a725001695d9ebe8aea1f2e993f6f9336350c9c7ddd09787f9bf2fa97a6fd46b",
+      "checks": "a725001695d9ebe8aea1f2e993f6f9336350c9c7ddd09787f9bf2fa97a6fd46b",
+      "revision": "a725001695d9ebe8aea1f2e993f6f9336350c9c7ddd09787f9bf2fa97a6fd46b"
+    },
+    "new_unit_tests": 0,
+    "note_bodies_unchanged": 4,
+    "png_bytes": 136334,
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager object wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "AN UPDATE WORTH PICKING UP",
+        "width": 713.03125
+      },
+      {
+        "text": "CONCEPTUAL EXAMPLE \u2022 UNPUBLISHED NOTE",
+        "width": 602.828125
+      },
+      {
+        "text": "Keep the starting version, changed artifact and actual checks together.",
+        "width": 892.1875
+      },
+      {
+        "text": "Starting revision",
+        "width": 283.984375
+      },
+      {
+        "text": "Changed artifact",
+        "width": 283.796875
+      },
+      {
+        "text": "Actual checks",
+        "width": 232.75
+      },
+      {
+        "text": "Review pending",
+        "width": 323.484375
+      },
+      {
+        "text": "Reference fields are empty. No execution result is depicted.",
+        "width": 774.578125
+      },
+      {
+        "text": "A retained change does not establish a deployed service or connected account.",
+        "width": 997.875
+      },
+      {
+        "text": "Destination: unassigned",
+        "width": 290.71875
+      },
+      {
+        "text": "Draft only \u2022 No publication or subscriber email authorized.",
+        "width": 703.828125
+      }
+    ],
+    "visual_inspection": "Full PNG inspected; no observed clipping/overlap; three empty references and Review pending, conceptual/unpublished labels and no execution/service/account claims visible.",
+    "whitespace": "git diff --check passed",
+    "xml_resource_checks": true
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "depicted_execution_result_or_approval": "none_conceptual_only_review_pending",
+  "destination": "substack/account unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "finished_video_or_publication": false,
+  "independent_review": "not_performed",
+  "input_revision": "5b886578933457ec79eba1d2c02e6b2fcb8b2259",
+  "memory_source": "master Page sequence 143",
+  "mission_id": "jarvis-media-20261029",
+  "newsletter_schedule_changed": false,
+  "next_task": "Exact SVG/PNG/Note/alt-text owner, destination and accessibility review; optional slot 2-4 artwork remains unrendered.",
+  "operational_ledger_changed": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "dimensions": [
+      1400,
+      1000
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.substack.1",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "10270bdc405fe95e4c1510fcc7f1ab301679ac8165119f7d76e492c43889dfab",
+  "registry_accepted": false,
+  "revision_conflicts": 0,
+  "rights_device_accessibility_platform_acceptance": "not_verified",
+  "schema_version": 1,
+  "scope": "unpublished original Substack three-row concept card; no runtime changes"
+}

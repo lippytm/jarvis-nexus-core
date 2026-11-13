@@ -1,0 +1,123 @@
+# Daily media assignments
+
+`control_tower.campaigns.daily_campaign_briefs` compiles an existing validated
+mission into four distinct editorial assignments on each of Facebook, LinkedIn,
+YouTube, Instagram, Threads and Substack. It retains the existing channel briefs
+and their exact audience, objective, destination, disclosure and evidence limits.
+Each assignment binds to its included source brief by SHA-256. Transfer the
+complete packet with those source briefs; an assignment alone lacks that context.
+
+The four angles are explanation, demonstration, limitations and a bounded next
+step. Channel-specific production choices include a captioned illustration,
+slide explainer, video storyboard, carousel, text discussion and Substack Note.
+Durations, word counts and frame counts are proposed creative choices, not
+verified platform upload requirements. These are media specifications requiring
+copywriting, asset creation and review, not 24 completed posts or finished videos.
+
+The new explicit `jarvis.daily_campaign_briefs` kind leaves existing mission,
+campaign and strict version-1 draft contracts unchanged. Its editorial date is
+an exact ISO calendar date, not a publication time, schedule or dispatch lease.
+Review remains pending, publication_schedule and actual_metrics remain null,
+and model_calls/external_actions remain zero. Account access, private storage
+authentication, owner release and publication remain separate requirements.
+The complete compact packet must fit the existing bounded JSON loader.
+
+## Local command-line workflow
+
+Use a previously saved validated mission, an explicit editorial date and fresh
+output paths under the chosen root:
+
+```bash
+python scripts/jarvis_portfolio.py --root /your/workspace daily-campaign --mission-file mission.json --editorial-date 2026-10-29 --out daily.json
+python scripts/jarvis_portfolio.py --root /your/workspace export-daily-assignment --mission-file mission.json --editorial-date 2026-10-29 --channel youtube --slot 2 --campaign-digest YOUR_DAILY_BRIEFS_SHA256 --out selected.json
+```
+
+Read `briefs_sha256` from `daily.json` and supply that exact value in the second
+command. If using `--destination-index`, use the same explicit choice in both
+commands. A changed date, source mission or destination invalidates the digest.
+Existing files cannot be overwritten. The selector saves a draft only; neither
+command stages a queue item, grants review, schedules work, connects an account
+or publishes anything. The existing portfolio commands keep their behavior.
+
+The saved [24-assignment example](../examples/portfolio/jarvis-daily-media-20261029.json)
+uses source revision `3f1b4e5697e9ed74430214563008a6c8dea093fd`, the exact `codex`
+engineering target and the existing `jarvis-tools` initiative. It does not claim
+new integrations or runtime availability. Its mission can be reproduced with:
+
+```python
+from control_tower.missions import compile_mission
+from control_tower.campaigns import daily_campaign_briefs
+
+mission = compile_mission({
+    "schema_version": 1, "kind": "jarvis.mission_request",
+    "initiative_id": "jarvis-tools", "target": "codex",
+    "objective": "Explain how a source revision, an exact-content review and an actual test receipt support a bounded Jarvis engineering task. Distinguish development evidence from deployed services.",
+    "timebox_minutes": 30,
+}, mission_id="jarvis-media-20261029",
+   source_revision="3f1b4e5697e9ed74430214563008a6c8dea093fd")
+packet = daily_campaign_briefs(mission, editorial_date="2026-10-29")
+```
+
+This API prepares one packet at a time. It does not reserve a mission ID in a
+durable queue, detect already published content, create agents, start a worker,
+or change any newsletter schedule. Use the existing ledger's exact-content
+review flow and an authenticated adapter before any future external action.
+
+## Select one source-complete assignment
+
+`daily_assignment_draft` rebuilds the campaign from its validated mission and
+requires its exact digest before selecting one channel/slot. It returns an
+unchanged strict version-1 draft shape whose text includes the assignment, date,
+campaign digest and complete source brief (audience, objective, destination,
+disclosures and evidence limits). This avoids transferring an assignment without
+the context it references. The returned draft still requires exact-content review.
+
+```python
+from control_tower.campaigns import daily_assignment_draft
+
+draft = daily_assignment_draft(
+    mission, editorial_date="2026-10-29", channel="youtube", slot=2,
+    expected_campaign_sha256=packet["briefs_sha256"],
+)
+```
+
+The selector does not authenticate the source or reviewer, persist a queue item,
+or dispatch anything. A changed date, mission or destination choice must be
+recompiled and selected with its new digest. To retain the draft, explicitly stage
+it in the existing HandoffLedger with a scoped swarm/assistant/handoff identity;
+that ledger preserves its original review, duplicate and restart controls.
+Context envelopes and per-destination holds remain necessary wherever applicable.
+
+The saved [YouTube slot-2 draft](../examples/portfolio/jarvis-daily-youtube-slot2.draft.json)
+was selected from the exact 24-assignment example above. It targets `codex` for
+preparation, includes its source brief and has not been staged in an operational
+ledger, reviewed by the owner, sent to a provider or turned into a finished video.
+
+The portfolio CLI writer flushes file contents before publishing a fresh name
+without overwrite; on POSIX it also flushes the containing directory before
+reporting success. A directory-sync error returns failure while retaining the
+complete file. Inspect that artifact before retrying: an existing output still
+cannot be overwritten. Temporary files are cleaned up. These checks do not test
+physical power-loss recovery or guarantee durability of newly created ancestor
+directories; non-POSIX behavior retains the existing file flush and no-overwrite.
+
+The selected assignment now has an [unpublished script and shot plan](media/jarvis-youtube-slot2-20261029.md),
+proposed captions, an original SVG storyboard and a [retained PNG review preview](media/jarvis-youtube-slot2-20261029.md#slot-2-png-review-candidate). These are review artifacts;
+narration recording, final caption timing, video rendering and release remain unfinished. A separate [slot-2 SVG/PNG thumbnail review candidate](media/jarvis-youtube-slot2-20261029.md#slot-2-thumbnail-review-candidate) retains the specified task/revision/receipt motif, empty fields, Review pending and unverified service status; exact art/copy/alt review and channel/destination/accessibility acceptance remain pending.
+
+YouTube slot 1 now has a separate [unpublished narration and six-shot plan](media/jarvis-youtube-slot1-20261029.md), with proposed SRT captions, title/description and thumbnail specification. [Six-panel SVG and PNG storyboard candidates](media/jarvis-youtube-slot1-20261029.md#slot-1-storyboard-review-candidate) are retained. A separate [SVG/PNG thumbnail review candidate](media/jarvis-youtube-slot1-20261029.md#slot-1-thumbnail-review-candidate) is retained with three labelled cards and an empty review field. Narration recording, finished video, exact thumbnail/copy owner review and channel/destination confirmation remain pending. Slots 3 and 4 have their own packages below. The existing slot-2 package and newsletter schedule are unchanged.
+
+YouTube slot 3 now has an [unpublished evidence-limits script package](media/jarvis-youtube-slot3-20261029.md), with proposed SRT captions, six shot directions, upload-copy drafts and thumbnail/accessibility specifications. Its runner/local comparison is hypothetical; it reports no new outage, recovery or runtime result. No audio/video is produced or uploaded; exact-copy review, channel/destination and final recorded timing remain unfinished. A separate [SVG/PNG thumbnail review candidate](media/jarvis-youtube-slot3-20261029.md#slot-3-thumbnail-review-candidate) retains two evidence cards, an empty observation field and visible hypothetical/pending-review labels; exact artwork/alt/device/accessibility/platform acceptance remains pending.
+
+YouTube slot 4 now has an [unpublished bounded-next-step script package](media/jarvis-youtube-slot4-20261029.md), with proposed SRT captions, six shot directions, upload-copy drafts and thumbnail/accessibility specifications. All four YouTube slots have authored script/SRT packages and retained SVG/PNG storyboard candidates, including [slot 3](media/jarvis-youtube-slot3-20261029.md#slot-3-storyboard-review-candidate) and [slot 4](media/jarvis-youtube-slot4-20261029.md#slot-4-storyboard-review-candidate). Recording, retiming, approved thumbnails, animation and finished video, channel access, owner review and publication remain unfinished. No newsletter schedule was changed. A separate [slot-4 SVG/PNG thumbnail review candidate](media/jarvis-youtube-slot4-20261029.md#slot-4-thumbnail-review-candidate) completes the four thumbnail candidates; blank task/check/review fields and Draft only/pending-review labels imply no completion or approval.
+
+The four Facebook slots now have an [unpublished copy and illustration-specification package](media/jarvis-facebook-four-slots-20261029.md). Captions and proposed alt text are authored; four SVG sources and [four PNG export candidates](media/jarvis-facebook-four-slots-20261029.md#png-export-candidates) are retained. Exact image/caption/alt-text owner review, rights, destination/mobile/accessibility/platform acceptance and publication remain unfinished.
+
+
+The four LinkedIn slots now have an [unpublished caption and four-slide script package](media/jarvis-linkedin-four-slots-20261029.md). Four captions, sixteen slide scripts and accessibility text are authored; sixteen SVG sources and four PDF review exports are retained ([slot 1](media/jarvis-linkedin-four-slots-20261029.md#slot-1-pdf-export-candidate), [slot 2](media/jarvis-linkedin-four-slots-20261029.md#slot-2-pdf-export-candidate), [slot 3](media/jarvis-linkedin-four-slots-20261029.md#slot-3-pdf-export-candidate), [slot 4](media/jarvis-linkedin-four-slots-20261029.md#slot-4-pdf-export-candidate)). PDFs are untagged; reading-order/screen-reader, rights, exact destination, owner review and publication remain unfinished.
+
+The four Instagram slots now have an [unpublished caption and five-card carousel script package](media/jarvis-instagram-four-slots-20261029.md). Four captions, twenty card scripts and proposed alt text are authored; twenty SVG sources and twenty PNG review exports are retained ([slot 1](media/jarvis-instagram-four-slots-20261029.md#slot-1-png-export-candidates), [slot 2](media/jarvis-instagram-four-slots-20261029.md#slot-2-png-export-candidates), [slot 3](media/jarvis-instagram-four-slots-20261029.md#slot-3-png-export-candidates), [slot 4](media/jarvis-instagram-four-slots-20261029.md#slot-4-png-export-candidates)). Exact caption/card/alt-text owner review, rights, destination/mobile/accessibility/platform acceptance and publication remain unfinished.
+
+The four Threads slots now have an [unpublished three-part discussion package](media/jarvis-threads-four-slots-20261029.md). Twelve text units, four SVG sources and four PNG review previews are retained ([slot 1](media/jarvis-threads-four-slots-20261029.md#slot-1-artwork-candidate), [slot 2](media/jarvis-threads-four-slots-20261029.md#slot-2-artwork-candidate), [slot 3](media/jarvis-threads-four-slots-20261029.md#slot-3-artwork-candidate), [slot 4](media/jarvis-threads-four-slots-20261029.md#slot-4-artwork-candidate)). Conceptual/synthetic labels, empty reference/review fields and evidence limits remain part of their respective candidates. Exact artwork/discussion/alt-text owner review, rights, destination/device/accessibility/platform acceptance and publication remain unfinished. No audience replies are invented or sent; these candidates are not published posts or finished videos.
+
+The four Substack slots now have an [unpublished Note-copy package](media/jarvis-substack-four-slots-20261029.md). Four complete Note drafts and optional visual/alt-text specifications are authored; four SVG sources and four PNG review previews are retained ([slot 1](media/jarvis-substack-four-slots-20261029.md#slot-1-artwork-candidate), [slot 2](media/jarvis-substack-four-slots-20261029.md#slot-2-artwork-candidate), [slot 3](media/jarvis-substack-four-slots-20261029.md#slot-3-artwork-candidate), [slot 4](media/jarvis-substack-four-slots-20261029.md#slot-4-artwork-candidate)). Slot 1 retains empty references and Review pending; slot 2 labels its synthetic A/B cards as a proposed exercise with no new run reported. Slot 3 keeps four separate empty evidence fields, without availability or delivery claims. Slot 4 retains four empty checklist boxes, Draft only and Review pending, without completion or approval claims. Exact artwork/Note/alt-text owner review, rights, account/destination/device/accessibility/platform acceptance and publication remain unfinished. These are editorial slots, not scheduled newsletter editions or subscriber emails; the existing Daily Newsletter schedule is unchanged.

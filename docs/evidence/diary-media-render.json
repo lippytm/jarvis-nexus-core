@@ -1,0 +1,133 @@
+{
+  "ebook_reader_validation": "not_performed",
+  "edition_timestamp": "2026-10-22T22:00:31Z",
+  "external_actions": 0,
+  "ffmpeg_version": "6.1.1-3ubuntu5",
+  "files": [
+    {
+      "bytes": 2398937,
+      "filename": "Jarvis_Diary_Media_Pack_2026-10-22.zip",
+      "sha256": "e2d8122831dc941d9d606bd540f28ebf18b3e75be7d492377a6b3869f86517f7"
+    },
+    {
+      "bytes": 2550,
+      "filename": "Jarvis_Diary_Ebook_2026-10-22.epub",
+      "sha256": "eb5ad32fcc2b28d5542bfd8d86b69c9fb45d140b1f8d65e7573229a6cbce9986"
+    },
+    {
+      "bytes": 349480,
+      "filename": "Jarvis_Diary_Trailer_Concept_2026-10-22.mp4",
+      "sha256": "c0eb282d8e4825b1af6a398cb78ce33c81958b0940eb9713173ff31edb5befc8"
+    },
+    {
+      "bytes": 1622274,
+      "filename": "Jarvis_Diary_Narration_Preview_2026-10-22.wav",
+      "sha256": "4da8cfed4698f1f5def3c9a1dba306f62e08cb4cc0aaed43e67051607659e189"
+    },
+    {
+      "bytes": 960044,
+      "filename": "Jarvis_Diary_Music_Sketch_2026-10-22.wav",
+      "sha256": "60028c66770e414ef57ad8538256057fd8cb56b3dd7f090e04b1a4b7e7d6e67e"
+    },
+    {
+      "bytes": 9821,
+      "filename": "Jarvis_Diary_Interactive_Edition_2026-10-22.html",
+      "sha256": "0ad31020a00de4a20b84b8430627659a2c6f8e91359352ec15f7f617b5a2f75f"
+    }
+  ],
+  "full_media_decode": "passed: preview.mp4, narration.wav, music_bed.wav",
+  "generator_state": "working_tree_before_publication",
+  "hardened_bundler_roundtrip": "exact bytes match after canonical source JSON roundtrip",
+  "kind": "jarvis.diary_media_render_verification",
+  "listening_quality_review": "not_performed",
+  "manifest_files_verified": 20,
+  "model_calls": 0,
+  "native_browser_validation": "not_performed",
+  "pack_file_count": 21,
+  "probe_summaries": {
+    "music_bed.wav": {
+      "bytes": 960044,
+      "duration_seconds": 30.0,
+      "streams": [
+        {
+          "channels": 1,
+          "codec_name": "pcm_s16le",
+          "codec_type": "audio",
+          "duration": "30.000000",
+          "r_frame_rate": "0/0",
+          "sample_rate": "16000"
+        }
+      ]
+    },
+    "narration.wav": {
+      "bytes": 1622274,
+      "duration_seconds": 101.38725,
+      "streams": [
+        {
+          "channels": 1,
+          "codec_name": "pcm_s16le",
+          "codec_type": "audio",
+          "duration": "101.387250",
+          "r_frame_rate": "0/0",
+          "sample_rate": "8000"
+        }
+      ]
+    },
+    "preview.mp4": {
+      "bytes": 349480,
+      "duration_seconds": 30.0,
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "duration": "30.000000",
+          "height": 540,
+          "r_frame_rate": "24/1",
+          "width": 960
+        },
+        {
+          "channels": 1,
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "duration": "30.000000",
+          "r_frame_rate": "0/0",
+          "sample_rate": "16000"
+        }
+      ]
+    }
+  },
+  "publication": "not_performed",
+  "render_receipt": {
+    "expected_video_duration_seconds": 30,
+    "external_actions": 0,
+    "files": [
+      {
+        "bytes": 1622274,
+        "path": "narration.wav",
+        "sha256": "4da8cfed4698f1f5def3c9a1dba306f62e08cb4cc0aaed43e67051607659e189"
+      },
+      {
+        "bytes": 349480,
+        "path": "preview.mp4",
+        "sha256": "c0eb282d8e4825b1af6a398cb78ce33c81958b0940eb9713173ff31edb5befc8"
+      }
+    ],
+    "kind": "jarvis.media_render_receipt",
+    "model_calls": 0,
+    "narration_kind": "rough_generic_flite_kal_voice",
+    "preview_kind": "text_card_concept_animatic",
+    "schema_version": 1,
+    "source_context_revision": "e645c64975dc05f3b0a0f9e06d7cc903d70031b0",
+    "source_entry_sha256": "d775c794a69a05ceb0fea71e7f154dbd8dfe90f7d7c50ebf7b35c661b98be8ed",
+    "speech_alignment": "not_implemented; storyboard text cues are separate"
+  },
+  "renderer_sha256": "23d63e77038e540539f9f511404e9da0fca8eb576554de94595b4286e56835e2",
+  "sampled_video_frames": {
+    "count": 4,
+    "status": "visually reviewed: readable text, no observed overlap or clipping"
+  },
+  "schema_version": 1,
+  "source_context_revision": "e645c64975dc05f3b0a0f9e06d7cc903d70031b0",
+  "source_entry_sha256": "d775c794a69a05ceb0fea71e7f154dbd8dfe90f7d7c50ebf7b35c661b98be8ed",
+  "source_record": "examples/diary/public-project-entry.json"
+}
