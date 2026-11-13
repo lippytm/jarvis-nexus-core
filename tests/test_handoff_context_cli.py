@@ -2477,6 +2477,94 @@ class ContextCLITests(unittest.TestCase):
                         self.assertEqual(tuple(ledger.db.iterdump()), rows)
                 self.assertEqual(self.db.read_bytes(), seed_bytes)
 
+    def test_archived_review_load_cli_recovers_original_receipt_without_writes(self):
+        checksum = self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        paused = self.save(1)
+        self.assertEqual(paused.returncode, 0, paused.stderr)
+        checksum = json.loads(paused.stdout)["context_sha256"]
+        with HandoffLedger(self.db) as ledger:
+            with patch("control_tower.handoffs._now", return_value="2026-11-13T00:00:00+00:00"):
+                receipt = ledger.review_context("cli-task", reviewer_id="local-reviewer",
+                    expected_sha256=checksum, expected_revision=2, include_receipt=True, archive_receipt=True)
+        before = self.db.read_bytes()
+        args = ("load-review-receipt", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                "--digest", checksum, "--context-revision", "2")
+        recovered = self.cli(*args)
+        self.assertEqual(recovered.returncode, 0, recovered.stderr)
+        self.assertEqual(json.loads(recovered.stdout), receipt)
+        self.assertEqual(receipt["recorded_at"], "2026-11-13T00:00:00+00:00")
+        self.assertEqual((receipt["control_state"], receipt["execution_state"]), ("paused", "outcome_unknown"))
+        self.assertFalse(receipt["retry_authorized"])
+        self.assertFalse(receipt["dispatch_authorized"])
+        self.assertNotIn("https://", recovered.stdout)
+        self.assertNotIn("Synthetic", recovered.stdout)
+        saved = self.cli("--read-only", *args, "--out", "private/recovered.json")
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        self.assertEqual(json.loads(saved.stdout), {"saved": "private/recovered.json", "external_actions": 0})
+        output = self.root / "private/recovered.json"
+        content = output.read_bytes()
+        self.assertEqual(json.loads(content), receipt)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--out", "private/recovered.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            current = ledger.load_context("cli-task", expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertEqual(current["profile"], self.profile)
+            self.assertTrue(ledger.check_context_review_receipt("cli-task", receipt)["local_binding_matches"])
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_archived_review_load_cli_refuses_missing_archive_and_stale_restored_selection(self):
+        checksum = self.controlled(execution="execution_blocked")
+        args = ["load-review-receipt", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                "--digest", checksum, "--context-revision", "1"]
+        with HandoffLedger(self.db) as ledger:
+            ledger.review_context("cli-task", reviewer_id="local-reviewer", expected_sha256=checksum)
+        before = self.db.read_bytes()
+        missing = self.cli(*args, "--out", "rejected/missing.json")
+        self.assertEqual(missing.returncode, 1, missing.stderr)
+        self.assertIn("no context review archive", missing.stderr)
+        self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db) as ledger:
+            ledger.review_context("cli-task", reviewer_id="local-reviewer", expected_sha256=checksum,
+                expected_revision=1, include_receipt=True, archive_receipt=True)
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Temporary private edit."
+        self.write(changed)
+        self.assertEqual(self.save(1).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(2)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        with HandoffLedger(self.db) as ledger:
+            receipt = ledger.review_context("cli-task", reviewer_id="local-reviewer", expected_sha256=checksum,
+                expected_revision=3, include_receipt=True, archive_receipt=True)
+        before = self.db.read_bytes()
+        variants = [args, [*args[:-1], "0"], [*args[:-1], "4"],
+                    ["different-reviewer" if v == "local-reviewer" else v for v in [*args[:-1], "3"]],
+                    ["0" * 64 if v == checksum else v for v in [*args[:-1], "3"]]]
+        for number, variant in enumerate(variants):
+            with self.subTest(selector=number):
+                result = self.cli(*variant, "--out", f"rejected/{number}.json")
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertNotIn("Temporary private", result.stderr)
+                self.assertEqual(self.db.read_bytes(), before)
+        self.assertFalse((self.root / "rejected").exists())
+        for flag in ("--handoff", "--reviewer", "--digest", "--context-revision"):
+            incomplete = [*args[:-1], "3"]
+            index = incomplete.index(flag)
+            del incomplete[index:index + 2]
+            self.assertEqual(self.cli(*incomplete).returncode, 2)
+        self.assertEqual(self.cli(*args, database="absent.sqlite3").returncode, 1)
+        self.assertFalse((self.root / "absent.sqlite3").exists())
+        current = self.cli(*args[:-1], "3")
+        self.assertEqual(current.returncode, 0, current.stderr)
+        self.assertEqual(json.loads(current.stdout), receipt)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_saved_review_check_cli_reopens_without_ledger_or_receipt_writes(self):
         checksum = self.controlled(execution="outcome_unknown")
         created = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",

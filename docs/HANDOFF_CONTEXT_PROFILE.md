@@ -1050,6 +1050,19 @@ or authorize retry/dispatch. Missing archives, stale revisions/digests, changed
 reviewer bindings and corrupt receipts refuse. The archived timestamp is local
 recorded evidence, not independently authenticated identity or release approval.
 
+The CLI exposes this recovery read through `load-review-receipt --handoff ID
+--reviewer LABEL --digest CONTEXT_SHA256 --context-revision N [--out
+private/recovered.json]`. All four selectors are required. It always opens the
+existing ledger read-only, with or without `--read-only`; it does not create an
+archive, migrate storage or repeat the review. Without `--out`, the original
+version-1 metadata receipt is returned on stdout. Optional file output uses the
+existing root-relative private (0600), fsynced, no-overwrite writer. Missing
+ledgers/archives, changed reviewer bindings, stale revisions (including restored
+content) and digest mismatch fail without creating an output or changing ledger
+bytes. API archive creation remains opt-in and has no CLI flag. After an output
+I/O failure, inspect the named file before selecting a fresh output path; the
+ledger remains read-only and no retry or dispatch authority follows recovery.
+
 Version-4 reopen preserves the schema; checkpoint capture/list/load and checked
 backups retain version 4 and receipt rows. Backup validation checks every bounded
 archived receipt as historical metadata, including invalidated prior reviews; a

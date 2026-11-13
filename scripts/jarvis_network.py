@@ -391,6 +391,12 @@ def main(argv=None):
     context_review.add_argument("--context-revision", type=int, help="Require the exact stored context revision")
     context_review.add_argument("--include-receipt", action="store_true", help="Return a versioned private review receipt; requires --context-revision")
     context_review.add_argument("--out", help="Save the private receipt to a fresh file; requires --include-receipt and --context-revision")
+    receipt_load = commands.add_parser("load-review-receipt", help="Recover an archived current local receipt without ledger writes or re-review")
+    receipt_load.add_argument("--handoff", required=True)
+    receipt_load.add_argument("--reviewer", required=True, help="Exact local reviewer label, not authenticated identity")
+    receipt_load.add_argument("--digest", required=True, help="Exact selected context SHA-256")
+    receipt_load.add_argument("--context-revision", type=int, required=True)
+    receipt_load.add_argument("--out", help="Save private receipt metadata to a fresh file")
     receipt_check = commands.add_parser("check-review-receipt", help="Check saved local receipt against current binding without ledger writes")
     receipt_check.add_argument("--handoff", required=True)
     receipt_check.add_argument("--file", required=True)
@@ -486,7 +492,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.read_only and args.command not in {"status", "load-context", "inspect-recovery",
-            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "check-backup-digest", "check-review-files", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt"}:
+            "check-recovery", "prepare-reconciliation", "destination-status", "bind-observation", "backup-ledger", "check-backup-digest", "check-review-files", "queue-report", "load-checkpoint", "list-checkpoints", "inspect-registry", "check-review-receipt", "load-review-receipt"}:
             raise ValueError("read-only mode permits inspection and backup commands only")
         root = Path(args.root).resolve(strict=True)
         if not root.is_dir():
@@ -562,7 +568,7 @@ def main(argv=None):
             database = _local(root, args.database)
             if args.command != "stage" and not database.is_file():
                 raise ValueError("operation requires an existing ledger; use stage to create a new ledger")
-            with HandoffLedger(database, read_only=args.read_only or registry is not None or args.command in {"load-checkpoint", "list-checkpoints", "check-review-receipt"}) as ledger:
+            with HandoffLedger(database, read_only=args.read_only or registry is not None or args.command in {"load-checkpoint", "list-checkpoints", "check-review-receipt", "load-review-receipt"}) as ledger:
                 if args.command == "stage":
                     result = ledger.stage(draft, manifest, assistant_id=args.assistant,
                                           handoff_id=args.handoff, parent_id=args.parent)
@@ -596,6 +602,9 @@ def main(argv=None):
                         expected_source_revision=args.source_revision, expected_memory_revision=args.memory_revision)
                 elif args.command == "check-review-receipt":
                     result = ledger.check_context_review_receipt(args.handoff, review_receipt)
+                elif args.command == "load-review-receipt":
+                    result = ledger.load_context_review_receipt(args.handoff, expected_revision=args.context_revision,
+                        expected_sha256=args.digest, reviewer_id=args.reviewer)
                 elif args.command == "review-context":
                     receipt = ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest,
                                           expected_revision=args.context_revision, include_receipt=args.include_receipt)
