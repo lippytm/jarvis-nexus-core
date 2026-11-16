@@ -2516,6 +2516,67 @@ class ContextCLITests(unittest.TestCase):
             self.assertTrue(ledger.check_context_review_receipt("cli-task", receipt)["local_binding_matches"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    @unittest.skipUnless(os.name == "posix", "directory fsync is POSIX-specific")
+    def test_archived_review_load_sync_failure_is_reconcilable_without_ledger_changes(self):
+        from contextlib import redirect_stdout, redirect_stderr
+        from io import StringIO
+        from scripts.jarvis_network import main
+        self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        saved = self.save(1)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        with HandoffLedger(self.db) as ledger:
+            receipt = ledger.review_context("cli-task", reviewer_id="local-reviewer",
+                expected_sha256=checksum, expected_revision=2, include_receipt=True, archive_receipt=True)
+        before = self.db.read_bytes()
+        args = ["load-review-receipt", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                "--digest", checksum, "--context-revision", "2"]
+        real_fsync = os.fsync
+        for fail_at in (1, 2):
+            with self.subTest(fsync_call=fail_at):
+                output = self.root / f"private/recovered-{fail_at}.json"
+                calls = []
+
+                def fail_fsync(fd):
+                    calls.append(fd)
+                    if len(calls) == fail_at:
+                        raise OSError("Synthetic private error must not escape.")
+                    return real_fsync(fd)
+
+                stdout, stderr = StringIO(), StringIO()
+                with patch("scripts.jarvis_network.os.fsync", side_effect=fail_fsync), \
+                        redirect_stdout(stdout), redirect_stderr(stderr):
+                    code = main(["--root", str(self.root), "--database", "ledger.sqlite3",
+                        *args, "--out", str(output.relative_to(self.root))])
+                self.assertEqual((code, len(calls), stdout.getvalue()), (1, fail_at, ""))
+                self.assertEqual(json.loads(stderr.getvalue()), {"error": "OSError", "external_actions": 0})
+                self.assertEqual(list(output.parent.glob(".jarvis-write-*")), [])
+                self.assertEqual(self.db.read_bytes(), before)
+                if fail_at == 1:
+                    self.assertFalse(output.exists())
+                else:
+                    content = output.read_bytes()
+                    self.assertEqual(json.loads(content), receipt)
+                    self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+                    refused = self.cli(*args, "--out", str(output.relative_to(self.root)))
+                    self.assertEqual(refused.returncode, 1, refused.stderr)
+                    self.assertEqual(output.read_bytes(), content)
+                    checked = self.cli("--read-only", "check-review-receipt", "--handoff", "cli-task",
+                        "--file", str(output.relative_to(self.root)), "--receipt-digest", receipt["receipt_sha256"])
+                    self.assertEqual(checked.returncode, 0, checked.stderr)
+                    self.assertTrue(json.loads(checked.stdout)["local_binding_matches"])
+                recovered = self.cli("--read-only", *args)
+                self.assertEqual(recovered.returncode, 0, recovered.stderr)
+                self.assertEqual(json.loads(recovered.stdout), receipt)
+                self.assertEqual(self.db.read_bytes(), before)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            current = ledger.load_context("cli-task", expected_source_revision=REVISION, expected_memory_revision=1)
+            self.assertEqual(current["profile"], self.profile)
+            self.assertEqual(ledger.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 1)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_archived_review_load_cli_refuses_missing_archive_and_stale_restored_selection(self):
         checksum = self.controlled(execution="execution_blocked")
         args = ["load-review-receipt", "--handoff", "cli-task", "--reviewer", "local-reviewer",
