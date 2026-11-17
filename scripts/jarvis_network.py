@@ -390,6 +390,7 @@ def main(argv=None):
     context_review.add_argument("--digest", required=True)
     context_review.add_argument("--context-revision", type=int, help="Require the exact stored context revision")
     context_review.add_argument("--include-receipt", action="store_true", help="Return a versioned private review receipt; requires --context-revision")
+    context_review.add_argument("--archive-receipt", action="store_true", help="Opt in to ledger v4 receipt archive; requires --include-receipt and --context-revision; older readers reject v4")
     context_review.add_argument("--out", help="Save the private receipt to a fresh file; requires --include-receipt and --context-revision")
     receipt_load = commands.add_parser("load-review-receipt", help="Recover an archived current local receipt without ledger writes or re-review")
     receipt_load.add_argument("--handoff", required=True)
@@ -502,6 +503,8 @@ def main(argv=None):
             raise ValueError("output already exists; use a fresh filename")
         if args.command == "review-context" and output and (not args.include_receipt or args.context_revision is None):
             raise ValueError("saved review receipt requires --include-receipt and --context-revision")
+        if args.command == "review-context" and args.archive_receipt and (not args.include_receipt or args.context_revision is None):
+            raise ValueError("archived review receipt requires --include-receipt and --context-revision")
         if args.command == "factory":
             result = build_swarm(args.project, args.targets.split(","), swarm_id=args.swarm,
                                  source_revision=args.source_revision)
@@ -607,7 +610,8 @@ def main(argv=None):
                         expected_sha256=args.digest, reviewer_id=args.reviewer)
                 elif args.command == "review-context":
                     receipt = ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest,
-                                          expected_revision=args.context_revision, include_receipt=args.include_receipt)
+                                          expected_revision=args.context_revision, include_receipt=args.include_receipt,
+                                          archive_receipt=args.archive_receipt)
                     result = receipt if args.include_receipt else {"handoff_id": args.handoff, "context_sha256": args.digest,
                               "review_state": "locally_reviewed", "external_actions": 0,
                               "authority": "local_record_only_not_identity_authentication"}

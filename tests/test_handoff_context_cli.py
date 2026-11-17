@@ -2477,6 +2477,92 @@ class ContextCLITests(unittest.TestCase):
                         self.assertEqual(tuple(ledger.db.iterdump()), rows)
                 self.assertEqual(self.db.read_bytes(), seed_bytes)
 
+    def test_review_archive_cli_opts_in_and_recovers_original_receipt_after_restart(self):
+        self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        saved = self.save(1)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        args = ("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                "--digest", checksum, "--context-revision", "2", "--include-receipt")
+        default = self.cli(*args)
+        self.assertEqual(default.returncode, 0, default.stderr)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertFalse(ledger.db.execute("SELECT 1 FROM sqlite_master WHERE name='context_review_receipts'").fetchone())
+        archived = self.cli(*args, "--archive-receipt", "--out", "private/archived.json")
+        self.assertEqual(archived.returncode, 0, archived.stderr)
+        output = self.root / "private/archived.json"
+        content = output.read_bytes()
+        receipt = json.loads(content)
+        self.assertEqual(set(receipt), set(json.loads(default.stdout)))
+        self.assertEqual(receipt["schema_version"], 1)
+        self.assertEqual(receipt["visibility"], "owner_private")
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertFalse(receipt["dispatch_authorized"])
+        self.assertFalse(receipt["retry_authorized"])
+        self.assertNotIn("https://", content.decode())
+        repeated = self.cli(*args, "--archive-receipt")
+        self.assertEqual(repeated.returncode, 0, repeated.stderr)
+        self.assertEqual(json.loads(repeated.stdout), receipt)
+        self.assertEqual(self.cli(*args, "--archive-receipt", "--out", "private/archived.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), content)
+        before = self.db.read_bytes()
+        recovered = self.cli("--read-only", "load-review-receipt", "--handoff", "cli-task",
+            "--reviewer", "local-reviewer", "--digest", checksum, "--context-revision", "2",
+            "--out", "private/recovered.json")
+        self.assertEqual(recovered.returncode, 0, recovered.stderr)
+        self.assertEqual((self.root / "private/recovered.json").read_bytes(), content)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.db.execute("PRAGMA user_version").fetchone()[0], 4)
+            self.assertEqual(ledger.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 1)
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_review_archive_cli_preflight_and_stale_guards_prevent_upgrade(self):
+        from contextlib import redirect_stdout, redirect_stderr
+        from io import StringIO
+        from scripts.jarvis_network import main
+        checksum = self.controlled()
+        args = ["review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                "--digest", checksum, "--archive-receipt"]
+        before = self.db.read_bytes()
+        cases = [flags + output for flags in ([], ["--include-receipt"], ["--context-revision", "1"])
+                 for output in ([], ["--out", "rejected/receipt.json"])]
+        for flags in cases:
+            with self.subTest(flags=flags):
+                out, err = StringIO(), StringIO()
+                with patch("scripts.jarvis_network.HandoffLedger") as opened, redirect_stdout(out), redirect_stderr(err):
+                    code = main(["--root", str(self.root), "--database", "ledger.sqlite3",
+                        *args, *flags])
+                self.assertEqual(code, 1, err.getvalue())
+                opened.assert_not_called()
+                self.assertEqual(out.getvalue(), "")
+                self.assertEqual(self.db.read_bytes(), before)
+        self.assertFalse((self.root / "rejected").exists())
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Intervening private context edit."
+        self.write(changed)
+        self.assertEqual(self.save(1).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(2)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        before = self.db.read_bytes()
+        rejected = self.cli("--read-only", *args, "--include-receipt", "--context-revision", "3")
+        self.assertEqual(rejected.returncode, 1, rejected.stderr)
+        self.assertEqual(self.db.read_bytes(), before)
+        stale = self.cli(*args, "--include-receipt", "--context-revision", "1", "--out", "rejected/stale.json")
+        self.assertEqual(stale.returncode, 1, stale.stderr)
+        self.assertFalse((self.root / "rejected").exists())
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertFalse(ledger.db.execute("SELECT 1 FROM sqlite_master WHERE name='context_review_receipts'").fetchone())
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["review_state"], "proposed")
+
     def test_archived_review_load_cli_recovers_original_receipt_without_writes(self):
         checksum = self.controlled(execution="outcome_unknown")
         self.profile["control"]["state"] = "paused"

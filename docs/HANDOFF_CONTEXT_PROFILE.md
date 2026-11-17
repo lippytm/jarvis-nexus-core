@@ -1028,11 +1028,20 @@ Optional `inspect-recovery --context-revision N` (API `expected_revision`) pins 
 
 `HandoffLedger.review_context(..., include_receipt=True, expected_revision=N,
 archive_receipt=True)` stores the returned version-1 metadata receipt in the
-**same SQLite transaction** as the exact local review. This API-only option
+**same SQLite transaction** as the exact local review. This explicit option
 explicitly upgrades a version-2 or version-3 ledger to version 4, preserving all
 existing rows and checkpoints. Default calls retain their prior return shape and
 version-2/3 storage behavior. Strict handoff/context packets are unchanged. No
-CLI archive flag, worker, provider dispatch or authentication service is added.
+worker, provider dispatch or authentication service is added.
+
+The CLI can opt in through `review-context --handoff ID --reviewer LABEL
+--digest CONTEXT_SHA256 --context-revision N --include-receipt --archive-receipt
+[--out private/review.json]`. The archive flag explicitly permits the existing
+version-4 storage upgrade; retain a pre-upgrade backup and use current readers.
+Missing receipt/revision flags reject before ledger open. Exact selection and
+archive validation still apply inside the review transaction. Defaults do not
+archive or opt in to a storage upgrade. Repeated current tuple returns the
+original archived receipt; optional output stays private and refuses overwrite.
 
 The existing ledger gains `context_review_receipts`, keyed by handoff/context
 revision/reviewer label, with a checksum and bounded JSON body. At most 1,000
@@ -1059,7 +1068,7 @@ version-1 metadata receipt is returned on stdout. Optional file output uses the
 existing root-relative private (0600), fsynced, no-overwrite writer. Missing
 ledgers/archives, changed reviewer bindings, stale revisions (including restored
 content) and digest mismatch fail without creating an output or changing ledger
-bytes. API archive creation remains opt-in and has no CLI flag. After an output
+bytes. Archive creation remains a separate explicit opt-in. After an output
 I/O failure, inspect the named file before selecting a fresh output path; the
 ledger remains read-only and no retry or dispatch authority follows recovery.
 
