@@ -1949,6 +1949,80 @@ with HandoffLedger(sys.argv[1]) as ledger:
         with self.assertRaisesRegex(ValueError, "stored context review"):
             self.ledger.load_context_review_receipt("mission-one", **args)
 
+    def test_first_archived_review_survives_process_exit_at_commit_boundary(self):
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        self.stage("mission-two", target="gemini")
+        independent = self.context("mission-two")
+        self.ledger.save_context(independent, expected_revision=0)
+        self.assertEqual(self.load()["review_state"], "proposed")
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        paths = {}
+        for phase in ("before", "after"):
+            paths[phase] = self.path.with_name(f"first-review-{phase}.sqlite3")
+            target = sqlite3.connect(paths[phase])
+            try:
+                self.ledger.db.backup(target)
+            finally:
+                target.close()
+        self.ledger.close()
+        worker = '''
+import os, sys
+from unittest.mock import patch
+from control_tower.handoffs import HandoffLedger
+ledger = HandoffLedger(sys.argv[1])
+connection = ledger.db
+assert connection.execute("PRAGMA user_version").fetchone()[0] == 2
+row = connection.execute("SELECT reviewed_digest,reviewer_id FROM handoff_contexts WHERE handoff_id='mission-one'").fetchone()
+assert tuple(row) == (None, None)
+class ExitAtCommit:
+    def __getattr__(self, name):
+        return getattr(connection, name)
+    def commit(self):
+        assert connection.in_transaction
+        if sys.argv[3] == "before":
+            os._exit(70)
+        connection.commit()
+        os._exit(71)
+ledger.db = ExitAtCommit()
+with patch("control_tower.handoffs._now", return_value="2026-11-17T00:00:00+00:00"):
+    ledger.review_context("mission-one", reviewer_id="local-evaluator", expected_sha256=sys.argv[2],
+        expected_revision=1, include_receipt=True, archive_receipt=True)
+raise AssertionError("worker unexpectedly returned a receipt")
+'''
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"], expected_revision=1)
+        for phase, path in paths.items():
+            with self.subTest(commit_boundary=phase):
+                child = subprocess.run([sys.executable, "-c", worker, str(path), saved["context_sha256"], phase],
+                    cwd=Path(__file__).resolve().parents[1], capture_output=True, text=True, timeout=15)
+                self.assertEqual(child.returncode, 70 if phase == "before" else 71, child.stderr)
+                self.assertEqual((child.stdout, child.stderr), ("", ""))
+                with HandoffLedger(path, read_only=True) as reader:
+                    unchanged = path.read_bytes()
+                    current = reader.load_context("mission-one", expected_source_revision=REVISION, expected_memory_revision=1)
+                    self.assertEqual(current["profile"], self.profile)
+                    self.assertEqual(reader.load_context("mission-two", expected_source_revision=REVISION,
+                        expected_memory_revision=1)["profile"], independent)
+                    self.assertEqual(reader.db.execute("PRAGMA user_version").fetchone()[0], 2 if phase == "before" else 4)
+                    if phase == "before":
+                        self.assertEqual(current["review_state"], "proposed")
+                        self.assertFalse(reader.db.execute("SELECT 1 FROM sqlite_master WHERE name='context_review_receipts'").fetchone())
+                        with self.assertRaises(ValueError):
+                            reader.load_context_review_receipt("mission-one", **args)
+                    else:
+                        receipt = reader.load_context_review_receipt("mission-one", **args)
+                        self.assertEqual(current["review_state"], "locally_reviewed")
+                        self.assertEqual(receipt["recorded_at"], "2026-11-17T00:00:00+00:00")
+                        self.assertEqual(receipt["visibility"], "owner_private")
+                        self.assertFalse(receipt["dispatch_authorized"])
+                        self.assertFalse(receipt["retry_authorized"])
+                        self.assertTrue(reader.check_context_review_receipt("mission-one", receipt)["local_binding_matches"])
+                        self.assertEqual(reader.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 1)
+                        self.assertNotIn("example.invalid", json.dumps(receipt))
+                    self.assertEqual(path.read_bytes(), unchanged)
+
     def test_archived_review_receipt_recovers_committed_ack_loss_without_replay(self):
         self.profile = self.destination_profile()
         self.profile["control"]["state"] = "paused"
