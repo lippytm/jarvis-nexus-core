@@ -4,7 +4,8 @@ Unpublished YouTube slot-4 script package, prepared October 30, 2026 for the
 existing October 29 editorial batch. Audience: Charles and future Jarvis
 collaborators. Proposed duration: 60 seconds. Narration and production specifications
 are authored; a six-panel storyboard and PNG review preview are now prepared.
-No narration is recorded, video produced or content uploaded.
+No narration is recorded or content uploaded. A separate silent timing preview is
+retained below; it is not a finished narrated video.
 
 ## Narration and shot plan
 
@@ -110,7 +111,8 @@ full preview was visually inspected. The [preparation receipt](../evidence/youtu
 retains hashes, empty-review-region check and renderer warning. Source-color
 contrast checks do not establish device readability or screen-reader accessibility.
 This is an unperformed synthetic exercise, not a new dispatch, accepted memory
-write or owner release. No voice, animation or finished video. A separate thumbnail review candidate is retained below.
+write or owner release. At storyboard preparation no voice, animation or finished video was produced;
+the later silent timing preview is retained below. A separate thumbnail review candidate is retained below.
 
 Next: exact narration/caption/storyboard owner review, then authorized recording,
 retiming and local video preview. Channel/destination, device/accessibility, rights
@@ -136,6 +138,67 @@ campaign, storyboard and earlier thumbnail candidates remain unchanged.
 All four YouTube slots now have thumbnail SVG/PNG review candidates. Exact
 art/copy owner review, rights, channel/destination, device/accessibility and platform
 acceptance remain pending. These are not accepted uploads or finished videos.
-No voice, animation/video, upload or publication was produced. The PNG does not
+The thumbnail preparation produced no voice, animation/video, upload or
+publication. A later silent timing preview is retained below. The PNG does not
 populate a platform alt-text field. The Daily Newsletter schedule and paused Studio
 Work Cycle remain unchanged.
+
+
+## Slot 4 silent timing preview — November 18, 2026
+
+The [editable SVG filmstrip](jarvis-youtube-slot4-animatic-20261118.svg) and
+[60-second silent MP4](exports/youtube-20261029/slot-4-silent-animatic.mp4)
+combine the six original storyboard panels with twelve exact SRT caption cues,
+each proposed for five seconds. The 1280×720, 24 fps preview has 1,440 frames and
+no audio stream. Synthetic-exercise, unpublished, no-recorded-voice and review
+labels stay visible; blank exercise/review fields remain blank and the release gate stays closed. This is an editorial
+canvas/timing choice, not verified platform formatting or a current service-status
+claim. No recorded narration, finished video, upload or published post exists.
+
+Render one cue at a time from the source SVG into a fresh temporary directory;
+the SVG preserves all six original panel interiors. Rebuild the preview locally:
+
+```bash
+work_dir=$(mktemp -d)
+for number in $(seq 1 12); do
+  cue=$(printf '%02d' "$number")
+  inkscape docs/media/jarvis-youtube-slot4-animatic-20261118.svg \
+    --export-id-only --export-id="cue-$cue" --export-width=1280 \
+    --export-filename="$work_dir/cue-$cue.png" || exit 1
+  printf "file 'cue-%s.png'\nduration 5\n" "$cue" >> "$work_dir/frames.txt"
+done
+printf "file 'cue-12.png'\n" >> "$work_dir/frames.txt"
+ffmpeg -hide_banner -v error -nostdin -n -f concat -safe 0 \
+  -i "$work_dir/frames.txt" -vf 'fps=24,tpad=stop_mode=clone:stop_duration=2' \
+  -t 60 -frames:v 1440 -c:v libx264 -tune stillimage -preset medium -crf 26 \
+  -pix_fmt yuv420p -an -map_metadata -1 \
+  -metadata title='Slot 4 silent timing preview - unpublished review' \
+  -movflags +faststart "$work_dir/slot-4-silent-animatic.mp4"
+```
+
+[Actual preparation evidence](../evidence/youtube-slot4-animatic-20261118.json)
+retains source/output hashes and execution/check receipts. XML/internal-resource
+checks, 113 text-width bounds, twelve PNG decodes, complete video decode and
+24 first/last-frame caption associations passed. The assistant inspected a decoded
+12-cue contact sheet and full-size cards 1, 6 and 12; no clipping or overlap was
+observed. These checks do not certify target-device readability, accessibility,
+rights clearance or platform acceptance. The source SRT, campaign and storyboard
+remain unchanged; narration, upload copy and thumbnail specifications remain intact.
+
+Input 2268f572dad7f89adb68091af9afcead1b1d3ad3/master memory242; project/mission
+ai-jarvis/jarvis-media-20261029; asset/configuration codex/codex.media-animatic.v1;
+intended platform youtube, channel/destination unassigned. Scope: prepare_draft,
+one asset, no agents, paid services or automatic retries. Guide/SVG/MP4/receipt
+and resulting development commit are the return binding/checkpoint. No new strict
+packet/schema, authenticated provider handoff, hosted worker or shared memory store.
+Independent and owner exact-content review remain pending.
+
+Next: exact preview/narration/SRT review, authorized recording and caption retiming
+before finished production. Rights, channel/destination, device/accessibility and
+upload acceptance remain unverified. All four YouTube timing previews are now prepared;
+recording, retiming and finished production remain unfinished. Other slots stay independent. No merge, production deployment, publication,
+messages, purchases, credentials/permissions/public-access or schedule changes.
+Paused Studio and Daily Newsletter remain untouched. All seventeen portable
+targets/business areas retained; source PROJECTS separate. Trading Bots stays
+research/backtesting/paper only; RoboParty deferred. Costs/recovery time/review
+effort and reliability gains remain unmeasured.
