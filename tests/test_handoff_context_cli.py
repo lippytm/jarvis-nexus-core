@@ -2623,6 +2623,77 @@ class ContextCLITests(unittest.TestCase):
         self.assertFalse(replacement["dispatch_authorized"])
         self.assertEqual(self.db.read_bytes(), before)
 
+    def test_archived_review_pin_does_not_revive_invalidated_review_bindings(self):
+        self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        saved = self.save(1)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+
+        def review(reviewer, revision):
+            with HandoffLedger(self.db) as ledger:
+                return ledger.review_context("cli-task", reviewer_id=reviewer,
+                    expected_sha256=checksum, expected_revision=revision,
+                    include_receipt=True, archive_receipt=True)
+
+        def recover(receipt, out):
+            return self.cli("--read-only", "load-review-receipt", "--handoff", "cli-task",
+                "--reviewer", receipt["reviewer_label"], "--digest", checksum,
+                "--context-revision", str(receipt["context_revision"]),
+                "--receipt-digest", receipt["receipt_sha256"], "--out", out)
+
+        original = review("local-reviewer", 2)
+        first = recover(original, "private/original.json")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        original_bytes = (self.root / "private/original.json").read_bytes()
+        other = review("other-reviewer", 2)
+        before = self.db.read_bytes()
+        stale = recover(original, "rejected/old-reviewer.json")
+        self.assertEqual(stale.returncode, 1, stale.stderr)
+        self.assertEqual(stale.stdout, "")
+        self.assertIn("exact current review binding", stale.stderr)
+        current = recover(other, "private/other.json")
+        self.assertEqual(current.returncode, 0, current.stderr)
+        self.assertEqual(json.loads((self.root / "private/other.json").read_bytes()), other)
+        self.assertEqual(self.db.read_bytes(), before)
+        # Rebinding the original label recovers its original tuple, not a new receipt.
+        self.assertEqual(review("local-reviewer", 2), original)
+        rebound = recover(original, "private/rebound.json")
+        self.assertEqual(rebound.returncode, 0, rebound.stderr)
+        self.assertEqual((self.root / "private/rebound.json").read_bytes(), original_bytes)
+
+        changed = deepcopy(self.profile)
+        changed["execution"]["detail"] = "Synthetic intervening private edit."
+        self.write(changed)
+        self.assertEqual(self.save(2).returncode, 0)
+        self.write(self.profile)
+        restored = self.save(3)
+        self.assertEqual(restored.returncode, 0, restored.stderr)
+        self.assertEqual(json.loads(restored.stdout)["context_sha256"], checksum)
+        latest = review("local-reviewer", 4)
+        before = self.db.read_bytes()
+        for receipt, message in ((original, "exact current review binding"),
+                ({**latest, "receipt_sha256": original["receipt_sha256"]}, "does not match expected digest")):
+            rejected = recover(receipt, "rejected/restored.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertEqual(rejected.stdout, "")
+            self.assertIn(message, rejected.stderr)
+        self.assertFalse((self.root / "rejected").exists())
+        accepted = recover(latest, "private/latest.json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        self.assertEqual(json.loads((self.root / "private/latest.json").read_bytes()), latest)
+        self.assertEqual((self.root / "private/latest.json").stat().st_mode & 0o777, 0o600)
+        self.assertEqual((self.root / "private/original.json").read_bytes(), original_bytes)
+        self.assertEqual((latest["control_state"], latest["execution_state"]), ("paused", "outcome_unknown"))
+        self.assertFalse(latest["retry_authorized"])
+        self.assertFalse(latest["dispatch_authorized"])
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+            self.assertEqual(ledger.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 3)
+        self.assertEqual(self.db.read_bytes(), before)
+
     def test_archived_review_load_cli_malformed_pin_rejects_before_ledger_open(self):
         from contextlib import redirect_stdout, redirect_stderr
         from io import StringIO
