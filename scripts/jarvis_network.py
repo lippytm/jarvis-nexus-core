@@ -397,6 +397,7 @@ def main(argv=None):
     receipt_load.add_argument("--reviewer", required=True, help="Exact local reviewer label, not authenticated identity")
     receipt_load.add_argument("--digest", required=True, help="Exact selected context SHA-256")
     receipt_load.add_argument("--context-revision", type=int, required=True)
+    receipt_load.add_argument("--receipt-digest", help="Require the independently retained canonical receipt SHA-256 before output")
     receipt_load.add_argument("--out", help="Save private receipt metadata to a fresh file")
     receipt_check = commands.add_parser("check-review-receipt", help="Check saved local receipt against current binding without ledger writes")
     receipt_check.add_argument("--handoff", required=True)
@@ -505,6 +506,8 @@ def main(argv=None):
             raise ValueError("saved review receipt requires --include-receipt and --context-revision")
         if args.command == "review-context" and args.archive_receipt and (not args.include_receipt or args.context_revision is None):
             raise ValueError("archived review receipt requires --include-receipt and --context-revision")
+        if args.command == "load-review-receipt" and args.receipt_digest is not None:
+            require_digest(args.receipt_digest)
         if args.command == "factory":
             result = build_swarm(args.project, args.targets.split(","), swarm_id=args.swarm,
                                  source_revision=args.source_revision)
@@ -608,6 +611,8 @@ def main(argv=None):
                 elif args.command == "load-review-receipt":
                     result = ledger.load_context_review_receipt(args.handoff, expected_revision=args.context_revision,
                         expected_sha256=args.digest, reviewer_id=args.reviewer)
+                    if args.receipt_digest is not None and result["receipt_sha256"] != args.receipt_digest:
+                        raise ValueError("archived review receipt does not match expected digest")
                 elif args.command == "review-context":
                     receipt = ledger.review_context(args.handoff, reviewer_id=args.reviewer, expected_sha256=args.digest,
                                           expected_revision=args.context_revision, include_receipt=args.include_receipt,

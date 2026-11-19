@@ -1,0 +1,110 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "615ed4d0a5450ca94c78ef74734c8998c557779f513e5e76fe2bc1130798af46",
+    "scripts/jarvis_network.py": "ddf62633553549ac6d3ffe861e0ce96a1217918125368785e6442f897096f969",
+    "tests/test_handoff_context_cli.py": "a49807ae8406e520f1068563f1baabfadde272eb48c61c03b13eaa82c5966e50"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Optional load-review-receipt --receipt-digest validates canonical SHA-256 syntax before ledger open, then checks retrieved receipt_sha256 before stdout/file output. Default behavior, getter API, schemas/strict v1 and archive storage unchanged.",
+  "checkpoint": {
+    "next": "Independent exact-source archive creation/recovery/pinning review and owner release before operational use; authenticated registry/audience/provider delivery remains unfinished. Four media timing previews separately await review, authorized narration and retiming.",
+    "state": "archive_receipt_pin_candidate_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Default and matching pinned recovery reproduce original private0600 file bytes without database writes; no-overwrite retains original outputs.",
+      "A valid rehashed timestamp fixture remains accepted by default; its old independent receipt pin and another well-formed wrong pin reject without output directory or stdout; current receipt pin succeeds.",
+      "Empty, nonhex and uppercase pins reject before HandoffLedger construction and output creation. Read-only recovery retains paused/outcome_unknown profile and false retry/dispatch flags."
+    ],
+    "baseline": {
+      "log_sha256": "8cb5ea557264833c3031e52fe1d6dae017f397de7ded3e045b65fdd4a96bd582",
+      "result": "Before implementation parser rejected the missing --receipt-digest option: one failure and three SystemExit subtest errors across two tests. Expected feature reproduction, not provider/runtime failure."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "620994949762b922b632c06470718c597680d0fe7c94976cc03ca7cfcc89ebfe",
+      "passed": true,
+      "tests": 2
+    },
+    "full": {
+      "evidence": "reports/r55-full.json",
+      "passed": true,
+      "record_sha256": "7e23d984ae19bdc0eca6ce0a61ea1b5a098f252ab04c084cc953321baa241b19",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 627,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "passed": true,
+      "python_syntax_files": 74
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "039279c61c0cbb3cd6c416e49666063787fd3fa466008bd173572e52b865526f",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "276b003c740b5cffa06f9cbc53675b9f84b20d1f",
+  "limitations": [
+    "Unkeyed digest pin is useful only if independently retained; it is not reviewer authentication, timestamp attestation, access control or owner release.",
+    "Synthetic local fixture archive only; no operational ledger migrated or owner review recorded. Defaults intentionally accept internally consistent current-bound receipts.",
+    "Malformed pin rejects before ledger open; a well-formed mismatch requires read-only retrieval before rejection. Existing context/reviewer guards still apply.",
+    "No strict v1 additions, API/schema migration or parallel memory system. Independent exact-revision evaluation and owner release remain pending.",
+    "No authenticated shared registry/ACL installation, live provider dispatch, worker/lease/failover/reconnect controller or measured reliability gain.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/credentials/permissions/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 243,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "expected_baseline_check_failures": 1,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_final_test_failures": 0
+  },
+  "mission_id": "archive-receipt-pin-20261119",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master receipt243/shared requirements, actual branch, readiness, draft PR5 and findings. Funding/comedy repairs, archive API/CLI recovery and four timing previews complete; no active run or retry to duplicate.",
+  "problem": "Archive retrieval can select current context revision/digest/reviewer, but lacks the optional canonical receipt pin already available to the saved-file checker; a consistently rehashed timestamp remains acceptable by default.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "a47449c3bc3bd3273268ff7a251d1bcc8d88f30221b637c52e4149f69fce0ff9",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context_cli.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

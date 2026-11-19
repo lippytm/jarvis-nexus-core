@@ -1019,7 +1019,7 @@ Direct saved-review receipt API input now passes the existing shared JSON-record
 The existing `demo` command now reports a `context_recovery.review_receipt_check` for its synthetic Codex record: JSON receipt roundtrip, valid local binding after ledger reopen, then rejection after the context edit. Existing checkpoint deduplication, historical profile, pause/block holds and independent Gemini fixture remain. The report is actual local demo output; it is not an authenticated Codex return, the owner's paused mission, or live provider delivery. Temporary demo storage is discarded; only the requested report is saved.
 
 
-Optional `--receipt-digest` pins the receipt's canonical `receipt_sha256`, not the file's byte hash. A mismatch or malformed expected digest rejects before ledger open and output creation; the normal receipt-integrity/current-binding checks still apply after a match. Defaults accept any internally consistent receipt matching the current local binding. Pinning detects a substituted receipt (including a changed, rehashed timestamp) only when the expected digest was retained independently; it does not attest the timestamp, authenticate a reviewer or grant release/retry/dispatch authority.
+Optional `check-review-receipt --receipt-digest` pins the receipt's canonical `receipt_sha256`, not the file's byte hash. A mismatch or malformed expected digest rejects before ledger open and output creation; the normal receipt-integrity/current-binding checks still apply after a match. Defaults accept any internally consistent receipt matching the current local binding. Pinning detects a substituted receipt (including a changed, rehashed timestamp) only when the expected digest was retained independently; it does not attest the timestamp, authenticate a reviewer or grant release/retry/dispatch authority.
 
 Optional `inspect-recovery --context-revision N` (API `expected_revision`) pins the selected stored context revision in the same read transaction as the digest/source/memory checks. It rejects an old request after content A changes to B and returns to A at a later stored revision, even when its digest and memory revision are restored. Use the stored `revision`, not `memory_revision`. Omitting it preserves existing behavior and the version-1 inspection output. This is a read-time guard, not a lease, authentication, owner release or retry/dispatch authority; existing holds remain intact.
 
@@ -1060,8 +1060,8 @@ reviewer bindings and corrupt receipts refuse. The archived timestamp is local
 recorded evidence, not independently authenticated identity or release approval.
 
 The CLI exposes this recovery read through `load-review-receipt --handoff ID
---reviewer LABEL --digest CONTEXT_SHA256 --context-revision N [--out
-private/recovered.json]`. All four selectors are required. It always opens the
+--reviewer LABEL --digest CONTEXT_SHA256 --context-revision N
+[--receipt-digest RECEIPT_SHA256] [--out private/recovered.json]`. All four selectors are required. It always opens the
 existing ledger read-only, with or without `--read-only`; it does not create an
 archive, migrate storage or repeat the review. Without `--out`, the original
 version-1 metadata receipt is returned on stdout. Optional file output uses the
@@ -1071,6 +1071,16 @@ content) and digest mismatch fail without creating an output or changing ledger
 bytes. Archive creation remains a separate explicit opt-in. After an output
 I/O failure, inspect the named file before selecting a fresh output path; the
 ledger remains read-only and no retry or dispatch authority follows recovery.
+
+Optional `load-review-receipt --receipt-digest` requires the recovered receipt's
+canonical `receipt_sha256`, not its file-byte hash or the context digest. A malformed
+pin rejects before ledger open; a well-formed mismatch rejects after the read-only
+retrieval and before stdout or file output. Current context revision, context digest
+and reviewer-binding guards still apply. Without the option, retrieval behavior and
+the version-1 receipt shape are unchanged. An independently retained expected digest
+can detect substitution of an internally consistent, rehashed receipt (including a
+changed timestamp); this is not reviewer authentication, timestamp attestation or
+release/retry/dispatch authority.
 
 Version-4 reopen preserves the schema; checkpoint capture/list/load and checked
 backups retain version 4 and receipt rows. Backup validation checks every bounded

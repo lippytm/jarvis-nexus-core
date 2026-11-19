@@ -2563,6 +2563,84 @@ class ContextCLITests(unittest.TestCase):
             self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
                 expected_memory_revision=1)["review_state"], "proposed")
 
+    def test_archived_review_load_cli_can_pin_original_receipt_without_changing_defaults(self):
+        self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        saved = self.save(1)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        created = self.cli("review-context", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+            "--digest", checksum, "--context-revision", "2", "--include-receipt", "--archive-receipt",
+            "--out", "original.json")
+        self.assertEqual(created.returncode, 0, created.stderr)
+        original = (self.root / "original.json").read_bytes()
+        receipt = json.loads(original)
+        args = ("load-review-receipt", "--handoff", "cli-task", "--reviewer", "local-reviewer",
+                "--digest", checksum, "--context-revision", "2")
+        before = self.db.read_bytes()
+        for name, flags in (("default", ()), ("pinned", ("--receipt-digest", receipt["receipt_sha256"]))):
+            loaded = self.cli("--read-only", *args, *flags, "--out", f"private/{name}.json")
+            self.assertEqual(loaded.returncode, 0, loaded.stderr)
+            path = self.root / f"private/{name}.json"
+            self.assertEqual(path.read_bytes(), original)
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.db.read_bytes(), before)
+        # A consistent rehashed timestamp is not the independently retained receipt.
+        replacement = {**receipt, "recorded_at": "2026-11-19T00:00:00+00:00"}
+        replacement["receipt_sha256"] = digest({k: v for k, v in replacement.items() if k != "receipt_sha256"})
+        with HandoffLedger(self.db) as ledger:
+            ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='cli-task'",
+                (json.dumps(replacement), replacement["receipt_sha256"]))
+        before = self.db.read_bytes()
+        default = self.cli(*args)
+        self.assertEqual(default.returncode, 0, default.stderr)
+        self.assertEqual(json.loads(default.stdout), replacement)
+        for expected in (receipt["receipt_sha256"], "0" * 64):
+            rejected = self.cli(*args, "--receipt-digest", expected, "--out", "rejected/load.json")
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertEqual(rejected.stdout, "")
+            self.assertIn("archived review receipt does not match expected digest", rejected.stderr)
+        self.assertFalse((self.root / "rejected").exists())
+        rejected_stdout = self.cli(*args, "--receipt-digest", receipt["receipt_sha256"])
+        self.assertEqual(rejected_stdout.returncode, 1, rejected_stdout.stderr)
+        self.assertEqual(rejected_stdout.stdout, "")
+        self.assertIn("archived review receipt does not match expected digest", rejected_stdout.stderr)
+        accepted = self.cli(*args, "--receipt-digest", replacement["receipt_sha256"], "--out", "private/current.json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        output = self.root / "private/current.json"
+        current = output.read_bytes()
+        self.assertEqual(json.loads(current), replacement)
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli(*args, "--receipt-digest", replacement["receipt_sha256"],
+            "--out", "private/current.json").returncode, 1)
+        self.assertEqual(output.read_bytes(), current)
+        self.assertEqual((self.root / "original.json").read_bytes(), original)
+        with HandoffLedger(self.db, read_only=True) as ledger:
+            self.assertEqual(ledger.load_context("cli-task", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+        self.assertFalse(replacement["retry_authorized"])
+        self.assertFalse(replacement["dispatch_authorized"])
+        self.assertEqual(self.db.read_bytes(), before)
+
+    def test_archived_review_load_cli_malformed_pin_rejects_before_ledger_open(self):
+        from contextlib import redirect_stdout, redirect_stderr
+        from io import StringIO
+        from scripts.jarvis_network import main
+        before = self.db.read_bytes()
+        for expected in ("", "x" * 64, "A" * 64):
+            with self.subTest(expected=expected):
+                out, err = StringIO(), StringIO()
+                with patch("scripts.jarvis_network.HandoffLedger") as opened, redirect_stdout(out), redirect_stderr(err):
+                    code = main(["--root", str(self.root), "--database", "ledger.sqlite3", "load-review-receipt",
+                        "--handoff", "cli-task", "--reviewer", "local-reviewer", "--digest", "0" * 64,
+                        "--context-revision", "1", "--receipt-digest", expected, "--out", "rejected/load.json"])
+                self.assertEqual(code, 1, err.getvalue())
+                opened.assert_not_called()
+                self.assertEqual(out.getvalue(), "")
+                self.assertEqual(self.db.read_bytes(), before)
+        self.assertFalse((self.root / "rejected").exists())
+
     def test_archived_review_load_cli_recovers_original_receipt_without_writes(self):
         checksum = self.controlled(execution="outcome_unknown")
         self.profile["control"]["state"] = "paused"
