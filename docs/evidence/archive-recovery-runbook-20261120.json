@@ -1,0 +1,136 @@
+{
+  "approval_state": "procedure_proposed_independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "a795d6f8dd03ebeb3f2985bdb72f9d39911d78d5eeef21306170bb793ca18c0c"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Correct historical no-archive claims into conditional guidance; add source-bound proposed read-only archive recovery template with optional canonical receipt pin, exact context/reviewer selectors, schema/backup/output/authority limits and missing-archive reconciliation. Existing unrelated runbook sections retained.",
+  "checkpoint": {
+    "next": "Independent exact-source archive/recovery/pinning procedure and implementation review before owner release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "archive_aware_runbook_prepared_and_exercised"
+  },
+  "checks": {
+    "authored_fixture_harness_sha256": "299c19cf81b73121365d60a807932357d4811e03378c0cb3d23bb2e9221a7eb5",
+    "command_check_log_sha256": "374c640beb192292a00e36fdebd53f3f851468131d0adb78d04251ef5c4a1bca",
+    "diff_check": "passed",
+    "documented_command": {
+      "cases": [
+        {
+          "archive": true,
+          "case": "pinned",
+          "ledger_unchanged": true,
+          "private_output": true,
+          "returncode": 0
+        },
+        {
+          "archive": true,
+          "case": "unpinned",
+          "ledger_unchanged": true,
+          "private_output": true,
+          "returncode": 0
+        },
+        {
+          "archive": true,
+          "case": "wrong-pin",
+          "ledger_unchanged": true,
+          "private_output": false,
+          "returncode": 1
+        },
+        {
+          "archive": true,
+          "case": "stale-revision",
+          "ledger_unchanged": true,
+          "private_output": false,
+          "returncode": 1
+        },
+        {
+          "archive": true,
+          "case": "existing-output",
+          "file_unchanged": true,
+          "returncode": 1
+        },
+        {
+          "archive": false,
+          "case": "pinned",
+          "ledger_unchanged": true,
+          "private_output": false,
+          "returncode": 1
+        },
+        {
+          "archive": false,
+          "case": "unpinned",
+          "ledger_unchanged": true,
+          "private_output": false,
+          "returncode": 1
+        }
+      ],
+      "command_count": 7,
+      "passed": true
+    },
+    "focused": {
+      "log_sha256": "53ebe8684c38b7bbaca320ec1b41c8fb8a07578b0c5f649800a0f9576f26430f",
+      "passed": true,
+      "tests": 3
+    },
+    "local_full_and_web": "Not repeated for documentation-only change; final development-commit CI linked in master receipt.",
+    "syntax": {
+      "files": 74,
+      "passed": true,
+      "unrelated_runbook_sections_unchanged": true
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_documentation_and_fixture_checks_passed",
+  "input_revision": "fa80b1051a17a7597a2d7314e40479cb703f1ed4",
+  "limitations": [
+    "Only temporary synthetic ledgers/reviews used; no owner incident reconciled or operational ledger migrated.",
+    "Current receipt pin and local labels provide integrity/current-binding checks, not authenticated identity, independently attested timestamps or release/retry/dispatch authority.",
+    "Production/API/schema/defaults and strict v1 unchanged; the procedure remains proposed, not independently accepted.",
+    "No actual live provider handoff, shared authenticated memory installation, leases, automatic failover or measured reliability improvement.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio and Newsletter untouched."
+  ],
+  "memory_revision": 245,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "expected_fixture_refusals": 5,
+    "fixture_cli_commands": 7,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-recovery-runbook-20261120",
+  "permitted_actions": [
+    "local_documentation_development",
+    "synthetic_fixture_checks",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master245/prior receipt, branch/PR5/readiness/shared contract and findings. Funding/comedy correctness, archive creation/recovery/pins and binding invalidation complete; no active candidate/retry.",
+  "problem": "Runbook still unconditionally says no archive can recover a receipt timestamp, contradicting current opt-in v4 archive and current-bound recovery CLI. Saved-file checking also incorrectly implies all timestamps are unarchived.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "4556673cab1edf5055f69bcc292ba0d6ea0649ed9c51c66ff4be7fc066d579c0",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

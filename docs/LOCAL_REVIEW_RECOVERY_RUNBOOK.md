@@ -10,6 +10,8 @@ Registry-inspection receipt reuse added against source
 `2583a09358690c5e8a9ee37b878485bbb1567b5b` and master memory revision 209.
 Platform-selected queue rechecks added against source
 `31709ff09208c8c2fcdfbd1fbfcf4a2b70100ec6` and master memory revision 213.
+Archive-aware recovery updated against source
+`fa80b1051a17a7597a2d7314e40479cb703f1ed4` and master memory revision 245.
 This is navigation for the existing local ledger, not an accepted operating
 policy, authenticated approval or permission to release work.
 
@@ -50,7 +52,7 @@ refuses overwrite. Never put credentials in these values or evidence records.
 | Value | Meaning | Where used |
 |---|---|---|
 | `CONTEXT_SHA256` | Exact canonical saved context digest | `inspect-recovery --digest` |
-| `RECEIPT_SHA256` | Receipt body digest, excluding its own checksum | `check-review-receipt --receipt-digest` |
+| `RECEIPT_SHA256` | Receipt body digest, excluding its own checksum | `check-review-receipt --receipt-digest` or `load-review-receipt --receipt-digest` |
 | `QUEUE_REPORT_SHA256` | Selected queue report body digest, excluding its own checksum | Queue `--expected-report-digest` |
 | File byte SHA-256 | Exact serialized bytes, including whitespace | External artifact retention; not `--receipt-digest` |
 | `REGISTRY_SHA256` | Entire canonical proposed registry, including unselected entries | `inspect-registry --digest` |
@@ -169,7 +171,39 @@ rejects before ledger open when the independent expected digest differs.
 If no independently retained digest exists, omit only `--receipt-digest` and label
 the observation **unpinned**. Do not copy the current file's self-declared digest
 and describe that as independent provenance. A valid rehashed timestamp can pass
-the default consistency check because timestamps are not archived or attested.
+the default consistency check because this checker compares the supplied receipt
+with the current local binding; it does not compare an archive or attest time.
+
+## Recover an existing archived receipt
+
+**Proposed addition — independent and owner review pending.** An archive exists
+only if the original local review explicitly used `--archive-receipt` (or the
+matching API option). That opt-in uses ledger version 4; default reviews do not
+archive. This recovery read cannot create an archive, migrate storage or repeat
+review. Older version-2/3-only readers must refuse version 4; retain pre-upgrade
+backups and use current tools. Do not enable archival on an operational ledger
+merely to resolve a lost-file incident.
+
+Set `REVIEWER_LABEL` to the exact retained local label and `CONTEXT_REVISION` to
+the stored revision. If the canonical receipt digest was retained independently:
+
+```sh
+python scripts/jarvis_network.py --root "$TASK_ROOT" --database "$LEDGER" --read-only load-review-receipt --handoff "$HANDOFF_ID" --reviewer "$REVIEWER_LABEL" --digest "$CONTEXT_SHA256" --context-revision "$CONTEXT_REVISION" --receipt-digest "$RECEIPT_SHA256" --out receipts/recovered-review-001.json
+```
+
+Without an independently retained digest, omit only `--receipt-digest` and label
+the result **unpinned**. The original version-1 metadata receipt is recovered,
+including its local recorded timestamp; that timestamp is not independently
+attested. A malformed pin rejects before ledger open; a well-formed mismatch
+rejects after read-only retrieval and before output. Current context digest,
+stored revision and reviewer binding must match even when the receipt pin does.
+A restored identical context at a later revision does not revive the old receipt.
+
+Retain the original files and error observations. Successful output is private
+(0600) and refuses overwrite; an I/O error can leave either no file or a complete
+unacknowledged file. Inspect that path before choosing another fresh locator.
+A read failure does not authorize a new review, archive creation, restore, retry,
+dispatch or release. Local labels and unkeyed hashes do not authenticate a reviewer.
 
 ## Reconcile the observed outcome
 
@@ -178,7 +212,8 @@ the default consistency check because timestamps are not archived or attested.
 | Complete receipt passes current check | Retain original file and check report. Do not overwrite it or rerun review merely to obtain success output. |
 | Complete receipt fails pinned digest | Preserve the discrepancy and both references. Reconcile which receipt was intended; do not discard the pin to claim success. |
 | Receipt fails current revision/content/reviewer binding | Treat it as historical. Retrieve current authorized selectors and request review of that exact revision when required. |
-| No receipt, but current metadata shows local review | Record that review may have committed. There is no receipt archive to recover the original timestamp from. A new receipt would require a separate explicit exact-revision local review; it is not reconstruction of the lost receipt. |
+| No file, but a matching current review was explicitly archived | Use the read-only archived recovery command with retained exact selectors and an independent receipt pin when available. Retain holds; do not repeat review. |
+| No file and no matching archive | Record that review may have committed without an archive. Recovery cannot reconstruct the lost timestamp. A new receipt would require a separate explicit exact-revision local review; it is not recovery of the lost receipt. |
 | Missing/unreadable ledger or uncertain I/O result | Preserve the unfinished task and observed error. Do not initialize a replacement database, overlap retries or manufacture a completion receipt. |
 
 When exact context selectors are available, inspect recovery holds separately:
