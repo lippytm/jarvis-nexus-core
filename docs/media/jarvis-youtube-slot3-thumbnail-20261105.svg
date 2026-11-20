@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Check the context with two separate evidence cards</title>
+<desc id="desc">Unpublished conceptual YouTube thumbnail candidate. Hypothetical example labels two separate cards: Runner and Intended environment. An observation field is empty; review is pending and destination unassigned. No current outage, recovery, availability, test result or release approval is depicted.</desc>
+<rect width="1200" height="675" fill="#101d2c"/>
+<g font-family="DejaVu Sans" fill="#f5f8fc">
+<rect x="64" y="220" width="520" height="180" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="616" y="220" width="520" height="180" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="500" y="450" width="636" height="52" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<text x="64" y="100" font-size="52" font-weight="bold">CHECK THE CONTEXT</text>
+<text x="64" y="160" font-size="28" font-weight="bold">HYPOTHETICAL EXAMPLE</text>
+<text x="88" y="320" font-size="42" font-weight="bold">Runner</text>
+<text x="640" y="320" font-size="31" font-weight="bold">Intended environment</text>
+<text x="64" y="484" font-size="29" font-weight="bold">Observation pending</text>
+<text x="64" y="574" font-size="24">Review pending • Destination: unassigned</text>
+<text x="64" y="630" font-size="22">CONCEPTUAL • UNPUBLISHED • No outage/recovery result reported.</text>
+</g>
+</svg>

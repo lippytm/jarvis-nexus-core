@@ -1,0 +1,104 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "tests/test_handoff_context_cli.py": "279cf6b68f9f1319fba85861bdb7adc628b1641ee271f9cd7a61dd6fafe97bea"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Test-only regression: an independently retained receipt pin cannot override changed current reviewer binding or revive an old context revision after A-to-B-to-A restoration. Explicitly rebinding original local label at the same revision returns original tuple/bytes; new revision requires new canonical receipt pin. Production/API/schema/defaults unchanged.",
+  "checkpoint": {
+    "next": "Independent exact-source review of archive/recovery/pinning before owner release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "pin_binding_invalidation_regression_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Actual CLI subprocesses reject prior reviewer even with matching old canonical receipt pin; current reviewer recovers.",
+      "Explicit local rebinding to original reviewer preserves original archived receipt tuple, timestamp and output bytes.",
+      "Restored content has identical digest but later revision; old revision rejects current-binding guard, current revision with old receipt pin rejects pin guard, latest receipt pin recovers.",
+      "Rejected output directories/stdout absent; database bytes, original private file, paused/unknown profile and false retry/dispatch flags retained; three archive rows remain."
+    ],
+    "corrected_fixture_error": {
+      "description": "First attempt used reviewer_id instead of existing receipt reviewer_label; KeyError before recovery. Corrected fixture then focused/full passed. No product failure inferred.",
+      "log_sha256": "b65aa7ff276ae1f5a38a9288606b0d8880b898fba68cf98c444c36a6545d85c0"
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "da1a37d2c4c2331372c7a036dca2ada5821c180ceb89c9b2bf037b82b9e23312",
+      "passed": true,
+      "tests": 1
+    },
+    "full": {
+      "evidence": "reports/r56-full.json",
+      "passed": true,
+      "record_sha256": "a362f91f31853e504c85c370fabdfcb87db7b81930b7595bde5147149c809944",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 628,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "b8f38a56639ae462612f5738d1131b33f38d36625a526c4e4c792ca68111b8fe",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_checks_passed",
+  "input_revision": "19617af5cae2e9c2a15aea4805e41c64f1b49771",
+  "limitations": [
+    "Synthetic fixture/local reviewer labels only; no authenticated review, actual mission replay, operational ledger migration or independent evaluation.",
+    "Production code, existing schemas/strict v1, API, defaults and owner release gates unchanged.",
+    "No live provider handoff, shared authenticated store, leases, automatic failover or measured reliability improvement.",
+    "All17 portable targets and master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deployment/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio and Newsletter untouched."
+  ],
+  "memory_revision": 244,
+  "metrics": {
+    "completed_items": 1,
+    "corrected_test_fixture_errors": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-pin-invalidation-20261119",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master244/prior receipt, current branch/PR5/readiness/shared requirements and review findings. Prior pinning complete; no active retry/candidate to duplicate. Funding/comedy repairs retained.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "241ff34a85396e688e0c720dfb607939f6e53b670318f9f293d1b4fda7f17093",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "tests/test_handoff_context_cli.py"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

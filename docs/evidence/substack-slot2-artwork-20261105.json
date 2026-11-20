@@ -1,0 +1,150 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/substack-20261029/slot-2.png": "8ba1c09173925beed3d508c977875ec0c7ca91f6ae5104f33f2a4dac00d53b73",
+    "docs/media/jarvis-substack-four-slots-20261029.md": "687855c726313bf825baa2735d943c159f406091f6afb4d0506ce77f3f489013",
+    "docs/media/jarvis-substack-slot2-20261105.svg": "9b7476404f8fbf8573f4a5efe6d7005fc3054ea626bbc69397421a3eea03e099"
+  },
+  "checks": {
+    "campaign_and_other_slots_unchanged": true,
+    "new_unit_tests": 0,
+    "note_bodies_unchanged": 4,
+    "png_bytes": 135326,
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager object wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "ONE SENTENCE. A NEW REVIEW.",
+        "width": 723.359375
+      },
+      {
+        "text": "SYNTHETIC A/B NOTES \u2022 UNPUBLISHED NOTE",
+        "width": 593.046875
+      },
+      {
+        "text": "Proposed exercise; no new run reported.",
+        "width": 567.78125
+      },
+      {
+        "text": "Version A",
+        "width": 160.484375
+      },
+      {
+        "text": "Checkpoint note:",
+        "width": 221.90625
+      },
+      {
+        "text": "Save draft A.",
+        "width": 236.5
+      },
+      {
+        "text": "Assume A reviewed for this exercise.",
+        "width": 442.203125
+      },
+      {
+        "text": "Version B",
+        "width": 160.125
+      },
+      {
+        "text": "Checkpoint note:",
+        "width": 221.90625
+      },
+      {
+        "text": "Save draft B.",
+        "width": 235.53125
+      },
+      {
+        "text": "Edited checkpoint note",
+        "width": 277.328125
+      },
+      {
+        "text": "Proposed check: retain B after reopening.",
+        "width": 582.4375
+      },
+      {
+        "text": "Require a fresh context review.",
+        "width": 434.5625
+      },
+      {
+        "text": "Review pending",
+        "width": 251.59375
+      },
+      {
+        "text": "Destination: unassigned",
+        "width": 290.71875
+      },
+      {
+        "text": "Local labels do not authenticate a reviewer.",
+        "width": 524.578125
+      },
+      {
+        "text": "No private record, live account or release approval depicted.",
+        "width": 729.765625
+      }
+    ],
+    "underline_covers_changed_sentence": true,
+    "underline_pixel_rgba": [
+      245,
+      248,
+      252,
+      255
+    ],
+    "visual_inspection": "Full PNG inspected; no observed clipping/overlap; two synthetic cards, changed sentence underlined/labelled, proposed-exercise/unpublished/review-pending labels and no live account/record depicted.",
+    "whitespace": "git diff --check passed",
+    "xml_resource_checks": true
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "substack/account unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "exercise_execution": "proposed_only_no_new_run_reported",
+  "external_actions": 0,
+  "finished_video_or_publication": false,
+  "independent_review": "not_performed",
+  "input_revision": "6dd16812ce5faa5b915d067d41522447a77dc86c",
+  "memory_source": "master Page sequence 144",
+  "mission_id": "jarvis-media-20261029",
+  "newsletter_schedule_changed": false,
+  "next_task": "Exact SVG/PNG/Note/alt-text owner, destination and accessibility review; optional slot 3-4 artwork remains unrendered.",
+  "operational_ledger_changed": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "dimensions": [
+      1400,
+      1000
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.substack.2",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "89f0bac6a2b1bdc6cb93e9f3e55c5e0609d72eba6f12175bb7fe1aaeb68564da",
+  "registry_accepted": false,
+  "revision_conflicts": 0,
+  "rights_device_accessibility_platform_acceptance": "not_verified",
+  "schema_version": 1,
+  "scope": "unpublished original Substack synthetic A/B card artwork; no runtime changes"
+}

@@ -1,0 +1,94 @@
+{
+  "account_access_verified": false,
+  "assembler": "pypdf 6.10.0",
+  "channel": "linkedin",
+  "checks": {
+    "bytes": 77491,
+    "checks": [
+      {
+        "extracted_text_sha256": "22c01f3672ab51bfed18fb3a6699ee70029698534935835639a577fd53fefd65",
+        "preview_sha256": "f8fb409499e062d7bc5a17f7f71e93e9e29e8f64ed56fc4a2c59f8c89dd5b5e0",
+        "renderer_exit_code": 0,
+        "renderer_note": "Original export succeeded before later validation assertions failed; stderr not retained. Original PDF retained without regeneration.",
+        "slide": 1,
+        "source": "docs/media/jarvis-linkedin-slot2-slide1-20261029.svg",
+        "source_sha256": "f8f37f1ba810f16e4a70d68966a9761dce818772ebca1d5ef966d56b84e4d755"
+      },
+      {
+        "extracted_text_sha256": "6009ae44c0a44dc59985e565dc5f4efe411e51876d2124f83e49274e7cccfe02",
+        "preview_sha256": "2ed9f23c9c784829f0c29dfa55b0ce0d29f586926bd1ca56c6727feccbf379a2",
+        "renderer_exit_code": 0,
+        "renderer_note": "Original export succeeded before later validation assertions failed; stderr not retained. Original PDF retained without regeneration.",
+        "slide": 2,
+        "source": "docs/media/jarvis-linkedin-slot2-slide2-20261029.svg",
+        "source_sha256": "8a52b4b939895526832ada67dfa3be1b782d519ba7403e6b1657fd68db74aff5"
+      },
+      {
+        "extracted_text_sha256": "8ddc6622eb9e7e88b09cf493cedefff492a3ec30bbc6350ebaab86cad401a024",
+        "preview_sha256": "a5e5a87797f5ceb96dc84ba6d1f2e8d0b47796e3f1d737395bcee086691757a6",
+        "renderer_exit_code": 0,
+        "renderer_note": "Original export succeeded before later validation assertions failed; stderr not retained. Original PDF retained without regeneration.",
+        "slide": 3,
+        "source": "docs/media/jarvis-linkedin-slot2-slide3-20261029.svg",
+        "source_sha256": "ec82a64cda90d58ae44caf9b81e6bf8d1de70bfebb5ef36de44fb52b7c7b65fa"
+      },
+      {
+        "extracted_text_sha256": "925ed899bb6d69092572ee5b380c301991e25c83ee7ff7b3970b33bdb751480d",
+        "preview_sha256": "476a1d82e346d4525fb43152c17002720652578ca190ffe2ed1f203e042411f3",
+        "renderer_exit_code": 0,
+        "renderer_note": "Original export succeeded before later validation assertions failed; stderr not retained. Original PDF retained without regeneration.",
+        "slide": 4,
+        "source": "docs/media/jarvis-linkedin-slot2-slide4-20261029.svg",
+        "source_sha256": "15e0ad70d915cc493c6051ce8fe25dc2bf1e58663c805ddef07bfc70a3ed125f"
+      }
+    ],
+    "font_report": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nKSGQUZ+DejaVuSans                    TrueType          WinAnsi          yes yes yes      7  0\nNJCMAU+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     11  0\nGNNZVN+DejaVuSans                    TrueType          WinAnsi          yes yes yes     18  0\nXHDZER+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     22  0\nCXUFUE+DejaVuSans-Bold               CID TrueType      Identity-H       yes yes yes     26  0\nWPZBIR+DejaVuSans                    TrueType          WinAnsi          yes yes yes     34  0\nEPHREP+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     38  0\nGEPTYL+DejaVuSans                    TrueType          WinAnsi          yes yes yes     45  0\nGWMTZD+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     49  0\n",
+    "language": "en-US",
+    "original_pdf_retained": true,
+    "page_size_points": [
+      900,
+      900
+    ],
+    "pages": 4,
+    "pdf": "docs/media/exports/linkedin-20261029/slot-2.pdf",
+    "pdf_sha256": "7c02f78b1f5e5cc055ac4f90ab3a7634d01d24ec50253d83f37052498730fcbf",
+    "preparation_failures": [
+      "Initial mixed-case required-label assertion rejected source uppercase ribbon; corrected comparison.",
+      "Joined method text comparison rejected numbering interleaved in extraction; checked source spans individually."
+    ],
+    "render_exit_code": 0,
+    "screen_reader_or_platform_compatibility": "not_verified",
+    "tagged": false,
+    "text_comparison": "Each visible SVG text span present in corresponding Poppler-extracted page after NFKC/whitespace normalization. Numbered method steps checked individually; required uppercase source ribbon checked case-insensitively."
+  },
+  "costs_measured": false,
+  "demonstration_executed_for_post": false,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "export_method": "Each unchanged SVG exported to a single PDF page with Inkscape; pypdf added pages in order 1..4 with review metadata/en-US language.",
+  "guide_sha256": "dc916bbce963676c7e0147aabb84a05979851c6b97235f76bc45a32a1e3ca032",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "e4816ba578762cb0a647127356824ecda565a466",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Review exact PDF/caption and resolve untagged accessibility/destination requirements before release; slots 3–4 PDF exports unfinished.",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.linkedin.2",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "7ff92564eb6c9e9b07d7850ec78f6c32bfa43b5760ecb108afaf142bfa3d22b0",
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "schema_version": 1,
+  "scope": "local_unpublished_pdf_export_candidate_checks",
+  "slot_2_copy_sha256": "44996d4cf9553118f26fd227255e851276eaef97ad37e99b9f2eb3e54e80edb3",
+  "source_art_captions_plain_text_visual_descriptions_unchanged": true,
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a",
+  "visual_review": "Assistant individually inspected four rendered PDF pages; no clipping/overlap/missing text observed. Not independent human review."
+}

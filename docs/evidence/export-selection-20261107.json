@@ -1,0 +1,173 @@
+{
+  "acceptance_observations": [
+    "Stale A-to-B-to-A selection after current context review rejects before export_prepared, with every logical ledger record unchanged. Invalid API bool/float/string/nonpositive selectors reject.",
+    "Current selector exports version-1 private envelope with blocked execution and checkpoint intact. Omitted selector preserves default output. Read-only restart retains revision 3/profile.",
+    "Matching revision does not bypass pause/cancel, outcome_unknown, missing context review or private/public gates. Independent synthetic Gemini hold records remain unchanged.",
+    "Actual CLI stale selection creates no output directory or record mutation; current export is private 0600, no-overwrite, and default output remains equivalent."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_optional_export_revision_guard",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional strict positive expected_revision to export_context and --context-revision to export-context; compare inside the existing transaction before export state mutation. No packet, profile, storage or default envelope schema change.",
+  "checkpoint": {
+    "return_binding": "source/memory revisions and source/log hashes; final commit and CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision export review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change tests.test_handoff_context.ContextTests.test_export_revision_match_does_not_bypass_holds_or_reviews tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 3
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/export-selection-final-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/export-selection-final-full-20261107.json",
+        "passed": true,
+        "record_sha256": "c4bfa8d8e5d5eea64c39fead944f219ddbdedf7f1f47b6841c902ad90dfc3d3a",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 583,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 583,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.export-selection.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/checkpoint-commit-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "failed_attempts": [
+    {
+      "errors": 9,
+      "exit_code": 1,
+      "failures": 6,
+      "kind": "new_feature_baseline",
+      "reason": "Missing API keyword and CLI flag; subtests account for multiple failures/errors.",
+      "tests": 2
+    },
+    {
+      "errors": 3,
+      "exit_code": 1,
+      "failures": 0,
+      "kind": "new_hold_fixture",
+      "reason": "Shared fixture assistant reached existing durable handoff budget. Corrected to independent scoped synthetic configurations; production budget unchanged.",
+      "tests": 3
+    },
+    {
+      "errors": 3,
+      "exit_code": 1,
+      "failures": 0,
+      "kind": "initial_full_run",
+      "reason": "Same already-corrected fixture loaded before edit; retained separately from final successful run.",
+      "record_sha256": "1bc754aad357550fa6c5cb31f4c7ff674892e496636580ccc0e0378c4c0b0188",
+      "tests": 583
+    }
+  ],
+  "input_revision": "6153b6a4383bfdca7f935ef986d5969299c5951b",
+  "limitations": [
+    "Synthetic local fixture exports are not authenticated delivery, new running agents or owner approval. Reviewer labels/hashes are not identity authentication.",
+    "Guard is optional and applies at export transaction time; it is not a lease or atomic database/file publication. Existing I/O unknown-outcome reconciliation remains required.",
+    "No worker, automatic retry/failover/reconnect controller, deployment, dispatch, publication, spending or permissions change. Actual paused mission and schedules untouched.",
+    "All 17 portable targets and business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/export-selection-baseline-20261107.txt": {
+      "sha256": "732d8ba99beb8ac444e7a49685c1bf3f4ea572c679e3a692a3bf1f9cd5b80a11",
+      "text": "EEEEEEEEEFFFFFF\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=2)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=4)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=-1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision=3.0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change) (revision='3')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 85, in test_export_revision_rejects_restored_content_before_state_change\n    self.export(saved[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_export_revision_rejects_restored_content_before_state_change (tests.test_handoff_context.ContextTests.test_export_revision_rejects_restored_content_before_state_change)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 88, in test_export_revision_rejects_restored_content_before_state_change\n    packet = self.export(saved[\"context_sha256\"], expected_revision=3)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 69, in export\n    return self.ledger.export_context(\"mission-one\", expected_sha256=checksum,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.export_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nFAIL: test_export_revision_cli_rejects_stale_selection_without_output_or_state_change (tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change) (revision='1')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1087, in test_export_revision_cli_rejects_stale_selection_without_output_or_state_change\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 1\n\n\n======================================================================\nFAIL: test_export_revision_cli_rejects_stale_selection_without_output_or_state_change (tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change) (revision='2')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1087, in test_export_revision_cli_rejects_stale_selection_without_output_or_state_change\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 2\n\n\n======================================================================\nFAIL: test_export_revision_cli_rejects_stale_selection_without_output_or_state_change (tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change) (revision='4')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1087, in test_export_revision_cli_rejects_stale_selection_without_output_or_state_change\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 4\n\n\n======================================================================\nFAIL: test_export_revision_cli_rejects_stale_selection_without_output_or_state_change (tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change) (revision='0')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1087, in test_export_revision_cli_rejects_stale_selection_without_output_or_state_change\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 0\n\n\n======================================================================\nFAIL: test_export_revision_cli_rejects_stale_selection_without_output_or_state_change (tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change) (revision='-1')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1087, in test_export_revision_cli_rejects_stale_selection_without_output_or_state_change\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision -1\n\n\n======================================================================\nFAIL: test_export_revision_cli_rejects_stale_selection_without_output_or_state_change (tests.test_handoff_context_cli.ContextCLITests.test_export_revision_cli_rejects_stale_selection_without_output_or_state_change)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1093, in test_export_revision_cli_rejects_stale_selection_without_output_or_state_change\n    self.assertEqual(exported.returncode, 0, exported.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 3\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.577s\n\nFAILED (failures=6, errors=9)\n"
+    },
+    "reports/export-selection-final-full-20261107.json": {
+      "sha256": "97cacf6eca1c2199e872f9086052084443a5e64a46129d34e47c859497955a65"
+    },
+    "reports/export-selection-fixture-error-20261107.txt": {
+      "sha256": "98850e36879ca5bfe4bc1a60af6486888e7961cce5b29f5472433ee02010231d",
+      "text": ".EEE.\n======================================================================\nERROR: test_export_revision_match_does_not_bypass_holds_or_reviews (tests.test_handoff_context.ContextTests.test_export_revision_match_does_not_bypass_holds_or_reviews) (state='cancelled')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 106, in test_export_revision_match_does_not_bypass_holds_or_reviews\n    staged = self.stage(state, target=\"gemini\")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 37, in stage\n    return self.ledger.stage({\"schema_version\": 1, \"kind\": \"jarvis.draft\",\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/handoffs.py\", line 231, in stage\n    raise ValueError(\"durable assistant handoff budget reached\")\nValueError: durable assistant handoff budget reached\n\n======================================================================\nERROR: test_export_revision_match_does_not_bypass_holds_or_reviews (tests.test_handoff_context.ContextTests.test_export_revision_match_does_not_bypass_holds_or_reviews) (state='outcome_unknown')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 106, in test_export_revision_match_does_not_bypass_holds_or_reviews\n    staged = self.stage(state, target=\"gemini\")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 37, in stage\n    return self.ledger.stage({\"schema_version\": 1, \"kind\": \"jarvis.draft\",\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/handoffs.py\", line 231, in stage\n    raise ValueError(\"durable assistant handoff budget reached\")\nValueError: durable assistant handoff budget reached\n\n======================================================================\nERROR: test_export_revision_match_does_not_bypass_holds_or_reviews (tests.test_handoff_context.ContextTests.test_export_revision_match_does_not_bypass_holds_or_reviews) (state='unreviewed')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 106, in test_export_revision_match_does_not_bypass_holds_or_reviews\n    staged = self.stage(state, target=\"gemini\")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 37, in stage\n    return self.ledger.stage({\"schema_version\": 1, \"kind\": \"jarvis.draft\",\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/handoffs.py\", line 231, in stage\n    raise ValueError(\"durable assistant handoff budget reached\")\nValueError: durable assistant handoff budget reached\n\n----------------------------------------------------------------------\nRan 3 tests in 0.711s\n\nFAILED (errors=3)\n"
+    },
+    "reports/export-selection-focused-final-20261107.txt": {
+      "sha256": "ec178bdd317365b4c2d21a717e9978b167d3b9a5c52b4f8bd44b55573ba1bf7d",
+      "text": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.766s\n\nOK\n"
+    },
+    "reports/export-selection-full-20261107.json": {
+      "sha256": "694d609f88f9eb651af6901f78d611416007b254331dfd49cb80219950c3dd8f"
+    },
+    "reports/export-selection-web-20261107.txt": {
+      "sha256": "a1f89b052534565576431e4c90f1c4e26cf7ae7e1aad428a075ba156cc08e118"
+    }
+  },
+  "memory_revision": 193,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 3,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "export-selection-20261107",
+  "next_task": "Independent exact-revision review of manual export selection and existing output/recovery boundary; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "problem": "Manual context export had no optional stored-revision selector, unlike review/retrieval. A digest can repeat after A-to-B-to-A edits. Existing digest-only default is preserved, not represented as a baseline failure.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "5152952b23bb5240fdb74c5da19a63d133e07aa1c8626bcf09f91c4ff13514d9",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "edc42e25c78bff69d61e5a7326807656b328fe2eeb8d482a3442cbd21da7a31f",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "71797951fef9e9aa6f7b3757011451e6e520ea65706a89c1e91435a31ded7001",
+    "scripts/jarvis_network.py": "fd80d147df510244d4e40e601e6be42e38f27f90c08dc4dcfc81dc39d95910e0",
+    "tests/test_handoff_context.py": "961005a83fe82c333d2c43c1beaca5bd63689de8a2b01fcff7444b01214e15a1",
+    "tests/test_handoff_context_cli.py": "a086f25d2df165bbb39674b1f7460cb0e037fc6c7662bb81651aac94a68799ea"
+  },
+  "tracked_patch_sha256": "4befb2a0dbc2924a6ff784fd12601d528759a49e0ef3c032c2ceefc6a7212c76",
+  "visibility": "owner_private"
+}

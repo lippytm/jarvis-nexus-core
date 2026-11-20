@@ -1,0 +1,70 @@
+{
+  "asset_id": "codex",
+  "change": "Extract the existing selected-profile current-state predicate into one local helper and use it for both selected and adjacent profiles. Existing bounded queries and pairwise transition checks remain.",
+  "checks": {
+    "after": "Same method passes; read-only reopen/unchanged bytes, preserved current held or legacy state, independent record and restored valid/lower-equal-count history checked.",
+    "after_log_sha256": "93f69f4bcb38364f1e63924fb7f1a2843ec7c6175f0f6d64bae97114556626e3",
+    "baseline": "Corrected single synthetic method reproduced five failed read assertions: memory, attempts, cancellation, unknown execution context and schema.",
+    "fixture_error_log_sha256": "479fc79ae062d28ea1675424ec14b28dfc6c6b71539fc746a8d347793e14e64f",
+    "fixture_setup_error": "Initial fixture exceeded the existing handoff budget before reaching the assertion; corrected to reuse mission-one and retain an independent record.",
+    "local_verifier": {
+      "record_sha256": "ea26461c91f72245d427172161e81e3b8d8b0586d8963d48d2b9bac291a5eecf",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 535,
+        "skipped": 0
+      }
+    },
+    "new_unit_methods": 1,
+    "reproduction_log_sha256": "6803eef83844787b2f0ab14ff50c2858c01a61f7b9ffd791bec37a75baff94f8",
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "web_log_sha256": "c36d15dc5acfa6c14216048b9981b6128f08e8ef8e6562b8c37f87d379f9a419",
+    "whitespace": "git diff --check passed"
+  },
+  "compatibility": "No query, schema/packet/receipt-field or migration changes; existing valid history remains readable.",
+  "configuration_version": "codex.checkpoint-integrity.v2",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "e59f82a4889da2ee740342c8c9d929cf8ae7d2cf",
+  "limitations": [
+    "Synthetic damaged-ledger fixture; not authenticated delivery, automatic repair or failover",
+    "Does not detect adversarial rewriting of the whole database",
+    "Original paused mission and real receipt artifacts untouched"
+  ],
+  "memory_source": "master Page sequence 149",
+  "mission_id": "checkpoint-neighbor-current-20261105",
+  "next_task": "Exact-revision independent/owner review; do not repeat this completed shared-current-bounds repair.",
+  "observed_problem": "Selective load accepted an otherwise-valid immediate neighbor below the current revision that exceeded current memory/attempt/schema bounds or contradicted cancellation/unknown-context invariants.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft-only development repair in named repository/branch; no main, merge, dispatch or record repair",
+  "project_id": "ai-jarvis",
+  "record_sha256": "62b818d38b1b2e1471979e22acb0db75e7a9d70d5b576681cd589a9ac5b555d3",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/handoffs.py": "db5d70ccfbaa7b75455d414fb78d9e6224e0629a9ab015bf76aac8a2419b6a04",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "6b6be3d486ee2ddd5576f4bc8cea9d433ac08416668275024c778993c198241d",
+    "tests/test_handoff_context.py": "c557601bc7438ddcf2a8e6b2329501c8ef2c59b1b01ff1e217f63aec6882d544"
+  },
+  "source_before_sha256": {
+    "control_tower/handoffs.py": "4c22067a086c16e924fafb3dac03a1ab24e455cde33d9bae7639c18431d680c3",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "654a1238c61f19d96e8685f29b224c9f0f2f7f28236c9e1fb4f6808df87515b6",
+    "tests/test_handoff_context.py": "b8741910eb7d2016bec37e941d978c50a51481bf3f212689bab5b0f6e4f397bb"
+  }
+}

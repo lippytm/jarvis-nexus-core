@@ -1,0 +1,94 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/threads-20261029/slot-1.png": "82063b818aa1b800b8feca265aa5d0fd6880d923502a7c9bcbd9d23db48c6e5b",
+    "docs/media/jarvis-threads-four-slots-20261029.md": "2215416588c54fbfde996399d82a0445c01bc1c9f1d82ea688c12751c37e1375",
+    "docs/media/jarvis-threads-slot1-20261104.svg": "5961f8ae8858008b34c4e21a66c946e7e46804b301d6106747b17919080e0584"
+  },
+  "checks": {
+    "all_12_discussion_units_unchanged": true,
+    "campaign_unchanged": true,
+    "empty_field_region_sha256": {
+      "artifact": "3d0acb5f761e13a1243c5219a90a4b84befc88944bc4866091b44136d83070dd",
+      "checks": "3d0acb5f761e13a1243c5219a90a4b84befc88944bc4866091b44136d83070dd",
+      "owner-review": "18ca1e6c3393f4e24e683c6352912604c8df219a40c1c8fae881ba8c0e1d76ce",
+      "source": "3d0acb5f761e13a1243c5219a90a4b84befc88944bc4866091b44136d83070dd"
+    },
+    "font_widths_within_canvas": [
+      694.36,
+      521.12,
+      577.61,
+      265.06,
+      264.89,
+      217.23,
+      186.5,
+      485.19,
+      648.48,
+      744.5
+    ],
+    "new_unit_tests": 0,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager object wrapping warning",
+    "slots_2_to_4_and_proposed_alt_text_unchanged": true,
+    "source_specification_labels_retained": [
+      "Starting revision",
+      "Changed artifact",
+      "Actual checks"
+    ],
+    "syntax_files": 73,
+    "visual_inspection": "assistant full preview inspection; no observed clipping/overlap; conceptual/unpublished labels and blank reference/review fields retained",
+    "whitespace": "git diff --check required separately",
+    "xml_no_external_resources": true
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "threads/account unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "finished_video_or_publication": false,
+  "independent_review": "not_performed",
+  "input_revision": "e0b56fe7811a5926bcb1dfd35dd0aab9fad8b145",
+  "memory_source": "master Page sequence 134",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact SVG/PNG/discussion/alt-text owner and destination/accessibility review; remaining optional visuals stay unrendered.",
+  "operational_ledger_changed": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "bytes": 103262,
+    "chunks": [
+      "IDAT",
+      "IEND",
+      "IHDR",
+      "pHYs",
+      "tEXt"
+    ],
+    "dimensions": [
+      1080,
+      1080
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.threads.1",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "713230ea0fd288f734ab20f1b5438a1064821ec46fa2ab2ea4afeb54b12446c2",
+  "registry_accepted": false,
+  "revision_conflicts": 0,
+  "rights_device_accessibility_platform_acceptance": "not_verified",
+  "schema_version": 1,
+  "scope": "unpublished_threads_slot1_original_artwork"
+}

@@ -1,0 +1,170 @@
+{
+  "asset_id": "codex",
+  "change": "Reuse same demo Codex record: request exact-revision receipt, JSON roundtrip, check after ledger reopen, reject after context edit, include check metadata in recovery report. Existing holds/checkpoint/Gemini fixture retained.",
+  "checks": {
+    "actual_cli": {
+      "command": "python scripts/jarvis_network.py --root reports demo --out codex-review-check-demo-20261106.json",
+      "exit_code": 0,
+      "report": {
+        "context_recovery": {
+          "context_revision": 2,
+          "context_sha256": "c1fe9890c602af0fad861a0654243943dc252e82cb536c86ab72d56ab4d64107",
+          "control_state": "paused",
+          "destination_id": "synthetic-local-codex",
+          "dispatch_authorized": false,
+          "duplicate_checkpoint": true,
+          "execution_state": "execution_blocked",
+          "external_actions": 0,
+          "historical_profile_retained": true,
+          "holds": [
+            "paused",
+            "context_review_required"
+          ],
+          "memory_revision": 2,
+          "mode": "local_synthetic_context_recovery",
+          "platform": "codex",
+          "prior_local_review_retained": true,
+          "profile_retained_after_reopen": true,
+          "retry_authorized": false,
+          "review_authority": "local_record_only_not_identity_authentication",
+          "review_receipt_check": {
+            "authority": "local_record_only_not_identity_authentication",
+            "context_revision": 1,
+            "dispatch_authorized": false,
+            "external_actions": 0,
+            "kind": "jarvis.context_review_check",
+            "local_binding_matches": true,
+            "receipt_roundtrip_retained": true,
+            "receipt_sha256": "7544c64c0db4cb5a9f88aa831566e9918b12c8f13bd0ffdf3710f89850df07ef",
+            "retry_authorized": false,
+            "schema_version": 1,
+            "stale_after_edit_rejected": true,
+            "visibility": "owner_private"
+          },
+          "review_state_after_edit": "proposed",
+          "sender_authentication": "not_established",
+          "visibility": "owner_private"
+        },
+        "export_prepared": true,
+        "external_actions": 0,
+        "external_agents_started": 0,
+        "inactive_assistant_specifications": 35,
+        "ledger": {
+          "external_actions": 0,
+          "handoffs": [
+            {
+              "duplicate": false,
+              "external_actions": 0,
+              "handoff_id": "demo-handoff",
+              "handoff_sha256": "8dfbe0d880f803591e3ba8f8932ace2499be488820f15ee9f0f706f0ff9b9f48",
+              "sender_authentication": "not_established",
+              "state": "returned_unverified"
+            },
+            {
+              "duplicate": false,
+              "external_actions": 0,
+              "handoff_id": "demo-codex-context",
+              "handoff_sha256": "19f93e729b6438c55e6299ba74a14433753fe1cede826e57d5ddd11b74da4fd5",
+              "sender_authentication": "not_established",
+              "state": "reviewed"
+            }
+          ],
+          "mode": "local_ledger",
+          "model_calls": 0,
+          "return_count": 1,
+          "swarm_count": 1
+        },
+        "mode": "local_synthetic_fixture",
+        "model_calls": 0,
+        "project_count": 7,
+        "reopen_retry_is_duplicate": true,
+        "return_state": "returned_unverified",
+        "swarm_manifest_sha256": {
+          "ai-evolutionary-evolutions": "a2c803cb0075efa34a43b078a03ea556b14a9dbf3c32aa9fead69bb76867f03c",
+          "ai-jarvis": "d928dcd79474892186a8fd11e5b1feea38489c5a0bd9bf32669dad16111c27c2",
+          "business-operations": "f70092236bb6959d32d6a63a00bd22b5a6a82bdea8ae4e3a513b4e48edd8826c",
+          "funding-affiliates": "a31809ef048772a996eb170eab0b778bf5e1386ecb05e224864e93ac6a74bfeb",
+          "linux-education": "bde8e1c58d3ac203047137c463ccdfb5cee381151bff1294fc8ac077845de1c9",
+          "publishing-studio": "a4411e42de17b6fbc82033134d907e6d28265e1c91e190fec747a321d2b49c2a",
+          "robotics-research": "586c5929659c60b9bd6805cc52a8d54b1ffe08588ea59031803e2bc51b15f619"
+        },
+        "target_provider_count": 17
+      },
+      "report_bytes": 2660,
+      "report_mode": "0o600",
+      "report_sha256": "e25d5610022f72391a1f35ec0dfabfd7ff0c642d569388f74048115431bb27b8"
+    },
+    "focused": {
+      "existing_method_extended": true,
+      "passed": true,
+      "run": 1,
+      "seconds": 0.076
+    },
+    "full": {
+      "record_sha256": "e24fda961b7a71ac10837b07b90a1d0a214d8dd2be1e379b3db594c61c32635d",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 556,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "selector_error": {
+      "corrected_to": "tests.test_network.IntegrationTests",
+      "errors": 1,
+      "initial_command": "tests.test_network.NetworkTests: nonexistent test class",
+      "source_failure": false
+    },
+    "sensitivity": {
+      "caught": "stale_after_edit_rejected false",
+      "errors": 0,
+      "expected_failures": 1,
+      "isolated_always_accept_checker": true,
+      "production_source_modified": false
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.demo-review-check.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "f0c7a4f2c1627ff2d4c82eda9de68cef33592d04",
+  "limitations": [
+    "actual local CLI execution with synthetic records, not authenticated Codex/provider delivery",
+    "temporary fixture storage discarded; report retained, no receipt archive installed",
+    "actual owner paused mission not accessed or changed",
+    "local review labels/digests do not authorize owner release, retry or dispatch",
+    "no live worker/failover/recovery controller added"
+  ],
+  "memory_revision": 169,
+  "mission_id": "demo-review-check-20261106",
+  "next_task": "independent exact-revision review; registry audience/access acceptance remains pending",
+  "observed_gap": "Existing synthetic Codex recovery demo did not exercise the new exact review receipt checker.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "6dfffda3b341e39925a113adc859935095316fb9afbf97e529d79b0383ea3e97",
+  "reports_sha256": {
+    "reports/demo-review-check-focused-20261106.txt": "e37504215e3cebe1d3aaa207267b297f7fca7e35de1d4267cacd74ef961f6046",
+    "reports/demo-review-check-full-20261106.json": "c1c030a209d075706167489c33a375c7e27f850c4920913ec68ca73a02487f30",
+    "reports/demo-review-check-selector-error-20261106.txt": "9b56c385447e33a1ad7601de340c78f249db293a5411c97c2d5e00c3ad71b876",
+    "reports/demo-review-check-sensitivity-20261106.txt": "57dcf09208cb5cd0e63403fc882c03bf72038ac3c850accbf94dac1d25710859",
+    "reports/demo-review-check-web-20261106.txt": "bc4fb21b75f9c61e76803b8bf53e6c66ad5325baf32c1399f1587eed5f3153b0"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/network_demo.py": "f47b4a36f81f69af20a9e36bf4661570cc9e5897186055f9cc3dd69e9094fba6",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "4f73663b7a2f04abb6e56e9d2f577264944554f2fe15d1ef8808e2f4b0f08778",
+    "tests/test_network.py": "cb65bf7465ac75b2347c9ab67f32da0aac695e0b3c1a6d0d72e65dfe4afdb740"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "acceptance_observations": [
+    "Five review areas bind exact source entry points and actual work receipts: stored-revision selectors, constructor cleanup, WAL observation consistency, publication acknowledgement loss and bounded backup byte check.",
+    "Input-source CI is explicitly historical evidence; this documentation commit receives separate CI. Local checks and CI are not independent approval.",
+    "Earlier snapshot bodies preserved; all 14 new-section linked paths match git show at the selected source and function anchors resolve."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "refresh_source_bound_review_handoff",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed; map is review preparation only",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Prepend November 7 source-bound review navigation/acceptance questions for thirteen commits since prior input source. Preserve earlier snapshot bodies apart from marking the prior current heading historical. Production/test/schema files unchanged; historical PR metadata unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/check hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision findings and owner release gate; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "log": "........\n----------------------------------------------------------------------\nRan 8 tests in 1.165s\n\nOK\n",
+      "scope": "constructor/checkpoint/export/observation and export/backup fsync/digest regressions named in source-bound map",
+      "tests": 8
+    },
+    "local_full_suite": "not repeated for documentation-only change; exact commit CI recorded in master Page",
+    "source_links_syntax_history": {
+      "paths": [
+        "control_tower/handoffs.py",
+        "docs/HANDOFF_CONTEXT_PROFILE.md",
+        "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md",
+        "docs/evidence/backup-digest-20261107.json",
+        "docs/evidence/backup-sync-20261107.json",
+        "docs/evidence/checkpoint-selection-20261106.json",
+        "docs/evidence/export-fsync-20261107.json",
+        "docs/evidence/export-selection-20261107.json",
+        "docs/evidence/init-cleanup-20261107.json",
+        "docs/evidence/observation-revision-20261107.json",
+        "docs/evidence/observation-snapshot-20261107.json",
+        "scripts/jarvis_network.py",
+        "tests/test_handoff_context.py",
+        "tests/test_handoff_context_cli.py"
+      ],
+      "previous_snapshot_body_preserved": true,
+      "source": "d46971806731da0cb92c3968f4b3031ba9bc7c14",
+      "source_artifact_paths_checked": 14,
+      "syntax_errors": 0,
+      "syntax_files": 74
+    }
+  },
+  "configuration_version": "codex.review-map.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/backup-digest-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "d46971806731da0cb92c3968f4b3031ba9bc7c14",
+  "limitations": [
+    "Review map/navigation is not independent review, authenticated approval, accepted procedure, release recommendation or measured reliability improvement.",
+    "No owner mission access, worker, lease, automatic retry/failover/reconnect controller, permissions change, merge, deployment, dispatch, publication or spending. Paused mission/schedules untouched.",
+    "All 17 portable targets/business areas retained; seven source project keys remain a different inventory. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "memory_revision": 201,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "review-map-20261107",
+  "next_task": "Independent exact-revision findings in one mapped review area, with owner release gate retained; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "f344d0d399b3b8808087ee799ac8987accd41cb5c9349af7cf40335caafceb1c",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md": "32bd4695ef598aa48b2d4f837b23c7af625d2ee450986d60b4a9838f2e5bd776"
+  },
+  "tracked_patch_sha256": "4bfd073321fb0619af8e0d0246627e2435e9d06d1fbea64de773a22a7c2cab17",
+  "visibility": "owner_private"
+}

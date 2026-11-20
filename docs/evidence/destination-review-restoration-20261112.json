@@ -1,0 +1,115 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "1d3f63455e339017fa1e30c65f948e50f419e9bbe27a85c3766bfcb1568d9434",
+    "tests/test_handoff_context.py": "6439a61344e0a27b315141aebbf2ad0f730c00fc0c22a3383355aa0fa307f909"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "One focused regression plus documentation and this receipt; production code unchanged.",
+  "checkpoint": {
+    "next": "Independent source/task-bound findings and owner exact-revision review; authenticated registry/audience acceptance remains unfinished.",
+    "state": "regression_passed"
+  },
+  "checks": {
+    "coverage": [
+      "Review changes invalidate the prior unreviewed v5 pin.",
+      "Restored identical profile digest advances context revision to 3; old local review receipt rejects both before and after a fresh revision-3 review.",
+      "Old reviewed queue pin rejects despite restored bytes/new review; current pin and new local receipt remain valid after read-only restart.",
+      "Other destination on same platform retains its exact pin throughout; paused/outcome_unknown and cancelled neighbor profiles retained.",
+      "Database bytes remain unchanged by restarted reads."
+    ],
+    "diff_check": "passed",
+    "focused": {
+      "exit_code": 0,
+      "log_sha256": "bf622474643f5a95309d94ccebf2ba48af1fcbd33e7046d2c0e16c5027519d70",
+      "tests": 1
+    },
+    "full": {
+      "evidence": "reports/r45-full.json",
+      "passed": true,
+      "record_sha256": "fc6600b6f22b7ddd94be6b31c39bbb52b9a98a3665fb1b6ba3ec99ed5cac775e",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 616,
+        "skipped": 0
+      }
+    },
+    "mutation": {
+      "errors": 0,
+      "expected_assertion_failures": 1,
+      "failure": "Traceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 1958, in test_destination_queue_restored_content_cannot_revive_old_review_or_snapshot\n    with self.assertRaisesRegex(ValueError, \"queue report is stale\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n",
+      "mutant": "omit context_revision from version-5 queue digest input only",
+      "mutated_hash_calls": 6,
+      "production_changed": false,
+      "synthetic_fixture": true,
+      "tests_run": 1
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "a2207ddbb9a9a5ff477afbc78adc7e4ab72aec888efff2b1638410aa5022470a",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_regression_and_mutant_checks_passed",
+  "input_revision": "9ccced84f6181b9a2cb31d49f20954eddf7659f1",
+  "limitations": [
+    "Synthetic local fixture and local-evaluator label; no actual independent review, authenticated reviewer/provider/destination or live delivery.",
+    "Expected mutant assertion failure is a controlled test, not an operational mission/test-suite failure.",
+    "No production repair, strict packet/schema/store changes, permissions, worker, lease, automatic failover or reliability gain claimed.",
+    "All 17 portable targets/business areas retained; seven source PROJECTS separate.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deployment/publication/messages/spending/credentials/public access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 229,
+  "metrics": {
+    "completed_regressions": 1,
+    "controlled_mutants_detected": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts_observed": 0
+  },
+  "mission_id": "destination-review-restoration-20261112",
+  "permitted_actions": [
+    "local_test_development",
+    "local_checks",
+    "authorized_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Destination queue filter and CI reconciliation complete; no active retry or overlapping candidate. Existing funding/comedy repairs retained.",
+  "problem": "Destination-specific v5 queue regression did not exercise reviewed content edited/restored to identical bytes followed by a new local review and restart.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "7ee82642d83fb0eccbe9a50eb40e57ca89231beeaf5cc536370304aa79208b66",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "tests/test_handoff_context.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_and_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "unchanged_production_sha256": {
+    "control_tower/handoffs.py": "c390a8d4563e2c122e497caadae7f38ccaac92d8b1d51c6a3bdd02869754cbf9",
+    "control_tower/network_contract.py": "b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7",
+    "scripts/jarvis_network.py": "de28900bedde95426cac9bf52c4c6cb4988eefcb60a4e43117ffec7ccfe77ba2"
+  },
+  "visibility": "owner_private"
+}

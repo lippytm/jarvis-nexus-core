@@ -1,0 +1,99 @@
+{
+  "account_access_verified": false,
+  "canvas": [
+    1080,
+    1080
+  ],
+  "canvas_status": "creative_choice_not_verified_platform_requirement",
+  "cards": [
+    {
+      "alt_text": "A synthetic exercise asks whether an earlier review covers a changed draft.",
+      "card": 1,
+      "main_text": "A reviewed draft changes. Does the review still apply?",
+      "preview_sha256": "387c4e3aab3271aecc7888d72b904f158d89d38b24b3834e42fa6e6a460d69fa",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:8): WARNING **: 23:17:18.272: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot2-card1-20261030.svg",
+      "source_sha256": "67def3ba33633de39e1e644d02ed05b9087677acb6ab72b959b27a8546f40403"
+    },
+    {
+      "alt_text": "Two synthetic versions differ only in their checkpoint note; no private record is displayed.",
+      "card": 2,
+      "main_text": "Version A: checkpoint note. Version B: edited checkpoint note.",
+      "preview_sha256": "b6312b2d6c08405c8622f9b865782a1a3d61f801ef8369b1bc2528872031bb0a",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:16): WARNING **: 23:17:18.719: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot2-card2-20261030.svg",
+      "source_sha256": "64c60ac8b65754ffaf95682a22349fd337f5a5fa8f71ef92b4a87ca5212bc2a4"
+    },
+    {
+      "alt_text": "An unperformed demonstration would save a synthetic record, review it, edit its checkpoint and reopen it.",
+      "card": 3,
+      "main_text": "Proposed check: save → review → edit → reopen.",
+      "preview_sha256": "2b6a4eb59e7afb2b823f36ea24762e0695fa76672a204339ca31aa632452788a",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:24): WARNING **: 23:17:19.138: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot2-card3-20261030.svg",
+      "source_sha256": "8dc96ecd3a4e01bfec36d962ada7bcf971a6b5adc2617ec668b3d3da6146835c"
+    },
+    {
+      "alt_text": "The expected behavior is retained edited text and an invalidated old review. An actual check and its receipt are still required.",
+      "card": 4,
+      "main_text": "Expected behavior is not an observed result. Retain the actual run before claiming success.",
+      "preview_sha256": "8643d8daf22d6482d581eb8e67e0555e4efd889ba3a897ec00b39f84a587715a",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:32): WARNING **: 23:17:19.498: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot2-card4-20261030.svg",
+      "source_sha256": "a3545afa2c905852631be4034e20ae4dfe2601f5e0ed22a64db2800187bb2f8d"
+    },
+    {
+      "alt_text": "A closing question asks which content edit a reviewer would test for review invalidation.",
+      "card": 5,
+      "main_text": "What small edit should require a fresh review?",
+      "preview_sha256": "15345210c40498821b091d2d367e23dd1896e6b619e5d13f4a29e0366ccdc34d",
+      "renderer_exit_code": 0,
+      "renderer_stderr": "** (inkscape:40): WARNING **: 23:17:19.878: Failed to wrap object of type 'GtkRecentManager'. Hint: this error is commonly caused by failing to call a library init() function.",
+      "source": "docs/media/jarvis-instagram-slot2-card5-20261030.svg",
+      "source_sha256": "f787501659ad7a9082bd256281801b467761f9975cab047102dde8d259ba75bd"
+    }
+  ],
+  "channel": "instagram",
+  "checks": [
+    "Exact visible main/alt text and SVG title/description match source.",
+    "Every card visibly labelled Synthetic example; card 4 retains Proposed exercise — not a new test receipt.",
+    "No scripts/images/foreignObject/use/links/events/external resources.",
+    "Text wrapping checked with actual DejaVu Sans regular/bold widths.",
+    "All five PNG previews fully decoded at 1080x1080.",
+    "All five previews individually visually inspected by assistant; no clipping/overlap observed."
+  ],
+  "copy_unchanged": true,
+  "costs_measured": false,
+  "demonstration_executed_for_post": false,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "guide_sha256": "5ff86d556414f3d3df92ef86c8167de91836b63d6659e3437b19954312f1e5d7",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "31b32b1d6278e508635cd99cfd82a4656cba8392",
+  "mission_id": "jarvis-media-20261029",
+  "mobile_or_screen_reader_checks": "not_performed",
+  "next_task": "Exact caption/art/alt-text owner review and destination/accessibility/export confirmation; slots 3–4 artwork unfinished.",
+  "owner_approval": "not_granted",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.instagram.2",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "d733ab7beb803ccfedb8014a9807268c72a381bfd199a316943e2625b7d18aff",
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "schema_version": 1,
+  "scope": "local_unpublished_svg_artwork_candidates",
+  "slot_1_artwork_unchanged": true,
+  "slot_2_copy_sha256": "8b449f1d78dcf61634790cfeec0a03e69b9184e2b052a43d64434da249bb8ccc",
+  "source_brief_sha256": "10750233ecfa3f212fd1acf25fdabc2b4220a075caf5b45492440cbde7cd58bc"
+}

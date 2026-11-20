@@ -1,0 +1,134 @@
+{
+  "acceptance_observations": [
+    "Six injected failures: KeyboardInterrupt, SystemExit and sqlite3.OperationalError after real foreign-key setup and schema-version reads on actual temporary SQLite read-only connections.",
+    "Each original exception propagates unchanged; no ledger object returns; exactly one explicit close occurs; further SQL rejects as closed. Source bytes remain identical.",
+    "A new successful read-only handle after each fixture failure retains version 3, all logical rows, current memory/stored revision 2, exact local review receipt, historical revision-1 context, paused outcome_unknown and independent Gemini context. Export remains blocked by unknown outcome."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_bounded_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "One regression for failed/interrupted read-only opens of an existing version-3 ledger; production source, schemas and strict version-1 packets unchanged. Prior constructor regression covered new-ledger initialization only.",
+  "checkpoint": {
+    "return_binding": "source/memory revisions and source/log hashes; final commit and actual CI linked in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision recovery findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/read-only-open-full-20261107.json",
+        "passed": true,
+        "record_sha256": "5452290118258d78a3a96feb0ebf1e1cbe40ebd85fe38031ea30d408d2580dfe",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 592,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 592,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.read-only-open-regression.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/init-cleanup-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "0f88a9005ab7d314169ef09903db88a69ffb471c",
+  "limitations": [
+    "Synthetic temporary records and deterministic exceptions, not actual owner incidents, process/power loss, authenticated reviews, provider delivery or measured runtime recovery. A later fixture open is not an installed restart/reconnect controller.",
+    "No production change, migration, owner mission mutation, worker, lease, automatic retry/failover, credential/permission change, merge, deployment, publication or spending. Paused mission/Studio and Newsletter schedule untouched.",
+    "All 17 portable targets and business areas retained. Trading Bots research/backtesting/paper only; RoboParty deferred. Facts/actual receipts remain separate from proposed procedures and pending owner acceptance."
+  ],
+  "logs": {
+    "reports/read-only-open-focused-20261107.txt": {
+      "bytes": 100,
+      "sha256": "5ccd76e8fb90bd81172f8cfe3eeec8a591d9d1ab0396345fccbed1630ed7bc50",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.080s\n\nOK\n"
+    },
+    "reports/read-only-open-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/read-only-open-summary-20261107.json": {
+      "bytes": 260,
+      "sha256": "671620da62fde6519a853d3a8f642b6d389e2bd42b8ec1fed5afe5a0a9701dea",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 592, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/read-only-open-full-20261107.json\", \"record_sha256\": \"5452290118258d78a3a96feb0ebf1e1cbe40ebd85fe38031ea30d408d2580dfe\"}\n"
+    },
+    "reports/read-only-open-web-20261107.txt": {
+      "bytes": 39585,
+      "sha256": "bc8ca343a5c8992e7659cd48e411e544b297f9b5f19420ace3d5de791bd96f62"
+    }
+  },
+  "memory_revision": 202,
+  "metrics": {
+    "actual_verification_failures": 0,
+    "costs": "not measured",
+    "duplicate_development_attempts": 0,
+    "mission_completion": "one local regression completed; remote write and CI pending",
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_improvement": "not measured",
+    "repository_revision_conflicts": 0,
+    "review_effort": "not measured",
+    "synthetic_fault_cases": 6
+  },
+  "mission_id": "existing-ledger-read-only-open-recovery-20261107",
+  "patch_sha256": "b9b54c30f1ea4d253d8c5ad4ab9ccf981105a3d537caf09a4b7d472baa6512b8",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "7718c0225a85491f14c116f3a6f99ebe5e6c16cdc416153c8fa53503710805dd",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context.py": "dbe047c273c6dd9a46c28fa3203a9f11961b3391d991e1c0668e78d214d48351"
+  },
+  "visibility": "owner_private"
+}

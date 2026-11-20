@@ -1,0 +1,55 @@
+{
+  "changed_file_sha256": {
+    "control_tower/handoff_context.py": "a12be3d612905e18d29ede4e11c69aaf9a9e0733898d6aa5241d4141362f9196",
+    "control_tower/handoffs.py": "dd785f3705272968bde8b1d0be0d71f47475274f6d9949b8b307f3aaa68442eb",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "11e9837b1d0e1a004ceea80a9e7d7c788909016194fb8586204e5b5fc1c5b7fc",
+    "tests/test_handoff_context.py": "3240f2fc04ec1047bddd80414c13b204d2e9ac2731d282d8d4eee9b13e7e83a5"
+  },
+  "checks": {
+    "python_verifier": {
+      "command": "python scripts/verify_control_tower.py",
+      "exit_code": 0,
+      "record_sha256": "4c0a9241fe6f9785ee1563a4f78f4489e46464c3dd9fb18cc183a31606969385",
+      "syntax": {
+        "errors": [],
+        "files_checked": 72
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 344,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 181
+    }
+  },
+  "execution_probe": {
+    "availability": "actual_success_this_session_only",
+    "command": "pwd",
+    "context": "ChatGPT Work Linux /workspace/scratch/3e7507676923",
+    "exit_code": 0
+  },
+  "independent_review": "not_performed",
+  "input_revision": "0825e98c5cd148f0cf708e81dbe77fe462164ac2",
+  "limitations": [
+    "synthetic local fixtures; no authenticated provider delivery",
+    "no deployment, automatic retry, lease supervisor or paid execution",
+    "local reviewer/audience labels do not authenticate identities"
+  ],
+  "mission_id": "jarvis-handoff-context-v1",
+  "next_task": "Authenticated private storage adapter for the existing ledger profile, with a real scoped save/read receipt before queue dispatch.",
+  "observed_at": "2026-10-27T19:40:18.176633+00:00",
+  "owner_release_approval": "not_requested_development_only",
+  "runtime": {
+    "platform": "linux",
+    "python": "3.12.14"
+  },
+  "schema_version": 1,
+  "scope": "development_only_local_ledger_context_and_checkpoints"
+}

@@ -1,0 +1,159 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_draft_patch",
+    "test",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable tool approval checks pending; independent exact-revision/owner release review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "Restore exact URL schemes. Add two regression methods for all four destinations, separate customer/partner identities and duplicate handling. Refresh catalog-bound inactive examples and two embedded browser catalogs; no runtime schema change.",
+  "checkpoint": {
+    "return_binding": "input revision/source hashes; final commit and CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision review; authenticated registry/delivery and audience/access acceptance remain unfinished"
+  },
+  "checks": {
+    "baseline": {
+      "exit_code": 1,
+      "failed_subtests": 5,
+      "tests": 6
+    },
+    "diff_check": "passed",
+    "final_full": {
+      "record_sha256": "db50377d53e9b1c89de5eed3ba2567762ab1bada7211e27a569f98364abd5b6a",
+      "syntax": {
+        "errors": [],
+        "files_checked": 73
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 561,
+        "skipped": 0
+      }
+    },
+    "final_web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    },
+    "first_full": {
+      "errors": 1,
+      "failures": 1,
+      "reason": "stale tracked catalog/missions",
+      "tests": 561
+    },
+    "first_web_after_refresh": {
+      "fail": 2,
+      "pass": 179,
+      "reason": "two stale embedded browser catalogs",
+      "tests": 181
+    },
+    "focused": {
+      "passed": true,
+      "tests": 30
+    },
+    "partial_refresh_full": {
+      "errors": 1,
+      "failures": 0,
+      "reason": "all missions bind global catalog digest",
+      "tests": 561
+    },
+    "snapshot_focused": {
+      "passed": true,
+      "tests": 12
+    }
+  },
+  "configuration_version": "codex.funding-funnel-exact-routes.v1",
+  "derived_artifacts": "All twelve mission examples bind the global catalog digest, so their digests/index were refreshed. Ten nonfunding missions retain all other fields. Two funding campaigns regenerated. Fixture mission IDs, requests, source-context revisions and inactive roles retained. Existing campaign UTM behavior unchanged; no actual owner record or review migrated.",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "input_revision": "1140ff8225fb46dc392ed724c46e80baa13c0244",
+  "limitations": [
+    "Offline synthetic fixtures only; no provider URLs visited, enrollment or funding operations.",
+    "Terms, tracking, provider authentication and actual delivery remain unverified.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/funding-funnel-baseline-20261106.txt": {
+      "sha256": "5e339c02df0858d8b82e2950f3cc8656f5bc8f19982f68a375f681dbe5f08993",
+      "summary": "----------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_funding_route_integrity.py\", line 53, in test_reconciled_referrals_preserve_all_four_exact_owner_urls\n    self.assertEqual(referral[\"destination\"], DESTINATIONS[product])\nAssertionError: 'https://join.7figurespartners.com/?a_aid=lippytm' != 'http://join.7figurespartners.com/?a_aid=lippytm'\n- https://join.7figurespartners.com/?a_aid=lippytm\n?     -\n+ http://join.7figurespartners.com/?a_aid=lippytm\n\n\n----------------------------------------------------------------------\nRan 6 tests in 0.006s\n\nFAILED (failures=5)\n"
+    },
+    "reports/funding-funnel-corrected-20261106.txt": {
+      "sha256": "bd3c03ff8ec8ceac2cce2d5a053478afd5a6b77d5f9a04b38c900586f5d26b75",
+      "summary": "t):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_portfolio_missions.py\", line 103, in test_ready_examples_match_catalog_requests_and_compiler\n    loaded = validate_mission(load_packet(root / entry[\"mission_file\"]))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/control_tower/missions.py\", line 118, in validate_mission\n    raise ValueError(\"mission structure or integrity mismatch\")\nValueError: mission structure or integrity mismatch\n\n----------------------------------------------------------------------\nRan 561 tests in 32.181s\n\nFAILED (errors=1)\n"
+    },
+    "reports/funding-funnel-final-web-20261106.txt": {
+      "sha256": "96b9ac62c39df82c1098ddfa85b1c46cda74748808b2940c01ed0d056072b7c7",
+      "summary": "ts or HTML insertion sinks\n  ---\n  duration_ms: 0.390526\n  type: 'test'\n  ...\n# Subtest: the objective has native English spelling and the separate composer link is local\nok 180 - the objective has native English spelling and the separate composer link is local\n  ---\n  duration_ms: 0.206866\n  type: 'test'\n  ...\n# Subtest: shared JavaScript-to-Python fixtures match actual exports and rejection rules\nok 181 - shared JavaScript-to-Python fixtures match actual exports and rejection rules\n  ---\n  duration_ms: 0.855143\n  type: 'test'\n  ...\n1..181\n# tests 181\n# suites 0\n# pass 179\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 191.114953\n"
+    },
+    "reports/funding-funnel-focused-20261106.txt": {
+      "sha256": "8fd1d444b6e5b6dbe76f567433b83d42a55bbb4d9785ffda8845993d098d4b90",
+      "summary": "..............................\n----------------------------------------------------------------------\nRan 30 tests in 0.007s\n\nOK\n"
+    },
+    "reports/funding-funnel-full-20261106.txt": {
+      "sha256": "bc44857fcd7275fc4acad6a687b9bbd3867ab943afe4fbe6541c3eb07a31e816",
+      "summary": "-----\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_portfolio_missions.py\", line 80, in test_catalog_and_tracked_browser_snapshot_match\n    self.assertEqual(catalog, load_packet(ROOT / \"examples/portfolio/catalog.json\"))\nAssertionError: {'sch[3930 chars]'http://www.7figurescredit.com?a_aid=lippytm'][9909 chars]374'} != {'sch[3930 chars]'https://www.7figurescredit.com?a_aid=lippytm'[9912 chars]3e9'}\nDiff is 25628 characters long. Set self.maxDiff to None to see it.\n\n----------------------------------------------------------------------\nRan 561 tests in 33.763s\n\nFAILED (failures=1, errors=1)\n"
+    },
+    "reports/funding-funnel-refreshed-web-20261106.txt": {
+      "sha256": "a7a42cd2e56c930abd11109e4de7c950dcf9e581c4f8b52d7d15bb9c9f128bb2",
+      "summary": "ts or HTML insertion sinks\n  ---\n  duration_ms: 0.339391\n  type: 'test'\n  ...\n# Subtest: the objective has native English spelling and the separate composer link is local\nok 180 - the objective has native English spelling and the separate composer link is local\n  ---\n  duration_ms: 0.145465\n  type: 'test'\n  ...\n# Subtest: shared JavaScript-to-Python fixtures match actual exports and rejection rules\nok 181 - shared JavaScript-to-Python fixtures match actual exports and rejection rules\n  ---\n  duration_ms: 0.702537\n  type: 'test'\n  ...\n1..181\n# tests 181\n# suites 0\n# pass 181\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 186.623032\n"
+    },
+    "reports/funding-funnel-snapshots-20261106.txt": {
+      "sha256": "b98d97a30579f4bb7543e8bde1fe2372ee04d8b02c0cf619d3b918fed1ac8f4e",
+      "summary": "............\n----------------------------------------------------------------------\nRan 12 tests in 0.098s\n\nOK\n"
+    }
+  },
+  "memory_revision": 174,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_subtests": 5,
+    "failed_intermediate_full_runs": 2,
+    "failed_intermediate_web_runs": 1,
+    "observed_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "funding-funnel-exact-routes-20261106",
+  "next_task": "independent exact-revision review of route correction and derived snapshots; do not duplicate this repair",
+  "patch_sha256": "b70d1d10f7949b7e248ed59da6488f62beb8ab1ef4180f04b9eb5e699d68f68d",
+  "platform": "codex",
+  "preparation_note": "An evidence command chained after Node was skipped when Node failed; trailing diff check returned zero. Inspected TAP directly, retained the two failures and refreshed embedded catalogs before final verification. An initial unmatched web file glob was corrected using test source paths.",
+  "problem": "Offline funnel destinations silently substituted HTTPS for three exact owner HTTP URLs; prior product-to-route repair did not cover this path. Reconciled referral records inherited the substitutions.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "45071e9023f514159b42c2642d9b493de878e5005b218e5770d46aff510e24e3",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/funnels.py": "897eec6033b3add70f0812e3407dc3ce137eda0bc7c9ada0a8d673be7611bf38",
+    "examples/portfolio/affiliate-builder.mission.json": "0407cbb85c2905e3eec9f573928b678de9b4a082b10a7904a34e337787c767f2",
+    "examples/portfolio/business-operations.mission.json": "f847fde6b4231c264ed9b3d5ce7134869f7bb694fe5a4ddddbf37445a695236c",
+    "examples/portfolio/catalog.json": "cb934d80e3746c4546f80582014a94354beab58b21c89dbfd824a9dfbe989b22",
+    "examples/portfolio/funding-customers.campaign.json": "1c2b9ad85233b4d48c22a2e3a33d37e370516c225c7cffb16d4ebc64828d2b87",
+    "examples/portfolio/funding-customers.mission.json": "74f69696a8363a08895a53e44aee31a0e3b5b5c52e79bbb25b5cfe5777a9767c",
+    "examples/portfolio/interactive-video.mission.json": "51962faf91bc7cb4e4d66b6a72a325b5ba77d91118ab7aa5093ecd8f2fc667f7",
+    "examples/portfolio/jarvis-tools.mission.json": "9da682cb34668cfa0440e6f62a30cc0ccf9414d03c970e486da0b1a2ab4848af",
+    "examples/portfolio/linux-learning.mission.json": "684b7b98ee1c253799a6fbbf0bd444d69d106d0370b0d3214b8e8b904f80b98d",
+    "examples/portfolio/mission_index.json": "2f9816d5a06a6b9dcf34d9b05c6d342891264fecf95d7c767ae184ff81b5d3e3",
+    "examples/portfolio/personal-workflow.mission.json": "17ad4cb63e6d0c9848268473487260d3de6842d26ef641ac107435989a6f5bfb",
+    "examples/portfolio/publishing-library.mission.json": "7677935ea113138d762ffa8dda12b18c7b6773a617b1b0d7984b0b1417328851",
+    "examples/portfolio/referral-partners.campaign.json": "6875a3d4239061c6fcb6e4a243ca975db4b6345591179156ab67a47422a901ae",
+    "examples/portfolio/referral-partners.mission.json": "03275fd3a144cdbce19103b423fb86dc413e2bb200425c910b12998dd92b8427",
+    "examples/portfolio/robotics-simulation.mission.json": "453480f39666871372d62d3361c8730c1254c0ada0cb598ac9b3041177d28226",
+    "examples/portfolio/wearables-research.mission.json": "038ed65a0a34b21ebf00b8ed21ff0295c982ac60c14e9e9786d04db05fe9ef08",
+    "examples/portfolio/website-learning.mission.json": "31444876e7dd8d007657ee53f42e4ca2a579dd16cc4150fa8e3a6d3db4052f27",
+    "tests/test_funding_route_integrity.py": "66937c84ea7dca10d97af37c086e44304d5effdd1d19959a597c28d63764c015",
+    "web/jarvis-research-rpg.html": "d1a68390e3ae35f3157a427992da55e5383fb15418dc881dcc2a0f12e7e6ed4b",
+    "web/jarvis-workbench.html": "600b16fa4ec2f51a20aa85667de4d827c530eb421fe263b7d461529ecba6f6b4"
+  },
+  "visibility": "owner_private"
+}

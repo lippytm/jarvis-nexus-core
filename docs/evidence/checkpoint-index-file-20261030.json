@@ -1,0 +1,482 @@
+{
+  "after_change": {
+    "failures": 0,
+    "full_local_verification": {
+      "composer_runtime_tests": "separate Node web test job covers composer, portfolio, diary, RPG and media-player helpers; HTML/JS hashes included here",
+      "github_checkout_sha": null,
+      "independent_human_security_review": "not_performed",
+      "live_integrations_tested": false,
+      "observed_at": "2026-10-31T03:17:45.562129+00:00",
+      "production_deployment": "not_performed",
+      "python_version": "3.12.14",
+      "record_sha256": "327f538b562d687d99fe7660f2ccb60fff669933ef2c97ce951a73085a0ac7b6",
+      "schema_version": 1,
+      "scope": "syntax_offline_unit_tests_and_synthetic_demo",
+      "source_sha256": {
+        ".github/workflows/control-tower-tests.yml": "c07b532ca1c2cc1cf52d58d3cd0aa02f2dd07f4c071232496b25a5866d20a425",
+        "control_tower/affiliate_universe.py": "cbc598ea884aeecc36f96462911800a9e6d85c5f772f525a6d4c042fae5e7207",
+        "control_tower/attribution.py": "f7a347edfe6603eed5099ffb606da5d20da38ebae93a7d45280546dcd4cfa897",
+        "control_tower/briefing.py": "c74739d95340a2a14899e33ca515200517ec8373fecb0d934b8015abd79ad1ce",
+        "control_tower/builder.py": "917dc45e769e37965cae7346d277795b095dab54f152f13b23e48860e6274eeb",
+        "control_tower/campaigns.py": "1f43a2fc8ffe8921973a75cd4a57b5637999e6b5588cc91cd23d8a8d77119d33",
+        "control_tower/connections.py": "ca99a6946869c5fafd7ca9dde13ceb9a96ec1b58001e62ff191b0c5086882520",
+        "control_tower/creative_ad_foundry.py": "c2c78288921eee1a12631373c29f97b960a1e95ef8631505a569344647507966",
+        "control_tower/dashboard.py": "7fe88ae82e7ae2817aff14b1a9ecb16a06975e5ade35c0e8844f62b2917164b2",
+        "control_tower/demo.py": "cb5c245f0f0a62e421dec541b507ae7088c89f970226e5d481eb313643e2227e",
+        "control_tower/diary.py": "54618070ccfbe724d5cdecea77093f87b1f1cb9d840f9ca7b07acd7c68993b19",
+        "control_tower/diary_store.py": "75e60c7c014c96d54fa0168090c1e565dc1a66b6427bd83253d4bc22d13a20a8",
+        "control_tower/episode.py": "682d5c067f3758638992c38a6e726e5e273839d838eed16e553c63e5cee21bf3",
+        "control_tower/episode_render.py": "b5611f5f5d09cccb061442c595b8acd9a167466cacd6b5b8cc441f2f407ece09",
+        "control_tower/evaluator.py": "5a2347d9be3f526539b1d5345f8249d45fd0bd743cca4c7859fe0688f8943a6c",
+        "control_tower/events.py": "54e827513bbb49bd9afa809114c53abe03011e8cb488069186b744ade3e9ca54",
+        "control_tower/funnels.py": "bf76037d3140d689951583cb705c12e6c831558ea5aff7aaf24e3424b85fd8c1",
+        "control_tower/handoff_context.py": "a98ecc6718c1b2a39eb54f18ded665a9f683264d1611233321c6a65ddca5158a",
+        "control_tower/handoffs.py": "c4d5b18d9b040b78f090b19b64e607a6fba0e855865d01e8758a7347de6aea5c",
+        "control_tower/hostinger_live.py": "695a02bebb08ad5c9d8ba85426dd58ad8ee576018757ade34df73a115383c452",
+        "control_tower/hostinger_probe.py": "b72a40a4b928f13bfcee4ad31ce76a84b31884bedbaf92fe28c7044783437ae1",
+        "control_tower/injective_marketing.py": "484dfa3b565fdf5d58c09f76fcc183fcc72190c465e4855466eb59d01f265a85",
+        "control_tower/journeys.py": "d75ad86ae1456405383446991f49579a596bcc949e25be3f80e5265f1a7374cf",
+        "control_tower/media.py": "f2c2c446de20f87690bbbfd625edb7d515aafb2ae3d094307a78cb153c1fd6aa",
+        "control_tower/media_render.py": "23d63e77038e540539f9f511404e9da0fca8eb576554de94595b4286e56835e2",
+        "control_tower/missions.py": "7e7a087fdd39a46ac75ffbacdf14c098563219eb3b0c9e39b37936b2cbb3dfff",
+        "control_tower/network_contract.py": "b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7",
+        "control_tower/network_demo.py": "39333d859cd5740b3e00e16dd02feba529021346169f36a5983f6e2c41787908",
+        "control_tower/orchestrator.py": "9dd90bb0e988687ff59db837fb9c03c4376e6024fe6241028fd4ff1578e69b4e",
+        "control_tower/organic_marketing.py": "b97ae7856570fb85ce460c28146c278c67aee24047c85bfa777d886f860c15a5",
+        "control_tower/portfolio.py": "3fa395dea80b1a7090596eb9a3671d0a360633b0eb68b21151090428ac1382f3",
+        "control_tower/portfolio_demo.py": "d80019791454da30930d65cd8c80192c52dce4f97049684c893fe6c96486698d",
+        "control_tower/provider_catalog.py": "6c8fb19211e127e35baea58d74623883852d9f3ce2924dcfff7308f809454be7",
+        "control_tower/roundtrip.py": "58b776b711b5b4a17efd66c2683a0a2495016cf43ce0900480bfcebf41ccd8bd",
+        "control_tower/space_alien_comedy_affiliate.py": "2d9334ab762c96bd3e888cc8f5872123bfa38e60d8ec9f5a306cfcd4fbaf815a",
+        "control_tower/swarm_factory.py": "f5dbd5053ccc690b3c78e1b02d19b1917346d7bf277bbb5d84eb7b1ce2140c72",
+        "control_tower/validation.py": "297883bcbc3e68642974c3771ebff584479cbfbc9830b34412e5d0c2ddea6c6d",
+        "scripts/jarvis_diary.py": "039d18a530088497e11f8af0513e27bc42af6df2d487b3a0989380de9f4a1c2d",
+        "scripts/jarvis_episode.py": "cba2868b293f5d0efc3924cee47f2771033dec75addf09d93a7550e81f98a512",
+        "scripts/jarvis_hostinger.py": "f392974d46b313e801d894c4eedb5b903b7c4d8c5580031a683814d2a1b51da6",
+        "scripts/jarvis_network.py": "a2a55ac03d8aa14e7ae97cd47233147b7a1e02131084455c1744161d4483a6b7",
+        "scripts/jarvis_portfolio.py": "dc3b199f35c40a94eb7a85626aacf5f93131cb1809373a47db65524218341300",
+        "scripts/verify_control_tower.py": "b99b2c0b1cd09084558f241b4f6b8242ea3bf102969d7986c163974f171ef4c6",
+        "tests/test_affiliate_universe.py": "8188a3e599fab89ee001b671610fc0622b53c463f52bd04a543697fd3e9a2a2d",
+        "tests/test_builder_evaluator.py": "a295a76cf4acba0148f4424d1ce6cf3c7254e22ab7857c2d2ad12f24c1b94bb8",
+        "tests/test_codex_handoff.py": "6976d033769f34db2a72f94f299f4940d98ece1e42a02ab7de889b3173afa5a3",
+        "tests/test_composer.mjs": "e2bd01aaac82973aaee4a09ca1b67775dd7fd845aad10955cc138c59fa4f8ec4",
+        "tests/test_connection_observations.py": "33d6dcf004572b4502de6ba91e92e98a8228ccf256a8ea48063c31f56e99c875",
+        "tests/test_connections.py": "ecbd389b9fbd7c86b73bfd4d8c1e50260017819781c6319dcaadb55e2d2d6527",
+        "tests/test_control_tower_extensions.py": "68f27f7304a4d09ba01ce3644339965641edd0c01606494654bc2e9458403296",
+        "tests/test_creative_ad_foundry.py": "f84766a1ce79868ba3324d59d5d0be088cdc16cd2cb38f43ca08bfc2927cb533",
+        "tests/test_demo.py": "1850940d6c25e3171a3249e0f59d86def45223e793370542f84d46a3ca9efba7",
+        "tests/test_diary.py": "617ff850e662d27e4de742a2d4bd471d88ed2a01e126b9efc329bb7d63d31f05",
+        "tests/test_diary_cli.py": "ee499ac498a75fae8568630d324a0ea78b566cf154d288037f935fb46c5af1d1",
+        "tests/test_diary_media.py": "762acf6ead4931130510c60a945fe007f2d6f68904d47cfe0d01f3b047fa7cdf",
+        "tests/test_diary_store.py": "b86eba0e801e5d78eb459f51000a8aa6d48f7128ac944064252ae7b3851fcaa3",
+        "tests/test_diary_workbench.mjs": "0092ed07f2df868b444b8ecf728d3887520345a9b65ff0b736b0057af29aad88",
+        "tests/test_episode.py": "4838428ee5a187e45a8c68ec7375e9a6c7aecb7c8920f893bfa9b2d811edb749",
+        "tests/test_episode_render.py": "20a86759fdad01a00d8eaf8c9ede7eae71849e3497d1ea69ec0a9c24b674b698",
+        "tests/test_events.py": "c381e3d92975713220d3f97b2e991e7a3a0e1108e6f06deba5e38587563bda10",
+        "tests/test_funding_route_integrity.py": "d0057df0e6c02b80f6a73cba8d49fc80447b3e239c9b32eef98f53f1e9cac9ce",
+        "tests/test_funnels_dashboard.py": "94dbddfed93b97a040b422c6024ee0c294ddec488a1fce1af9f4fc75337e7670",
+        "tests/test_handoff_context.py": "25a1512c30130ec3ebfb906318d2c69b3e7ead740a7d08ed5cfdbf27b1851692",
+        "tests/test_handoff_context_cli.py": "fb2c03207528b9a9ec54cef6f1b6a3908faabe3c586d81a6f8d6664f8c04218b",
+        "tests/test_hostinger_live.py": "7fba5fbc9e85036fef34385435ba602c24bee581f740a0ff35ce0454bf0af714",
+        "tests/test_hostinger_probe.py": "540744406d22f6c38f71307b2beaa5c9a3b43d72bfacfa18c7e5059293042887",
+        "tests/test_injective_marketing.py": "d3d1a8e6ec3971ea85e6796dfe8619be9d5f543e0e24eff8fbab8c034f6c2a0a",
+        "tests/test_input_hardening.py": "a3a75edd0ccc7b81d6890eeda73fd05a6b27635a7971c7aa7a83f2dd0f6efedd",
+        "tests/test_journeys.py": "a2fb6b379b0c756994de7da405aa39915abe297bf9099f439ce33f57923d329f",
+        "tests/test_media_player.mjs": "7b863cf96cf28cd437c4babac6a4be76f370bc9f3a8dad01acdb321fcc199dbc",
+        "tests/test_network.py": "149c0bac47719e626beb3b1583af542712ed93d9665f8f19ac5142354255c659",
+        "tests/test_organic_marketing.py": "1ab1a12813c8006f158452c720881f8f43cd8da3959c37ed5c8a3c95709eef62",
+        "tests/test_platform_expansion.py": "a4d51d3fa5003e390f48aa7c91c42256fea9f0838e38a480f31604a5ed6c9148",
+        "tests/test_portfolio_missions.py": "ab7239fae5d339eb6a41588570fdb24147efcbc8cb497b7fd289997f56740ce4",
+        "tests/test_provider_catalog.py": "ab2a8facf9bfc123e6a7439f8283a17cb56ce0d668c7f7d2d029dd033e10e817",
+        "tests/test_research_rpg.mjs": "ed55ff24f48f6eec27de99171d859c7f7d077b95f0457c74b52c8d01104f8ec6",
+        "tests/test_roundtrip.py": "9a1ffad5a8940a19ded660b0c2dd62493d02a6c773835455432b5a5280323139",
+        "tests/test_rpg_workbench.mjs": "69a72b376956995fb00430786390dea5105fa652fc0450f0bb48ac790c6b3062",
+        "tests/test_space_alien_comedy_affiliate.py": "695affece954bff3439c0cad15501a11d57fc742d483efcedf880af4dc31acf7",
+        "tests/test_workbench.mjs": "72ba38312cfb93152db11f36a5be603141cbaedf3aa6ba7ba1b4486b808c088d",
+        "web/jarvis-composer.html": "a63714bd9ad53f633a775d9c099d61a44534f1b8d63e07d97300e613c97efe7a",
+        "web/jarvis-diary.html": "38b4689efa045c489778c8dd7e351cc2627913dcca57eb4e6d63c4d5647a2798",
+        "web/jarvis-research-rpg.html": "dd0528a35d2744e4838e4df39b6cc9ca0e73a5bd33cc1faccdc865eaa292c228",
+        "web/jarvis-rpg.html": "f0b1bb7fef3bfd58245d8d39db46b9599ce81a1ef40358dfa48b93f44b80146a",
+        "web/jarvis-workbench.html": "7013b59fe66704e1a55d86133d03e0f5e205c0a96cb0eb047fdebdfab8ebf6bb"
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 73
+      },
+      "synthetic_demo": {
+        "assistant_network": {
+          "export_prepared": true,
+          "external_actions": 0,
+          "external_agents_started": 0,
+          "inactive_assistant_specifications": 35,
+          "ledger": {
+            "external_actions": 0,
+            "handoffs": [
+              {
+                "duplicate": false,
+                "external_actions": 0,
+                "handoff_id": "demo-handoff",
+                "handoff_sha256": "8dfbe0d880f803591e3ba8f8932ace2499be488820f15ee9f0f706f0ff9b9f48",
+                "sender_authentication": "not_established",
+                "state": "returned_unverified"
+              }
+            ],
+            "mode": "local_ledger",
+            "model_calls": 0,
+            "return_count": 1,
+            "swarm_count": 1
+          },
+          "mode": "local_synthetic_fixture",
+          "model_calls": 0,
+          "project_count": 7,
+          "reopen_retry_is_duplicate": true,
+          "return_state": "returned_unverified",
+          "swarm_manifest_sha256": {
+            "ai-evolutionary-evolutions": "a2c803cb0075efa34a43b078a03ea556b14a9dbf3c32aa9fead69bb76867f03c",
+            "ai-jarvis": "d928dcd79474892186a8fd11e5b1feea38489c5a0bd9bf32669dad16111c27c2",
+            "business-operations": "f70092236bb6959d32d6a63a00bd22b5a6a82bdea8ae4e3a513b4e48edd8826c",
+            "funding-affiliates": "a31809ef048772a996eb170eab0b778bf5e1386ecb05e224864e93ac6a74bfeb",
+            "linux-education": "bde8e1c58d3ac203047137c463ccdfb5cee381151bff1294fc8ac077845de1c9",
+            "publishing-studio": "a4411e42de17b6fbc82033134d907e6d28265e1c91e190fec747a321d2b49c2a",
+            "robotics-research": "586c5929659c60b9bd6805cc52a8d54b1ffe08588ea59031803e2bc51b15f619"
+          },
+          "target_provider_count": 17
+        },
+        "builder_candidate": {
+          "filename": "synthetic_validator.py",
+          "sha256": "a25b1b7bcf1dbe90f1b3322aaa9f819655c47e2e6de0fa44296926be37ae3df5"
+        },
+        "connectors": {
+          "airtable": {
+            "purpose": "project and evidence records",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "chatgpt": {
+            "purpose": "reviewed manual assistant handoffs",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "claude": {
+            "purpose": "coding and independent review",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "claude-cowork": {
+            "purpose": "workspace file and project draft collaboration",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "codex": {
+            "purpose": "AI Building AI coding, diagnostics and evidence-producing development",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "facebook": {
+            "purpose": "consented promotion",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "gemini": {
+            "purpose": "cross-model research",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "github": {
+            "purpose": "repository QA and PR reviews",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "hostinger": {
+            "purpose": "landing pages and membership forms",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "hubspot": {
+            "purpose": "consented CRM routing",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "instagram": {
+            "purpose": "consented promotion",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "linkedin": {
+            "purpose": "consented outreach and attribution",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "openai": {
+            "purpose": "separately configured API assistant work",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "perplexity": {
+            "purpose": "source discovery and research handoffs",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "slack": {
+            "purpose": "reviewed internal mission handoffs",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "substack": {
+            "purpose": "newsletter and membership referrals",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "threads": {
+            "purpose": "consented promotion",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "youtube": {
+            "purpose": "video draft and attribution planning",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          },
+          "zapier": {
+            "purpose": "reviewed workflow and approval planning",
+            "runtime_available": "unknown",
+            "status": "unverified",
+            "write_gate": "owner_review"
+          }
+        },
+        "dashboard": {
+          "environment": "read_only_sandbox",
+          "metrics": {
+            "cost_usd": "unavailable",
+            "memberships": "unavailable",
+            "optins": "unavailable",
+            "referrals": "unavailable",
+            "verified_commissions_usd": "unavailable",
+            "visits": "unavailable"
+          },
+          "projects": [
+            {
+              "evidence_url": null,
+              "name": "Hostinger",
+              "status": "unknown"
+            }
+          ]
+        },
+        "external_actions": 0,
+        "membership_journey": {
+          "counts": {
+            "accepted": 3,
+            "duplicate": 0,
+            "rejected": 0
+          },
+          "external_actions": 0,
+          "live_commissions": "unavailable",
+          "live_memberships": "unavailable",
+          "live_revenue": "unavailable",
+          "members": {
+            "synthetic-member-1": {
+              "access_active": true,
+              "confirmed_amount_minor": 500,
+              "currency": "USD",
+              "entitlement_id": "synthetic-access-right-1",
+              "kind": "member",
+              "last_occurred_at": "2026-10-22T12:00:00-07:00",
+              "marketing_opt_in": false,
+              "payment_id": "synthetic-receipt-1",
+              "refunded_amount_minor": 0,
+              "service_consent": true,
+              "source": "linkedin",
+              "status": "active"
+            }
+          },
+          "mode": "synthetic_only",
+          "provider_authentication": "not_performed",
+          "records": [
+            {
+              "errors": [],
+              "event_id": "synthetic-signup-1",
+              "index": 0,
+              "status": "accepted"
+            },
+            {
+              "errors": [],
+              "event_id": "synthetic-payment-1",
+              "index": 1,
+              "status": "accepted"
+            },
+            {
+              "errors": [],
+              "event_id": "synthetic-access-1",
+              "index": 2,
+              "status": "accepted"
+            }
+          ],
+          "referrals": {},
+          "status": "reconciled",
+          "synthetic_metrics": {
+            "active_access_count": 1,
+            "confirmed_amount_minor": 500,
+            "currency": "USD",
+            "customer_redirect_count": 0,
+            "net_amount_minor": 500,
+            "partner_request_count": 0,
+            "refunded_amount_minor": 0
+          }
+        },
+        "mode": "synthetic_only",
+        "portfolio_planning": {
+          "campaign_samples": [
+            {
+              "actual_metrics": null,
+              "channel_briefs": 7,
+              "initiative_id": "funding-customers",
+              "journey_kind": "funding_customer",
+              "referral_parameter_preserved": true,
+              "url_status": "not_live_checked"
+            },
+            {
+              "actual_metrics": null,
+              "channel_briefs": 7,
+              "initiative_id": "referral-partners",
+              "journey_kind": "funding_partner",
+              "referral_parameter_preserved": true,
+              "url_status": "not_live_checked"
+            }
+          ],
+          "catalog_sha256": "a976119fdb6648698ff3930dac46411b84bcb522e5ab72715e937643691313e9",
+          "external_actions": 0,
+          "external_agents_started": 0,
+          "inactive_role_drafts": 60,
+          "initiative_count": 12,
+          "live_metrics": null,
+          "mode": "local_synthetic_planning",
+          "model_calls": 0,
+          "project_count": 7,
+          "source_context_revision": "a67e743e8b32e552ccddd9e16a2108fe2f816274"
+        },
+        "roundtrip": {
+          "accepted_count": 3,
+          "attribution": {
+            "facebook:visits": 1,
+            "linkedin:visits": 1,
+            "threads:visits": 1
+          },
+          "deployment": "not_deployed",
+          "duplicate_count": 0,
+          "fixture_only": true,
+          "independent_qa": "not_run",
+          "proposed_tasks": [
+            "candidate-1"
+          ],
+          "rejected": [],
+          "sha256": "4839c80ba10125214cab857a0b6764195ac30d654da749c1d0c3a566b3805b92",
+          "status": "Hostinger connection: unknown"
+        },
+        "routes": [
+          {
+            "action": "membership_registration_review",
+            "source": "linkedin",
+            "status": "sandbox_only"
+          },
+          {
+            "action": "provider_redirect_review",
+            "destinations": [
+              "https://lippytmai.getbizfunds.com",
+              "https://www.7figurescredit.com?a_aid=lippytm"
+            ],
+            "source": "facebook",
+            "status": "sandbox_only"
+          },
+          {
+            "action": "provider_redirect_review",
+            "destinations": [
+              "https://lendtrack.ai/join/lippytmai",
+              "https://join.7figurespartners.com/?a_aid=lippytm"
+            ],
+            "source": "threads",
+            "status": "sandbox_only"
+          }
+        ],
+        "static_evaluation": {
+          "deployment": "not_deployed",
+          "errors": [],
+          "execution": "not_run",
+          "independent_security_audit": false,
+          "passed": true,
+          "review_scope": "exact_template_and_static_checks"
+        }
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 490,
+        "skipped": 0
+      }
+    },
+    "targeted_methods": 2
+  },
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "3a41600061cd8d6ab47655e8574062c442a8decf8ac44b9fad9fb2cf083ede14",
+    "scripts/jarvis_network.py": "a2a55ac03d8aa14e7ae97cd47233147b7a1e02131084455c1744161d4483a6b7",
+    "tests/test_handoff_context_cli.py": "fb2c03207528b9a9ec54cef6f1b6a3908faabe3c586d81a6f8d6664f8c04218b"
+  },
+  "authenticated_storage_verified": false,
+  "before_change": {
+    "failures": 2,
+    "reason": "argparse rejected --out as unrecognized; return code 2",
+    "regression_methods": 2
+  },
+  "checks": [
+    "Saved metadata equals default terminal index across fresh CLI subprocesses.",
+    "Saved selectors load the historical context after restart.",
+    "Private text/URLs excluded; owner_private classification and POSIX mode 0600 retained.",
+    "Current paused/outcome_unknown context and database bytes unchanged.",
+    "Version-2 empty history remains empty without migration.",
+    "Overwrite/path escape/unknown handoff/missing ledger fail without replacing evidence or creating missing ledger."
+  ],
+  "costs_measured": false,
+  "duplicate_dispatches": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "0d89e80c90371552e3d83a9a78c5e20de204dbf0",
+  "mission_id": "checkpoint-index-file-20261030",
+  "next_task": "Accepted destination configuration requires authenticated private storage with actual scoped receipt; no dispatch/retry/lease/automatic recovery authorized.",
+  "outcome": "Optional list-checkpoints --out reuses existing private atomic no-overwrite writer; default stdout and forced read-only ledger remain unchanged.",
+  "owner_release_approval": "not_granted",
+  "preparation_errors": [
+    "First verifier invocation refused an output path outside repository before running checks; rerun used reports/checkpoint-index-verification-20261030.json."
+  ],
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "3f03e756448522a8cb2d96f9f9f89c9df277b6afbfc889070ac1eb1f3105f093",
+  "recovery_time_measured": false,
+  "review_effort_measured": false,
+  "revision_conflicts": 0,
+  "schema_changes": false,
+  "schema_version": 1,
+  "scope": "local_private_checkpoint_index_retention"
+}

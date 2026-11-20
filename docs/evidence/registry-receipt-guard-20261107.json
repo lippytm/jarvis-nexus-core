@@ -1,0 +1,152 @@
+{
+  "acceptance_observations": [
+    "Matching API guard returns the original receipt. Wrong aggregate/platform/project scope and malformed digest reject; matching requested scopes remain proposed/unverified and do not authenticate review.",
+    "Six CLI mismatches preserve existing sentinel/no fresh-output directory. Three fresh CLI success processes produce equal default/guarded bytes, no absent ledger and unchanged registry/source ledger bytes. Existing-file preflight can reject before receipt comparison.",
+    "Existing all-17-target and mixed-project intersection regressions pass alongside the new guard."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "extend_optional_inspection_guard",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Optional inspect_destination_registry expected_receipt_sha256 / inspect-registry --expected-receipt-digest pins the selected inspection receipt before return/new output. Full-registry digest/source/revision guards remain required. Omission and successful guard preserve existing version-1/2/3 receipt bytes; stored schemas/strict packets unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory/log hashes; final commit and actual CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision inspection-guard findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "errors": 1,
+      "exit_code": 1,
+      "reason": "new keyword absent; expected missing-feature TypeError",
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "final_focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 3
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/registry-receipt-guard-full-20261107.json",
+        "passed": true,
+        "record_sha256": "854d8cf3471a7be66d4b7ee7c100941da92f9f827b008c5c87de817f04382122",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 596,
+          "skipped": 0
+        }
+      }
+    },
+    "initial_focused": {
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "test expected receipt error for existing output, but earlier existing-file preflight correctly rejects; test expectation corrected, production preflight retained",
+      "tests": 3
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.registry-receipt-guard.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md",
+    "docs/evidence/pr5-metadata-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "3b216707fcbd0d37aea774571bcad63134f3d72b",
+  "limitations": [
+    "Synthetic private configuration fixtures; matching integrity/selection hash is not authenticated review, accepted memory/registry facts, ACL isolation, running agents, connection availability, delivery, dispatch or release authority. Whole-registry digest remains shared across scoped receipts.",
+    "No new store, migration, live worker, lease, automatic retry/failover/reconnect controller, actual paused mission/Studio or Newsletter schedule change, credentials/permissions/public-access change, merge, deployment, messages, publication or spending.",
+    "All 17 portable targets/business areas retained; source project IDs are separate. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/registry-receipt-guard-baseline-20261107.txt": {
+      "bytes": 900,
+      "sha256": "43308449f3fdbb31cf3d38a5e83650791adf271ca1312fb30ed06095e007fc13",
+      "text": "E\n======================================================================\nERROR: test_registry_inspection_receipt_guard_pins_scope_before_output (tests.test_handoff_context_cli.ContextCLITests.test_registry_inspection_receipt_guard_pins_scope_before_output)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 220, in test_registry_inspection_receipt_guard_pins_scope_before_output\n    self.assertEqual(inspect_destination_registry(registry, platform=\"codex\",\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: inspect_destination_registry() got an unexpected keyword argument 'expected_receipt_sha256'\n\n----------------------------------------------------------------------\nRan 1 test in 0.004s\n\nFAILED (errors=1)\n"
+    },
+    "reports/registry-receipt-guard-final-focused-20261107.txt": {
+      "bytes": 101,
+      "sha256": "991e8eea9ea6f0ae00c976bffb0081f97edbd11b7c2f02a497545a7e1c5b8e9c",
+      "text": "...\n----------------------------------------------------------------------\nRan 3 tests in 1.184s\n\nOK\n"
+    },
+    "reports/registry-receipt-guard-focused-20261107.txt": {
+      "bytes": 836,
+      "sha256": "f59e232cdcfe0ad68b56401cc7df8fb1016a9fda58d3dc045d9d42e98b85f737",
+      "text": "F..\n======================================================================\nFAIL: test_registry_inspection_receipt_guard_pins_scope_before_output (tests.test_handoff_context_cli.ContextCLITests.test_registry_inspection_receipt_guard_pins_scope_before_output)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 235, in test_registry_inspection_receipt_guard_pins_scope_before_output\n    self.assertIn(\"inspection receipt\", rejected.stderr)\nAssertionError: 'inspection receipt' not found in '{\"error\": \"output already exists; use a fresh filename\", \"external_actions\": 0}\\n'\n\n----------------------------------------------------------------------\nRan 3 tests in 0.778s\n\nFAILED (failures=1)\n"
+    },
+    "reports/registry-receipt-guard-full-20261107.txt": {
+      "bytes": 98837,
+      "sha256": "a56f9aa773d1771a43673c7331ba93855d978066f625159084022c36369b0666"
+    },
+    "reports/registry-receipt-guard-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/registry-receipt-guard-summary-20261107.json": {
+      "bytes": 268,
+      "sha256": "a893e4118aedca37c4cbb5b2d6476487bd8a65070e36ed095136c3119039004d",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 596, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/registry-receipt-guard-full-20261107.json\", \"record_sha256\": \"854d8cf3471a7be66d4b7ee7c100941da92f9f827b008c5c87de817f04382122\"}\n"
+    },
+    "reports/registry-receipt-guard-web-20261107.txt": {
+      "bytes": 39577,
+      "sha256": "5d6641495773f3a9c19ee18e27ad4ab239cf8eddb063070043d04f5dbfa55b93"
+    }
+  },
+  "memory_revision": 207,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "corrected_test_expectation_failures": 1,
+    "costs": "not measured",
+    "expected_missing_feature_failures": 1,
+    "final_verification_failures": 0,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0
+  },
+  "mission_id": "registry-inspection-receipt-guard-20261107",
+  "patch_sha256": "508aee64f7334c397b07d6243e2ee29f461d729a336c994a8597a193ff9ae076",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "2417ea70da4b77bbbc0fc18d412504cefe6695fa8a8683c3f9f22037e03faba2",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/connections.py": "edf9dc6397f7ed6690a987786abf28fd33719bf91b1df35e4bdec400be7dca51",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "a8cbfa819d95b2dfdf8c2fcb61adf4f153cc33a69159d93ed218724eec392eda",
+    "scripts/jarvis_network.py": "5926200942d60abe58cf3cb643eb71915cf715e862a63a949cc1d1dbd22a41ac",
+    "tests/test_handoff_context_cli.py": "b8fbddd6c867a400d7bcd960c9856d8616f170cb6e17c753258d678c1f80d952"
+  },
+  "visibility": "owner_private"
+}

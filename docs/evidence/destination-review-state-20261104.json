@@ -1,0 +1,53 @@
+{
+  "asset_id": "codex",
+  "baseline_feature_absent": {
+    "errors": 2,
+    "exit_code": 1,
+    "failures": 1,
+    "log_sha256": "5cfbd50ef7fe49904c109c8aa821d0494ddbff65b0fb3260e7fae5d41d0803ae",
+    "methods": 3
+  },
+  "change": "Opt-in destination_status include_review_state=True / CLI --include-review-state selects report v4, includes both exact local review flags and explicit local-only authority, and always binds a snapshot digest.",
+  "checks": {
+    "behavior": "Separate review flags; context edits invalidate review after reopen; stale/format/scope rejection; unrelated mission reviews preserve selected digest; legacy formats equal with false flag; empty selection not completion; CLI stale rejection before output, mode 0600 and duplicate no-overwrite; original paused/unknown holds and database bytes retained.",
+    "focused_methods_passed": 3,
+    "local_verifier_record_sha256": "15af90aaf9080f41c133289a4c3c301c97b37cd43a567a1111e75fffc940ca7d",
+    "new_methods": 3,
+    "python_tests": 533,
+    "syntax_files": 73,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "compatibility": "Flag omitted/false preserves version 1/2/3 reports; no ledger or strict packet schema change; existing mission/destination filters and holds retained.",
+  "configuration_version": "codex.engineering-review.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "evidence_class": "synthetic local behavior tests and actual codex execution; not authenticated reviewer/connection or live dispatch",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "5045d210c2c6d048f27e570a630be723a035187f",
+  "memory_source": "master Page sequence 140",
+  "mission_id": "destination-review-observation-20261104",
+  "next_task": "Exact-revision independent review; accepted authenticated registry configuration still required before operational dispatch; preserve original paused checkpoint and all prior media.",
+  "observed_gap": "Destination reports expose context review only; queue reports already offer separate local handoff/context review observations.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "draft development on feature/control-tower-foundation-20261021; no merge or dispatch",
+  "project_id": "ai-jarvis",
+  "record_sha256": "1c7870a2077cf82ca20545c397386066dcb69d61aaebcb2853c7b2e14fcf4955",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "06270130b775c5db81e4770782e7ab581627b8a40fb567c4a1961af581233893",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "8aefb0905fd8bd80b4a62d77934cca8b372be23a28f2e08563e172e3c4807193",
+    "scripts/jarvis_network.py": "91ab6552a5dde71305550cb879b45e633f86a0f676300874809bd906dc156221",
+    "tests/test_handoff_context.py": "6ea4b2df15851ce4eeca4e05d79dbd411ad2230ce963ad1292f68fb1a3bd481e",
+    "tests/test_handoff_context_cli.py": "ca768ae8de6e9d47e26c3ca923460b052937dc35af02b4f144fe9c33bd248dcd"
+  }
+}

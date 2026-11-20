@@ -1,0 +1,136 @@
+{
+  "acceptance_observations": [
+    "Five stale/nonpositive revisions reject after edit-and-restore with every logical record/schema statement unchanged.",
+    "Current revision 3 pauses once at revision 4/memory 2, retaining unknown outcome and all other profile fields; review remains proposed.",
+    "Old revision 3 rejects even with fresh digest and memory 2; current revision 4 and omitted option both preserve duplicate behavior without record changes.",
+    "Returned dispatch/retry/external-action flags remain false."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_optional_control_revision_guard",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional set-context-control --context-revision and helper expected_revision, forwarding to the existing retrieval guard before context compare-and-swap save. Preserve defaults/schemas and existing pause/cancel permissions.",
+  "checkpoint": {
+    "return_binding": "source/memory revision and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision review; authenticated registry/delivery acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_control_revision_cli_rejects_restored_selection_and_retains_duplicate",
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "new optional flag absent: argparse exit 2 instead of stale-selection exit 1",
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context_cli.ContextCLITests.test_control_revision_cli_rejects_restored_selection_and_retains_duplicate tests.test_handoff_context_cli.ContextCLITests.test_control_cli_refuses_legacy_stale_guards_and_read_only",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/control-revision-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/control-revision-full-20261106.json",
+        "passed": true,
+        "record_sha256": "f4ba300dae88ba176c554e42e56e4b6b60b5f4c6ee7441eab7b18ff3e44647e7",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 571,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 571,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.control-revision.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/retrieval-cli-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "9b76f779fd3ab7ee4e861585d8f96a0a24aee6b2",
+  "limitations": [
+    "Optional local selector only, not identity authentication, a lease or dispatch/retry authority. Default behavior unchanged.",
+    "Synthetic temporary fixtures only; original owner mission was not paused/cancelled or otherwise edited by this run.",
+    "Writable SQLite opens may alter file metadata; rejected controls were checked using all logical rows/schema statements, not database byte equality.",
+    "No schema, live worker, automatic retry, failover or reconnect controller added. All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/control-revision-baseline-20261106.txt": {
+      "sha256": "d0d1cb1fb6f1f8e8598b8aa87b83c2b8f8aeddd5290708da3a08e00129ee7db9",
+      "text": "F\n======================================================================\nFAIL: test_control_revision_cli_rejects_restored_selection_and_retains_duplicate (tests.test_handoff_context_cli.ContextCLITests.test_control_revision_cli_rejects_restored_selection_and_retains_duplicate)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 214, in test_control_revision_cli_rejects_restored_selection_and_retains_duplicate\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 1\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.267s\n\nFAILED (failures=1)\n"
+    },
+    "reports/control-revision-focused-20261106.txt": {
+      "sha256": "50e7090d423b25cf846ff965be025f26f72426380219b5c427a9b759ca7038ed",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 1.392s\n\nOK\n"
+    }
+  },
+  "memory_revision": 185,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "control-revision-20261106",
+  "next_task": "Independent exact-revision pause/cancel selector review; retain registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "3df8794177e7211a229707cd84db55ce36217fe14727ab862e3879ac429ed104",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "e6f78204873a8e3db8e1a6a76008a60872e1e0bc84f2895dfb3cc858a5760b6c",
+    "scripts/jarvis_network.py": "fe92d968c7b1e29a8882c2b152caf28809ce889f08510fe0f6abfde706536735",
+    "tests/test_handoff_context_cli.py": "6b87447b7e5e3b97ce04686e9af3e9ac242032b7796091ca6b321edec2d7cda0"
+  },
+  "tracked_patch_sha256": "7053f3808bdd4ad079cecd821692f54609f097882a223d8ce35e636583315bf3",
+  "visibility": "owner_private"
+}

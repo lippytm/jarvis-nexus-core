@@ -1,0 +1,78 @@
+{
+  "asset_id": "codex",
+  "checks": {
+    "behavior": [
+      "actual main parser/ledger/writer with injected file or directory fsync failure",
+      "error return, no stdout success, redacted OSError and no internal replay",
+      "temporary files removed in both cases",
+      "reopen proves exact local review persisted and paused/outcome_unknown context retained",
+      "file-fsync failure leaves no output; directory-fsync failure leaves complete private 0600 digest-valid receipt",
+      "explicit duplicate CLI refuses overwrite and leaves output/rows unchanged"
+    ],
+    "focused": {
+      "cases": 2,
+      "methods": 1,
+      "passed": true,
+      "seconds": 0.2
+    },
+    "full": {
+      "record_sha256": "cf39b0db18d8b195b184c933578e605b9e15fad2a70e0fa32dd23feddc36abba",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 551,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "sensitivity": {
+      "caught": "CLI returned 0 instead of 1",
+      "errors": 0,
+      "expected_subtest_failures": 2,
+      "isolated_mutation": "swallow writer OSError and falsely report success",
+      "production_source_modified": false
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.receipt-fsync-recovery.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "1c664e47c0e59aef16ba089a9bd63d53afa3edfc",
+  "limitations": [
+    "injected I/O failures on synthetic records, not Codex outage or actual storage failure",
+    "test does not establish power-loss durability",
+    "database commit and file publication remain separate operations; inspect both before explicit retry",
+    "no automatic reconciliation/retry, authenticated delivery or installed recovery controller"
+  ],
+  "memory_revision": 165,
+  "mission_id": "receipt-fsync-recovery-20261105",
+  "next_task": "independent exact-revision review; registry audience/access acceptance remains pending",
+  "observed_gap": "Prior cycle documented post-review file-save failures but did not test committed review plus absent/published output reconciliation.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "dc7a4e90cf011b4ee2c40e554316118d1114475aafe43010401bc4870d7ab246",
+  "report_sha256": {
+    "reports/receipt-fsync-recovery-focused-20261105.txt": "7441dba1bca740f8be3cd72cca8a10f086698d169fbc6cd6665b87d83441cd57",
+    "reports/receipt-fsync-recovery-full-20261105.json": "19ac64d663fe9645d0bd178099d40e66657fd5cfbc798ba8a459311db206e8d7",
+    "reports/receipt-fsync-recovery-sensitivity-20261105.txt": "802adbbdd91e1abf7ab9efd19aba302a3666478ac601f197eb4894ddd0863707",
+    "reports/receipt-fsync-recovery-web-20261105.txt": "1103199d0222f5e39f2cc00ce8c760426abc8a3944190c385cb19ed18d034458"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "scope": "one regression method with two POSIX fsync failure cases; production code unchanged",
+  "source_sha256": {
+    "control_tower/handoffs.py": "22561e42a8e7f583e3ef6e148984a27a0c4d7dd33c7de76393d202ee8fbc50a1",
+    "scripts/jarvis_network.py": "a50ac3a4ac2fbfdc66160441d178cb3576a385f0dff7ebf60afb6e3d24f0f976",
+    "tests/test_handoff_context_cli.py": "21ff4da7e1c403d56a3678981e415e4725abdbddded0d24826dcec9c0eb50e4c"
+  }
+}

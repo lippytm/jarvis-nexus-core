@@ -1,0 +1,69 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/youtube-20261029/slot-2-storyboard.png": "54087d2fe3307742da880b379a871005c351e3b2b7ea788c7767dd8b12777bf7",
+    "docs/media/jarvis-youtube-slot2-20261029.md": "89a89df047e7d71d26614a9dcf9fbbfb4c14f8e2f2371d7b5ac83b50ec922012",
+    "docs/media/jarvis-youtube-slot2-20261029.srt": "d546064fab2f55f555010e90e20177033015f5e566cece3a6a1db2b54968dacd",
+    "docs/media/jarvis-youtube-slot2-20261029.svg": "a700c7a7fee49c6160b76f06bed25c5a652ac3ee0d7dde0616e0ee4c4e225ac1"
+  },
+  "checks": {
+    "campaign_unchanged": true,
+    "exact_existing_preview_bytes": true,
+    "narration_shot_plan_upload_copy_captions_unchanged": true,
+    "six_timed_panels": true,
+    "svg_xml_resources": true,
+    "syntax_files": 73,
+    "visual_inspection": "assistant full preview inspection; six panels, no observed clipping/overlap; illustrative labels and unverified service status retained",
+    "whitespace": "git diff --check required separately"
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "youtube/channel unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "historical_png_digest": "not recorded by original preparation receipt; current observation only",
+  "independent_review": "not_performed",
+  "input_revision": "6be0803bf031ea5c6490ed99710bd1f45328aa0e",
+  "memory_source": "master Page sequence 127",
+  "mission_id": "jarvis-media-20261029",
+  "new_unit_tests": 0,
+  "next_task": "Exact narration/caption/art owner and destination/accessibility review; recording/retiming/local video remains separate.",
+  "operational_ledger_changes": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "bytes": 241887,
+    "chunks": [
+      "IDAT",
+      "IEND",
+      "IHDR",
+      "pHYs",
+      "tEXt"
+    ],
+    "dimensions": [
+      1200,
+      1540
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.youtube.2",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "8b28465f4fd978d2126abf5723cea90476138eddce922d42998624de7129faba",
+  "recording_finished_video_publication": false,
+  "renderer_invocations_this_cycle": 0,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "retain_existing_unpublished_storyboard_png"
+}

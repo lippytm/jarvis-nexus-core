@@ -1,0 +1,137 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "add_optional_retrieval_guard",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional positive-integer expected_revision to load_context, checked atomically with its context read. Preserve default behavior and stored/response schemas. Document API-only scope.",
+  "checkpoint": {
+    "return_binding": "input source/memory revision and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent review; CLI exposure remains a possible next bounded step"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart",
+      "errors": 8,
+      "exit_code": 1,
+      "reason": "new keyword absent at input revision, not an asserted historical production outage",
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart tests.test_handoff_context.ContextTests.test_load_context_optional_digest_rejects_same_memory_edit_after_restart",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/context-retrieval-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/context-retrieval-full-20261106.json",
+        "passed": true,
+        "record_sha256": "ef5008122732c86791cb2df5912ad25523d6f6f0f61dc8910a4c50d58e1524d9",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 569,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 569,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.context-retrieval.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/context-duplicate-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/f60520cf1699",
+    "exit_code": 0,
+    "repository_confirmation": {
+      "command": "pwd",
+      "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+      "exit_code": 0,
+      "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+    },
+    "stdout": "/workspace/scratch/f60520cf1699\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "2d8c5c750927c4b24528f26bce093e502ad45e67",
+  "limitations": [
+    "API option only; CLI unchanged. Snapshot check is not a lease or a later write/release gate.",
+    "Synthetic paused unknown-outcome and independent Gemini fixtures do not establish authenticated provider delivery or an owner incident.",
+    "No new schema, authentication, worker, automatic retry, failover or reconnect controller.",
+    "All 17 business areas and portable targets retained. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/context-retrieval-baseline-20261106.txt": {
+      "sha256": "74dde050625dfebc3f3f906e9b2126c27fe2fe44c8405462545ede2fd1b36ef4",
+      "text": "EEEEEEEE\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (stale=1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 133, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_sha256=first[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (stale=2)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 133, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_sha256=first[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (stale=4)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 133, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_sha256=first[\"context_sha256\"], expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (invalid=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 136, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (invalid=0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 136, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (invalid=-1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 136, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart) (invalid='3')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 136, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    self.load(expected_revision=revision)\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_load_context_revision_guard_rejects_restored_content_after_restart (tests.test_handoff_context.ContextTests.test_load_context_revision_guard_rejects_restored_content_after_restart)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 137, in test_load_context_revision_guard_rejects_restored_content_after_restart\n    current = self.load(expected_sha256=restored[\"context_sha256\"], expected_revision=3)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 57, in load\n    return self.ledger.load_context(identifier, **args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.load_context() got an unexpected keyword argument 'expected_revision'\n\n----------------------------------------------------------------------\nRan 1 test in 0.017s\n\nFAILED (errors=8)\n"
+    },
+    "reports/context-retrieval-focused-20261106.txt": {
+      "sha256": "f3874f1bc83a634fd04abbf35e717328a24a73dc1cffe20a6972ccd456a246ac",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.046s\n\nOK\n"
+    }
+  },
+  "memory_revision": 183,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "context-retrieval-20261106",
+  "next_task": "Independent exact-revision retrieval review; consider a separately tested CLI option without changing defaults.",
+  "platform": "codex",
+  "problem": "Digest selection cannot distinguish original content from the same content restored after intervening edits. The load_context API lacked an optional stored-revision selector.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "d5217d90f61d7c91bb02958c44187bf2a62f8c4f6bcbfbef624b9c488bdf4545",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "d64b88f14f5d2b4739fe1aa948f6241ebee956e80b95316e90f3be3a3fffd473",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "4b08bc3da36c774c6838f972cded17ce340887bc4fa63d03cc7876f4052d8f73",
+    "tests/test_handoff_context.py": "2a08d7d42c9f489cac9ff5b0bfa61e6383025901dac28c9163a51e9abf201690"
+  },
+  "tracked_patch_sha256": "774ad8deb8613a486c1dd2cbfefa6f8cfe5947f0964c1a87ece559c84114cc69",
+  "visibility": "owner_private"
+}

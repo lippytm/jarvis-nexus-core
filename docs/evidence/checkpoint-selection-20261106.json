@@ -1,0 +1,149 @@
+{
+  "acceptance_observations": [
+    "Stale/invalid stored selectors reject A-to-B-to-A content selection without changing logical records, storage version 2 or creating checkpoint table.",
+    "Current revision 3 captures successfully using existing storage-v3 opt-in; pinned and default duplicate captures retain rows and receipt semantics.",
+    "Read-only restart retains current/historical profile, proposed review and unknown outcome. API fixture also retains paused state and refuses export."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_optional_checkpoint_selection_guard",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional checkpoint_context expected_revision and capture-checkpoint --context-revision. Check positive stored revision inside capture transaction before table creation/storage upgrade. Defaults, receipt/profile schemas and explicit --allow-schema-upgrade requirement unchanged.",
+  "checkpoint": {
+    "return_binding": "input source/memory and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision checkpoint-selection review and registry audience/access acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade",
+        "tests.test_handoff_context_cli.ContextCLITests.test_capture_revision_cli_rejects_restored_selection_before_upgrade"
+      ],
+      "errors": 8,
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "optional API keyword and CLI flag absent at input revision, not an owner incident",
+      "tests": 2
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade",
+        "tests.test_handoff_context_cli.ContextCLITests.test_capture_revision_cli_rejects_restored_selection_before_upgrade"
+      ],
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/checkpoint-selection-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/checkpoint-selection-full-20261106.json",
+        "passed": true,
+        "record_sha256": "cbbe2f0bd00bca477a4d35789319dae28ca6bf57b5521c24af68ea13f8732ba7",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 575,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 575,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.checkpoint-selection.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/review-handoff-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "ab53cf1fe7afbf585936fc473d88adb6bfd89652",
+  "limitations": [
+    "Optional local selector only, not authentication, lease, retry or dispatch authority.",
+    "Synthetic temporary records are not owner mission changes, installed shared memory or live platform delivery.",
+    "No new schema version, worker, automatic failover/reconnect controller or provider connection added. All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/checkpoint-selection-baseline-20261106.txt": {
+      "sha256": "bde3fbd313658c7c6060fee366dc75bf175c6f3f4906807482920ba9a170e59f",
+      "text": "EEEEEEEEF\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision=1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision=2)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision=4)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision=0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision=-1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade) (revision='3')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 688, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=revision)\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nERROR: test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade (tests.test_handoff_context.ContextTests.test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 691, in test_checkpoint_revision_guard_rejects_restored_selection_before_upgrade\n    captured = self.ledger.checkpoint_context(\"mission-one\", **args, expected_revision=3)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: HandoffLedger.checkpoint_context() got an unexpected keyword argument 'expected_revision'\n\n======================================================================\nFAIL: test_capture_revision_cli_rejects_restored_selection_before_upgrade (tests.test_handoff_context_cli.ContextCLITests.test_capture_revision_cli_rejects_restored_selection_before_upgrade)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 1456, in test_capture_revision_cli_rejects_restored_selection_before_upgrade\n    self.assertEqual(rejected.returncode, 1, rejected.stderr)\nAssertionError: 2 != 1 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --context-revision 1\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.233s\n\nFAILED (failures=1, errors=8)\n"
+    },
+    "reports/checkpoint-selection-focused-20261106.txt": {
+      "sha256": "3958f2b288b0ece6f0929d1ebb65fb5929fc3b3c1b0ba0c3fc15f54c97eafa08",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.668s\n\nOK\n"
+    }
+  },
+  "memory_revision": 189,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "checkpoint-selection-20261106",
+  "next_task": "Independent exact-revision checkpoint-selection review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "d5961d974c4c6421adbda99a07563d3b3a066a7873f2b587eb519e51f801d3de",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "4d78d272f81fdb0aeb3bc814444d68b83437b0b834fa8a1d336aa22ec93f85f4",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "2a499fa298b391f859fc4d731cb652dfffa1a5ca0a34b3b3c354b0ee712763d6",
+    "scripts/jarvis_network.py": "191aeb3a92ada52446011695179a7793092e22bba64630bbf7f1bec6f86dd374",
+    "tests/test_handoff_context.py": "48dd4c081ec1221a7a8d90c360062d99a9f3d40cae7a424fbd1c0eaaad648cd8",
+    "tests/test_handoff_context_cli.py": "002756aa78a8c634afac64d165e8b57256749806a6a7e665f806d73127af9cdb"
+  },
+  "tracked_patch_sha256": "0bfab91c5752c2afcffbfa1ccada9846848a7dea6398420a58a43c844df9e073",
+  "visibility": "owner_private"
+}

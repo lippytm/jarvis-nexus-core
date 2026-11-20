@@ -1,0 +1,59 @@
+1
+00:00:00,000 --> 00:00:05,000
+Before expanding an AI workflow, make one
+unfinished task reviewable.
+
+2
+00:00:05,000 --> 00:00:10,000
+Start by reading its latest receipt and
+checking for active work.
+
+3
+00:00:10,000 --> 00:00:15,000
+Choose a draft-only outcome. Name the
+starting source revision, the
+
+4
+00:00:15,000 --> 00:00:20,000
+permitted action and the intended
+destination before preparing a change.
+
+5
+00:00:20,000 --> 00:00:25,000
+Retrieve just the context that task needs.
+Use synthetic details for a
+
+6
+00:00:25,000 --> 00:00:30,000
+first exercise, and keep unrelated private
+conversations outside the bundle.
+
+7
+00:00:30,000 --> 00:00:35,000
+Define one acceptance check. Keep the
+artifact, the checks
+
+8
+00:00:35,000 --> 00:00:40,000
+actually performed and the remaining gap
+together for review.
+
+9
+00:00:40,000 --> 00:00:45,000
+If execution is blocked, retain the
+checkpoint. A prepared handoff
+
+10
+00:00:45,000 --> 00:00:50,000
+does not authorize retries, purchases,
+publication or deployment.
+
+11
+00:00:50,000 --> 00:00:55,000
+Ask the owner to review the exact result
+before release. Which existing
+
+12
+00:00:55,000 --> 00:01:00,000
+task could you reduce to one artifact and
+one meaningful check?

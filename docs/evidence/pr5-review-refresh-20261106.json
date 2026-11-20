@@ -1,0 +1,100 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "update_source_bound_review_brief",
+    "run_local_checks",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "Refresh existing reviewer entry document for November 6 funding/receipt/commit/recovery/queue boundaries; retain complete historical November 5 body under explicit historical heading. No executable/schema/test changes.",
+  "checkpoint": {
+    "return_binding": "input revision/source hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent review; registry audience/access acceptance and authenticated delivery unfinished"
+  },
+  "checks": {
+    "current_source_link_paths_verified": 14,
+    "diff_check": "passed",
+    "historical_body_retained": true,
+    "local_full_suite": "not rerun for documentation-only change",
+    "python_syntax_files": 73,
+    "relevant_existing_tests": {
+      "errors": 0,
+      "failures": 0,
+      "run": 7
+    }
+  },
+  "configuration_version": "codex.pr5-review-refresh.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "focused_log": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.199s\n\nOK\n",
+  "input_ci": {
+    "container_tests": 213,
+    "fresh_push_run_and_unit_logs_read": true,
+    "new_documentation_commit_ci": "record separately in master Page",
+    "pr_merge": "1fed0d7aad97e81392f65b060302425ec3ef77c6",
+    "pr_run": 42294223541,
+    "push_head": "c1577c63e6a702b51500de8e3abe0f35b97ca2c6",
+    "push_run": 42294214421,
+    "push_verifier_record_sha256": "b35606124975dd3fe97d74e4a5292c9f564415ac1b1e39dde7ce8600eb7c6074",
+    "python_tests": 565,
+    "syntax_files": 73,
+    "web_tests": 181
+  },
+  "input_revision": "c1577c63e6a702b51500de8e3abe0f35b97ca2c6",
+  "limitations": [
+    "Reviewer navigation only; not independent review or accepted procedure. PR description remains historical.",
+    "Fixtures/CI do not establish provider authentication, runtime recovery, live delivery or permission to release.",
+    "All 17 business areas/portable targets retained; Trading Bots paper/research only, RoboParty deferred."
+  ],
+  "memory_revision": 179,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "observed_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "test_failures": 0
+  },
+  "mission_id": "pr5-review-refresh-20261106",
+  "next_task": "independent exact-revision review using refreshed entry points; do not duplicate this refresh",
+  "patch_sha256": "c59f4700c6f50bd8346290dae6128cac3bfc66ab9103ccdd7b21bc50bdea8cf4",
+  "platform": "codex",
+  "pr_snapshot": {
+    "changed_files": 419,
+    "commits": 193,
+    "description_current_claim": "October 4294350 / 273 tests",
+    "draft": true,
+    "metadata_unchanged": true,
+    "reason": "Available PR metadata tool has no conditional head/body guard; preserve concurrent metadata and use expected-head source document update."
+  },
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "1ba14bcd54ab2f0120ae818c4748996283ebc6de8ec9540c92d03eceeda500fe",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/funnels.py": "897eec6033b3add70f0812e3407dc3ce137eda0bc7c9ada0a8d673be7611bf38",
+    "control_tower/handoffs.py": "efcd797a166c9725fe9f03ddb721e9b4cfe07cc7c7f28adf630ffea9b7aec0dc",
+    "docs/CODEX_JARVIS_READINESS.md": "2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757",
+    "docs/DAILY_MEDIA_BRIEFS.md": "109b4c6fc3e7bac9843fec331c9c62ce78da1035eac245c4e12b5d376b1fb2fe",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bc4335b6756ab5f4b410b1d0e3519e3c5635686637f115b5711e7518153164a0",
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "857bcd982ef9ea2aaa800be32e62380863374b38063c36c724d75c14d81a7bd6",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md": "ed0436b23f8ff237a614dd29dd2c7b92ab891ac3092846965d45059406000a1d",
+    "docs/evidence/commit-ack-boundary-20261106.json": "5e02bc52cd55dde9f97a06d96d11950e724b21805a1a35b989dd066865344300",
+    "docs/evidence/funding-funnel-exact-routes-20261106.json": "cc8ef58fc2151dd764d1e3ace021622aad869eb986c4ca39bd8bbffc929efd77",
+    "docs/evidence/queue-membership-snapshot-20261106.json": "4fbabbe4225ffbe85c98c7da025a5e0ffeb749a94a3dc6964565f20ae19d4301",
+    "docs/evidence/recovery-template-revision-20261106.json": "217772d9eed1664ae2d774fb695eae2f2eaa878dadfe0c067f4da45b0b314b95",
+    "scripts/jarvis_network.py": "71b250adf6f6dbac70b74c0f8fa674e7d94007c30a93c4d721059b946cce2eb4",
+    "tests/test_funding_route_integrity.py": "66937c84ea7dca10d97af37c086e44304d5effdd1d19959a597c28d63764c015",
+    "tests/test_handoff_context.py": "087405ac410c7e4932d64afacf0a60f36b15016762061fce93eca74077982e5a",
+    "tests/test_handoff_context_cli.py": "db34db12593be7847ffb42c7a99e0b05ab18242bf568ec0802cac3f1dd259134"
+  },
+  "visibility": "owner_private"
+}

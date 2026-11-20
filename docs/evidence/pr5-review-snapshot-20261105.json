@@ -1,0 +1,91 @@
+{
+  "artifact": "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+  "asset_id": "codex",
+  "checks": {
+    "bound_file_links": 17,
+    "brief_sha256": "dbe9305d1942168f8c7c79fd0d6c2111e0e6242f9104b15c003b90c4f16520e9",
+    "cli_help_checks": {
+      "list-checkpoints": {
+        "exit_code": 0,
+        "sha256": "165793fcc6a6f76837858a43460eb5bc16095c1ca90b9a7e100000a5af66bd87"
+      },
+      "load-context": {
+        "exit_code": 0,
+        "sha256": "53bfbe43a6d74cd3e9ffaa5e8e14485dea50647833524698145e7f56db474e15"
+      },
+      "review-context": {
+        "exit_code": 0,
+        "sha256": "5dc7ddb4108d996ce4d5c362a7a37ba96817a3d2c17d54c0e6cccefdbece8cca"
+      }
+    },
+    "executable_changes": false,
+    "new_unit_tests": 0,
+    "portable_targets": 17,
+    "syntax_files": 73
+  },
+  "configuration_version": "codex.review-navigation.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "independent_review": "not_performed",
+  "input_ci": {
+    "both_status": "completed_success",
+    "container_tests": 194,
+    "pr_merge": "d0ea9f46c036ca2cca0c6de97b64e6a9fa1cc359",
+    "pr_run": 42148652517,
+    "push_head": "2d0634062a1ad27df6b2751fe05bf8271bdbcf8d",
+    "push_run": 42148646200,
+    "python_tests": 544,
+    "syntax_files": 73,
+    "unit_artifacts": [
+      13471601476,
+      13470973750
+    ],
+    "web_tests": 181
+  },
+  "input_revision": "2d0634062a1ad27df6b2751fe05bf8271bdbcf8d",
+  "limitations": [
+    "Bound source links and input CI results are observations, not an independent review or release grant",
+    "PR title/body and bot-managed historical summaries remain unchanged; this source-bound brief supplements them",
+    "No installed shared store, authenticated registry acceptance, live handoff, publication or reliability improvement is claimed",
+    "Original paused mission, prior failures and all 17 business areas/targets retained"
+  ],
+  "local_full_suite": "not_rerun_for_documentation_only",
+  "memory_source": "master Page sequence 160",
+  "mission_id": "pr5-review-snapshot-20261105",
+  "new_unit_tests": 0,
+  "next_task": "Use the bound brief for independent exact-revision review; authenticated registry audience/access policy remains pending. Do not duplicate the brief.",
+  "observed_problem": "PR #5 human-authored description still labels October head 42943500 and 273 tests as current, while the observed draft head is 2d063406 with 544-test CI evidence.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Two documentation/evidence files on named development branch; existing PR metadata, executable files, tests and all owner gates unchanged",
+  "production_or_provider_actions": 0,
+  "project_id": "ai-jarvis",
+  "record_sha256": "1c6e9ce6539264432c8df1e3ea62fde1bdd8482c0e6b201a965c50e9fa309034",
+  "review_state": "prepared_unreviewed",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_references_sha256": {
+    "control_tower/handoffs.py": "914a3d736c4044c09e4baf5fab6c8c3939df0cc3d727a69c3cd632b748fcb008",
+    "control_tower/injective_marketing.py": "484dfa3b565fdf5d58c09f76fcc183fcc72190c465e4855466eb59d01f265a85",
+    "control_tower/network_demo.py": "0a39f9a4320a562c5176c28a4897caa66ab43c975b5befe4f422b08f41da1dba",
+    "control_tower/space_alien_comedy_affiliate.py": "2d9334ab762c96bd3e888cc8f5872123bfa38e60d8ec9f5a306cfcd4fbaf815a",
+    "control_tower/swarm_factory.py": "f5dbd5053ccc690b3c78e1b02d19b1917346d7bf277bbb5d84eb7b1ce2140c72",
+    "docs/ANIME_RPG_MILESTONE_2026_10_22.md": "0bdb702240e788c9e04e74718268846f8af276b5ebb29f854179cb296c808f5e",
+    "docs/CODEX_JARVIS_READINESS.md": "2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757",
+    "docs/DAILY_MEDIA_BRIEFS.md": "109b4c6fc3e7bac9843fec331c9c62ce78da1035eac245c4e12b5d376b1fb2fe",
+    "docs/DOCKER_RUNBOOK.md": "75098cb5ef9c7c3cafab755a2c49c7d7c5917fa8a15a1cced8121585d3dc9ba7",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "81c988e24315215cbc4b5609200ac6df25bd314722161e95e528764e9b0d1cc6",
+    "docs/RESEARCH_RPG_MILESTONE_2026_10_22.md": "4f70559733a44b292f3f177988219421b0928d11b84c06aa04f6b6fa24f170fc",
+    "docs/evidence/codex-recovery-demo-20261105.json": "7a03c96826c5cd1119905b135f591aca8a0c9e0db5015de3bc799af94ea52c49",
+    "docs/evidence/context-review-revision-20261105.json": "95cf4224f75306d0002bd11ec0382277e897ff439c1f9232c0a4148077d62fe4",
+    "scripts/jarvis_network.py": "b9bba54c9bb5e28dd0a645aba399efce3e3721c9d36257930e055d9d94f808c1",
+    "tests/test_handoff_context.py": "8740c18e6ca191f01fe0a19280aeff55925d77ce0e54f8252213927be3f801a9",
+    "tests/test_handoff_context_cli.py": "b71b179788e9f36bf8ace929072d9be3b49adcba91b2ad6fdef9bac5a4d854dc",
+    "tests/test_space_alien_comedy_affiliate.py": "695affece954bff3439c0cad15501a11d57fc742d483efcedf880af4dc31acf7"
+  }
+}

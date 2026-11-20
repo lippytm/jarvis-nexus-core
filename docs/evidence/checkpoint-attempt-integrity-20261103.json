@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "project_id": "ai-jarvis",
+  "mission_id": "checkpoint-attempt-integrity-20261103",
+  "preparing_target": "codex",
+  "input_revision": "828b1578cac12fcb2066117695f0fcfa0a1c410f",
+  "regression_commit": "9737340717cf02515861c0bfefed3aa3bad87c72",
+  "scope": "historical_checkpoint_attempt_monotonicity",
+  "execution": {
+    "state": "execution_blocked",
+    "initial_probe": {
+      "command": "pwd",
+      "exit_code": 0,
+      "cwd": "/workspace/scratch/3e7507676923"
+    },
+    "later_command_error": "Failed to create unified exec process: exec-server transport disconnected",
+    "recovery_observed": false,
+    "local_syntax_or_behavior_checks": "not_run",
+    "fallback": "authorized GitHub development tools and CI"
+  },
+  "observed_baseline": {
+    "run_url": "https://github.com/lippytm/jarvis-nexus-core/actions/runs/41739818821",
+    "unit_job": 126278211322,
+    "container_job": 126278211441,
+    "python_tests": 498,
+    "syntax_files": 73,
+    "failures": 3,
+    "errors": 0,
+    "verifier_record_sha256": "3a6edece061a32ae26c8de242e79534786e828494515d8bfcf9e63bfa5ef9690",
+    "failures_observed": [
+      "index accepted retained attempts=2 while current=1",
+      "historical load accepted retained attempts=2 while current=1",
+      "checked backup published impossible retained attempt history"
+    ],
+    "positive_control": "lower historical count survived later paused/outcome_unknown current context"
+  },
+  "change": "Reject a retained profile whose execution.attempts exceeds current context; use existing _checkpoint reader shared by index/load/backup.",
+  "compatibility": "No packet/database schema changes. Valid lower/equal-count history remains supported. No counters, reviews, execution holds or records are repaired.",
+  "regression_methods": [
+    "test_historical_attempt_count_cannot_exceed_current_after_restart",
+    "test_lower_historical_attempt_count_survives_later_unknown_hold",
+    "test_backup_rejects_historical_attempt_regression_without_changing_holds"
+  ],
+  "fixed_revision_checks": "Use fresh CI for the resulting commit; not claimed in this pre-commit receipt.",
+  "independent_review": "not_performed",
+  "owner_release_approval": "not_granted",
+  "external_actions": 0,
+  "costs_measured": false,
+  "recovery_time_measured": false,
+  "review_effort_measured": false,
+  "duplicate_candidates": 0,
+  "revision_conflicts": 0,
+  "next_task": "Verify resulting exact commit through fresh CI, retain blocking state until a later real successful local command, and advance authenticated private configuration only with a real authorized scoped receipt."
+}

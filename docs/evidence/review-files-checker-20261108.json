@@ -1,0 +1,126 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "implement_bounded_read_only_intake",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add check-review-files to existing read-only CLI. Pin receipt file bytes and declared source/memory revisions, validate identity, and verify selected manifest files. One to32 files,4MiB each,shared10s read budget with pre/post-read checks,64KiB regular receipt input. Separate v1 metadata report; no strict packet/schema migration, Git checkout/head verification, evaluation or dispatch.",
+  "checkpoint": {
+    "return_binding": "input source/memory, receipt byte pin and artifact/check hashes; final commit and CI in master Page",
+    "state": "intake_checker_verified_locally",
+    "unfinished": "actual evaluator findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "actual_prepared_handoff_intake": {
+      "authorized_git_blobs_materialized": 13,
+      "changed_file_error": "review source file digest mismatch",
+      "changed_file_refusal_exit": 1,
+      "dispatch_authorized": false,
+      "independent_review": "not_established",
+      "memory_revision": 219,
+      "no_ledger_created": true,
+      "original_receipt_bytes_unchanged": true,
+      "private_mode": "0600",
+      "receipt_file_sha256": "54e449d7c313cc297140faf8e177806bfb4c16187a9eb368becc620d0b32d624",
+      "release_authorized": false,
+      "repository_revision_verification": "not_performed",
+      "review_source": "4a2eeac0965091f80f4a05721d5063996216dd2f",
+      "source_manifest_sha256": "59121affeeed010d9f818523f65789078643b501b460bd7f7b8c011421707f7e",
+      "success_exit": 0,
+      "verification": "selected_file_bytes_only"
+    },
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.530s\n\nOK\n",
+      "tests": 3
+    },
+    "full_local": {
+      "evidence": "reports/r38-full-20261108.json",
+      "passed": true,
+      "record_sha256": "5a6f72ce9e2eb3e7010a390a95385cea0caa7cf1060cebe5a1b530449bd25101",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 609,
+        "skipped": 0
+      }
+    },
+    "regressions": [
+      "CLI success/stdout/private0600/no-overwrite, changed-file refusal/no output, source/receipt/database preservation and no absent-ledger creation",
+      "file pin/source/memory/type guards, invalid JSON/duplicates/input bound, traversal/absolute paths/empty or over32 manifests and resolved aliases reject before source opens",
+      "4MiB source size and post-read deadline refusal"
+    ],
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.review-files.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/evaluator-handoff-20261108.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "6d52cc81cfbcdfe8bdd0c79482454fb4134b0bae",
+  "limitations": [
+    "Selected local file bytes only; repository revision verification not performed, independent review not established, release/dispatch unauthorized. Receipt pin and source/memory identity are supplied, not authenticated. Unselected files and Git HEAD are not checked. Checker runtime is separate from the checked snapshot.",
+    "Source-file I/O is not frozen. Shared10s budget checked around reads cannot interrupt blocking OS I/O or prevent concurrent filesystem replacement. No new identity/authentication service or installed worker.",
+    "All17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, migration, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, publication or spending."
+  ],
+  "memory_revision": 220,
+  "metrics": {
+    "actual_evaluator_dispatches": 0,
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_changed_source_refusals": 1,
+    "new_regressions": 3,
+    "provider_dispatches": 0,
+    "real_handoff_files_checked": 13,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "unexpected_verification_errors": 0
+  },
+  "mission_id": "prepared-review-file-intake-20261108",
+  "observed_gap": "Prepared evaluator handoff had selected source hashes but no reusable CLI intake checker. New capability; no prior correctness defect or failed remote test claimed.",
+  "patch_sha256": "cc69a66eb9f2d262ffd40df06c93eb4a069b82c0f4309c73a906beab4347f9f0",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "bbcf103812a5aa3978174b8cabac35af6b7ca0dc88498008f8bc975cefcd542f",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "28afce6f3b379e6540b2d455798f749d1c3b861d4770eccd9e02bcf7d91e9105",
+    "scripts/jarvis_network.py": "a56ee48e2cc16299e8207932f4f46b6b2c3aeb64c2b29ce11391de060bee0bb4",
+    "tests/test_handoff_context_cli.py": "83ea1eb9b2b0de0e7ce6e9bb1d9099c924a9a27b7120074db49cd9b83a4b7c30"
+  },
+  "verification_logs_sha256": {
+    "reports/r38-focused-20261108.txt": "d0702a61ced552aaaf03bdf3ca6f1cfa9381a57816907e26e5f544289fbc83f9",
+    "reports/r38-full-20261108.json": "37d393591d1098c1fcf68ba904bd633a38f6dcb6cf65fb62e4433a9b4b51018b",
+    "reports/r38-web-20261108.txt": "91e247fd6df6399bcc8212ac4c3a14fa35dd645467757317157b8e435cdc7fc8"
+  },
+  "visibility": "owner_private"
+}

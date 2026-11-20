@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "kind": "jarvis.diary_entry",
+  "entry_id": "public-diary-20261022-rpg",
+  "date": "2026-10-22",
+  "timezone": "America/Los_Angeles",
+  "initiative_id": "jarvis-tools",
+  "title": "Jarvis Diary: Lanterns for the Next Cycle",
+  "visibility": "public_candidate",
+  "summary": "Public engineering diary context for an original local RPG episode pilot, based on the retained diary and multimedia milestone.",
+  "observations": [
+    {
+      "observation_id": "diary-milestone",
+      "text": "The public diary milestone includes a browser workbench, local revision history and a compiler for local multimedia drafts.",
+      "evidence_state": "source_linked",
+      "source_ids": ["milestone-commit"]
+    },
+    {
+      "observation_id": "retained-checks",
+      "text": "The retained milestone checks record 232 passing Python tests and 123 passing JavaScript helper tests. The linked CI run completed successfully.",
+      "evidence_state": "source_linked",
+      "source_ids": ["milestone-commit", "milestone-ci"]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "milestone-commit",
+      "title": "Public diary and multimedia milestone source context",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/commit/76e7a538d7c1a3a113d57727f025a2c6b27ccf13"
+    },
+    {
+      "source_id": "milestone-ci",
+      "title": "Successful diary milestone CI run",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/actions/runs/39862842245"
+    }
+  ],
+  "next_action": "Review one small assistant-building change, confirm the permitted Hostinger connection route, and review the next media draft.",
+  "media_notes": {
+    "audience": "Viewers exploring an original fictional presentation of public Jarvis project work.",
+    "visual_style": "Original anime-inspired library, forge and observatory, with readable evidence labels.",
+    "audio_style": "Calm narration and restrained original instrumental accents.",
+    "learning_goal": "Distinguish source-linked project records from planned tasks and fictional presentation.",
+    "call_to_action": "Review the three proposed quest cards and choose one bounded next step."
+  }
+}

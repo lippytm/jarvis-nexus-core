@@ -1,0 +1,100 @@
+{
+  "account_access_verified": false,
+  "assembler": "pypdf 6.10.0",
+  "channel": "linkedin",
+  "checks": {
+    "PDF_retention": "Original export retained without overwrite or duplicate PDF",
+    "bytes": 71358,
+    "checks": [
+      {
+        "extracted_text_sha256": "32192ae33d979f9e735b4ec942596a3a2d677dad40f4167caa1acbfad35ec337",
+        "page_size_points": [
+          900,
+          900
+        ],
+        "preview_sha256": "7b4281ddf7990ed56c34e9ed7a502d007c4e58c8a5e34e5d140c3c4100475ed0",
+        "slide": 1,
+        "source": "docs/media/jarvis-linkedin-slot1-slide1-20261029.svg",
+        "source_sha256": "fe471a25f1171eea79a2866cae34aa9e0b8096dde53f5feec3afa2ea83f535ce",
+        "source_text_present_nfkc_whitespace_normalized": true
+      },
+      {
+        "extracted_text_sha256": "643fd96a1401fb8398a8c5103b99ce72c8b615fda12cb06b548ebf5f3cacce04",
+        "page_size_points": [
+          900,
+          900
+        ],
+        "preview_sha256": "14726c3a0ec27992cb18ad34d39280b3148d18da9c1cc02f2589f1a89e95e1ba",
+        "slide": 2,
+        "source": "docs/media/jarvis-linkedin-slot1-slide2-20261029.svg",
+        "source_sha256": "18020c2e2b6f6030852e70803fd248051fd67623fe381440a7457be10a1a9879",
+        "source_text_present_nfkc_whitespace_normalized": true
+      },
+      {
+        "extracted_text_sha256": "821e6ec685ba69519fb32b0dece63227fe2ee47c8be1471adc2fdbc1d8a21f65",
+        "page_size_points": [
+          900,
+          900
+        ],
+        "preview_sha256": "42b129f832fa3d51e37a9bd8b933447c0f31ac8a17bc88acec116887c1096fd7",
+        "slide": 3,
+        "source": "docs/media/jarvis-linkedin-slot1-slide3-20261029.svg",
+        "source_sha256": "bcc1e2863b1f648de47f82e99751e2327d8db54baf2365f2fc92e4bd5fa461e6",
+        "source_text_present_nfkc_whitespace_normalized": true
+      },
+      {
+        "extracted_text_sha256": "b8b2a4ee18bd69653b63911ecf608fbc4ad1864ad61a3510326543973e16dacb",
+        "page_size_points": [
+          900,
+          900
+        ],
+        "preview_sha256": "a474a13b291e471c8bfc2b923072262196fd4e63dea15482af97932f1a38504a",
+        "slide": 4,
+        "source": "docs/media/jarvis-linkedin-slot1-slide4-20261029.svg",
+        "source_sha256": "55db92b657099ce607cef88ceab856248caf50b5604106f90ec91c0f3c3bb77e",
+        "source_text_present_nfkc_whitespace_normalized": true
+      }
+    ],
+    "font_report": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nLUKKWG+DejaVuSans                    TrueType          WinAnsi          yes yes yes      7  0\nHGASOS+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     11  0\nEFJLFY+DejaVuSans                    CID TrueType      Identity-H       yes yes yes     15  0\nJFGGOC+DejaVuSans                    TrueType          WinAnsi          yes yes yes     23  0\nDCEQYI+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     27  0\nDDAXIE+DejaVuSans                    TrueType          WinAnsi          yes yes yes     34  0\nSIYQDO+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     38  0\nDOPNTZ+DejaVuSans                    TrueType          WinAnsi          yes yes yes     45  0\nCSPZPU+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes     49  0\n",
+    "language": "en-US",
+    "pages": 4,
+    "pdf": "docs/media/exports/linkedin-20261029/slot-1.pdf",
+    "pdf_sha256": "176940ba513f55b5adf892c4e9e420ecda8b576790ea012fcbbb2a97e048ba0b",
+    "preparation_check_failures": [
+      "Initial pypdf exact-string assertion encountered a ligature/omitted word space; independent Poppler extraction retains main/supporting word boundaries after NFKC normalization.",
+      "Font-report assertion initially indexed incorrect columns; corrected to right-anchored embedded/subset/Unicode columns."
+    ],
+    "render_exit_code": 0,
+    "screen_reader_or_platform_compatibility": "not_verified",
+    "tagged": false
+  },
+  "costs_measured": false,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "export_method": "Inkscape --export-area-page --export-type=pdf for each unchanged SVG; pypdf add_page in order 1..4; metadata and en-US language set",
+  "guide_sha256": "ae6ff5f2be89e780f961d6d9a3b799be6a4a214defca1d21a346255b59e47a45",
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "a424830993af9ed9fed616bd6d661963dce3ad4a",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Review exact slot-1 PDF/caption and resolve untagged accessibility and destination requirements before any release; other PDF exports remain unfinished.",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.linkedin.1",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "fa97b50076d69d29fff164e12db7e077b03fcd9c7054cfb44d07af2f2db48e41",
+  "reliability_improvement_measured": false,
+  "renderer": "Inkscape 1.2.2",
+  "schema_version": 1,
+  "scope": "local_unpublished_pdf_export_candidate_checks",
+  "slot_1_copy_sha256": "5274a10dab935e807c5b52cbe4131e491355ff1f78bc9711e6f9a47f777781f5",
+  "source_art_captions_plain_text_visual_descriptions_unchanged": true,
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a",
+  "visual_review": "assistant individually inspected all four rendered PDF pages; no clipping, overlap or missing text observed; not independent human review"
+}

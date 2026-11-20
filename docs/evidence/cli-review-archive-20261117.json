@@ -1,0 +1,109 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "6a5f68f383efbeb8379fd889000faea451b69db20fe0ee89fb5ae0506570f510",
+    "scripts/jarvis_network.py": "40c7191cd3b02fe98376e87639a314d9339a7f072b0f47de6e1a7f2c12ddc3c6",
+    "tests/test_handoff_context_cli.py": "28c6cc58b5d7c0c7be750f3b1f34c6fc0d8d2ec4ddb692aa4a043e8133ce56d9"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Optional review-context --archive-receipt wires to existing API; missing --include-receipt or --context-revision rejects before ledger open. Explicit flag permits existing ledger-v4 migration. Default calls and receipt/packet shapes unchanged. Docs explain upgrade/backups/older-reader rejection.",
+  "checkpoint": {
+    "next": "Independent exact-source CLI archive/recovery review and owner release review before operational use. Authenticated registry/audience acceptance and actual provider delivery remain unfinished.",
+    "state": "cli_archive_candidate_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Default receipt CLI retains schema2/no archive; optional flag upgrades fixture to4, same tuple returns original receipt, one archive row, existing private output refuses overwrite.",
+      "Fresh read-only CLI recovers identical original receipt file bytes and retains paused/unknown profile; strict v1 shape/private/no-dispatch flags retained.",
+      "Six incomplete-flag cases with/without output reject before HandoffLedger call. Read-only archival refuses without byte changes. Stale restored-content revision refuses without archive/schema upgrade/output."
+    ],
+    "baseline": {
+      "log_sha256": "b0986de4e8c51f9bb4e328bcaf91edb0947b6385526bc97ae869770d9fe9e5aa",
+      "result": "Before implementation parser rejected missing --archive-receipt option: two test failures and three SystemExit subtest errors. Later preflight coverage expanded to include stdout-only calls."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "e5846208e70fd23953bb85ca703bd1b78d7884259cdd07f329cdd231b9a22c83",
+      "passed": true,
+      "tests": 2
+    },
+    "full": {
+      "evidence": "reports/r52-full.json",
+      "passed": true,
+      "record_sha256": "2cfd2960dae3c9c9b6c073706f2af236ace659405591456954b7b89e9ee50da1",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 625,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "a5b1713a9f886ffeb38ee0c1a6d5d0dbc400f0036b13af8b97c9fa5b0e41fd44",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "931a85e4f2d03befa094858f1d6a18db060d364d",
+  "limitations": [
+    "Only synthetic fixture ledgers migrated; no operational owner database upgraded. Optional archive creation is a local review write, not independent evaluation or authenticated identity.",
+    "Existing SQLite v4 archive API/storage unchanged; no strict v1 field additions or parallel memory store. Older v2/v3-only software refuses v4; retain pre-upgrade backups.",
+    "Existing output and database commit remain separate; failure requires read-only inspection, not automatic review replay, hold release, retry or dispatch.",
+    "No authenticated shared registry/ACL installation, worker/lease/failover/reconnect controller, live handoff or measured reliability gain.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/credentials/permissions/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 239,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "expected_baseline_check_failures": 1,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_final_test_failures": 0
+  },
+  "mission_id": "cli-review-archive-20261117",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read current master receipt239/branch/draft PR5/findings. Archive API, read-only recovery CLI and process-exit regression complete; no active retry or duplicate candidate.",
+  "problem": "CLI can recover archived local review receipts, but cannot explicitly create them; archive creation remains API-only at input.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "b98c31510edaf80e29613b59ae11e2277cad45e8d03d6f1eeba4f1061c5f1500",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context_cli.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

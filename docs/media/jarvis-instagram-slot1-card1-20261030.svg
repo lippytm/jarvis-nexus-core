@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title description">
+<title id="title">What would make an AI coding update inspectable?</title><desc id="description">An opening card asks what evidence would let another person inspect an AI-assisted code change.</desc>
+<rect width="1080" height="1080" fill="#edf2f5"/><rect width="1080" height="164" fill="#10283f"/>
+<g font-family="DejaVu Sans" fill="#10283f">
+<text x="72" y="61" font-size="23" fill="#b5dbe3" letter-spacing="2">AI JARVIS • DEVELOPMENT EVIDENCE</text>
+<text x="72" y="121" font-size="37" fill="white">1 — Opening</text>
+<text x="72" y="242" font-size="52" font-weight="bold"><tspan x="72" dy="0">What would make an AI coding</tspan><tspan x="72" dy="66">update inspectable?</tspan></text>
+<rect x="72" y="508" width="292" height="138" rx="12" fill="#e4eef2"/><path d="M96 550 h210 M96 578 h168" stroke="#7b98aa" stroke-width="4"/><text x="96" y="622" font-size="23">SOURCE</text><rect x="394" y="508" width="292" height="138" rx="12" fill="#e4eef2"/><path d="M418 550 h210 M418 578 h168" stroke="#7b98aa" stroke-width="4"/><text x="418" y="622" font-size="23">ARTIFACT</text><rect x="716" y="508" width="292" height="138" rx="12" fill="#e4eef2"/><path d="M740 550 h210 M740 578 h168" stroke="#7b98aa" stroke-width="4"/><text x="740" y="622" font-size="23">CHECKS</text>
+<path d="M72 698 H1008" stroke="#b7c8d4" stroke-width="2"/>
+<text x="72" y="754" font-size="27" font-weight="normal"><tspan x="72" dy="0">An opening card asks what evidence would let another person</tspan><tspan x="72" dy="38">inspect an AI-assisted code change.</tspan></text>
+<text x="72" y="970" font-size="25">REVIEW CANDIDATE • UNPUBLISHED</text>
+<text x="72" y="1020" font-size="22">Intergalactic Corporate Services LLC</text>
+<text x="940" y="1020" font-size="22">1 / 5</text>
+</g></svg>

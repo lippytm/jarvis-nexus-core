@@ -1,0 +1,69 @@
+{
+  "authentication_live_dispatch": "not_established",
+  "baseline": {
+    "errors": 0,
+    "failed_assertions": [
+      "index rejection",
+      "older load rejection",
+      "newer load rejection",
+      "backup rejection",
+      "no published backup"
+    ],
+    "failures": 5,
+    "focused_methods": 2,
+    "passed_methods": 1
+  },
+  "change": "Shared checkpoint reader validates at most two indexed neighboring profiles/digests and enforces nondecreasing memory revisions. Equal revisions remain valid. No recursive history walk, schema change or automatic record repair.",
+  "checks": {
+    "focused_errors": 0,
+    "focused_failures": 0,
+    "focused_methods": 2,
+    "local_python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "run": 526,
+      "skipped": 0
+    },
+    "syntax_files": 73,
+    "verifier_record_sha256": "3e4c897c23910112ab0e403b5563924e27229705fcb9ee1e973a61635e97b6fb",
+    "web_failures": 0,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.engineering-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "3b30511a521e03ce39fefc22de1221bdc397c6b8",
+  "memory_source": "master Page sequence 132",
+  "mission_id": "checkpoint-memory-order-20261104",
+  "next_task": "Exact-revision independent review; operational registry adapter still requires audience/access-policy verification and owner acceptance of the one saved proposal.",
+  "observed_problem": "A rehashed older checkpoint could carry memory revision 3 before retained revision 2, with current revision 3. Each history row met current-state bounds, so index, both loads and backup accepted impossible memory regression.",
+  "original_paused_checkpoint_changed": false,
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "956d76bd437887ad01abb1a85c8651a8fb8946be7e6eb2444eaeec902c137805",
+  "registry_accepted": false,
+  "regressions": [
+    "Read-only restart rejects contradictory neighboring history through index, both exact loads and backup without publishing final/temp backup files. Current paused/unknown profile, independent record and source database bytes remain unchanged.",
+    "Equal memory revisions with edited detail survive restart and checked backup, preserving current unknown hold and retry=false for history."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_retained_memory_order_integrity_repair",
+  "source_sha256": {
+    "control_tower/handoffs.py": "229b1cb406e7439df0076148e4ddf5ec7ec37b2d93247a31a3620b70ecaa23df",
+    "tests/test_handoff_context.py": "40af2154ff0f3789317a922b8bfbfef05fa5703254be504be8a830a9de8b4bbe"
+  },
+  "strict_packet_or_storage_schema_change": false
+}

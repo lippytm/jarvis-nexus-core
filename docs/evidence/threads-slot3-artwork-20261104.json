@@ -1,0 +1,129 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/threads-20261029/slot-3.png": "a98d91ded77b7f69dc005ebe37c0c14aed9eb237fbe8afed7d176d9fb7853d4f",
+    "docs/media/jarvis-threads-four-slots-20261029.md": "2e9456ffa647969d28cffc2ba63aa1ca8b74395b3fd75b5359984c2a04c521d5",
+    "docs/media/jarvis-threads-slot3-20261104.svg": "40a85f750a9dfd5b3eecc2517d0d1b322cc8a4269485adcbc7917fdbd2e53dcb"
+  },
+  "checks": {
+    "campaign_and_other_slots_unchanged": true,
+    "discussion_units_unchanged": 12,
+    "empty_region_sha256": {
+      "artifact": "e352309026c16ca176ddaf436d756d860523f9e3f6c2116cb66adddd57f8b662",
+      "ci": "e352309026c16ca176ddaf436d756d860523f9e3f6c2116cb66adddd57f8b662",
+      "owner-review": "18ca1e6c3393f4e24e683c6352912604c8df219a40c1c8fae881ba8c0e1d76ce",
+      "runtime": "e352309026c16ca176ddaf436d756d860523f9e3f6c2116cb66adddd57f8b662"
+    },
+    "new_unit_tests": 0,
+    "no_success_arrows_online_indicators_or_charts": true,
+    "png_bytes": 113769,
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager object wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "THREE CLAIMS. THREE RECORDS.",
+        "width": 635.96875
+      },
+      {
+        "text": "CONCEPTUAL EXAMPLE \u2022 UNPUBLISHED DRAFT",
+        "width": 521.125
+      },
+      {
+        "text": "Each claim needs evidence from its own context.",
+        "width": 540.5
+      },
+      {
+        "text": "Artifact",
+        "width": 119.53125
+      },
+      {
+        "text": "Retained file + exact revision reference",
+        "width": 436.0
+      },
+      {
+        "text": "CI runner",
+        "width": 147.140625
+      },
+      {
+        "text": "Named check + runner + result reference",
+        "width": 462.84375
+      },
+      {
+        "text": "Intended runtime",
+        "width": 276.328125
+      },
+      {
+        "text": "Actual command + intended context reference",
+        "width": 517.6875
+      },
+      {
+        "text": "Owner review:",
+        "width": 186.5
+      },
+      {
+        "text": "Reference fields are empty \u2022 Destination: unassigned",
+        "width": 590.28125
+      },
+      {
+        "text": "No actual check result, service availability or release approval depicted.",
+        "width": 758.0625
+      }
+    ],
+    "visual_inspection": "Full PNG inspected; no observed clipping/overlap; independent rows, conceptual/unpublished labels, no availability claims and four blank fields visible.",
+    "whitespace": "git diff --check passed",
+    "xml_resource_checks": true
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "depicted_availability_or_test_result": "none_conceptual_only",
+  "destination": "threads/account unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "finished_video_or_publication": false,
+  "independent_review": "not_performed",
+  "input_revision": "db3dccfaa12d78898f0a336421a2492c4f73d4f1",
+  "memory_source": "master Page sequence 138",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact SVG/PNG/discussion/alt-text owner, destination and accessibility review; optional slot 4 artwork remains unrendered.",
+  "operational_ledger_changed": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "dimensions": [
+      1080,
+      1080
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.threads.3",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "f1529542811f693073f69f5d5ce1bf7fd4a03009f56f3d9cff978012ab21d6f9",
+  "registry_accepted": false,
+  "revision_conflicts": 0,
+  "rights_device_accessibility_platform_acceptance": "not_verified",
+  "schema_version": 1,
+  "scope": "unpublished original conceptual three-evidence-row artwork; no runtime changes"
+}

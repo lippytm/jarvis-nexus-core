@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Source, artifact and checks with review pending</title>
+<desc id="desc">Unpublished conceptual YouTube thumbnail candidate. Three original cards labelled Source, Artifact and Checks sit above an empty review field and Review pending. No private record, execution result or release approval is depicted. Destination is unassigned.</desc>
+<rect width="1200" height="675" fill="#101d2c"/>
+<g font-family="DejaVu Sans" fill="#f5f8fc">
+<rect x="64" y="224" width="340" height="174" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="430" y="224" width="340" height="174" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="796" y="224" width="340" height="174" rx="16" fill="#20354c" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="500" y="454" width="636" height="52" rx="8" fill="#344e69" stroke="#b8d9e8" stroke-width="2"/>
+<text x="64" y="110" font-size="48" font-weight="bold">SOURCE. ARTIFACT. CHECKS.</text>
+<text x="64" y="168" font-size="28">One task. Inspectable evidence.</text>
+<text x="64" y="494" font-size="30" font-weight="bold">Review pending</text>
+<text x="64" y="604" font-size="24">CONCEPTUAL EXAMPLE • UNPUBLISHED</text>
+<text x="64" y="648" font-size="22">Destination: unassigned • No release approval depicted.</text>
+<text x="88" y="326" font-size="42" font-weight="bold">Source</text>
+<text x="454" y="326" font-size="42" font-weight="bold">Artifact</text>
+<text x="820" y="326" font-size="42" font-weight="bold">Checks</text>
+</g>
+</svg>

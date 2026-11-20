@@ -1,0 +1,1043 @@
+"""Durable local draft handoffs. No model calls, credentials, network or dispatch.
+
+Local review labels and matching hashes are not identity authentication. Returned
+packets remain unverified evidence for a person to review, never executable work.
+"""
+from contextlib import contextmanager
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import sqlite3
+
+from control_tower.network_contract import (PROJECTS, TARGETS, MAX_PACKET_BYTES, canonical, digest, require_digest,
+    require_identifier, validate_draft, validate_return, _unique_object)
+from control_tower.swarm_factory import validate_swarm
+from control_tower.handoff_context import validate_context
+from control_tower.validation import json_record_errors
+from control_tower.connections import (connector_report, validate_destination_registry,
+    verify_github_commit_response)
+
+MAX_HANDOFFS = 1000
+MAX_SWARMS = 100
+MAX_CONTEXT_CHECKPOINTS = 1000
+MAX_CONTEXT_REVIEW_RECEIPTS = 1000
+
+
+def _stored_json(body):
+    """Bound retained raw bytes before decoding; preserve strict object parsing."""
+    if (not isinstance(body, (str, bytes)) or len(body) > MAX_PACKET_BYTES
+        or isinstance(body, str) and len(body.encode("utf-8")) > MAX_PACKET_BYTES):
+        raise ValueError("stored JSON exceeds input bounds")
+    return json.loads(body, object_pairs_hook=_unique_object)
+
+
+def _now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _context_review_receipt(handoff_id, row, profile, reviewer_id, recorded_at):
+    result = {"schema_version": 1, "kind": "jarvis.context_review_receipt",
+        "handoff_id": handoff_id, "handoff_sha256": profile["handoff_sha256"],
+        **{key: profile[key] for key in ("project_id", "mission_id", "asset_id", "platform",
+            "source_revision", "memory_revision", "configuration_version")},
+        "destination_id": profile.get("destination_id"),
+        "context_schema_version": profile["schema_version"],
+        "context_revision": row["revision"], "context_sha256": row["digest"],
+        "reviewer_label": reviewer_id, "recorded_at": recorded_at,
+        "review_state": "locally_reviewed", "visibility": "owner_private",
+        "execution_state": profile["execution"]["state"],
+        "control_state": profile.get("control", {}).get("state", "legacy_uncontrolled"),
+        "authority": "local_record_only_not_identity_authentication",
+        "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
+    return {**result, "receipt_sha256": digest(result)}
+
+
+class HandoffLedger:
+    """Single local SQLite ledger; opaque IDs are never used as filenames."""
+
+    def __init__(self, path, *, read_only=False):
+        if type(read_only) is not bool:
+            raise ValueError("read-only option must be boolean")
+        self.read_only = read_only
+        path = Path(path)
+        if not read_only:
+            path.parent.mkdir(parents=True, exist_ok=True)
+        self.db = sqlite3.connect(path.resolve().as_uri() + "?mode=ro" if read_only else path,
+                                 uri=read_only, timeout=2, isolation_level=None)
+        try:
+            self.db.row_factory = sqlite3.Row
+            self.db.execute("PRAGMA foreign_keys=ON")
+            with self._transaction():
+                # Inspect and initialize under one lock/snapshot. A concurrent
+                # checkpoint upgrade must never be overwritten by a stale version.
+                version = self.db.execute("PRAGMA user_version").fetchone()[0]
+                tables = {r[0] for r in self.db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
+                legacy_tables = {"swarms", "handoffs", "returns"}
+                if (version not in (0, 1, 2, 3, 4) or (version == 0 and tables)
+                    or (version == 1 and tables != legacy_tables)
+                    or (version == 2 and tables != legacy_tables | {"handoff_contexts"})
+                    or (version == 3 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints"})
+                    or (version == 4 and tables != legacy_tables | {"handoff_contexts", "context_checkpoints", "context_review_receipts"})):
+                    raise ValueError("unsupported or unrelated ledger database")
+                if read_only:
+                    if version not in (2, 3, 4):
+                        raise ValueError("read-only inspection requires an existing version-2/3/4 ledger; migration is separate")
+                    return
+                self.db.execute("CREATE TABLE IF NOT EXISTS swarms (id TEXT PRIMARY KEY, digest TEXT NOT NULL, body TEXT NOT NULL)")
+                self.db.execute("""CREATE TABLE IF NOT EXISTS handoffs (
+                    id TEXT PRIMARY KEY, swarm_id TEXT NOT NULL REFERENCES swarms(id),
+                    assistant_id TEXT NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
+                    state TEXT NOT NULL CHECK(state IN ('pending_review','reviewed','export_prepared','returned_unverified')),
+                    reviewer_id TEXT, reviewed_digest TEXT, created_at TEXT NOT NULL,
+                    reviewed_at TEXT, exported_at TEXT)""")
+                self.db.execute("""CREATE TABLE IF NOT EXISTS returns (
+                    id TEXT PRIMARY KEY, handoff_id TEXT NOT NULL UNIQUE REFERENCES handoffs(id),
+                    digest TEXT NOT NULL, body TEXT NOT NULL, received_at TEXT NOT NULL)""")
+                self.db.execute("""CREATE TABLE IF NOT EXISTS handoff_contexts (
+                    handoff_id TEXT PRIMARY KEY REFERENCES handoffs(id),
+                    revision INTEGER NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
+                    reviewer_id TEXT, reviewed_digest TEXT)""")
+                self.db.execute("PRAGMA user_version=" + str(version if version in (3, 4) else 2))
+        except BaseException:
+            self.db.close()
+            raise
+
+    def close(self):
+        self.db.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.close()
+
+    @contextmanager
+    def _transaction(self):
+        self.db.execute("BEGIN" if self.read_only else "BEGIN IMMEDIATE")
+        try:
+            yield
+            self.db.commit()
+        except BaseException:
+            # Release pending writes even when an interrupt is propagated.
+            self.db.rollback()
+            raise
+
+    def _swarm(self, swarm_id):
+        require_identifier(swarm_id, "swarm ID")
+        row = self.db.execute("SELECT * FROM swarms WHERE id=?", (swarm_id,)).fetchone()
+        if row is None:
+            raise ValueError("unknown stored swarm")
+        try:
+            manifest = validate_swarm(_stored_json(row["body"]))
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored swarm configuration is invalid") from None
+        if row["id"] != manifest["swarm_id"] or row["digest"] != manifest["manifest_sha256"]:
+            raise ValueError("stored swarm identity or digest mismatch")
+        return manifest
+
+    def _handoff(self, handoff_id):
+        require_identifier(handoff_id, "handoff ID")
+        row = self.db.execute("SELECT * FROM handoffs WHERE id=?", (handoff_id,)).fetchone()
+        if row is None:
+            raise ValueError("unknown handoff")
+        if row["state"] not in {"pending_review", "reviewed", "export_prepared", "returned_unverified"}:
+            raise ValueError("stored handoff state is invalid")
+        try:
+            body = _stored_json(row["body"])
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored handoff is invalid") from None
+        keys = {"schema_version", "kind", "handoff_id", "assistant_id", "swarm_id", "manifest_sha256",
+                "source_revision", "draft", "parent_id", "depth", "mode", "external_actions"}
+        if not isinstance(body, dict) or set(body) != keys:
+            raise ValueError("stored handoff structure mismatch")
+        if (type(body["schema_version"]) is not int or body["schema_version"] != 1
+            or body["kind"] != "jarvis.handoff" or body["mode"] != "manual_export_only"
+            or type(body["external_actions"]) is not int or body["external_actions"] != 0):
+            raise ValueError("stored handoff contract requires version 1, manual mode and zero external actions")
+        if digest(body) != row["digest"] or body["handoff_id"] != row["id"] or body["assistant_id"] != row["assistant_id"] or body["swarm_id"] != row["swarm_id"]:
+            raise ValueError("stored handoff integrity mismatch")
+        manifest = self._swarm(body["swarm_id"])
+        if type(body["depth"]) is not int or not 0 <= body["depth"] <= manifest["max_depth"]:
+            raise ValueError("stored handoff depth is outside its registered budget")
+        draft = validate_draft(body["draft"])
+        if (body["manifest_sha256"] != manifest["manifest_sha256"]
+            or body["source_revision"] != manifest["source_revision"]
+            or body["assistant_id"] not in {a["assistant_id"] for a in manifest["assistants"]}
+            or draft["project_id"] != manifest["project_id"] or draft["target"] not in manifest["targets"]):
+            raise ValueError("stored handoff is outside its registered swarm scope")
+        if row["state"] == "pending_review":
+            if row["reviewer_id"] is not None or row["reviewed_digest"] is not None:
+                raise ValueError("pending handoff has inconsistent stored review fields")
+        else:
+            require_identifier(row["reviewer_id"], "stored handoff reviewer label")
+            if row["reviewer_id"] == row["assistant_id"] or row["reviewed_digest"] != row["digest"]:
+                raise ValueError("stored handoff review binding mismatch")
+        self._check_stored_return(row, body)
+        return row, body
+
+    def _check_stored_return(self, row, body):
+        stored = self.db.execute("SELECT * FROM returns WHERE handoff_id=?", (row["id"],)).fetchone()
+        if (stored is not None) != (row["state"] == "returned_unverified"):
+            raise ValueError("stored return state mismatch")
+        if stored is None:
+            return
+        try:
+            packet = validate_return(_stored_json(stored["body"]))
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored return is invalid") from None
+        if (digest(packet) != stored["digest"] or packet["return_id"] != stored["id"]
+            or packet["handoff_id"] != row["id"] or packet["handoff_sha256"] != row["digest"]
+            or packet["source_provider"] != body["draft"]["target"]):
+            raise ValueError("stored return integrity or binding mismatch")
+
+    @staticmethod
+    def _summary(row, *, duplicate=False):
+        return {"handoff_id": row["id"], "handoff_sha256": row["digest"],
+                "state": row["state"], "duplicate": duplicate,
+                "external_actions": 0, "sender_authentication": "not_established"}
+
+    def stage(self, draft, swarm, *, assistant_id, handoff_id, parent_id=None):
+        draft = validate_draft(draft)
+        swarm = validate_swarm(swarm)
+        require_identifier(assistant_id, "assistant ID")
+        require_identifier(handoff_id, "handoff ID")
+        assistant = next((a for a in swarm["assistants"] if a["assistant_id"] == assistant_id), None)
+        if assistant is None or draft["project_id"] != swarm["project_id"] or draft["target"] not in swarm["targets"]:
+            raise ValueError("draft or assistant is outside the swarm scope")
+        if parent_id is not None:
+            require_identifier(parent_id, "parent ID")
+        with self._transaction():
+            depth = 0
+            if parent_id is not None:
+                parent, parent_body = self._handoff(parent_id)
+                if parent["state"] != "returned_unverified" or parent_body["manifest_sha256"] != swarm["manifest_sha256"]:
+                    raise ValueError("parent requires a returned packet in the same swarm")
+                self._require_export_active(parent_id)
+                depth = parent_body["depth"] + 1
+            if depth > swarm["max_depth"]:
+                raise ValueError("handoff depth budget reached")
+            body = {"schema_version": 1, "kind": "jarvis.handoff", "handoff_id": handoff_id,
+                    "assistant_id": assistant_id, "swarm_id": swarm["swarm_id"],
+                    "manifest_sha256": swarm["manifest_sha256"], "source_revision": swarm["source_revision"],
+                    "draft": draft, "parent_id": parent_id, "depth": depth,
+                    "mode": "manual_export_only", "external_actions": 0}
+            body_digest = digest(body)
+            existing = self.db.execute("SELECT id FROM handoffs WHERE id=?", (handoff_id,)).fetchone()
+            if existing:
+                old, _ = self._handoff(handoff_id)
+                if old["digest"] != body_digest:
+                    raise ValueError("handoff ID conflicts with existing content")
+                return self._summary(old, duplicate=True)
+            registered = self.db.execute("SELECT * FROM swarms WHERE id=?", (swarm["swarm_id"],)).fetchone()
+            serialized_swarm = canonical(swarm).decode()
+            if registered and (registered["digest"] != swarm["manifest_sha256"] or registered["body"] != serialized_swarm):
+                raise ValueError("swarm ID conflicts with its registered specification")
+            if not registered:
+                if self.db.execute("SELECT count(*) FROM swarms").fetchone()[0] >= MAX_SWARMS:
+                    raise ValueError("ledger swarm limit reached")
+                self.db.execute("INSERT INTO swarms VALUES (?,?,?)", (swarm["swarm_id"], swarm["manifest_sha256"], serialized_swarm))
+            if self.db.execute("SELECT count(*) FROM handoffs").fetchone()[0] >= MAX_HANDOFFS:
+                raise ValueError("ledger handoff limit reached")
+            consumed = self.db.execute("SELECT count(*) FROM handoffs WHERE swarm_id=? AND assistant_id=?", (swarm["swarm_id"], assistant_id)).fetchone()[0]
+            if consumed >= assistant["max_handoffs"]:
+                raise ValueError("durable assistant handoff budget reached")
+            self.db.execute("INSERT INTO handoffs (id,swarm_id,assistant_id,digest,body,state,created_at) VALUES (?,?,?,?,?,'pending_review',?)",
+                            (handoff_id, swarm["swarm_id"], assistant_id, body_digest, canonical(body).decode(), _now()))
+            row, _ = self._handoff(handoff_id)
+            return self._summary(row)
+
+    def review(self, handoff_id, *, reviewer_id, expected_sha256):
+        require_identifier(reviewer_id, "reviewer label")
+        require_digest(expected_sha256)
+        with self._transaction():
+            row, _ = self._handoff(handoff_id)
+            if row["digest"] != expected_sha256:
+                raise ValueError("review digest does not match the draft")
+            if reviewer_id == row["assistant_id"]:
+                raise ValueError("reviewer label must differ from the drafting assistant")
+            if row["state"] != "pending_review":
+                if row["reviewer_id"] == reviewer_id and row["reviewed_digest"] == expected_sha256:
+                    return self._summary(row, duplicate=True)
+                raise ValueError("handoff already has a different review record")
+            self.db.execute("UPDATE handoffs SET state='reviewed',reviewer_id=?,reviewed_digest=?,reviewed_at=? WHERE id=?",
+                            (reviewer_id, expected_sha256, _now(), handoff_id))
+            row, _ = self._handoff(handoff_id)
+            return self._summary(row)
+
+    def export(self, handoff_id, *, expected_sha256):
+        require_digest(expected_sha256)
+        with self._transaction():
+            row, body = self._handoff(handoff_id)
+            self._require_export_active(handoff_id)
+            if row["digest"] != expected_sha256 or row["reviewed_digest"] != expected_sha256 or row["state"] == "pending_review":
+                raise ValueError("export requires local review of this exact draft")
+            if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone():
+                if self._context(handoff_id)[1]["schema_version"] == 3:
+                    raise ValueError("destination-bound handoff requires context envelope export")
+            if row["state"] == "reviewed":
+                self.db.execute("UPDATE handoffs SET state='export_prepared',exported_at=? WHERE id=?", (_now(), handoff_id))
+            return {"schema_version": 1, "mode": "manual_handoff", "handoff": body,
+                    "handoff_sha256": expected_sha256,
+                    "review": {"reviewer_label": row["reviewer_id"], "reviewed_sha256": row["reviewed_digest"],
+                               "authority": "local_record_only_not_identity_authentication"},
+                    "external_actions": 0}
+
+    def import_return(self, packet):
+        packet = validate_return(packet)
+        packet_digest = digest(packet)
+        with self._transaction():
+            row, body = self._handoff(packet["handoff_id"])
+            if row["state"] not in {"export_prepared", "returned_unverified"}:
+                raise ValueError("return requires a previously exported handoff")
+            if packet["handoff_sha256"] != row["digest"] or packet["source_provider"] != body["draft"]["target"]:
+                raise ValueError("return does not match its intended handoff and target")
+            existing = self.db.execute("SELECT * FROM returns WHERE id=? OR handoff_id=?", (packet["return_id"], packet["handoff_id"])).fetchone()
+            duplicate = existing is not None
+            if existing:
+                if existing["id"] != packet["return_id"] or existing["handoff_id"] != packet["handoff_id"] or existing["digest"] != packet_digest or existing["body"] != canonical(packet).decode():
+                    raise ValueError("return conflicts with previously accepted content")
+            else:
+                self.db.execute("INSERT INTO returns VALUES (?,?,?,?,?)", (packet["return_id"], packet["handoff_id"], packet_digest, canonical(packet).decode(), _now()))
+                self.db.execute("UPDATE handoffs SET state='returned_unverified' WHERE id=?", (packet["handoff_id"],))
+            return {"return_id": packet["return_id"], "handoff_id": packet["handoff_id"],
+                    "return_sha256": packet_digest, "state": "returned_unverified", "duplicate": duplicate,
+                    "sender_authentication": "not_established", "external_actions": 0}
+
+    def status(self):
+        """Return metadata only; draft and imported text remain in the local ledger."""
+        with self._transaction():
+            rows = self.db.execute("SELECT id FROM handoffs ORDER BY created_at,id").fetchall()
+            return {"mode": "local_ledger", "handoffs": [self._summary(self._handoff(r["id"])[0]) for r in rows],
+                    "swarm_count": self.db.execute("SELECT count(*) FROM swarms").fetchone()[0],
+                    "return_count": self.db.execute("SELECT count(*) FROM returns").fetchone()[0],
+                    "model_calls": 0, "external_actions": 0}
+
+    def queue_report(self, *, project_id, mission_id=None, expected_sha256=None, include_review_state=False,
+                     platform=None, destination_id=None):
+        """Private counts of recorded states, never live worker/completion metrics."""
+        if type(include_review_state) is not bool:
+            raise ValueError("include-review-state must be boolean")
+        if not isinstance(project_id, str) or project_id not in PROJECTS:
+            raise ValueError("unknown project")
+        if platform is not None and (not isinstance(platform, str) or platform not in TARGETS):
+            raise ValueError("unknown queue platform")
+        if destination_id is not None:
+            require_identifier(destination_id, "destination ID")
+            if platform is None:
+                raise ValueError("queue destination selection requires platform scope")
+        if mission_id is not None:
+            require_identifier(mission_id, "mission ID")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
+        with self._transaction():
+            handoffs = dict.fromkeys(("pending_review", "reviewed", "export_prepared", "returned_unverified"), 0)
+            execution = dict.fromkeys(("pending", "execution_blocked", "outcome_unknown", "without_context"), 0)
+            controls = dict.fromkeys(("active", "paused", "cancelled", "legacy_uncontrolled", "without_context"), 0)
+            attempts, bindings = 0, []
+            for item in self.db.execute("SELECT id FROM handoffs ORDER BY id").fetchall():
+                row, body = self._handoff(item["id"])
+                if body["draft"]["project_id"] != project_id:
+                    continue
+                has_context = self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone()
+                selected = self._context(row["id"]) if has_context else None
+                if mission_id is not None and (selected is None or selected[1]["mission_id"] != mission_id):
+                    continue
+                if platform is not None and body["draft"]["target"] != platform:
+                    continue
+                if destination_id is not None and (selected is None
+                    or selected[1].get("destination_id") != destination_id):
+                    continue
+                handoffs[row["state"]] += 1
+                binding = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
+                           "state": row["state"], "source_revision": body["source_revision"],
+                           "asset_id": body["assistant_id"], "platform": body["draft"]["target"],
+                           "mission_id": None, "memory_revision": None, "destination_id": None,
+                           "context_sha256": None, "context_revision": None}
+                if selected is not None:
+                    context, profile = selected
+                    execution[profile["execution"]["state"]] += 1
+                    controls[profile["control"]["state"] if profile["schema_version"] >= 2 else "legacy_uncontrolled"] += 1
+                    attempts += profile["execution"]["attempts"]
+                    binding.update(context_sha256=context["digest"], context_revision=context["revision"],
+                        mission_id=profile["mission_id"], memory_revision=profile["memory_revision"],
+                        destination_id=profile.get("destination_id"))
+                else:
+                    execution["without_context"] += 1
+                    controls["without_context"] += 1
+                if include_review_state:
+                    binding.update(handoff_review_current=row["reviewed_digest"] == row["digest"],
+                        context_review_current=(selected[0]["reviewed_digest"] == selected[0]["digest"]
+                                                if selected is not None else None))
+                bindings.append(binding)
+            result = {"schema_version": 1, "kind": "jarvis.queue_report", "project_id": project_id,
+                "handoff_count": len(bindings), "handoff_states": handoffs, "execution_states": execution,
+                "control_states": controls, "recorded_attempts": attempts, "bindings": bindings,
+                "visibility": "owner_private", "completion_verification": "not_established",
+                "duplicate_attempts": "not_recorded", "dispatch_authorized": False, "external_actions": 0}
+            if mission_id is not None:
+                result.update(schema_version=2, mission_id=mission_id)
+            if include_review_state:
+                result.update(schema_version=3, review_authority="local_record_only_not_identity_authentication")
+            if platform is not None:
+                result.update(schema_version=4, platform=platform)
+            if destination_id is not None:
+                result.update(schema_version=5, destination_id=destination_id)
+            report = {**result, "report_sha256": digest(result)}
+            if expected_sha256 is not None and report["report_sha256"] != expected_sha256:
+                raise ValueError("queue report is stale; retrieve current metadata again")
+            return report
+
+    def destination_status(self, *, project_id, platform, destination_id,
+                           include_digest=False, expected_sha256=None, mission_id=None,
+                           include_review_state=False):
+        """Selective private metadata discovery, never connection/dispatch proof."""
+        if type(include_review_state) is not bool:
+            raise ValueError("include-review-state must be boolean")
+        if type(include_digest) is not bool:
+            raise ValueError("include-digest must be boolean")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
+        if not isinstance(project_id, str) or project_id not in PROJECTS:
+            raise ValueError("unknown project")
+        if not isinstance(platform, str) or platform not in TARGETS:
+            raise ValueError("unknown platform")
+        require_identifier(destination_id, "destination ID")
+        if mission_id is not None:
+            require_identifier(mission_id, "mission ID")
+        with self._transaction():
+            matches = []
+            rows = self.db.execute("SELECT handoff_id FROM handoff_contexts ORDER BY handoff_id").fetchall()
+            for item in rows:
+                row, profile = self._context(item["handoff_id"])
+                if (profile["schema_version"] != 3 or profile["project_id"] != project_id
+                    or profile["platform"] != platform or profile["destination_id"] != destination_id
+                    or mission_id is not None and profile["mission_id"] != mission_id):
+                    continue
+                original, _ = self._handoff(item["handoff_id"])
+                record = {"handoff_id": item["handoff_id"], "mission_id": profile["mission_id"],
+                    "asset_id": profile["asset_id"], "source_revision": profile["source_revision"],
+                    "memory_revision": profile["memory_revision"], "context_revision": row["revision"],
+                    "context_sha256": row["digest"], "handoff_state": original["state"],
+                    "execution_state": profile["execution"]["state"], "control_state": profile["control"]["state"],
+                    "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed"}
+                if include_review_state:
+                    record.update(handoff_review_current=original["reviewed_digest"] == original["digest"],
+                                  context_review_current=row["reviewed_digest"] == row["digest"])
+                matches.append(record)
+            result = {"schema_version": 1, "kind": "jarvis.destination_status", "project_id": project_id,
+                    "platform": platform, "destination_id": destination_id, "records": matches,
+                    "visibility": "owner_private", "sender_authentication": "not_established",
+                    "dispatch_authorized": False, "external_actions": 0}
+            if mission_id is not None:
+                result.update(schema_version=3, mission_id=mission_id)
+            if include_review_state:
+                result.update(schema_version=4, review_authority="local_record_only_not_identity_authentication")
+            if include_digest or expected_sha256 is not None or mission_id is not None or include_review_state:
+                if mission_id is None and not include_review_state:
+                    result["schema_version"] = 2
+                result["report_sha256"] = digest(result)
+                if expected_sha256 is not None and result["report_sha256"] != expected_sha256:
+                    raise ValueError("destination report is stale; retrieve current metadata again")
+            return result
+
+    def _context(self, handoff_id):
+        _, handoff = self._handoff(handoff_id)
+        row = self.db.execute("SELECT * FROM handoff_contexts WHERE handoff_id=?", (handoff_id,)).fetchone()
+        if row is None:
+            raise ValueError("handoff has no context")
+        try:
+            profile = validate_context(_stored_json(row["body"]), handoff)
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored context is invalid") from None
+        if digest(profile) != row["digest"] or type(row["revision"]) is not int or row["revision"] < 1:
+            raise ValueError("stored context integrity mismatch")
+        if row["reviewer_id"] is None:
+            if row["reviewed_digest"] is not None:
+                raise ValueError("stored context has incomplete review binding")
+        else:
+            require_identifier(row["reviewer_id"], "stored context reviewer label")
+            if row["reviewer_id"] == profile["asset_id"] or row["reviewed_digest"] != row["digest"]:
+                raise ValueError("stored context review binding mismatch")
+        return row, profile
+
+    def _checkpoint(self, handoff_id, revision):
+        if type(revision) is not int or revision < 1:
+            raise ValueError("invalid checkpoint revision")
+        current, current_profile = self._context(handoff_id)
+        if self.db.execute("PRAGMA user_version").fetchone()[0] not in (3, 4):
+            raise ValueError("ledger has no retained context checkpoints")
+        row = self.db.execute("SELECT * FROM context_checkpoints WHERE handoff_id=? AND revision=?",
+                              (handoff_id, revision)).fetchone()
+        if row is None:
+            raise ValueError("unknown context checkpoint")
+        _, handoff = self._handoff(handoff_id)
+        try:
+            profile = validate_context(_stored_json(row["body"]), handoff)
+        except (ValueError, TypeError, RecursionError):
+            raise ValueError("stored context checkpoint is invalid") from None
+        def outside_current(profile, revision, checksum):
+            return (revision > current["revision"]
+                or profile["schema_version"] > current_profile["schema_version"]
+                or profile["mission_id"] != current_profile["mission_id"]
+                or (profile.get("control", {}).get("state") == "cancelled"
+                    and current_profile.get("control", {}).get("state") != "cancelled")
+                or (profile["execution"]["state"] == "outcome_unknown"
+                    and any(profile["execution"][field] != current_profile["execution"][field]
+                            for field in ("state", "attempts", "context_id")))
+                or (profile["schema_version"] == 3
+                    and profile["destination_id"] != current_profile.get("destination_id"))
+                or profile["memory_revision"] > current_profile["memory_revision"]
+                or profile["execution"]["attempts"] > current_profile["execution"]["attempts"]
+                or (revision == current["revision"] and checksum != current["digest"]))
+
+        if digest(profile) != row["digest"] or outside_current(profile, revision, row["digest"]):
+            raise ValueError("stored context checkpoint integrity mismatch")
+        # Current-state bounds alone cannot detect a regression between two
+        # retained checkpoints. Read at most the two indexed neighbors; do not
+        # recurse through history or infer that memory revisions strictly grow.
+        for operator, order in (("<", "DESC"), (">", "ASC")):
+            neighbor = self.db.execute(
+                "SELECT * FROM context_checkpoints WHERE handoff_id=? AND revision "
+                + operator + " ? ORDER BY revision " + order + " LIMIT 1",
+                (handoff_id, revision)).fetchone()
+            if neighbor is None:
+                continue
+            try:
+                adjacent = validate_context(_stored_json(neighbor["body"]), handoff)
+            except (ValueError, TypeError, RecursionError):
+                raise ValueError("stored context checkpoint integrity mismatch") from None
+            earlier, later = (adjacent, profile) if operator == "<" else (profile, adjacent)
+            if (type(neighbor["revision"]) is not int or neighbor["revision"] < 1
+                or digest(adjacent) != neighbor["digest"]
+                or outside_current(adjacent, neighbor["revision"], neighbor["digest"])
+                or earlier["memory_revision"] > later["memory_revision"]
+                or earlier["execution"]["attempts"] > later["execution"]["attempts"]
+                or earlier["schema_version"] > later["schema_version"]
+                or (earlier.get("control", {}).get("state") == "cancelled"
+                    and later.get("control", {}).get("state") != "cancelled")
+                or (earlier["execution"]["state"] == "outcome_unknown"
+                    and any(earlier["execution"][field] != later["execution"][field]
+                            for field in ("state", "attempts", "context_id")))):
+                raise ValueError("stored context checkpoint integrity mismatch")
+        return row, profile
+
+    def checkpoint_context(self, handoff_id, *, expected_sha256, expected_source_revision,
+                           expected_memory_revision, expected_revision=None):
+        """Opt-in version-3 local history; never rewinds current context or reviews."""
+        require_digest(expected_sha256)
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected checkpoint revision")
+        if self.read_only:
+            raise ValueError("read-only inspection cannot capture checkpoints")
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("checkpoint revision mismatch")
+            if (row["digest"] != expected_sha256 or profile["source_revision"] != expected_source_revision
+                or type(expected_memory_revision) is not int or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("checkpoint requires exact current context and revisions")
+            self.db.execute("""CREATE TABLE IF NOT EXISTS context_checkpoints (
+                handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
+                digest TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(handoff_id,revision))""")
+            if self.db.execute("PRAGMA user_version").fetchone()[0] != 4:
+                self.db.execute("PRAGMA user_version=3")
+            duplicate = self.db.execute("SELECT 1 FROM context_checkpoints WHERE handoff_id=? AND revision=?",
+                                        (handoff_id, row["revision"])).fetchone() is not None
+            if not duplicate:
+                if self.db.execute("SELECT count(*) FROM context_checkpoints").fetchone()[0] >= MAX_CONTEXT_CHECKPOINTS:
+                    raise ValueError("context checkpoint limit reached")
+                self.db.execute("INSERT INTO context_checkpoints VALUES (?,?,?,?)",
+                                (handoff_id, row["revision"], row["digest"], row["body"]))
+            # Validate new captures too, before the transaction commits. Invalid
+            # adjacent history must roll back the insertion, not earn a receipt.
+            self._checkpoint(handoff_id, row["revision"])
+            return {"handoff_id": handoff_id, "checkpoint_revision": row["revision"],
+                    "context_sha256": row["digest"], "duplicate": duplicate,
+                    "visibility": "owner_private", "authority": "historical_context_only_not_approval", "external_actions": 0}
+
+    def list_checkpoints(self, handoff_id, *, include_digest=False, expected_sha256=None):
+        """Private selective history index; neither context text nor release authority."""
+        if type(include_digest) is not bool:
+            raise ValueError("include-digest must be boolean")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
+        with self._transaction():
+            _, handoff = self._handoff(handoff_id)
+            records = []
+            if self.db.execute("PRAGMA user_version").fetchone()[0] in (3, 4):
+                rows = self.db.execute("SELECT revision FROM context_checkpoints WHERE handoff_id=? ORDER BY revision LIMIT ?",
+                                       (handoff_id, MAX_CONTEXT_CHECKPOINTS + 1)).fetchall()
+                if len(rows) > MAX_CONTEXT_CHECKPOINTS:
+                    raise ValueError("context checkpoint limit exceeded")
+                for row in rows:
+                    stored, profile = self._checkpoint(handoff_id, row["revision"])
+                    records.append({"checkpoint_revision": row["revision"], "context_sha256": stored["digest"],
+                        "source_revision": profile["source_revision"], "memory_revision": profile["memory_revision"],
+                        "execution_state": profile["execution"]["state"]})
+            result = {"schema_version": 1, "kind": "jarvis.checkpoint_index", "handoff_id": handoff_id,
+                    "project_id": handoff["draft"]["project_id"], "platform": handoff["draft"]["target"],
+                    "checkpoints": records, "visibility": "owner_private",
+                    "authority": "historical_context_only_not_approval", "retry_authorized": False,
+                    "external_actions": 0}
+            if include_digest or expected_sha256 is not None:
+                result["schema_version"] = 2
+                result["report_sha256"] = digest(result)
+            if expected_sha256 is not None and result["report_sha256"] != expected_sha256:
+                raise ValueError("checkpoint index is stale; retrieve current history again")
+            return result
+
+    def load_checkpoint(self, handoff_id, revision, *, expected_sha256, expected_source_revision, expected_memory_revision):
+        require_digest(expected_sha256)
+        with self._transaction():
+            row, profile = self._checkpoint(handoff_id, revision)
+            if (row["digest"] != expected_sha256 or profile["source_revision"] != expected_source_revision
+                or type(expected_memory_revision) is not int or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("checkpoint digest or revision mismatch")
+            return {"handoff_id": handoff_id, "checkpoint_revision": revision, "context_sha256": row["digest"],
+                    "profile": profile, "visibility": "owner_private", "authority": "historical_context_only_not_approval",
+                    "retry_authorized": False, "external_actions": 0}
+
+    def _lineage(self, handoff_id):
+        # Factory contracts permit depth at most two: self plus two ancestors.
+        # Validate every ancestor even when the leaf has no context of its own.
+        current, seen, records = handoff_id, set(), []
+        while current is not None:
+            require_identifier(current, "ancestor handoff ID")
+            if current in seen or len(seen) >= 3:
+                raise ValueError("invalid or excessive handoff ancestry")
+            seen.add(current)
+            row, body = self._handoff(current)
+            if records and any(body[field] != records[-1][1][field]
+                               for field in ("swarm_id", "manifest_sha256", "source_revision")):
+                raise ValueError("stored handoff ancestry scope mismatch")
+            if (records and records[-1][1]["depth"] != body["depth"] + 1
+                or body["parent_id"] is None and body["depth"] != 0):
+                raise ValueError("stored handoff ancestry depth mismatch")
+            records.append((row, body))
+            current = body["parent_id"]
+        return records
+
+    def _require_export_active(self, handoff_id):
+        for row, body in self._lineage(handoff_id):
+            current = row["id"]
+            if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (current,)).fetchone():
+                context, profile = self._context(current)
+                if profile["execution"]["state"] == "outcome_unknown":
+                    raise ValueError("unknown outcome requires reconciliation before export")
+                if profile["schema_version"] >= 2:
+                    if profile["control"]["state"] != "active":
+                        raise ValueError("handoff export is paused or cancelled")
+                    if context["reviewed_digest"] != context["digest"]:
+                        raise ValueError("controlled export requires fresh context review")
+
+    def inspect_recovery(self, handoff_id, *, expected_sha256, expected_source_revision,
+                         expected_memory_revision, expected_revision=None):
+        """Private metadata snapshot for reconciliation; never releases or retries.
+
+        The expected digest binds the selected context. Ancestor context/return
+        bindings are captured together in the same SQLite transaction. Free text,
+        reference URLs and provider-return contents are deliberately omitted.
+        """
+        require_digest(expected_sha256)
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context inspection revision")
+        if type(expected_memory_revision) is not int:
+            raise ValueError("invalid expected memory revision")
+        with self._transaction():
+            selected, profile = self._context(handoff_id)
+            if expected_revision is not None and selected["revision"] != expected_revision:
+                raise ValueError("context inspection revision mismatch")
+            if (selected["digest"] != expected_sha256
+                or profile["source_revision"] != expected_source_revision
+                or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("recovery inspection context or revision mismatch")
+            lineage = []
+            for row, body in self._lineage(handoff_id):
+                item = {"handoff_id": row["id"], "handoff_sha256": row["digest"],
+                        "parent_id": body["parent_id"], "source_revision": body["source_revision"],
+                        "project_id": body["draft"]["project_id"], "asset_id": body["assistant_id"],
+                        "platform": body["draft"]["target"], "handoff_state": row["state"],
+                        "handoff_review_current": row["reviewed_digest"] == row["digest"],
+                        "context": None, "returned_evidence": None, "holds": []}
+                if self.db.execute("SELECT 1 FROM handoff_contexts WHERE handoff_id=?", (row["id"],)).fetchone():
+                    context, saved = self._context(row["id"])
+                    execution = saved["execution"]
+                    control = saved["control"]["state"] if saved["schema_version"] >= 2 else "legacy_uncontrolled"
+                    reviewed = context["reviewed_digest"] == context["digest"]
+                    item["context"] = {"schema_version": saved["schema_version"],
+                        "revision": context["revision"], "context_sha256": context["digest"],
+                        "mission_id": saved["mission_id"], "memory_revision": saved["memory_revision"],
+                        "configuration_version": saved["configuration_version"],
+                        "visibility": saved["visibility"], "review_current": reviewed,
+                        "execution_state": execution["state"], "context_id": execution["context_id"],
+                        "attempts": execution["attempts"],
+                        "checkpoint_present": execution["checkpoint_ref"] is not None,
+                        "control_state": control}
+                    if execution["state"] == "outcome_unknown":
+                        item["holds"].append("outcome_unknown")
+                    if control in ("paused", "cancelled"):
+                        item["holds"].append(control)
+                    if saved["schema_version"] >= 2 and not reviewed:
+                        item["holds"].append("context_review_required")
+                returned = self.db.execute("SELECT id,digest FROM returns WHERE handoff_id=?", (row["id"],)).fetchone()
+                if returned:
+                    item["returned_evidence"] = {"return_id": returned["id"], "return_sha256": returned["digest"],
+                                                  "state": "returned_unverified"}
+                lineage.append(item)
+            result = {"schema_version": 1, "kind": "jarvis.recovery_inspection",
+                      "handoff_id": handoff_id, "visibility": "owner_private", "lineage": lineage,
+                      "mode": "inspection_only", "retry_authorized": False,
+                      "sender_authentication": "not_established", "external_actions": 0}
+            return {**result, "inspection_sha256": digest(result)}
+
+    def check_recovery(self, handoff_id, *, expected_inspection_sha256, expected_sha256,
+                       expected_source_revision, expected_memory_revision):
+        """Check a previously inspected snapshot, without authorizing any action.
+
+        Valid only at the observation point, not a lease or a future release gate.
+        Ancestor changes and late returns invalidate the complete snapshot even
+        when the selected context digest and memory revision remain unchanged.
+        """
+        require_digest(expected_inspection_sha256)
+        current = self.inspect_recovery(handoff_id, expected_sha256=expected_sha256,
+            expected_source_revision=expected_source_revision, expected_memory_revision=expected_memory_revision)
+        if current["inspection_sha256"] != expected_inspection_sha256:
+            raise ValueError("recovery inspection is stale; inspect current evidence again")
+        return {"handoff_id": handoff_id, "inspection_sha256": expected_inspection_sha256,
+                "state": "current_local_observation_only", "visibility": "owner_private",
+                "retry_authorized": False, "sender_authentication": "not_established", "external_actions": 0}
+
+    def prepare_reconciliation(self, handoff_id, *, expected_inspection_sha256, expected_sha256,
+                               expected_source_revision, expected_memory_revision):
+        """Prepare private review evidence, never resolve or release an outcome.
+
+        Read selected context first, then bind it to a fresh exact snapshot.
+        No state-changing decision follows this observation; a future authenticated
+        resolution write must recheck its expected snapshot atomically.
+        """
+        require_digest(expected_inspection_sha256)
+        loaded = self.load_context(handoff_id, expected_source_revision=expected_source_revision,
+                                   expected_memory_revision=expected_memory_revision)
+        profile = loaded["profile"]
+        inspection = self.inspect_recovery(handoff_id, expected_sha256=expected_sha256,
+            expected_source_revision=expected_source_revision, expected_memory_revision=expected_memory_revision)
+        if (loaded["context_sha256"] != expected_sha256
+            or inspection["inspection_sha256"] != expected_inspection_sha256):
+            raise ValueError("reconciliation requires the current context and inspection")
+        if profile["execution"]["state"] != "outcome_unknown" or not profile["evidence_refs"]:
+            raise ValueError("reconciliation proposal requires an unknown outcome and saved evidence references")
+        fields = ("project_id", "mission_id", "asset_id", "platform", "source_revision", "memory_revision",
+                  "configuration_version", "allowed_actions", "budget", "execution", "evidence_refs")
+        result = {key: profile[key] for key in fields}
+        result.update(schema_version=1, kind="jarvis.reconciliation_proposal", handoff_id=handoff_id,
+            handoff_sha256=profile["handoff_sha256"], context_sha256=expected_sha256,
+            context_revision=inspection["lineage"][0]["context"]["revision"],
+            inspection_sha256=expected_inspection_sha256, visibility="owner_private",
+            control_state=profile.get("control", {"state": "legacy_uncontrolled"})["state"],
+            review_state="proposed_unverified", proposed_resolution="retain_hold",
+            evidence_verification="not_established", retry_authorized=False, external_actions=0)
+        if profile["schema_version"] == 3:
+            # Keep strict version-1 proposals unchanged for older contexts.
+            result.update(schema_version=2, destination_id=profile["destination_id"])
+        return {**result, "proposal_sha256": digest(result)}
+
+    def save_context(self, profile, *, expected_revision):
+        """CAS write of proposed context; never alters the version-1 handoff.
+
+        Callers authenticate outside this local ledger. No action is dispatched.
+        Every changed profile clears its separate local review record.
+        """
+        if type(expected_revision) is not int or expected_revision < 0:
+            raise ValueError("invalid expected context revision")
+        if not isinstance(profile, dict):
+            raise ValueError("context must be a record")
+        with self._transaction():
+            original, handoff = self._handoff(profile.get("handoff_id"))
+            profile = validate_context(profile, handoff)
+            existing = self.db.execute("SELECT * FROM handoff_contexts WHERE handoff_id=?",
+                                       (profile["handoff_id"],)).fetchone()
+            revision = existing["revision"] if existing else 0
+            if revision != expected_revision:
+                raise ValueError("context revision mismatch")
+            checksum = digest(profile)
+            if (profile["schema_version"] == 3 and (not existing or self._context(profile["handoff_id"])[1]["schema_version"] < 3)
+                and original["state"] != "pending_review"):
+                raise ValueError("destination binding must precede the original handoff review")
+            if existing:
+                _, old = self._context(profile["handoff_id"])
+                if old["execution"]["state"] == "outcome_unknown":
+                    if any(profile["execution"][field] != old["execution"][field]
+                           for field in ("state", "attempts", "context_id")):
+                        raise ValueError("unknown outcome cannot be cleared or retried by context edit")
+                if old["schema_version"] == 3 and profile.get("destination_id") != old["destination_id"]:
+                    raise ValueError("bound destination cannot change or be removed")
+                if old["schema_version"] >= 2:
+                    if profile["schema_version"] < old["schema_version"]:
+                        raise ValueError("controlled context cannot downgrade to version 1")
+                    if old["control"]["state"] == "cancelled" and profile["control"]["state"] != "cancelled":
+                        raise ValueError("cancelled handoff cannot resume")
+                if (profile["mission_id"] != old["mission_id"]
+                    or profile["memory_revision"] < old["memory_revision"]
+                    or profile["execution"]["attempts"] < old["execution"]["attempts"]):
+                    raise ValueError("mission identity or recovery history cannot regress")
+                if checksum == existing["digest"]:
+                    return {"revision": revision, "context_sha256": checksum, "duplicate": True}
+            self.db.execute("""INSERT INTO handoff_contexts VALUES (?,?,?,?,NULL,NULL)
+                ON CONFLICT(handoff_id) DO UPDATE SET revision=excluded.revision,
+                digest=excluded.digest,body=excluded.body,reviewer_id=NULL,reviewed_digest=NULL""",
+                (profile["handoff_id"], revision + 1, checksum, canonical(profile).decode()))
+            return {"revision": revision + 1, "context_sha256": checksum, "duplicate": False}
+
+    def load_context(self, handoff_id, *, expected_source_revision, expected_memory_revision,
+                     audience="owner_private", expected_sha256=None, expected_revision=None):
+        """Selective local retrieval, not an authenticated provider endpoint."""
+        if audience not in ("owner_private", "public_candidate"):
+            raise ValueError("unknown context audience")
+        if type(expected_memory_revision) is not int:
+            raise ValueError("invalid expected memory revision")
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context retrieval revision")
+        if expected_sha256 is not None:
+            require_digest(expected_sha256)
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("context retrieval revision mismatch")
+            if (profile["source_revision"] != expected_source_revision
+                or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("source or memory revision mismatch")
+            if expected_sha256 is not None and row["digest"] != expected_sha256:
+                raise ValueError("context digest mismatch")
+            if audience == "public_candidate" and profile["visibility"] != "public_candidate":
+                raise ValueError("private context cannot enter a public bundle")
+            return {"revision": row["revision"], "context_sha256": row["digest"],
+                    "profile": profile, "review_state": "locally_reviewed" if row["reviewed_digest"] == row["digest"] else "proposed",
+                    "sender_authentication": "not_established", "external_actions": 0}
+
+    def bind_destination_observation(self, handoff_id, observation, *, expected_sha256,
+                                     expected_source_revision, expected_memory_revision, now=None,
+                                     expected_revision=None):
+        """Bind supplied read metadata to exact destination context; no authority."""
+        require_digest(expected_sha256)
+        report = connector_report([observation], now=now)
+        loaded = self.load_context(handoff_id, expected_source_revision=expected_source_revision,
+                                   expected_memory_revision=expected_memory_revision,
+                                   expected_revision=expected_revision)
+        profile = loaded["profile"]
+        if (profile["schema_version"] != 3 or loaded["context_sha256"] != expected_sha256
+            or observation["connector"] != profile["platform"]
+            or observation["source_revision"] != profile["source_revision"]):
+            raise ValueError("observation requires the exact destination context, provider and source revision")
+        fields = ("project_id", "mission_id", "asset_id", "platform", "destination_id",
+                  "source_revision", "memory_revision", "configuration_version")
+        result = {key: profile[key] for key in fields}
+        result.update(schema_version=1, kind="jarvis.destination_observation", handoff_id=handoff_id,
+            handoff_sha256=profile["handoff_sha256"], context_revision=loaded["revision"],
+            context_sha256=expected_sha256, observation=dict(observation), visibility="owner_private",
+            review_state=loaded["review_state"], observation_status=report[profile["platform"]]["status"],
+            observation_verification="integrity_only", runtime_available="unknown",
+            dispatch_authorized=False, external_actions=0)
+        return {**result, "receipt_sha256": digest(result)}
+
+    def bind_configured_github_observation(self, handoff_id, observation, content, registry, *,
+            expected_registry_sha256, expected_registry_revision, expected_sha256,
+            expected_source_revision, expected_memory_revision, now=None, expected_revision=None):
+        """Check a supplied registry snapshot and retain its exact mapping in an envelope.
+
+        This is a private, read-only configuration check, not authenticated registry
+        installation, provider delivery, hold release or dispatch authorization.
+        """
+        require_digest(expected_registry_sha256)
+        registry = validate_destination_registry(registry)
+        if (type(expected_registry_revision) is not int
+            or registry["revision"] != expected_registry_revision
+            or digest(registry) != expected_registry_sha256):
+            raise ValueError("registry digest or revision mismatch")
+        original = self.bind_destination_observation(handoff_id, observation,
+            expected_sha256=expected_sha256, expected_source_revision=expected_source_revision,
+            expected_memory_revision=expected_memory_revision, now=now, expected_revision=expected_revision)
+        selected = next((entry for entry in registry["entries"] if all(
+            entry[key] == original[key] for key in ("project_id", "platform", "destination_id"))), None)
+        if selected is None or selected["platform"] != "github":
+            raise ValueError("registry has no matching GitHub destination")
+        verify_github_commit_response(content, original["observation"], selected["resource_id"])
+        binding = {key: registry[key] for key in
+                   ("registry_id", "revision", "source_revision", "configuration_version")}
+        binding.update(registry_sha256=expected_registry_sha256, entry=selected)
+        result = {"schema_version": 1, "kind": "jarvis.configured_destination_observation",
+            "destination_observation": original, "registry_binding": binding,
+            "mapping_verification": "supplied_configuration_only", "visibility": "owner_private",
+            "sender_authentication": "not_established", "dispatch_authorized": False, "external_actions": 0}
+        return {**result, "receipt_sha256": digest(result)}
+
+    def review_context(self, handoff_id, *, reviewer_id, expected_sha256, expected_revision=None,
+                       include_receipt=False, archive_receipt=False):
+        if type(archive_receipt) is not bool or archive_receipt and (not include_receipt or expected_revision is None):
+            raise ValueError("archive requires an exact returned review receipt")
+        if archive_receipt and self.read_only:
+            raise ValueError("read-only inspection cannot archive reviews")
+        require_identifier(reviewer_id, "reviewer label")
+        require_digest(expected_sha256)
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context review revision")
+        if type(include_receipt) is not bool:
+            raise ValueError("include-receipt must be boolean")
+        if include_receipt and expected_revision is None:
+            raise ValueError("review receipt requires an exact context revision")
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("context review revision mismatch")
+            if row["digest"] != expected_sha256 or reviewer_id == profile["asset_id"]:
+                raise ValueError("context review requires exact content and a distinct label")
+            receipt = None
+            if archive_receipt:
+                self.db.execute("""CREATE TABLE IF NOT EXISTS context_checkpoints (
+                    handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
+                    digest TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(handoff_id,revision))""")
+                self.db.execute("""CREATE TABLE IF NOT EXISTS context_review_receipts (
+                    handoff_id TEXT NOT NULL REFERENCES handoffs(id), revision INTEGER NOT NULL,
+                    reviewer_id TEXT NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL,
+                    PRIMARY KEY(handoff_id,revision,reviewer_id))""")
+                self.db.execute("PRAGMA user_version=4")
+                archived = self.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=? AND reviewer_id=?",
+                    (handoff_id, row["revision"], reviewer_id)).fetchone()
+                if archived is not None:
+                    receipt = self._archived_context_review(archived)
+                else:
+                    if self.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0] >= MAX_CONTEXT_REVIEW_RECEIPTS:
+                        raise ValueError("context review archive limit reached")
+                    receipt = _context_review_receipt(handoff_id, row, profile, reviewer_id, _now())
+                    self.db.execute("INSERT INTO context_review_receipts VALUES (?,?,?,?,?)",
+                        (handoff_id, row["revision"], reviewer_id, receipt["receipt_sha256"], canonical(receipt).decode()))
+            self.db.execute("UPDATE handoff_contexts SET reviewer_id=?,reviewed_digest=? WHERE handoff_id=?",
+                            (reviewer_id, expected_sha256, handoff_id))
+            if include_receipt:
+                return receipt if archive_receipt else _context_review_receipt(handoff_id, row, profile, reviewer_id, _now())
+
+    def _archived_context_review(self, archived):
+        """Validate retained metadata as history; this does not establish current review."""
+        try:
+            receipt = _stored_json(archived["body"])
+            if json_record_errors(receipt) or not isinstance(receipt, dict):
+                raise ValueError("invalid archive JSON")
+            current, profile = self._context(archived["handoff_id"])
+            revision = archived["revision"]
+            version, memory = receipt["context_schema_version"], receipt["memory_revision"]
+            if (type(revision) is not int or not 1 <= revision <= current["revision"]
+                or type(version) is not int or version not in (1, 2, 3) or version > profile["schema_version"]
+                or type(memory) is not int or not 1 <= memory <= profile["memory_revision"]
+                or receipt["execution_state"] not in {"pending", "execution_blocked", "outcome_unknown"}
+                or receipt["control_state"] not in ({"legacy_uncontrolled"} if version == 1 else {"active", "paused", "cancelled"})):
+                raise ValueError("archive history mismatch")
+            require_identifier(archived["reviewer_id"], "archived reviewer label")
+            if archived["reviewer_id"] == profile["asset_id"]:
+                raise ValueError("archive reviewer mismatch")
+            require_identifier(receipt["configuration_version"], "archived configuration version")
+            require_digest(receipt["context_sha256"])
+            recorded = datetime.fromisoformat(receipt["recorded_at"])
+            if recorded.tzinfo is None or recorded.utcoffset() is None:
+                raise ValueError("archive timestamp requires timezone")
+            historical = {**profile, "schema_version": version, "memory_revision": memory,
+                "configuration_version": receipt["configuration_version"],
+                "destination_id": profile.get("destination_id") if version == 3 else None,
+                "execution": {"state": receipt["execution_state"]}, "control": {"state": receipt["control_state"]}}
+            expected = _context_review_receipt(archived["handoff_id"],
+                {"revision": revision, "digest": receipt["context_sha256"]}, historical,
+                archived["reviewer_id"], receipt["recorded_at"])
+            if revision == current["revision"] and canonical(receipt) != canonical(
+                _context_review_receipt(archived["handoff_id"], current, profile,
+                    archived["reviewer_id"], receipt["recorded_at"])):
+                raise ValueError("archive does not match current context")
+            if archived["digest"] != receipt["receipt_sha256"] or canonical(receipt) != canonical(expected):
+                raise ValueError("archive checksum or binding mismatch")
+            return receipt
+        except (ValueError, TypeError, KeyError, RecursionError):
+            raise ValueError("stored context review receipt is invalid") from None
+
+    def load_context_review_receipt(self, handoff_id, *, expected_revision, expected_sha256, reviewer_id):
+        """Recover an original archived local receipt, without re-review or dispatch."""
+        require_digest(expected_sha256)
+        require_identifier(reviewer_id, "reviewer label")
+        if type(expected_revision) is not int or expected_revision < 1:
+            raise ValueError("invalid expected archived review revision")
+        with self._transaction():
+            current, _ = self._context(handoff_id)
+            if (current["revision"] != expected_revision or current["digest"] != expected_sha256
+                or current["reviewed_digest"] != current["digest"] or current["reviewer_id"] != reviewer_id):
+                raise ValueError("archived review requires exact current review binding")
+            if self.db.execute("PRAGMA user_version").fetchone()[0] != 4:
+                raise ValueError("ledger has no context review archive")
+            archived = self.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=? AND reviewer_id=?",
+                (handoff_id, expected_revision, reviewer_id)).fetchone()
+            if archived is None:
+                raise ValueError("context review receipt was not archived")
+            receipt = self._archived_context_review(archived)
+            if receipt["context_sha256"] != expected_sha256:
+                raise ValueError("archived review digest mismatch")
+            return receipt
+
+    def check_context_review_receipt(self, handoff_id, receipt):
+        """Check a saved local receipt against one current snapshot; no authority."""
+        if json_record_errors(receipt):
+            raise ValueError("invalid context review receipt JSON")
+        if type(receipt) is not dict or type(receipt.get("recorded_at")) is not str:
+            raise ValueError("invalid context review receipt")
+        try:
+            recorded_at = datetime.fromisoformat(receipt["recorded_at"])
+        except ValueError:
+            raise ValueError("invalid context review receipt timestamp") from None
+        if recorded_at.tzinfo is None:
+            raise ValueError("context review receipt timestamp must include timezone")
+        require_digest(receipt.get("receipt_sha256"))
+        if receipt["receipt_sha256"] != digest({k: v for k, v in receipt.items() if k != "receipt_sha256"}):
+            raise ValueError("context review receipt digest mismatch")
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if row["reviewed_digest"] != row["digest"] or row["reviewer_id"] is None:
+                raise ValueError("context no longer has an exact local review")
+            expected = _context_review_receipt(handoff_id, row, profile, row["reviewer_id"], receipt["recorded_at"])
+            if canonical(receipt) != canonical(expected):
+                raise ValueError("context review receipt does not match current binding")
+            return {"schema_version": 1, "kind": "jarvis.context_review_check",
+                "receipt_sha256": receipt["receipt_sha256"], "context_revision": row["revision"],
+                "local_binding_matches": True, "visibility": "owner_private",
+                "authority": "local_record_only_not_identity_authentication",
+                "dispatch_authorized": False, "retry_authorized": False, "external_actions": 0}
+
+    def export_context(self, handoff_id, *, expected_sha256, expected_source_revision,
+                       expected_memory_revision, audience="owner_private", expected_revision=None):
+        """Export a compatible envelope only after both exact local reviews.
+
+        This does not authenticate a reviewer, authorize release or send a packet.
+        Blocked/unknown execution is retained unchanged, never retried here.
+        """
+        require_digest(expected_sha256)
+        if audience not in ("owner_private", "public_candidate") or type(expected_memory_revision) is not int:
+            raise ValueError("invalid export audience or memory revision")
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision < 1):
+            raise ValueError("invalid expected context export revision")
+        with self._transaction():
+            row, profile = self._context(handoff_id)
+            if expected_revision is not None and row["revision"] != expected_revision:
+                raise ValueError("context export revision mismatch")
+            self._require_export_active(handoff_id)
+            original, handoff = self._handoff(handoff_id)
+            if (row["digest"] != expected_sha256 or row["reviewed_digest"] != expected_sha256
+                or original["reviewed_digest"] != original["digest"]
+                or original["state"] == "pending_review"):
+                raise ValueError("envelope requires exact handoff and context reviews")
+            if (profile["source_revision"] != expected_source_revision
+                or profile["memory_revision"] != expected_memory_revision):
+                raise ValueError("source or memory revision mismatch")
+            # V1 drafts have no visibility metadata. Never declassify their text.
+            if audience != "owner_private":
+                raise ValueError("public envelope export requires a separate reviewed draft policy")
+            if original["state"] == "reviewed":
+                self.db.execute("UPDATE handoffs SET state='export_prepared',exported_at=? WHERE id=?", (_now(), handoff_id))
+            return {"schema_version": 1, "kind": "jarvis.context_envelope", "handoff": handoff,
+                    "handoff_sha256": original["digest"], "context": profile,
+                    "context_revision": row["revision"], "context_sha256": row["digest"],
+                    "review": {"reviewer_label": row["reviewer_id"],
+                               "authority": "local_record_only_not_identity_authentication"},
+                    "external_actions": 0}

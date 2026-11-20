@@ -1,0 +1,92 @@
+{
+  "asset_id": "codex",
+  "change": "Apply existing json_record_errors before receipt parsing/hashing/transaction entry. Three production lines; valid receipts, schemas and authority unchanged.",
+  "checks": {
+    "behavior": [
+      "all invalid cases reject before hashing and transaction entry",
+      "logical ledger rows unchanged",
+      "valid exact receipt still checks successfully"
+    ],
+    "cases": [
+      "unsupported set",
+      "cyclic list",
+      "depth greater than 16",
+      "node count greater than 2048",
+      "UTF-8 record greater than 64 KiB",
+      "NaN",
+      "unpaired surrogate",
+      "known sensitive field name"
+    ],
+    "focused": {
+      "cases": 8,
+      "methods": 1,
+      "passed": true,
+      "seconds": 0.019
+    },
+    "full": {
+      "record_sha256": "a7ebb5b0d9b7ea0894ab755c2a8fee078177b39ddf2a4dfe79db46fb939cc9d1",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 556,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "initial_baseline_probe": {
+      "errors": 0,
+      "methods": 1,
+      "scope": "initial message-based assertion failed; replaced with pre-hash/no-transaction behavior assertions",
+      "subtest_failures": 8
+    },
+    "sensitivity": {
+      "caught": "digest called before validation rejection",
+      "errors": 0,
+      "expected_subtest_failures": 8,
+      "isolated_validation_bypass": true,
+      "production_source_modified": false
+    },
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.review-receipt-input.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "67c0cef4df0840d3cc0bee4450855fba78a6e4bf",
+  "limitations": [
+    "shared structural validator is not a general PII detector",
+    "local consistency, not receipt authenticity or owner approval",
+    "timestamps remain unarchived/attested",
+    "no retry, dispatch, live authenticated registry or controller added"
+  ],
+  "memory_revision": 168,
+  "mission_id": "review-receipt-input-20261106",
+  "next_task": "independent exact-revision review; accepted registry audience/access policy remains pending",
+  "observed_gap": "Direct API lacked shared size/depth/node/field validation before hashing; CLI already used bounded loader. Baseline canonicalization already normalized serialization errors to ValueError.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "3f3c3602c949c652507b665218b6c0a353ffc31fbe20d295ea238a0bd310ae21",
+  "reports_sha256": {
+    "reports/review-receipt-input-baseline-20261106.txt": "c39a7fc793c82df4415c65b76dfe6125a5ec932053325f6387c561401ad9b59c",
+    "reports/review-receipt-input-focused-20261106.txt": "774d1086a37de6d8b9e2865f12621648cb23ee1c9a1e8f5919ee23e907dcf70c",
+    "reports/review-receipt-input-full-20261106.json": "df90d12654c2f444532e0f45a3af7aa8e5ee994cd0c4ac6e8d7a7bcebbec7aa6",
+    "reports/review-receipt-input-sensitivity-20261106.txt": "a92544ec29dd7cc908e6c691fc1a57b2fca707f72a276c5d3dae1379f12f76af",
+    "reports/review-receipt-input-web-20261106.txt": "f33238b8d25cc06f3cc529cfcd4f42dac3809cda9d426aa918b48fcad8d8813c"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "bd1ba35029af310b42aa9389e6be06098e101ff29549b785a4554653c85e3d0e",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bcf6e2c29b5774af5053c6b316410493349e08134b393635e067792ae33e12bc",
+    "tests/test_handoff_context.py": "27b83e480baa1a678e91c64f9ad1d969a7cec77f7be1243ee6f3030b4e01dd6f"
+  }
+}

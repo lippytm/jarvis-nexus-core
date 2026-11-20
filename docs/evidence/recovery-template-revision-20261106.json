@@ -1,0 +1,136 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "update_draft_procedure",
+    "run_local_fixture_checks",
+    "expected_head_development_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner procedure review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "change": "Apply existing optional context-revision guard to the draft recovery runbook inspection command; explain stale-content restoration and guard preservation. No executable/schema/test changes.",
+  "checkpoint": {
+    "return_binding": "input revision/source hashes and actual template output above; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent procedure acceptance; registry audience/access and authenticated delivery remain unfinished"
+  },
+  "checks": {
+    "actual_template": {
+      "command_template": "python scripts/jarvis_network.py --root \"$TASK_ROOT\" --database \"$LEDGER\" --read-only inspect-recovery --handoff \"$HANDOFF_ID\" --digest \"$CONTEXT_SHA256\" --source-revision \"$SOURCE_REVISION\" --memory-revision \"$MEMORY_REVISION\" --context-revision \"$CONTEXT_REVISION\" --out reports/recovery-inspection-001.json",
+      "current": {
+        "bytes": 1109,
+        "exit_code": 0,
+        "inspection": {
+          "external_actions": 0,
+          "handoff_id": "cli-task",
+          "inspection_sha256": "767da7663b77cbc1c967335e48dc2ffc29cd80f2c6ac868c02c320d999ee94d0",
+          "kind": "jarvis.recovery_inspection",
+          "lineage": [
+            {
+              "asset_id": "cli-pilot.builder",
+              "context": {
+                "attempts": 1,
+                "checkpoint_present": true,
+                "configuration_version": "cli-context.v1",
+                "context_id": "synthetic-cli",
+                "context_sha256": "32a799b1dc52c0501f9c3cefd9b0ed71b35bd1de50717bad42f92149e6671eca",
+                "control_state": "legacy_uncontrolled",
+                "execution_state": "outcome_unknown",
+                "memory_revision": 1,
+                "mission_id": "cli-task",
+                "review_current": false,
+                "revision": 3,
+                "schema_version": 1,
+                "visibility": "owner_private"
+              },
+              "handoff_id": "cli-task",
+              "handoff_review_current": false,
+              "handoff_sha256": "6e42518e3267f9b2645f25b84bd000495edd0463693a20e514b041fb29e63405",
+              "handoff_state": "pending_review",
+              "holds": [
+                "outcome_unknown"
+              ],
+              "parent_id": null,
+              "platform": "codex",
+              "project_id": "ai-jarvis",
+              "returned_evidence": null,
+              "source_revision": "b5fd40ff22814feae3b60a8761821856f0976d75"
+            }
+          ],
+          "mode": "inspection_only",
+          "retry_authorized": false,
+          "schema_version": 1,
+          "sender_authentication": "not_established",
+          "visibility": "owner_private"
+        },
+        "mode": "0600",
+        "output_sha256": "5d91a48204011e6e88218804596ef639359fd8fac1729da27879e6430cdf8f0b"
+      },
+      "database_bytes_unchanged": true,
+      "database_sha256": "273839ca90a70bd044a2b926ad9defc6b8f6efe95d45de1b843030849c8e59b2",
+      "external_provider_actions": 0,
+      "profile_unchanged": true,
+      "repeat": {
+        "exit_code": 1,
+        "output_unchanged": true,
+        "stderr": "{\"error\": \"output already exists; use a fresh filename\", \"external_actions\": 0}"
+      },
+      "scope": "exact updated runbook template on temporary synthetic fixture",
+      "stale": {
+        "exit_code": 1,
+        "output_created": false,
+        "stderr": "{\"error\": \"context inspection revision mismatch\", \"external_actions\": 0}"
+      },
+      "syntax_files": 73
+    },
+    "diff_check": "passed",
+    "local_full_suite": "not rerun for documentation-only change; remote CI results in master receipt",
+    "python_syntax_files": 73,
+    "relevant_existing_tests": {
+      "errors": 0,
+      "failures": 0,
+      "run": 2
+    }
+  },
+  "configuration_version": "codex.recovery-template-revision.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_provider_actions": 0,
+  "focused_log": "..\n----------------------------------------------------------------------\nRan 2 tests in 1.783s\n\nOK\n",
+  "input_revision": "6a24084c5b5a1eaec65e9f3bc450be14f285bd89",
+  "limitations": [
+    "Template executed only on temporary synthetic fixtures, not the actual owner mission or durable owner ledger.",
+    "Read-only observation is point-in-time, not a lease, authenticated approval, release/retry/dispatch authority or automatic reconciliation.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "memory_revision": 178,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "expected_no_overwrite_blocks": 1,
+    "expected_stale_blocks": 1,
+    "observed_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "successful_template_attempts": 1,
+    "template_attempts": 3
+  },
+  "mission_id": "recovery-template-revision-20261106",
+  "next_task": "independent exact-revision acceptance of the proposed procedure; do not repeat template checks on actual owner mission without scope",
+  "patch_sha256": "101af9213004819e1e2c2e9143392b8994a7948b751f7a9ec9a043dec52b52bd",
+  "platform": "codex",
+  "procedure_state": "proposed; independent and owner acceptance pending",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "2deba21b1ee098ce67cbc0942c3ad6ad3f27fd632747b5a2ebefee05c4b01c84",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "efcd797a166c9725fe9f03ddb721e9b4cfe07cc7c7f28adf630ffea9b7aec0dc",
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "857bcd982ef9ea2aaa800be32e62380863374b38063c36c724d75c14d81a7bd6",
+    "scripts/jarvis_network.py": "71b250adf6f6dbac70b74c0f8fa674e7d94007c30a93c4d721059b946cce2eb4"
+  },
+  "visibility": "owner_private"
+}

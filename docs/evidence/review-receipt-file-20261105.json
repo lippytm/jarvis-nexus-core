@@ -1,0 +1,68 @@
+{
+  "asset_id": "codex",
+  "change": "Optional review-context --out reuses private fsynced no-overwrite writer; requires --include-receipt and exact --context-revision before opening ledger. Default responses, packet/storage schemas unchanged.",
+  "checks": {
+    "behavior": [
+      "real CLI subprocess writes 0600 private receipt, exact revision/hash with no profile text",
+      "stdout only acknowledges saved locator",
+      "existing file refuses overwrite and preserves logical ledger rows",
+      "missing flags, stale revision and escaping output reject without ledger mutation or output",
+      "paused/outcome_unknown profile retained after reopening"
+    ],
+    "focused": {
+      "passed": true,
+      "run": 2,
+      "seconds": 0.516
+    },
+    "full": {
+      "record_sha256": "b03151a72e85cb7f2d10fb04c430353556abde03c2f995f1fe7239e834876ad1",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 550,
+        "skipped": 0
+      }
+    },
+    "git_diff_check": "passed",
+    "web": {
+      "fail": 0,
+      "pass": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.review-receipt-file.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "external_actions": 0,
+  "input_revision": "78121f42b145bcfb7e3c7fc17e10db4c4ba63cc2",
+  "limitations": [
+    "local unauthenticated reviewer receipt, not release authority or live delivery",
+    "file publication follows review commit; I/O failure may leave committed review and possibly complete output; inspect both before explicit retry",
+    "no atomic database/file transaction or automatic retry",
+    "no authenticated registry/worker/lease/failover installed"
+  ],
+  "memory_revision": 164,
+  "mission_id": "review-receipt-file-20261105",
+  "next_task": "independent exact-revision review; registry audience/access acceptance remains pending",
+  "observed_gap": "Versioned review receipt supported stdout only; caller-owned private retention required shell redirection.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "d798dcc9feff83f4bafa9c4a28802456885447bf1be0b807a2aad696afe55db9",
+  "reports_sha256": {
+    "reports/review-receipt-file-focused-20261105.txt": "161e7f81f73403ad9de6705f31a6283ab3b65d9ebaf61fc1107c75e569ca0121",
+    "reports/review-receipt-file-full-20261105.json": "4c4704bb67594e066d554c0645d3a8768df47860efb93898864797c99d16b016",
+    "reports/review-receipt-file-web-20261105.txt": "ee22377075d5f399f2897226c4623fec893f39cc9408994dbedf634575f64de0"
+  },
+  "review_state": "independent_and_owner_review_pending",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "d5bce16a08644cddfb88e53de46ed11b85ebbea0db562609782a6dfa5080aa64",
+    "scripts/jarvis_network.py": "a50ac3a4ac2fbfdc66160441d178cb3576a385f0dff7ebf60afb6e3d24f0f976",
+    "tests/test_handoff_context_cli.py": "333e5eb6706a4d15b9a6dc8b346c41fc721af76a1578fda4a5853ddbf86f6d9e"
+  }
+}

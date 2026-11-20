@@ -1,0 +1,47 @@
+{
+  "authentication_or_live_dispatch": "not_established",
+  "change": "Opt-in include_review_state / --include-review-state emits version-3 queue report with separate handoff/context review-current booleans and explicit local-record-only authority. Contextless review is null; reviewer labels omitted. Default v1/v2, strict packets and ledger unchanged.",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "7b4cc29affa86f2e271be3107bb56bc843ee61a3",
+  "limitations": "Booleans describe validated local review bindings, not authenticated reviewer identity, owner approval, lineage eligibility, leases or a future release gate. No hold resolution or dispatch added.",
+  "local_verification": {
+    "errors": 0,
+    "failures": 0,
+    "record_sha256": "cf79a9676a0b2de2de81b6554ff490c7d282cde9b81d9edc4a9e3a46688e5f4a",
+    "syntax_files": 73,
+    "tests": 517
+  },
+  "memory_source": "master Page sequence 121",
+  "mission_id": "queue-review-state-20261104",
+  "next_task": "Exact-content independent review; separately verify audience/access policy and owner acceptance of the single saved registry proposal before operational ingestion.",
+  "observed_gap": "Queue report metadata did not include current exact context-review status; a review-only change could leave its checksum unchanged. Existing reports explicitly were not eligibility gates.",
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "e81462502fb3c54fe3cedec1958dc88789fd3730fde914856d43cdd29916c70c",
+  "regressions": [
+    "Exact separate handoff/context reviews, review-only checksum invalidation, same v2 report, read-only restart retention, context edit invalidates review while preserving paused/unknown holds.",
+    "Unfiltered v3 contextless classification; strict boolean option and legacy v1/v2 compatibility, independent report values and unchanged database records.",
+    "CLI subprocess private 0600 file round trip, context review independent of original handoff review, stale output refused, reviewer label omitted and database bytes unchanged by observation."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_private_local_review_observation",
+  "source_sha256": {
+    "control_tower/handoffs.py": "9074e0501f60cd0a03243060866ee1a6283495dd3684151d83eb46982be2064c",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "5883a12025cb7d2a376f5b1b648018cec09491745212ea976ea8ed56b4a58ae1",
+    "scripts/jarvis_network.py": "90d63b435d091b60df3a8844b0d75ba199a307b9526e4320ca5bf9e890c01bca",
+    "tests/test_handoff_context.py": "9ad6dbb9a15f0a134379fed4801f56c3053015475f0ea322530ceaad27b61df4",
+    "tests/test_handoff_context_cli.py": "e07dc65d97c727d77de929cc03b5dc987c381b8fb207787326f53771e9929f49"
+  }
+}

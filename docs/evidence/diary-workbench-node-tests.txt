@@ -1,0 +1,79 @@
+$ node --test --test-reporter=tap tests/test_diary_workbench.mjs
+TAP version 13
+# Subtest: tests/test_diary_workbench.mjs
+ok 1 - tests/test_diary_workbench.mjs
+  ---
+  duration_ms: 117.194194
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 124.261549
+
+exit_code: 0
+
+$ node tests/test_diary_workbench.mjs
+✔ both actual shipped modules compile (2.511232ms)
+✔ a new local draft is private with one planned observation and no invented content (1.365025ms)
+✔ the form lists the existing twelve initiatives without inventing or merging destinations (1.734673ms)
+✔ exports contain exactly the thirteen entry keys and preserve authored text (0.381865ms)
+✔ schema, extra authority fields and missing top-level fields are rejected (0.66346ms)
+✔ identifier full matches accept only two to forty-eight ASCII identifier characters (0.695598ms)
+✔ Gregorian dates are strict across leap years, centuries and calendar bounds (0.478501ms)
+✔ today is derived in Pacific time across both standard and daylight time (12.916766ms)
+✔ visibility is a closed intention label and never adds publishing authority (0.665492ms)
+✔ required title, summary and next-action limits are inclusive UTF-8 byte limits (4.475962ms)
+✔ blank detection matches Python whitespace including U+0085 without rewriting text (1.771098ms)
+✔ C0 controls are rejected except tab, LF and CR in text fields (1.371025ms)
+✔ strict Unicode validation rejects lone surrogates and preserves valid scalar values (0.586784ms)
+✔ text fields do not coerce booleans, numbers, arrays or null into strings (0.748979ms)
+✔ one to eight observations are accepted and zero or nine are rejected (0.818733ms)
+✔ observation IDs are unique and observation objects have exactly four fields (0.314584ms)
+✔ observation text is nonblank and bounded at one thousand UTF-8 bytes (0.171468ms)
+✔ evidence states are closed labels and source-linked notes require references (0.632773ms)
+✔ zero to five sources are accepted and more than five are rejected (0.337128ms)
+✔ source IDs are unique and source records have exactly three fields (0.226602ms)
+✔ source titles are nonblank and bounded at two hundred UTF-8 bytes (0.213021ms)
+✔ HTTPS source URLs preserve their original case and allowed default port (0.485802ms)
+✔ URL credential, whitespace, custom-port and malformed-authority cases are rejected (0.653705ms)
+✔ the source URL byte limit is exactly one thousand without fetching it (0.234654ms)
+✔ observation references must be unique known IDs, with no invented source (0.483879ms)
+✔ media notes have five exact keys, allow blanks and enforce six-hundred-byte bounds (1.021699ms)
+✔ validated values are copies that cannot mutate the original draft (0.247813ms)
+✔ adding observations creates unique planned rows and enforces the row cap (0.548947ms)
+✔ removing observations preserves other content and keeps at least one row (0.274083ms)
+✔ adding sources creates unique stable labels and enforces five rows (0.363948ms)
+✔ source removal detaches references without upgrading or downgrading evidence classification (0.319371ms)
+✔ source selection is explicit, duplicate-free and leaves classification unchanged (0.291289ms)
+✔ changing an initiative preserves the global entry content (0.306461ms)
+✔ serialized entries round-trip with labels, IDs, Unicode and sources intact (1.031424ms)
+✔ JSON import rejects duplicate and escaped duplicate object keys (0.545922ms)
+✔ import preserves Python integer-type semantics for schema version tokens (0.381244ms)
+✔ JSON import rejects malformed syntax, nonfinite numbers and trailing content (0.540875ms)
+✔ the bounded JSON parser handles legal JSON scalars, arrays, escapes and null-prototype keys (0.221704ms)
+✔ raw import bytes are bounded before JSON parsing at exactly sixty-four KiB (3.979675ms)
+✔ invalid imported Unicode is rejected whether raw or escaped (0.430509ms)
+✔ an invalid import leaves the current unfinished draft and every nested value intact (0.509057ms)
+✔ a successful import returns a validated replacement without altering the previous draft (0.704411ms)
+✔ the brief retains all four evidence classifications and recorded sources as plain text (0.468606ms)
+✔ private and public-candidate previews keep visibility separate from evidence and consent (0.397238ms)
+✔ native form structure includes explicit labels, spellcheck and local companion links (0.271609ms)
+✔ the application has no external assets, networking, persistence or HTML injection sinks (0.534355ms)
+✔ the real import path decodes UTF-8 strictly and preserves edits made during file reading (0.174352ms)
+✔ shared fixtures are twelve actual valid exports and explicitly rejected contract cases (4.074517ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 48
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62.578149
+
+exit_code: 0

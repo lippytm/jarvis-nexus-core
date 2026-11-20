@@ -1,0 +1,53 @@
+{
+  "asset_id": "codex",
+  "baseline": {
+    "assertion_failures": 8,
+    "cases": [
+      "mission drift in older neighbor",
+      "mission drift in newer neighbor",
+      "destination drift in older neighbor",
+      "destination drift in newer neighbor"
+    ],
+    "exit_code": 1,
+    "log_sha256": "921c2af7d8201a68613172dd96a5bc39389527297f6265d33efc33afb5a9b110",
+    "new_methods": 1
+  },
+  "checks": {
+    "focused_regression": "One method passed: four selective-load rejections and two new-capture rejections; all five table snapshots and independent/current blocked contexts preserved across reopen, with no open transaction.",
+    "local_verifier_record_sha256": "97dfe653ef2c5f64174e3e8bb34139e8bf26defd922563d6a2b162d684ea2afb",
+    "python_tests": 530,
+    "syntax_files": 73,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "compatibility": "No packet, receipt or schema change; no history repair; at most two indexed neighbor reads per validation.",
+  "configuration_version": "codex.engineering-review.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "evidence_class": "local synthetic regression and actual codex execution; no installed service or reliability improvement measured",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "1d96dc887fd3f350b5c80ef58c4138fe4d4edcb8",
+  "memory_source": "master Page sequence 136",
+  "mission_id": "checkpoint-neighbor-identity-20261104",
+  "next_task": "Exact-revision independent review; preserve original paused checkpoint and proposed registry; no automatic retry or dispatch.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "draft development on feature/control-tower-foundation-20261021; no merge or dispatch",
+  "problem": "Adjacent checkpoint validation omitted immutable mission/destination checks, accepting an otherwise self-consistent neighbor whose identity drifted from current context.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "87e1c6decade784106d579f0163a7bd19ea9ebfa6442d5fbdb846c6e5687e1a3",
+  "registry_acceptance": "unchanged_pending",
+  "repair": "Check adjacent mission against current mission and version-3 adjacent destination against current destination using the existing at-most-two indexed neighbors; no extra query or automatic repair.",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "9ca5ceed5262fe1276e79458a70104106b5283baef050a29081f1689b4fb6196",
+    "tests/test_handoff_context.py": "08e0cdd315783ff188660852994ce6bf1cd508180dc67322e4c070f93378fd3f"
+  }
+}

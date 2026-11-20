@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+<title id="title">Save → review → edit checkpoint → reopen. Proposed exercise.</title><desc id="desc">Use isolated synthetic data to save a record, review it, change its checkpoint note and reopen its ledger. This exercise has not been run for this post. Synthetic proposed exercise; no new run reported. Review candidate; unpublished.</desc>
+<rect width="1200" height="1200" fill="#edf2f7"/>
+<rect width="1200" height="218" fill="#102a43"/>
+<text x="96" y="82" fill="#b8e8ea" font-family="DejaVu Sans,sans-serif" font-size="26" letter-spacing="3">AI JARVIS • ENGINEERING PRACTICE</text>
+<text x="96" y="156" fill="#ffffff" font-family="DejaVu Sans,sans-serif" font-size="48">2 — Method</text>
+<text x="96" y="245" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="22">SYNTHETIC EXAMPLE • PROPOSED EXERCISE</text>
+<rect x="48" y="258" width="1104" height="728" rx="24" fill="#ffffff"/>
+<text id="main" fill="#102a43" font-family="DejaVu Sans,sans-serif" font-size="56" font-weight="bold"><tspan x="126" y="350">Save →</tspan><tspan x="126" y="420">review →</tspan><tspan x="126" y="490">edit checkpoint →</tspan><tspan x="126" y="560">reopen.</tspan><tspan x="126" y="630">Proposed exercise.</tspan></text>
+<text x="76" y="350" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="26">1</text><text x="76" y="420" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="26">2</text><text x="76" y="490" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="26">3</text><text x="76" y="560" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="26">4</text><path d="M96 688 H1104" stroke="#b6c6d4" stroke-width="3"/>
+<text id="equivalent" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="34"><tspan x="96" y="760">Use isolated synthetic data to save a record, review it,</tspan><tspan x="96" y="810">change its checkpoint note and reopen its ledger. This</tspan><tspan x="96" y="860">exercise has not been run for this post.</tspan></text>
+<text x="96" y="1060" fill="#102a43" font-family="DejaVu Sans,sans-serif" font-size="30">REVIEW CANDIDATE • UNPUBLISHED</text>
+<text x="96" y="1124" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="24">Intergalactic Corporate Services LLC</text>
+<text x="1104" y="1124" text-anchor="end" fill="#334e68" font-family="DejaVu Sans,sans-serif" font-size="28">2 / 4</text>
+</svg>

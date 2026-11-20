@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800" role="img" aria-labelledby="title desc">
+<title id="title">What does a passing test actually show? Six-panel storyboard</title>
+<desc id="desc">Unpublished conceptual production reference. A hypothetical comparison separates a runner check from an intended local command that cannot start. Blank source fields, a blocked task and checkpoint, separate availability/access/delivery rows and a claim/source/context/gap worksheet preserve the evidence limits. No current status, recovery, retry or completed delivery is asserted.</desc>
+<rect width="1200" height="1800" fill="#101d2c"/>
+<g font-family="DejaVu Sans" fill="#f5f8fc">
+<text x="48" y="62" font-size="32" fill="#f5f8fc" font-weight="bold">WHAT DOES A PASSING TEST SHOW?</text>
+<text x="48" y="102" font-size="23" fill="#b8d9e8">Six-panel storyboard • proposed 60 seconds • unpublished draft</text>
+<text x="48" y="140" font-size="22" fill="#b8d9e8">Conceptual illustration • no current availability or recovery claim</text>
+<g id="panel-1" transform="translate(48 180)"><rect width="1104" height="220" rx="16" fill="#20354c"/>
+<text x="24" y="35" font-size="22" fill="#a9e0df">01 · 00:00–00:10</text>
+<text x="24" y="78" font-size="30" fill="#f5f8fc" font-weight="bold">Which check? Which environment?</text>
+<rect x="24" y="107" width="1056" height="85" rx="8" fill="#344e69"/>
+<text x="44" y="141" font-size="23" fill="#f5f8fc">Observed result</text>
+<path d="M44 173 h1016" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+</g>
+<g id="panel-2" transform="translate(48 420)"><rect width="1104" height="220" rx="16" fill="#20354c"/>
+<text x="24" y="35" font-size="22" fill="#a9e0df">02 · 00:10–00:20</text>
+<text x="24" y="78" font-size="30" fill="#f5f8fc" font-weight="bold">Hypothetical example</text>
+<rect x="24" y="102" width="516" height="88" rx="8" fill="#344e69"/>
+<text x="40" y="135" font-size="23" fill="#f5f8fc">Runner</text>
+<text x="40" y="174" font-size="22" fill="#b8d9e8">Checks pass (hypothetical)</text>
+<rect x="564" y="102" width="516" height="88" rx="8" fill="#344e69"/>
+<text x="580" y="135" font-size="23" fill="#f5f8fc">Intended local environment</text>
+<text x="580" y="174" font-size="22" fill="#b8d9e8">Cannot start (hypothetical)</text>
+</g>
+<g id="panel-3" transform="translate(48 660)"><rect width="1104" height="220" rx="16" fill="#20354c"/>
+<text x="24" y="35" font-size="22" fill="#a9e0df">03 · 00:20–00:30</text>
+<text x="24" y="78" font-size="30" fill="#f5f8fc" font-weight="bold">Keep each observation with its context.</text>
+<rect x="24" y="102" width="516" height="88" rx="8" fill="#344e69"/>
+<text x="40" y="135" font-size="23" fill="#f5f8fc">Runner</text>
+<text x="40" y="170" font-size="20" fill="#b8d9e8">Source / revision</text>
+<path d="M219 176 h300" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="564" y="102" width="516" height="88" rx="8" fill="#344e69"/>
+<text x="580" y="135" font-size="23" fill="#f5f8fc">Intended local environment</text>
+<text x="580" y="170" font-size="20" fill="#b8d9e8">Source / revision</text>
+<path d="M759 176 h300" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<text x="24" y="210" font-size="19" fill="#b8d9e8">PART OF HYPOTHETICAL EXAMPLE • observations remain separate</text>
+</g>
+<g id="panel-4" transform="translate(48 900)"><rect width="1104" height="220" rx="16" fill="#20354c"/>
+<text x="24" y="35" font-size="22" fill="#a9e0df">04 · 00:30–00:40</text>
+<text x="24" y="78" font-size="30" fill="#f5f8fc" font-weight="bold">Preserve unfinished work.</text>
+<rect x="24" y="102" width="516" height="66" rx="8" fill="#344e69"/>
+<text x="40" y="130" font-size="23" fill="#f5f8fc">Task</text>
+<path d="M40 151 h480" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="564" y="102" width="516" height="66" rx="8" fill="#344e69"/>
+<text x="580" y="130" font-size="23" fill="#f5f8fc">Checkpoint</text>
+<path d="M580 151 h480" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<text x="24" y="204" font-size="22" fill="#b8d9e8">Blocked • conceptual task • no retry dispatched</text>
+</g>
+<g id="panel-5" transform="translate(48 1140)"><rect width="1104" height="220" rx="16" fill="#20354c"/>
+<text x="24" y="35" font-size="22" fill="#a9e0df">05 · 00:40–00:50</text>
+<text x="24" y="78" font-size="30" fill="#f5f8fc" font-weight="bold">Verify each claim separately.</text>
+<text x="24" y="117" font-size="23" fill="#f5f8fc">Availability</text>
+<path d="M235 117 h843" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<text x="24" y="150" font-size="23" fill="#f5f8fc">Access</text>
+<path d="M235 150 h843" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<text x="24" y="183" font-size="23" fill="#f5f8fc">Delivery</text>
+<path d="M235 183 h843" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+</g>
+<g id="panel-6" transform="translate(48 1380)"><rect width="1104" height="220" rx="16" fill="#20354c"/>
+<text x="24" y="35" font-size="22" fill="#a9e0df">06 · 00:50–01:00</text>
+<text x="24" y="78" font-size="30" fill="#f5f8fc" font-weight="bold">What can the evidence support?</text>
+<rect x="24" y="102" width="516" height="45" rx="8" fill="#344e69"/>
+<text x="40" y="130" font-size="21" fill="#f5f8fc">Claim</text>
+<path d="M254 134 h270" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="564" y="102" width="516" height="45" rx="8" fill="#344e69"/>
+<text x="580" y="130" font-size="21" fill="#f5f8fc">Source revision</text>
+<path d="M794 134 h270" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="24" y="155" width="516" height="45" rx="8" fill="#344e69"/>
+<text x="40" y="183" font-size="21" fill="#f5f8fc">Execution context</text>
+<path d="M254 187 h270" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+<rect x="564" y="155" width="516" height="45" rx="8" fill="#344e69"/>
+<text x="580" y="183" font-size="21" fill="#f5f8fc">Remaining gap</text>
+<path d="M794 187 h270" fill="none" stroke="#b8d9e8" stroke-width="2"/>
+</g>
+<text x="48" y="1685" font-size="22" fill="#b8d9e8">REVIEW CANDIDATE • UNPUBLISHED • EMPTY FIELDS REMAIN EMPTY</text>
+<text x="48" y="1725" font-size="20" fill="#b8d9e8">Original vector production reference; not final video frames or a live status report.</text>
+<text x="48" y="1765" font-size="20" fill="#b8d9e8">Intergalactic Corporate Services LLC</text>
+</g>
+</svg>

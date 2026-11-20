@@ -1,0 +1,131 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "repair_report_preflight",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Preflight rejects either existing report path with link count greater than one before discovery/demo/writes. Existing symlink guard retained. Extend normal-output regression to replace ordinary pre-existing single-link JSON/text files.",
+  "checkpoint": {
+    "return_binding": "source/memory revision and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent diagnostics-path review; concurrent filesystem changes remain unguarded"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_verifier_output.VerifierOutputTests.test_report_hardlinks_are_rejected_before_checks_or_writes",
+      "exit_code": 1,
+      "reason": "each hard-link target sentinel was overwritten",
+      "subtest_failures": 3,
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": "python -m unittest tests.test_verifier_output",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 3
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/verifier-hardlink-full-20261106.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/verifier-hardlink-full-20261106.json",
+        "passed": true,
+        "record_sha256": "e968ea5ff7d1850d60cded160da29a8c612e7424a5330275a90cc7aa85c651a4",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 573,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 573,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.verifier-hardlink.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/evidence/verifier-path-20261106.json",
+    "docs/evidence/portable-cancel-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "08d7fef3a0e1cfec66e4f402aeef83a5be31e70b",
+  "limitations": [
+    "Preflight only: concurrent path replacement/link creation and parent changes remain unguarded. No race-proof isolation or new security boundary claimed.",
+    "Tests use real temporary hard links and synthetic sentinels, not actual owner file loss or a provider failure.",
+    "Normal single-link overwrite policy and report schemas unchanged. No queue/profile schema, authentication, worker, retry/failover/reconnect controller or live delivery added.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/verifier-hardlink-baseline-20261106.txt": {
+      "sha256": "7f1885b5381fd561e67d862c4059db5a6402e21971850e2980d947834ab8ab18",
+      "text": "FFF\n======================================================================\nFAIL: test_report_hardlinks_are_rejected_before_checks_or_writes (tests.test_verifier_output.VerifierOutputTests.test_report_hardlinks_are_rejected_before_checks_or_writes) (mode='text_external')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 43, in test_report_hardlinks_are_rejected_before_checks_or_writes\n    self.assertEqual(target.read_bytes(), b\"KEEP\")\nAssertionError: b'\\n---------------------------------------[68 chars]AN\\n' != b'KEEP'\n\n======================================================================\nFAIL: test_report_hardlinks_are_rejected_before_checks_or_writes (tests.test_verifier_output.VerifierOutputTests.test_report_hardlinks_are_rejected_before_checks_or_writes) (mode='text_json')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 43, in test_report_hardlinks_are_rejected_before_checks_or_writes\n    self.assertEqual(target.read_bytes(), b\"KEEP\")\nAssertionError: b'\\n---------------------------------------[68 chars]AN\\n' != b'KEEP'\n\n======================================================================\nFAIL: test_report_hardlinks_are_rejected_before_checks_or_writes (tests.test_verifier_output.VerifierOutputTests.test_report_hardlinks_are_rejected_before_checks_or_writes) (mode='json_external')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_verifier_output.py\", line 43, in test_report_hardlinks_are_rejected_before_checks_or_writes\n    self.assertEqual(target.read_bytes(), b\"KEEP\")\nAssertionError: b'{\\n  \"composer_runtime_tests\": \"separate [768 chars]n}\\n' != b'KEEP'\n\n----------------------------------------------------------------------\nRan 1 test in 0.020s\n\nFAILED (failures=3)\n"
+    },
+    "reports/verifier-hardlink-focused-20261106.txt": {
+      "sha256": "58976e1ebef02b28fad1bcf93e82831c9ac8cc4bf93fac3ea64e4eed88432c50",
+      "text": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.020s\n\nOK\n"
+    }
+  },
+  "memory_revision": 187,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "verifier-hardlink-20261106",
+  "next_task": "Independent exact-revision report-path review; retain concurrent filesystem mutation and authenticated registry acceptance as unfinished.",
+  "platform": "codex",
+  "problem": "Pre-existing report hard links bypass the prior symlink guard. Text-to-external and JSON-to-external aliases overwrite outside sentinels; a text-to-JSON alias corrupts the JSON report. All three reproduced in temporary fixtures.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "5a19075e3cc7253d9c911bf68cd14b7a92bdd8455b583499da8854616b08262d",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "scripts/verify_control_tower.py": "33429c5f7cf6547d93ac859cd7ca575ac16ba81642f916abdaa00c19c0a1f611",
+    "tests/test_verifier_output.py": "01b9a789043b333c717432da92abdf9738a3c9a74ab7fe8f78a8697e6314d785"
+  },
+  "tracked_patch_sha256": "143f33e2eac3b799731ae42c2757cfd00812371aaafb2fc13fb5479875fc3d87",
+  "visibility": "owner_private"
+}

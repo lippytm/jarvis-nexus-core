@@ -1,0 +1,131 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/threads-20261029/slot-2.png": "f44d97510f904900ad0813440acf4e2cba2eb0a59a924a4b95c0563bdf280bd1",
+    "docs/media/jarvis-threads-four-slots-20261029.md": "b720511a078af32c8345dd3a871f9dc6ce5d29333b8493f0b3f59e48d807ed61",
+    "docs/media/jarvis-threads-slot2-20261104.svg": "aaa64683b88af64347f75bd2492565a7559aabd237ca152878bf115fc605fadb"
+  },
+  "checks": {
+    "campaign_and_other_slots_unchanged": true,
+    "discussion_units_unchanged": 12,
+    "new_unit_tests": 0,
+    "png_bytes": 143438,
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager object wrapping warning",
+    "review_region_sha256": "18ca1e6c3393f4e24e683c6352912604c8df219a40c1c8fae881ba8c0e1d76ce",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "ONE EDIT. A FRESH REVIEW.",
+        "width": 534.125
+      },
+      {
+        "text": "SYNTHETIC A/B NOTES \u2022 UNPUBLISHED DRAFT",
+        "width": 512.84375
+      },
+      {
+        "text": "Proposed exercise \u2014 not a new test receipt.",
+        "width": 527.65625
+      },
+      {
+        "text": "Version A \u00b7 assume reviewed for this exercise",
+        "width": 668.828125
+      },
+      {
+        "text": "Checkpoint note: draft A.",
+        "width": 376.1875
+      },
+      {
+        "text": "Version B \u00b7 changed note",
+        "width": 367.078125
+      },
+      {
+        "text": "Checkpoint note: draft B.",
+        "width": 376.78125
+      },
+      {
+        "text": "Changed note: A becomes B. Review B separately.",
+        "width": 554.46875
+      },
+      {
+        "text": "Proposed check",
+        "width": 231.25
+      },
+      {
+        "text": "Retain B after reopening the ledger.",
+        "width": 448.15625
+      },
+      {
+        "text": "Require a fresh context review.",
+        "width": 387.875
+      },
+      {
+        "text": "Owner review:",
+        "width": 186.5
+      },
+      {
+        "text": "Destination: unassigned \u2022 No actual check result depicted.",
+        "width": 648.484375
+      },
+      {
+        "text": "Local review labels do not authenticate a person or authorize release.",
+        "width": 735.046875
+      }
+    ],
+    "visual_inspection": "Full PNG inspected; no observed clipping/overlap; changed B note labelled and underlined; synthetic/proposed/unpublished labels and empty owner-review field visible.",
+    "whitespace": "git diff --check passed",
+    "xml_resource_checks": true
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "threads/account unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "exercise_execution": "proposed_only_not_a_test_receipt",
+  "external_actions": 0,
+  "finished_video_or_publication": false,
+  "independent_review": "not_performed",
+  "input_revision": "38e7fb4141e628a3a2c021aeeda804b0e53ccbab",
+  "memory_source": "master Page sequence 137",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact SVG/PNG/discussion/alt-text owner, destination and accessibility review; optional slot 3-4 artwork remains unrendered.",
+  "operational_ledger_changed": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "dimensions": [
+      1080,
+      1080
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.threads.2",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "9ad464c434e8b591a0953c393b1da11c48b8f2ca261130c3fd414b4fa9b695b1",
+  "registry_accepted": false,
+  "revision_conflicts": 0,
+  "rights_device_accessibility_platform_acceptance": "not_verified",
+  "schema_version": 1,
+  "scope": "unpublished original synthetic A/B note artwork; no runtime changes"
+}

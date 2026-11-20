@@ -1,0 +1,77 @@
+{
+  "authentication_live_dispatch": "not_established",
+  "baseline": {
+    "cases": [
+      "attempt count decreases",
+      "schema 3 to 2",
+      "schema 2 to 1",
+      "cancelled then active then cancelled",
+      "unknown then blocked then unknown"
+    ],
+    "errors": 0,
+    "failures": 25,
+    "focused_methods": 2,
+    "log_sha256": "9ad15ab3c2e80f38ebc1c42237e24c9c88a81e442f964ebc6ccfa921f960c451",
+    "per_case_failed_assertions": [
+      "index rejection",
+      "older load rejection",
+      "newer load rejection",
+      "backup rejection",
+      "no published backup"
+    ],
+    "valid_method_passed": true
+  },
+  "change": "Extend the existing two-neighbor reader with nondecreasing attempts/schema and irreversible cancellation/unknown-outcome transition checks. No additional queries, recursive traversal, schema migration or automatic repair.",
+  "checks": {
+    "focused_errors": 0,
+    "focused_failures": 0,
+    "focused_methods": 2,
+    "local_python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "run": 528,
+      "skipped": 0
+    },
+    "syntax_files": 73,
+    "verifier_record_sha256": "c206f9d582df0ca6173a17057d588a959c86dbf259706d699ffe59585f15037f",
+    "web_failures": 0,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.engineering-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "312a9a2530dc6bc05dd868e5ac2a15f633e06986",
+  "memory_source": "master Page sequence 133",
+  "mission_id": "checkpoint-transition-20261104",
+  "next_task": "Exact-revision independent review; operational registry adapter remains conditional on audience/access-policy verification and owner acceptance of the one saved proposal.",
+  "observed_problem": "Retained history could temporarily violate attempt/schema/irreversible-hold write rules before returning to a matching current state. Current-bound comparisons and nondecreasing memory revisions did not reject the intermediate contradiction.",
+  "original_paused_checkpoint_changed": false,
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "1504251441bd33d5ba29d4892a0e71264289429d5f12072de40c3b317beb3080",
+  "registry_accepted": false,
+  "regressions": [
+    "Five rehashed synthetic histories reject index, both exact loads and backup after read-only restart. No final/temp backup, changed source bytes, altered current held profile or independent record.",
+    "Valid legacy profile upgrades 1 to 2 to 3, increasing attempts, temporary pause and later terminal unknown/cancelled hold survive restart and checked backup; historical retry_authorized remains false."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_retained_transition_integrity_repair",
+  "source_sha256": {
+    "control_tower/handoffs.py": "24a60142223306390c6e9b94aa38143e77a51e3507862ecc242b274c3cede229",
+    "tests/test_handoff_context.py": "cd667bd25b22e0166d10572db27f24f7118420cb91a5fd7a721fe73979b3a446"
+  },
+  "strict_packet_or_storage_schema_change": false
+}

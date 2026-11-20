@@ -1,0 +1,76 @@
+{
+  "asset_id": "codex",
+  "change": "Optional expected_revision on review_context and --context-revision on review-context atomically require stored revision plus content digest. Omission preserves digest-only callers, responses and stored/packet schemas.",
+  "checks": {
+    "focused": "2 tests passed in 0.700s after fixture correction",
+    "full": {
+      "record_sha256": "230b8949f50f41512661f36ee4b80e923b82366cd24a50d32addb5145648f1dd",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 544,
+        "skipped": 0
+      }
+    },
+    "initial_fixture": "API passed; initial CLI test failed an overstrict byte-preservation assertion because existing writable startup can change SQLite header. Corrected to assert every logical row/hold unchanged; initial log retained.",
+    "new_methods": 2,
+    "sensitivity": "Isolated copy without new revision comparison: 2 expected failures, zero errors; repository untouched",
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.context-review-cas.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "7f2bb5067d6a867ec92f9077bf39dfe002e995e5",
+  "limitations": [
+    "Synthetic local/CLI fixtures, not authenticated review or live delivery",
+    "Optional revision guard binds this local write only; labels are not identity and do not grant owner release or retry",
+    "Existing digest-only behavior remains available for backward compatibility",
+    "Original paused mission/actual receipts unchanged; historical local timeout remains separate"
+  ],
+  "logs_sha256": {
+    "context-review-revision-focused-20261105.txt": "5604dced1392a835ff7f877dd49adb19832b28b665d84a796cb95fe20e4b4337",
+    "context-review-revision-full-20261105.txt": "0742733f968b4af9ae3846bb0bffc4f8268a333f169bcda3026e260be2d529c0",
+    "context-review-revision-initial-20261105.txt": "d2557d33c13d472710247739873c237155f0f073c70ed01061ed27835090c1ca",
+    "context-review-revision-mutant-20261105.txt": "a2b116539d2b4c5bb4831d87cc4ebc4307a19b923b6f6b55b6bb1e75ded74a54",
+    "context-review-revision-web-20261105.txt": "633de21e0850854821af52784176ac1fc0af29ba73fe529aa1038b49cc43949f"
+  },
+  "memory_source": "master Page sequence 159",
+  "mission_id": "context-review-revision-20261105",
+  "next_task": "Exact-revision independent review; accepted registry storage/audience policy remains pending. Do not repeat this implementation.",
+  "observed_gap": "A digest-only review request cannot distinguish context A at revision 1 from content restored to A at revision 3 after an intervening edit.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft-only existing context review API/CLI, regressions, profile documentation and evidence on named development branch",
+  "project_id": "ai-jarvis",
+  "record_sha256": "2475e5e72eb2d29ab076488626e854f254be41702006402e15c66447cdaf1739",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/handoffs.py": "914a3d736c4044c09e4baf5fab6c8c3939df0cc3d727a69c3cd632b748fcb008",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "81c988e24315215cbc4b5609200ac6df25bd314722161e95e528764e9b0d1cc6",
+    "scripts/jarvis_network.py": "b9bba54c9bb5e28dd0a645aba399efce3e3721c9d36257930e055d9d94f808c1",
+    "tests/test_handoff_context.py": "8740c18e6ca191f01fe0a19280aeff55925d77ce0e54f8252213927be3f801a9",
+    "tests/test_handoff_context_cli.py": "b71b179788e9f36bf8ace929072d9be3b49adcba91b2ad6fdef9bac5a4d854dc"
+  },
+  "source_before_sha256": {
+    "control_tower/handoffs.py": "fc4e4ecad4c80423df4d3be3c60e639e48c8503d9eb8275f3b7dff0360b2db4b",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "37e0b618d4991621450aac6d4d7a9fa56924d0d5e2cc0f394f6e78e2bf03afbb",
+    "scripts/jarvis_network.py": "1c8df3d0cb558cb76453894d34afbe2ee573c2d9ef98e7391c2649dcc16fc2dd",
+    "tests/test_handoff_context.py": "1d3384e8872962c3e69068582973b7b051f11cd5b385515c8b22dfe6ce69fa00",
+    "tests/test_handoff_context_cli.py": "18fe7dbaf10be6464695fc298b6472c2e914645180a8889a33d41e01785f99e1"
+  }
+}

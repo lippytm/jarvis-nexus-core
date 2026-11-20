@@ -1,0 +1,129 @@
+{
+  "acceptance_observations": [
+    "Seven invalid unselected-neighbor variants reject with recomputed matching registry digest: expanded actions, unknown platform/project, invalid destination/resource, extra field and duplicate scope. Inputs remain unchanged; valid selected scope still returns all 17 target entries.",
+    "Actual CLI subprocesses reject expanded neighbor actions and duplicate neighbor scope for fresh and existing output destinations. No summary, missing ledger, or fresh output directory is created; retained sentinel, input registry and existing database bytes remain unchanged. Private mapping value is absent from error output."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_registry_validation_regressions",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add API/subprocess regressions proving project selection cannot hide invalid unselected registry entries. Production code and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent selected-registry validation review; authenticated audience/access acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_connection_observations.ConnectionObservationTests.test_project_selection_cannot_hide_invalid_neighbor_entries",
+        "tests.test_handoff_context_cli.ContextCLITests.test_registry_project_cli_rejects_invalid_neighbors_without_output"
+      ],
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/registry-neighbor-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/registry-neighbor-full-20261107.json",
+        "passed": true,
+        "record_sha256": "3b2256f159381c2088de53899550ebe607062440d3454b01bc0b5a69f606bafb",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 579,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 579,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.registry-neighbor.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/registry-project-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "3ab6ea366913419d4e75d0b45bb9d0effaf9e41d",
+  "limitations": [
+    "Coverage of existing correct behavior; no baseline production defect asserted or repaired.",
+    "Synthetic temporary private registry/input/output fixtures do not establish authenticated shared storage, live connections or actual provider delivery.",
+    "No schema, worker, lease, automatic retry/failover/reconnect controller or permissions change. Seven source project IDs remain separate from all 17 master business areas; all 17 portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/registry-neighbor-focused-20261107.txt": {
+      "sha256": "3875028b6ef296136c53caf8ed53a6a222ded274be2f9f07437b2ecf6d7cb0af",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.334s\n\nOK\n"
+    }
+  },
+  "memory_revision": 191,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_api_rejected_variants": 7,
+    "synthetic_cli_rejected_attempts": 4
+  },
+  "mission_id": "registry-neighbor-20261107",
+  "next_task": "Independent exact-revision selected-registry validation review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "5af60f078147e33c3412329d671a8ef4f52ac3fc4d60419c3bd35db7311310e0",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_connection_observations.py": "7a5450de0996ef572755b8ec77636349ba3b3a44222288c5167115bf283b18fc",
+    "tests/test_handoff_context_cli.py": "15deda18bceed626509f4ea8313af60e29d1a8c7b3780e8fb55c6282c4fdb00f"
+  },
+  "tracked_patch_sha256": "6b39c562f5f2199688c33c9018e34027cb9b54a42cf455dd10c0bb6e70c246bd",
+  "visibility": "owner_private"
+}

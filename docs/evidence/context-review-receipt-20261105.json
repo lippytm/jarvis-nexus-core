@@ -1,0 +1,85 @@
+{
+  "asset_id": "codex",
+  "change": "Optional include_receipt=True / --include-receipt requires exact stored context revision and emits a separate version-1 jarvis.context_review_receipt only after successful transaction commit. Legacy API None/CLI response shapes, packet/storage schemas remain unchanged.",
+  "checks": {
+    "focused": "2 API/CLI methods passed in 0.230s",
+    "full": {
+      "record_sha256": "490b064153912aea376772d57683ced26cba4d2a35ba55deb180d311eebcc497",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 546,
+        "skipped": 0
+      }
+    },
+    "new_methods": 2,
+    "synthetic_commit_failure": {
+      "commit_denied_by_test_authorizer": true,
+      "error_class": "DatabaseError",
+      "execution_and_control_retained": true,
+      "external_actions": 0,
+      "logical_records_restored_by_explicit_test_rollback": true,
+      "receipt_returned": false,
+      "synthetic_fixture": true
+    },
+    "synthetic_commit_failure_sha256": "dd55e71350a2dba25eab93ae16d995c2bad0413d2118a1e405f2b2ac2874af23",
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.context-review-receipt.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "output": "/workspace/scratch/3e7507676923",
+    "target": "codex"
+  },
+  "independent_review": "not_performed",
+  "input_revision": "b2e62933251c9daab8714573c0e188ecf9d039c1",
+  "limitations": [
+    "Synthetic local/CLI fixtures, not authenticated reviewer identity, owner approval or live provider delivery",
+    "Ledger retains its existing review binding, not a new receipt archive; returned receipt must be retained privately by caller",
+    "SQLite commit denial is an intentional test authorizer, not a Codex outage; explicit diagnostic rollback is test cleanup, not an implemented recovery controller",
+    "Original paused mission/actual receipts unchanged; historical failures remain separate; no measured reliability improvement"
+  ],
+  "logs_sha256": {
+    "context-review-receipt-focused-20261105.txt": "1d514b2798a9cb3d01f2c0cc0cf331cb648bce7fe39214afff3eea76cfb819a0",
+    "context-review-receipt-full-20261105.txt": "e62234e31c3dae16a4d9f08c8555616f36a65668209523a8185ea30630da72d7",
+    "context-review-receipt-web-20261105.txt": "4eb978deb9bbd20b03f518fade53b3f70baadb0d71c665a3910a6ba75e7aaa88"
+  },
+  "memory_source": "master Page sequence 161",
+  "mission_id": "context-review-receipt-20261105",
+  "next_task": "Exact-revision independent review; accepted registry/audience policy remains pending. Do not repeat this opt-in receipt implementation.",
+  "observed_gap": "Review-context CLI response omits the stored context/source/memory revisions and mission/destination provenance it just checked.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Existing local context review API/CLI opt-in receipt, tests, contract documentation and evidence on named development branch",
+  "production_or_provider_actions": 0,
+  "project_id": "ai-jarvis",
+  "record_sha256": "41532abff72235fa6f77b3668fa5eb516e93fcc29e38d53770aaefdfda983ca4",
+  "repository_check_context": "/workspace/scratch/3e7507676923/jarvis-cycle",
+  "review_state": "prepared_unreviewed",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/handoffs.py": "b335d02d10ad572638df1f410fd81c9f98e6d8f7c47cbeeae1aa3911367fd63b",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "80f96b59c5c3f0b8486dd7d70d8d41b524bb8cc2f581bdd10bbee51a7a6332eb",
+    "scripts/jarvis_network.py": "99147b2875a6b6c6e8b658f392d38ab4ae37ce4223d0c67f3d59d5784ab29817",
+    "tests/test_handoff_context.py": "ef1b4528ae0adb99f88e988482591b17710091a2c3ab5d4aa6beabcc589c7e9d",
+    "tests/test_handoff_context_cli.py": "fc5eab7490efdadf7c47f4ccb97772d2dee1440b56f572b3d0223467101f0c9b"
+  },
+  "source_before_sha256": {
+    "control_tower/handoffs.py": "914a3d736c4044c09e4baf5fab6c8c3939df0cc3d727a69c3cd632b748fcb008",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "81c988e24315215cbc4b5609200ac6df25bd314722161e95e528764e9b0d1cc6",
+    "scripts/jarvis_network.py": "b9bba54c9bb5e28dd0a645aba399efce3e3721c9d36257930e055d9d94f808c1",
+    "tests/test_handoff_context.py": "8740c18e6ca191f01fe0a19280aeff55925d77ce0e54f8252213927be3f801a9",
+    "tests/test_handoff_context_cli.py": "b71b179788e9f36bf8ace929072d9be3b49adcba91b2ad6fdef9bac5a4d854dc"
+  }
+}
