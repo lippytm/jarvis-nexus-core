@@ -1,3 +1,88 @@
+# PR #5 current engineering review entry — November 20, 2026
+
+## Bounded evaluator handoff for archive creation and pinned recovery
+
+**Author-prepared material; independent evaluation and owner release pending.**
+No evaluator is dispatched by this package. This is not authenticated delivery,
+accepted procedure or whole-PR approval.
+
+Review input: `682116c2ef298a92c7566b40fa4b1603f20a35b7`, branch `feature/control-tower-foundation-20261021`,
+master memory 246. The prior November 16 entry is retained verbatim below.
+The scope adds CLI archive creation, first-review process-exit coverage, optional
+receipt pinning, binding invalidation and archive-aware proposed recovery guidance
+that were absent from that earlier source selection.
+
+### Review questions
+
+| Slice | Acceptance check | Evidence boundary |
+| --- | --- | --- |
+| Explicit archive CLI | Require include-receipt and exact revision before opening for an archive write; default reviews retain prior schema/receipt behavior. Check rollback, deduplication and original tuple recovery. | Ledger v4 is opt-in, not an operational migration performed by this handoff. Older v2/v3-only readers refuse v4; retain pre-upgrade backups. |
+| First-review commit boundary | Fresh process exits before versus after first review/archive commit must leave coherent reopen outcomes and original archived receipt. | Process exit is tested; OS/power-loss resilience, hosted worker recovery and recovery latency are not established. |
+| Canonical receipt pin | Malformed expected pin refuses before ledger open; well-formed mismatch refuses after read-only recovery and before stdout/file output. Defaults remain unchanged. | Independently retained receipt_sha256 differs from context digest and serialized file-byte hash. Unkeyed hashes do not attest timestamps or authenticate reviewers. |
+| Binding invalidation | Matching old receipt pin cannot bypass changed current reviewer or restored-content later revision. Explicit same-revision original-label rebinding reuses the old tuple; a new revision requires a new receipt pin. | Local reviewer labels are unauthenticated; fixture rebinding does not authorize operational re-review or release. Preserve pause/unknown holds and independent records. |
+| Proposed recovery procedure | Distinguish missing file with current archived review from missing archive. Inspect uncertain output before selecting a fresh file; never replay review merely for success output. | Procedure is proposed. No archive creation, restore, retry, dispatch or owner release follows successful read-only recovery. |
+
+### Exact source manifest
+
+Hashes below are exact selected Git blob bytes at the input, not this publication
+commit. Five actual-work receipt bodies were independently recomputed by the author.
+This file selection is narrower than the full repository and is not an audit.
+
+| Input file | SHA-256 |
+| --- | --- |
+| [control_tower/handoffs.py](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/control_tower/handoffs.py) | `796aa86c09d798bfc828c60b3fc5de17f0f7ed2d4c5db6705cb3f3f947a0e4f5` |
+| [control_tower/network_contract.py](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/control_tower/network_contract.py) | `b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7` |
+| [scripts/jarvis_network.py](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/scripts/jarvis_network.py) | `ddf62633553549ac6d3ffe861e0ce96a1217918125368785e6442f897096f969` |
+| [tests/test_handoff_context.py](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/tests/test_handoff_context.py) | `998cd7c39846895a06c1f00c36b652984e2709117ed253dce9b8be2bede5ccc1` |
+| [tests/test_handoff_context_cli.py](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/tests/test_handoff_context_cli.py) | `279cf6b68f9f1319fba85861bdb7adc628b1641ee271f9cd7a61dd6fafe97bea` |
+| [docs/HANDOFF_CONTEXT_PROFILE.md](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/HANDOFF_CONTEXT_PROFILE.md) | `615ed4d0a5450ca94c78ef74734c8998c557779f513e5e76fe2bc1130798af46` |
+| [docs/CODEX_JARVIS_READINESS.md](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/CODEX_JARVIS_READINESS.md) | `2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757` |
+| [docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md) | `a795d6f8dd03ebeb3f2985bdb72f9d39911d78d5eeef21306170bb793ca18c0c` |
+| [docs/evidence/first-review-process-exit-20261117.json](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/evidence/first-review-process-exit-20261117.json) | `21a9579695441f98c00798d4398d8eac0d3fc83d1f91abecafcad556404c9b66` |
+| [docs/evidence/cli-review-archive-20261117.json](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/evidence/cli-review-archive-20261117.json) | `7f4cfdc7ffcb6ef0947e37bb5d32080377612c12efd1da1b274bc7ca188355ad` |
+| [docs/evidence/archive-receipt-pin-20261119.json](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/evidence/archive-receipt-pin-20261119.json) | `67acdafefc1f43c81d2c43cec11f12add731249ae29acb39f8d818b470a931f7` |
+| [docs/evidence/archive-pin-invalidation-20261119.json](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/evidence/archive-pin-invalidation-20261119.json) | `3b5412efa3a3dcad4a553c777ba8d4c21db4cb236bf80dc42691280ecd6afc48` |
+| [docs/evidence/archive-recovery-runbook-20261120.json](https://github.com/lippytm/jarvis-nexus-core/blob/682116c2ef298a92c7566b40fa4b1603f20a35b7/docs/evidence/archive-recovery-runbook-20261120.json) | `38b63e86de783dde3d06628d54faa59cef6e186f1e2586d9e498ada87c2fb8e6` |
+
+### Reproduce the bounded preparation checks
+
+```sh
+python -m unittest tests.test_handoff_context.ContextTests.test_first_archived_review_survives_process_exit_at_commit_boundary tests.test_handoff_context_cli.ContextCLITests.test_review_archive_cli_opts_in_and_recovers_original_receipt_after_restart tests.test_handoff_context_cli.ContextCLITests.test_review_archive_cli_preflight_and_stale_guards_prevent_upgrade tests.test_handoff_context_cli.ContextCLITests.test_archived_review_load_cli_can_pin_original_receipt_without_changing_defaults tests.test_handoff_context_cli.ContextCLITests.test_archived_review_load_cli_malformed_pin_rejects_before_ledger_open tests.test_handoff_context_cli.ContextCLITests.test_archived_review_pin_does_not_revive_invalidated_review_bindings
+```
+
+This six-test command and syntax checks are author preparation, not independent
+findings. Input CI is linked in master memory246: 628 Python/74 syntax/181 web/271
+container tests plus Compose passed. This documentation commit receives separate
+CI; its final receipt belongs in the master Page.
+
+### Intake and requested return
+
+Use the new work receipt's `checks.source_manifest` with the existing
+`check-review-files` command, exact receipt file-byte SHA-256, source/memory guards
+and all four project/mission/asset/platform identity guards. Optional
+`--verify-git-head` verifies the declared local root/HEAD, not clean status,
+unselected files, signatures or future writes. A successful private intake report
+is file-integrity evidence, not an evaluator's acceptance or provider return.
+
+Return source `682116c2ef298a92c7566b40fa4b1603f20a35b7`, memory246, selected hashes, tested scope,
+concrete findings or explicitly scoped no-findings, reproduction/severity, actual
+checks, unresolved limits and proposed next action. Bind any later implementation
+change to a new review. Proposed memory writes and procedures remain separate from
+accepted facts and actual work receipts. No credential or private chat bundle is
+requested.
+
+All17 portable targets and business areas remain in scope; seven source PROJECTS
+are separate. Codex remains distinct from ChatGPT, OpenAI API and GitHub. No new
+agents/connections, live worker/lease/failover/reconnect controller, merge,
+deployment, publication, messages, spending, credential/permission/public-access
+or paused Studio/Newsletter schedule changes. Trading Bots remains research,
+backtesting/paper only; RoboParty deferred. Costs/recovery time/review effort and
+reliability gains are unmeasured.
+
+---
+
+## Historical November 16 source-bound review entry (retained verbatim)
+
 # PR #5 current engineering review entry — November 16, 2026
 
 ## Bounded evaluator handoff: local review archive and CLI recovery

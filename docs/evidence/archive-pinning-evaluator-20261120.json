@@ -1,0 +1,104 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_existing_review_entry",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "author_preparation_only_independent_and_owner_review_pending",
+  "artifact_sha256": {
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md": "8fc10b6855db6cf700c2c43abc753cef816c9466abbdae855dd2831e9aa9949d"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Prepend exact-source 13-file archive/pinning review slice to existing evaluator entry, preserving previous contents verbatim. Six-test reproduction, five verified evidence checksums, scoped review questions and exact-source return requested.",
+  "checkpoint": {
+    "return_binding": "source/memory/selected file hashes; final publication commit/CI/intake in master Page",
+    "state": "review_material_prepared_not_dispatched",
+    "unfinished": "actual independent evaluator findings; authenticated registry/audience/provider delivery acceptance"
+  },
+  "checks": {
+    "final_receipt_intake": "Actual final receipt CLI intake results are recorded in the master cycle receipt to avoid self-referential file-digest evidence.",
+    "focused": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_handoff_context.ContextTests.test_first_archived_review_survives_process_exit_at_commit_boundary",
+        "tests.test_handoff_context_cli.ContextCLITests.test_review_archive_cli_opts_in_and_recovers_original_receipt_after_restart",
+        "tests.test_handoff_context_cli.ContextCLITests.test_review_archive_cli_preflight_and_stale_guards_prevent_upgrade",
+        "tests.test_handoff_context_cli.ContextCLITests.test_archived_review_load_cli_can_pin_original_receipt_without_changing_defaults",
+        "tests.test_handoff_context_cli.ContextCLITests.test_archived_review_load_cli_malformed_pin_rejects_before_ledger_open",
+        "tests.test_handoff_context_cli.ContextCLITests.test_archived_review_pin_does_not_revive_invalidated_review_bindings"
+      ],
+      "log_sha256": "0783dd36fbc79b930abc46f870a86ff2670f32698129a665af40fe752a638f3c",
+      "passed": true,
+      "tests": 6
+    },
+    "full_local_suite": "Not repeated for documentation-only change; final publication CI in master receipt.",
+    "receipt_bodies_rehashed": 5,
+    "source_manifest": {
+      "historical_body_retained_verbatim": true,
+      "memory_revision": 246,
+      "original_review_entry_sha256": "c1eeb5e97161947e6d53167ddaea1d87529e753778448ea038312a8f44bd89d3",
+      "source_revision": "682116c2ef298a92c7566b40fa4b1603f20a35b7",
+      "source_sha256": {
+        "control_tower/handoffs.py": "796aa86c09d798bfc828c60b3fc5de17f0f7ed2d4c5db6705cb3f3f947a0e4f5",
+        "control_tower/network_contract.py": "b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7",
+        "docs/CODEX_JARVIS_READINESS.md": "2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757",
+        "docs/HANDOFF_CONTEXT_PROFILE.md": "615ed4d0a5450ca94c78ef74734c8998c557779f513e5e76fe2bc1130798af46",
+        "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "a795d6f8dd03ebeb3f2985bdb72f9d39911d78d5eeef21306170bb793ca18c0c",
+        "docs/evidence/archive-pin-invalidation-20261119.json": "3b5412efa3a3dcad4a553c777ba8d4c21db4cb236bf80dc42691280ecd6afc48",
+        "docs/evidence/archive-receipt-pin-20261119.json": "67acdafefc1f43c81d2c43cec11f12add731249ae29acb39f8d818b470a931f7",
+        "docs/evidence/archive-recovery-runbook-20261120.json": "38b63e86de783dde3d06628d54faa59cef6e186f1e2586d9e498ada87c2fb8e6",
+        "docs/evidence/cli-review-archive-20261117.json": "7f4cfdc7ffcb6ef0947e37bb5d32080377612c12efd1da1b274bc7ca188355ad",
+        "docs/evidence/first-review-process-exit-20261117.json": "21a9579695441f98c00798d4398d8eac0d3fc83d1f91abecafcad556404c9b66",
+        "scripts/jarvis_network.py": "ddf62633553549ac6d3ffe861e0ce96a1217918125368785e6442f897096f969",
+        "tests/test_handoff_context.py": "998cd7c39846895a06c1f00c36b652984e2709117ed253dce9b8be2bede5ccc1",
+        "tests/test_handoff_context_cli.py": "279cf6b68f9f1319fba85861bdb7adc628b1641ee271f9cd7a61dd6fafe97bea"
+      }
+    },
+    "syntax": {
+      "errors": 0,
+      "files": 74
+    }
+  },
+  "configuration_version": "codex.evaluator-handoff.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "preparation_checks_passed",
+  "input_revision": "682116c2ef298a92c7566b40fa4b1603f20a35b7",
+  "limitations": [
+    "Prepared material and author checks are not independent approval, accepted procedure, authenticated identity or actual provider delivery.",
+    "Selected file hashes omit unselected repository files; HEAD guard observes root/revision only, not clean status or future changes.",
+    "No production/test/schema/default changes or operational ledger migration. No new evaluator/agent is created.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No worker/lease/failover/reconnect controller, merge/deploy/publication/messages/spending/credential/permission/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 246,
+  "metrics": {
+    "actual_evaluator_dispatches": 0,
+    "completed_preparation_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "revision_conflicts": 0,
+    "unexpected_check_failures": 0
+  },
+  "mission_id": "archive-evaluator-pin-20261120",
+  "platform": "codex",
+  "prior_work": "Master246/branch/draft PR5/readiness/shared requirements/findings/prior work receipt read. Prior current evaluator source b83a6cc2 predates CLI archival, process exit, pinning and proposed archive recovery. No active dispatch/candidate to duplicate.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "3534eedbc814ed5f1f2e2425cd0a7dce7fc7c4b6616bc5bbcda2cd86891147f4",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "visibility": "owner_private"
+}
