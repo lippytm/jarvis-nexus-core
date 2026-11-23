@@ -2067,6 +2067,69 @@ raise AssertionError("worker unexpectedly returned a receipt")
         self.assertNotIn("example.invalid", json.dumps(receipt))
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_archive_history_rejects_impossible_cleared_terminal_holds(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        saved = self.save()
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"], expected_revision=1)
+        historical = self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        self.profile["execution"]["detail"] = "Synthetic later blocked checkpoint."
+        current = self.ledger.save_context(self.profile, expected_revision=1)
+        current_args = {**args, "expected_revision": 2, "expected_sha256": current["context_sha256"]}
+        latest = self.ledger.review_context("mission-one", **current_args, include_receipt=True, archive_receipt=True)
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        other_saved = self.ledger.save_context(neighbor, expected_revision=0)
+        other_args = {**args, "expected_sha256": other_saved["context_sha256"]}
+        other = self.ledger.review_context("mission-two", **other_args, include_receipt=True, archive_receipt=True)
+        for field, value in (("control_state", "cancelled"), ("execution_state", "outcome_unknown")):
+            with self.subTest(field=field):
+                wrong = {**historical, field: value}
+                wrong["receipt_sha256"] = digest({k: v for k, v in wrong.items() if k != "receipt_sha256"})
+                self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='mission-one' AND revision=1",
+                    (json.dumps(wrong), wrong["receipt_sha256"]))
+                before = self.path.read_bytes()
+                out = self.path.parent / (field + ".sqlite3")
+                with HandoffLedger(self.path, read_only=True) as reopened:
+                    row = reopened.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' AND revision=1").fetchone()
+                    with self.assertRaisesRegex(ValueError, "stored context review"):
+                        _backup(reopened.db, out)
+                    with self.assertRaisesRegex(ValueError, "stored context review"):
+                        reopened._archived_context_review(row)
+                    self.assertFalse(out.exists())
+                    self.assertEqual(reopened.load_context_review_receipt("mission-one", **current_args), latest)
+                    self.assertEqual(reopened.load_context_review_receipt("mission-two", **other_args), other)
+                    self.assertEqual(reopened.load_context("mission-one", expected_source_revision=REVISION,
+                        expected_memory_revision=1)["profile"], self.profile)
+                    self.assertEqual(reopened.load_context("mission-two", expected_source_revision=REVISION,
+                        expected_memory_revision=1)["profile"], neighbor)
+                self.assertEqual(self.path.read_bytes(), before)
+        self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='mission-one' AND revision=1",
+            (json.dumps(historical), historical["receipt_sha256"]))
+        row = self.ledger.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' AND revision=1").fetchone()
+        self.assertEqual(self.ledger._archived_context_review(row), historical)
+        valid_backup = self.path.parent / "valid-history.sqlite3"
+        _backup(self.ledger.db, valid_backup)
+        with HandoffLedger(valid_backup, read_only=True) as backup:
+            self.assertEqual(backup.load_context_review_receipt("mission-one", **current_args), latest)
+            self.assertEqual(backup.load_context_review_receipt("mission-two", **other_args), other)
+        # Real terminal holds may remain in historical receipts when still retained.
+        self.profile["control"]["state"] = "cancelled"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        held = self.ledger.save_context(self.profile, expected_revision=2)
+        held_args = {**args, "expected_revision": 3, "expected_sha256": held["context_sha256"]}
+        retained = self.ledger.review_context("mission-one", **held_args, include_receipt=True, archive_receipt=True)
+        self.profile["execution"]["detail"] = "Synthetic retained unknown outcome."
+        self.ledger.save_context(self.profile, expected_revision=3)
+        row = self.ledger.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' AND revision=3").fetchone()
+        self.assertEqual(self.ledger._archived_context_review(row), retained)
+        held_backup = self.path.parent / "retained-holds.sqlite3"
+        _backup(self.ledger.db, held_backup)
+        with HandoffLedger(held_backup, read_only=True) as backup:
+            self.assertEqual(backup.load_context("mission-one", expected_source_revision=REVISION,
+                expected_memory_revision=1)["profile"], self.profile)
+
     def test_full_review_archive_retains_duplicate_recovery_and_current_bindings(self):
         from scripts.jarvis_network import _backup
         self.profile = self.destination_profile()

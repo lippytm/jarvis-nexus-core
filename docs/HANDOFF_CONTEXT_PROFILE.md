@@ -1085,7 +1085,12 @@ release/retry/dispatch authority.
 Version-4 reopen preserves the schema; checkpoint capture/list/load and checked
 backups retain version 4 and receipt rows. Backup validation checks every bounded
 archived receipt as historical metadata, including invalidated prior reviews; a
-corrupt archive refuses backup publication. Older software that supports only
+corrupt archive refuses backup publication. Historical receipts must also retain
+terminal cancellation and unknown-outcome bounds: a past cancelled or unknown
+receipt cannot precede a current context that has cleared that same hold. These
+checks reject impossible history even when its metadata checksum was recomputed;
+legitimate retained holds and old receipt/schema shapes remain valid. They do
+not authenticate history or reconstruct missing context. Older software that supports only
 versions 2/3 must refuse this database. Retain a pre-upgrade backup and use current
 tools for further backups; no downgrade or automatic restore is provided.
 

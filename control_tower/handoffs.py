@@ -927,6 +927,10 @@ class HandoffLedger:
             if (type(revision) is not int or not 1 <= revision <= current["revision"]
                 or type(version) is not int or version not in (1, 2, 3) or version > profile["schema_version"]
                 or type(memory) is not int or not 1 <= memory <= profile["memory_revision"]
+                or (receipt["control_state"] == "cancelled"
+                    and profile.get("control", {}).get("state") != "cancelled")
+                or (receipt["execution_state"] == "outcome_unknown"
+                    and profile["execution"]["state"] != "outcome_unknown")
                 or receipt["execution_state"] not in {"pending", "execution_blocked", "outcome_unknown"}
                 or receipt["control_state"] not in ({"legacy_uncontrolled"} if version == 1 else {"active", "paused", "cancelled"})):
                 raise ValueError("archive history mismatch")
