@@ -2067,6 +2067,57 @@ raise AssertionError("worker unexpectedly returned a receipt")
         self.assertNotIn("example.invalid", json.dumps(receipt))
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_full_review_archive_retains_duplicate_recovery_and_current_bindings(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(reviewer_id="local-evaluator", expected_sha256=saved["context_sha256"], expected_revision=1)
+        first = self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        self.stage("mission-two")
+        neighbor = self.context("mission-two")
+        other_saved = self.ledger.save_context(neighbor, expected_revision=0)
+        other_args = dict(reviewer_id="neighbor-evaluator", expected_sha256=other_saved["context_sha256"], expected_revision=1)
+        other = self.ledger.review_context("mission-two", **other_args, include_receipt=True, archive_receipt=True)
+        # A small synthetic cap exercises the same full-archive branch without 1,000 writes.
+        with patch("control_tower.handoffs.MAX_CONTEXT_REVIEW_RECEIPTS", 2):
+            before = tuple(self.ledger.db.iterdump())
+            with patch("control_tower.handoffs._now", return_value="2099-01-01T00:00:00+00:00"):
+                self.assertEqual(self.ledger.review_context("mission-one", **args,
+                    include_receipt=True, archive_receipt=True), first)
+                self.assertEqual(self.ledger.review_context("mission-two", **other_args,
+                    include_receipt=True, archive_receipt=True), other)
+            self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+            for mission, selected in (("mission-one", args), ("mission-two", other_args)):
+                with self.subTest(mission=mission), self.assertRaisesRegex(ValueError, "archive limit reached"):
+                    self.ledger.review_context(mission, **{**selected, "reviewer_id": "new-evaluator"},
+                        include_receipt=True, archive_receipt=True)
+                self.assertEqual(tuple(self.ledger.db.iterdump()), before)
+                self.assertFalse(self.ledger.db.in_transaction)
+            self.assertEqual(self.ledger.load_context_review_receipt("mission-one", **args), first)
+            self.assertEqual(self.ledger.load_context_review_receipt("mission-two", **other_args), other)
+            self.assertEqual(self.load()["profile"], self.profile)
+            self.assertEqual(self.load("mission-two")["profile"], neighbor)
+            backup_path = self.path.parent / "full-archive.sqlite3"
+            _backup(self.ledger.db, backup_path)
+            with HandoffLedger(backup_path, read_only=True) as backup:
+                self.assertEqual(backup.load_context_review_receipt("mission-one", **args), first)
+                self.assertEqual(backup.load_context_review_receipt("mission-two", **other_args), other)
+        self.ledger.close()
+        before_bytes = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        self.assertEqual(self.ledger.load_context_review_receipt("mission-one", **args), first)
+        self.assertEqual(self.ledger.load_context_review_receipt("mission-two", **other_args), other)
+        self.assertEqual(self.ledger.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 2)
+        self.assertEqual(self.ledger.db.execute("PRAGMA user_version").fetchone()[0], 4)
+        self.assertEqual(self.load()["profile"], self.profile)
+        self.assertEqual(self.load("mission-two")["profile"], neighbor)
+        self.assertEqual((first["control_state"], first["execution_state"]), ("paused", "outcome_unknown"))
+        self.assertFalse(first["retry_authorized"])
+        self.assertFalse(first["dispatch_authorized"])
+        self.assertEqual(self.path.read_bytes(), before_bytes)
+
     def test_archive_migration_rolls_back_and_retains_independent_history_and_backups(self):
         from scripts.jarvis_network import _backup
         self.profile = self.destination_profile()
