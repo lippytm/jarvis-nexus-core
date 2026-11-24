@@ -2067,6 +2067,71 @@ raise AssertionError("worker unexpectedly returned a receipt")
         self.assertNotIn("example.invalid", json.dumps(receipt))
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_archive_terminal_history_retains_all_valid_context_versions_and_upgrades(self):
+        from scripts.jarvis_network import _backup
+        records = []
+        for version in (1, 2, 3):
+            with self.subTest(version=version):
+                mission = "mission-one" if version == 1 else "compat-" + str(version)
+                if version == 2:
+                    self.stage(mission, target="gemini")
+                elif version == 3:
+                    self.ledger.stage(dict(schema_version=1, kind="jarvis.draft", project_id="ai-jarvis",
+                        target="codex", text="Synthetic compatibility fixture."), self.manifest,
+                        assistant_id="memory-pilot.evaluator", handoff_id=mission)
+                profile = self.context(mission)
+                if version == 3:
+                    profile["asset_id"] = "memory-pilot.evaluator"
+                profile["schema_version"] = version
+                profile["execution"]["state"] = "outcome_unknown"
+                if version >= 2:
+                    profile["control"] = dict(state="cancelled", actor_id="local-controller", reason="Synthetic terminal hold.")
+                if version == 3:
+                    profile["destination_id"] = "compat-destination"
+                saved = self.ledger.save_context(profile, expected_revision=0)
+                args = dict(reviewer_id="local-evaluator", expected_revision=1, expected_sha256=saved["context_sha256"])
+                original = self.ledger.review_context(mission, **args, include_receipt=True, archive_receipt=True)
+                self.assertEqual(original["schema_version"], 1)
+                self.assertEqual(original["context_schema_version"], version)
+                self.assertEqual(original["control_state"], "legacy_uncontrolled" if version == 1 else "cancelled")
+                self.assertEqual(original["destination_id"], "compat-destination" if version == 3 else None)
+                # Upgrade the old context using the existing explicit schema path.
+                profile["schema_version"] = min(version + 1, 3)
+                profile["control"] = dict(state="cancelled", actor_id="local-controller", reason="Synthetic terminal hold.")
+                if profile["schema_version"] == 3:
+                    profile["destination_id"] = "compat-destination"
+                profile["memory_revision"] = 2
+                profile["configuration_version"] = "compat.v2"
+                profile["execution"]["detail"] = "Synthetic later checkpoint; retain unknown outcome."
+                updated = self.ledger.save_context(profile, expected_revision=1)
+                current_args = {**args, "expected_revision": 2, "expected_sha256": updated["context_sha256"]}
+                current = self.ledger.review_context(mission, **current_args, include_receipt=True, archive_receipt=True)
+                with self.assertRaisesRegex(ValueError, "exact current review binding"):
+                    self.ledger.load_context_review_receipt(mission, **args)
+                records.append((mission, profile, original, current, current_args))
+        backup_path = self.path.parent / "compatible-versions.sqlite3"
+        _backup(self.ledger.db, backup_path)
+        self.ledger.close()
+        before = self.path.read_bytes()
+        self.ledger = HandoffLedger(self.path, read_only=True)
+        with HandoffLedger(backup_path, read_only=True) as backup:
+            for inspected in (self.ledger, backup):
+                self.assertEqual(inspected.db.execute("PRAGMA user_version").fetchone()[0], 4)
+                self.assertEqual(inspected.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 6)
+                for mission, profile, original, current, args in records:
+                    row = inspected.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=1", (mission,)).fetchone()
+                    self.assertEqual(inspected._archived_context_review(row), original)
+                    self.assertEqual(inspected.load_context_review_receipt(mission, **args), current)
+                    loaded = inspected.load_context(mission, expected_source_revision=REVISION, expected_memory_revision=2)
+                    self.assertEqual(loaded["profile"], profile)
+                    self.assertEqual(loaded["review_state"], "locally_reviewed")
+                    with self.assertRaisesRegex(ValueError, "private context"):
+                        inspected.load_context(mission, expected_source_revision=REVISION,
+                            expected_memory_revision=2, audience="public_candidate")
+                    self.assertFalse(current["retry_authorized"])
+                    self.assertFalse(current["dispatch_authorized"])
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_archive_history_rejects_impossible_cleared_terminal_holds(self):
         from scripts.jarvis_network import _backup
         self.profile = self.destination_profile()
