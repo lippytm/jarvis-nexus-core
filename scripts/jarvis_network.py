@@ -275,11 +275,18 @@ def _backup(connection, path):
                 for row in checked.db.execute("SELECT handoff_id,revision FROM context_checkpoints").fetchall():
                     checked._checkpoint(row["handoff_id"], row["revision"])
             if version == 4:
-                receipts = checked.db.execute("SELECT * FROM context_review_receipts LIMIT 1001").fetchall()
+                receipts = checked.db.execute("SELECT * FROM context_review_receipts ORDER BY handoff_id,revision,reviewer_id LIMIT 1001").fetchall()
                 if len(receipts) > 1000:
                     raise ValueError("context review archive limit exceeded")
+                previous = None
                 for archived in receipts:
-                    checked._archived_context_review(archived)
+                    receipt = checked._archived_context_review(archived)
+                    # Current bounds alone miss a hold cleared and later restored.
+                    if previous and previous["handoff_id"] == receipt["handoff_id"] and (
+                        previous["control_state"] == "cancelled" and receipt["control_state"] != "cancelled"
+                        or previous["execution_state"] == "outcome_unknown" and receipt["execution_state"] != "outcome_unknown"):
+                        raise ValueError("context review archive history regresses")
+                    previous = receipt
         checksum = hashlib.sha256()
         with temporary.open("rb") as handle:
             for block in iter(lambda: handle.read(65536), b""):

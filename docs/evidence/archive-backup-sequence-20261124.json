@@ -1,0 +1,109 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "84c292a9e9e23c85a43e746f9a24a092813c40e42b36f6560e3121078fd402b5",
+    "scripts/jarvis_network.py": "19597c6bef33926e09395e3bd945dc020b4a16c22b17443fa22dec06b7523392",
+    "tests/test_handoff_context.py": "cb1da44199ce07ec1596fcab1b7d1b3893b01be81b09be31a4d49ba117e9493a"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Checked backup orders existing bounded archive rows by handoff/revision/reviewer, validates each as before, then compares terminal holds to the preceding same-handoff receipt. Refuse regression before publication; preserve 1,000-row cap and metadata/API/schema/default shapes.",
+  "checkpoint": {
+    "next": "Independent exact-source review of archive-sequence backup rejection and valid-history compatibility before owner release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "archive_backup_sequence_candidate_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Two individually valid but chronologically impossible terminal histories reject checked backup with no final file or temporary backup left behind. Oldest row inserted last verifies revision ordering rather than insertion order.",
+      "Fresh read-only source checks retain current valid receipt, independent Gemini receipt, both private profiles and source database bytes.",
+      "Restoring genuine ordered history permits checked backup and current/independent receipt recovery. Existing impossible-current and valid v1/v2/v3 upgrade tests also pass."
+    ],
+    "baseline": {
+      "log_sha256": "6008927c9493e070701217bd6f61691f4461ed98e82f7c038fd8e132c998049a",
+      "result": "Both rehashed cleared-then-restored terminal-hold histories passed checked backup: two expected-ValueError failures."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "109b2b2c0b0df77a30f3e9097dc79e93e5c97a83357180f36648fbdca112831b",
+      "passed": true,
+      "tests": 3
+    },
+    "full": {
+      "evidence": "reports/r62-full.json",
+      "passed": true,
+      "record_sha256": "9f917e3c5a9fb2ef034b975a22bc3193a29cdbb4052fb0bb205c99dfe5bd11db",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 632,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "4973ea7fd4f3a7f01dca7791d4ce605b5019b8b2f16e0405357e3f58b9fd9fb2",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "d425c57db65f2b482bfff2fc37a033717e1249a6",
+  "limitations": [
+    "Synthetic SQLite corruption only; no actual owner incident, operational repair/migration or authenticated review claimed.",
+    "Comparison covers retained same-handoff archive sequence; missing revisions are not reconstructed. Selective current-receipt reads intentionally do not validate the whole archive chronology.",
+    "Checks do not establish cryptographic provenance or detect all consistent metadata tampering. Existing local labels/hashes remain unauthenticated.",
+    "API/schema/strict v1 and output shapes unchanged; no operational records deleted, rewritten or restored. Older evaluator materials do not approve this newer implementation.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio/Newsletter untouched. No live provider delivery, lease/failover/reconnect controller or measured reliability gain."
+  ],
+  "memory_revision": 250,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "reproduced_invalid_backup_cases": 2,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-backup-sequence-20261124",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master250/current branch/PR5/readiness/shared requirement/findings/prior receipt. Current-bound terminal history repair and compatibility coverage complete; no active retry/dispatch to duplicate. Funding/comedy repairs retained.",
+  "problem": "Per-receipt current-state bounds cannot detect cancelled/outcome_unknown history cleared at an intermediate retained revision and restored in the current context. Checked backup accepted both rehashed impossible sequences.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "70fabccde2ea3325795890251b14b1b740579dd6cbad8ca50ba0269a9994879b",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}
