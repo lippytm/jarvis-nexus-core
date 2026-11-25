@@ -281,6 +281,11 @@ def _backup(connection, path):
                 previous = None
                 for archived in receipts:
                     receipt = checked._archived_context_review(archived)
+                    if (previous and previous["handoff_id"] == receipt["handoff_id"]
+                        and previous["context_revision"] == receipt["context_revision"]):
+                        varying = {"reviewer_label", "recorded_at", "receipt_sha256"}
+                        if any(previous[key] != value for key, value in receipt.items() if key not in varying):
+                            raise ValueError("same-revision review archive mismatch")
                     # Current bounds alone miss a hold cleared and later restored.
                     if previous and previous["handoff_id"] == receipt["handoff_id"] and (
                         previous["control_state"] == "cancelled" and receipt["control_state"] != "cancelled"

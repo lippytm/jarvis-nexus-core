@@ -1095,7 +1095,11 @@ walks retained receipts in handoff/stored-revision order and rejects a terminal
 hold cleared between historical entries, even if the current context has that
 hold again. The existing 1,000-row cap remains; missing revisions are not
 reconstructed and selective current-receipt reads do not validate the whole archive
-sequence. Older software that supports only
+sequence. During checked backup, receipts for the same handoff/stored revision
+must agree on context-bound metadata; only reviewer label, recorded timestamp
+and the resulting receipt checksum may differ. Contradictory rehashed historical
+reviews refuse publication, without authenticating either reviewer or resolving
+which record was intended. Older software that supports only
 versions 2/3 must refuse this database. Retain a pre-upgrade backup and use current
 tools for further backups; no downgrade or automatic restore is provided.
 

@@ -2067,6 +2067,64 @@ raise AssertionError("worker unexpectedly returned a receipt")
         self.assertNotIn("example.invalid", json.dumps(receipt))
         self.assertEqual(self.path.read_bytes(), before)
 
+    def test_backup_requires_same_revision_reviewers_to_bind_identical_context(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        saved = self.save()
+        args = dict(reviewer_id="a-reviewer", expected_revision=1, expected_sha256=saved["context_sha256"])
+        with patch("control_tower.handoffs._now", return_value="2026-11-25T00:00:00+00:00"):
+            first = self.ledger.review_context("mission-one", **args, include_receipt=True, archive_receipt=True)
+        with patch("control_tower.handoffs._now", return_value="2026-11-25T00:00:01+00:00"):
+            second = self.ledger.review_context("mission-one", **{**args, "reviewer_id": "z-reviewer"},
+                include_receipt=True, archive_receipt=True)
+        self.assertNotEqual(first["reviewer_label"], second["reviewer_label"])
+        self.assertNotEqual(first["recorded_at"], second["recorded_at"])
+        self.profile["memory_revision"] = 2
+        self.profile["configuration_version"] = "later.v2"
+        self.profile["execution"]["detail"] = "Synthetic later private checkpoint."
+        changed = self.ledger.save_context(self.profile, expected_revision=1)
+        current_args = {**args, "expected_revision": 2, "expected_sha256": changed["context_sha256"]}
+        current = self.ledger.review_context("mission-one", **current_args, include_receipt=True, archive_receipt=True)
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        other_saved = self.ledger.save_context(neighbor, expected_revision=0)
+        other_args = {**args, "expected_sha256": other_saved["context_sha256"]}
+        other = self.ledger.review_context("mission-two", **other_args, include_receipt=True, archive_receipt=True)
+        _backup(self.ledger.db, self.path.parent / "valid-reviewers.sqlite3")
+        for field, value in (("context_sha256", "0" * 64), ("configuration_version", "alternate.v2"),
+                             ("memory_revision", 2), ("control_state", "active")):
+            with self.subTest(field=field):
+                wrong = {**first, field: value}
+                wrong["receipt_sha256"] = digest({k: v for k, v in wrong.items() if k != "receipt_sha256"})
+                self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='mission-one' AND revision=1 AND reviewer_id='a-reviewer'",
+                    (json.dumps(wrong), wrong["receipt_sha256"]))
+                before = self.path.read_bytes()
+                out = self.path.parent / (field + "-reviewers.sqlite3")
+                with HandoffLedger(self.path, read_only=True) as reopened:
+                    row = reopened.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' AND revision=1 AND reviewer_id='a-reviewer'").fetchone()
+                    self.assertEqual(reopened._archived_context_review(row), wrong)
+                    with self.assertRaisesRegex(ValueError, "same-revision review archive mismatch"):
+                        _backup(reopened.db, out)
+                    self.assertFalse(out.exists())
+                    self.assertEqual(list(self.path.parent.glob(".jarvis-backup-*")), [])
+                    self.assertEqual(reopened.load_context_review_receipt("mission-one", **current_args), current)
+                    self.assertEqual(reopened.load_context_review_receipt("mission-two", **other_args), other)
+                    self.assertEqual(reopened.load_context("mission-one", expected_source_revision=REVISION,
+                        expected_memory_revision=2)["profile"], self.profile)
+                    self.assertEqual(reopened.load_context("mission-two", expected_source_revision=REVISION,
+                        expected_memory_revision=1)["profile"], neighbor)
+                self.assertEqual(self.path.read_bytes(), before)
+        self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='mission-one' AND revision=1 AND reviewer_id='a-reviewer'",
+            (json.dumps(first), first["receipt_sha256"]))
+        valid = self.path.parent / "restored-reviewers.sqlite3"
+        _backup(self.ledger.db, valid)
+        with HandoffLedger(valid, read_only=True) as backup:
+            rows = backup.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' AND revision=1 ORDER BY reviewer_id").fetchall()
+            self.assertEqual([backup._archived_context_review(row) for row in rows], [first, second])
+            self.assertEqual(backup.load_context_review_receipt("mission-two", **other_args), other)
+
     def test_backup_rejects_cleared_then_restored_archived_terminal_holds(self):
         from scripts.jarvis_network import _backup
         self.profile = self.destination_profile()
