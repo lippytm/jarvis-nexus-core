@@ -1,3 +1,82 @@
+# PR #5 current engineering review entry — November 25, 2026
+
+## Bounded archive integrity and compatibility review
+
+**Author-prepared material; independent evaluation and owner release pending.**
+This refresh selects source `f010a77b1b4ca1d1dec9674a047f45ec45b49e88`, master memory252. It does not dispatch an evaluator,
+constitute accepted procedure, authenticate reviewers or approve the whole PR.
+The previous November 20 entry is retained verbatim below; its older selection
+cannot approve the four subsequent archive changes selected here.
+
+### Concrete review questions
+
+| Slice | Acceptance check | Limit |
+| --- | --- | --- |
+| Full archive | Recover the original duplicate tuple at the cap; reject new rows atomically while retaining independent records and holds. | Two-entry synthetic cap fixture; not an operational migration or capacity increase. |
+| Current-bound terminal history | Reject historical cancellation or unknown outcome contradicted by current state. | Local unkeyed receipts do not authenticate history. |
+| Ordered retained history | Reject cleared-then-restored terminal holds, even if current state matches; compare revision order rather than insertion order. | Missing history is not reconstructed. Current selective reads do not audit the entire archive. |
+| Same-revision reviewers | Reject inconsistent context metadata, including digest, configuration, memory and control state; preserve legitimate reviewer labels/timestamps/checksums. | Consistency is not provenance, consensus or a choice of which record is correct. Consistent tampering can evade these checks. |
+| Compatibility and recovery | Retain valid schema1/2/3 histories and explicit upgrades, independent mission records, private paused/outcome_unknown state, original source bytes and cleanup on refusal. | No operational restore, replay, release or hosted worker follows a passing backup. Existing API/schema/default shapes and 1,000-row cap remain unchanged. |
+
+### Exact source manifest
+
+Selected Git blob bytes at `f010a77b1b4ca1d1dec9674a047f45ec45b49e88`, narrower than a repository audit.
+Four historical actual-work receipt body checksums were recomputed. These are
+author preparation checks, not independent findings.
+
+| Input file | SHA-256 |
+| --- | --- |
+| [control_tower/handoffs.py](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/control_tower/handoffs.py) | `b69ef67202a32f93550e80d1a7374b8f9a43219aafe1a4bdff1bd2c7ef9c3942` |
+| [control_tower/network_contract.py](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/control_tower/network_contract.py) | `b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7` |
+| [scripts/jarvis_network.py](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/scripts/jarvis_network.py) | `0bcda5e97647a8980a05697c83fab27fbbad3f33caa362b97f82903921a70598` |
+| [tests/test_handoff_context.py](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/tests/test_handoff_context.py) | `76752fcd1a032e736d72e5328aa238906c7c7ff773573c884ce205fe20b775cb` |
+| [docs/HANDOFF_CONTEXT_PROFILE.md](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/HANDOFF_CONTEXT_PROFILE.md) | `bc40d0cd32b0b971c83f14abb973b664289206d90faecd3240be24ffd307b379` |
+| [docs/CODEX_JARVIS_READINESS.md](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/CODEX_JARVIS_READINESS.md) | `2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757` |
+| [docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md) | `a795d6f8dd03ebeb3f2985bdb72f9d39911d78d5eeef21306170bb793ca18c0c` |
+| [docs/evidence/full-archive-dedup-20261123.json](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/evidence/full-archive-dedup-20261123.json) | `d807258a7954b6538e74ea8c64e4970bdb73618c6ea53635bf96fafa719710ce` |
+| [docs/evidence/archive-terminal-history-20261123.json](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/evidence/archive-terminal-history-20261123.json) | `83526c64358536d762d57c4bff9e657e2943004a79fa33cf78484213ac44fb96` |
+| [docs/evidence/archive-backup-sequence-20261124.json](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/evidence/archive-backup-sequence-20261124.json) | `a9805dc5e5f32e0f286db431930d7a8c68bb4a5b91932d5f534aea13960ed178` |
+| [docs/evidence/archive-review-consistency-20261125.json](https://github.com/lippytm/jarvis-nexus-core/blob/f010a77b1b4ca1d1dec9674a047f45ec45b49e88/docs/evidence/archive-review-consistency-20261125.json) | `c4cf53e83b107a200efaaaacbf228943b01b181ec58cb03b137712eeafeaf5c2` |
+
+### Reproduce and return
+
+The following five-test command passed at the selected input. Python syntax
+checks are recorded separately in the work receipt. No production code or test
+case changes are introduced by this documentation refresh.
+
+```sh
+python -m unittest tests.test_handoff_context.ContextTests.test_backup_requires_same_revision_reviewers_to_bind_identical_context tests.test_handoff_context.ContextTests.test_backup_rejects_cleared_then_restored_archived_terminal_holds tests.test_handoff_context.ContextTests.test_archive_terminal_history_retains_all_valid_context_versions_and_upgrades tests.test_handoff_context.ContextTests.test_archive_history_rejects_impossible_cleared_terminal_holds tests.test_handoff_context.ContextTests.test_full_review_archive_retains_duplicate_recovery_and_current_bindings
+```
+
+Use this refresh receipt's `checks.source_manifest` with `check-review-files`,
+the exact receipt file-byte digest, source/memory guards and all four identity
+guards. Optional `--verify-git-head` checks local root/HEAD, not clean status,
+unselected bytes, signatures or future changes. Successful intake is integrity
+evidence; it is not evaluator acceptance or a provider return.
+
+Return source `f010a77b1b4ca1d1dec9674a047f45ec45b49e88`, memory252, selected hashes, concrete
+findings or explicitly scoped no-findings, reproduction/severity, actual checks,
+unresolved limits and proposed next action. Later implementation changes require
+new exact-source review. Proposed procedures and memory writes remain separate
+from accepted facts and actual work receipts. No credentials/private chats requested.
+
+Input [push CI](https://github.com/lippytm/jarvis-nexus-core/actions/runs/45677320145)
+and [PR CI](https://github.com/lippytm/jarvis-nexus-core/actions/runs/45677334540)
+passed 633 Python/74 syntax/181 web/276 container tests plus Compose checks.
+Those are prior input results, not this documentation publication's CI or
+independent approval. Final publication checks belong in the master receipt.
+
+All17 portable targets/business areas retained; seven source PROJECTS separate.
+Codex is distinct from ChatGPT/OpenAI API/GitHub. Trading Bots remains research,
+backtesting/paper only; RoboParty deferred. No new agent/connection, delivery,
+merge/deploy/publication/messages/spending/credential/permission/public-access
+or schedule changes. Studio/Newsletter untouched. Leases/failover remain planned;
+costs, recovery time, review effort and reliability gain remain unmeasured.
+
+---
+
+## Historical November 20 source-bound review entry (retained verbatim)
+
 # PR #5 current engineering review entry — November 20, 2026
 
 ## Bounded evaluator handoff for archive creation and pinned recovery

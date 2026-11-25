@@ -1,0 +1,87 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_existing_review_entry",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "author_preparation_only_independent_and_owner_review_pending",
+  "artifact_sha256": {
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md": "60c08d3ed349928e2b90556b4850c9ad37384631789e7e4dfa0f5071767641d3"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Prepend current archive-integrity review selection to existing entry; retain all earlier contents verbatim.",
+  "checkpoint": {
+    "next": "Independent exact-source archive integrity review before owner release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "review_material_prepared_not_dispatched"
+  },
+  "checks": {
+    "final_receipt_intake": "Final receipt intake and refusal results recorded in master Page to avoid self-referential file-digest evidence.",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_backup_requires_same_revision_reviewers_to_bind_identical_context tests.test_handoff_context.ContextTests.test_backup_rejects_cleared_then_restored_archived_terminal_holds tests.test_handoff_context.ContextTests.test_archive_terminal_history_retains_all_valid_context_versions_and_upgrades tests.test_handoff_context.ContextTests.test_archive_history_rejects_impossible_cleared_terminal_holds tests.test_handoff_context.ContextTests.test_full_review_archive_retains_duplicate_recovery_and_current_bindings",
+      "log_sha256": "d74f9c24b987fff60e7b362c83336b7f654b48dd7a45cc12a1ea49749d33cb86",
+      "passed": true,
+      "tests": 5
+    },
+    "full_local_suite": "Not repeated for documentation-only change; publication CI recorded separately.",
+    "receipt_bodies_rehashed": 4,
+    "source_manifest": {
+      "historical_body_retained_verbatim": true,
+      "memory_revision": 252,
+      "original_review_entry_sha256": "8fc10b6855db6cf700c2c43abc753cef816c9466abbdae855dd2831e9aa9949d",
+      "source_revision": "f010a77b1b4ca1d1dec9674a047f45ec45b49e88",
+      "source_sha256": {
+        "control_tower/handoffs.py": "b69ef67202a32f93550e80d1a7374b8f9a43219aafe1a4bdff1bd2c7ef9c3942",
+        "control_tower/network_contract.py": "b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7",
+        "docs/CODEX_JARVIS_READINESS.md": "2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757",
+        "docs/HANDOFF_CONTEXT_PROFILE.md": "bc40d0cd32b0b971c83f14abb973b664289206d90faecd3240be24ffd307b379",
+        "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "a795d6f8dd03ebeb3f2985bdb72f9d39911d78d5eeef21306170bb793ca18c0c",
+        "docs/evidence/archive-backup-sequence-20261124.json": "a9805dc5e5f32e0f286db431930d7a8c68bb4a5b91932d5f534aea13960ed178",
+        "docs/evidence/archive-review-consistency-20261125.json": "c4cf53e83b107a200efaaaacbf228943b01b181ec58cb03b137712eeafeaf5c2",
+        "docs/evidence/archive-terminal-history-20261123.json": "83526c64358536d762d57c4bff9e657e2943004a79fa33cf78484213ac44fb96",
+        "docs/evidence/full-archive-dedup-20261123.json": "d807258a7954b6538e74ea8c64e4970bdb73618c6ea53635bf96fafa719710ce",
+        "scripts/jarvis_network.py": "0bcda5e97647a8980a05697c83fab27fbbad3f33caa362b97f82903921a70598",
+        "tests/test_handoff_context.py": "76752fcd1a032e736d72e5328aa238906c7c7ff773573c884ce205fe20b775cb"
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/f60520cf1699",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "review_material_prepared_not_dispatched",
+  "input_revision": "f010a77b1b4ca1d1dec9674a047f45ec45b49e88",
+  "limitations": [
+    "Author preparation only, no independent evaluation, accepted procedure, authentication or delivery.",
+    "No runtime, production code, packet/schema, tests, operational records or provider connections changed.",
+    "All17 targets/areas retained; Trading Bots paper/research only; RoboParty deferred; owner/external-action limits unchanged."
+  ],
+  "memory_revision": 252,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0
+  },
+  "mission_id": "archive-integrity-evaluator-20261125",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "06e3b88c19f3a85e26b516230219af33a9dbfba1d73c5a49cf9426ad26bc97d7",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "visibility": "owner_private"
+}
