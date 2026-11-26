@@ -2203,7 +2203,14 @@ raise AssertionError("worker unexpectedly returned a receipt")
                     profile["destination_id"] = "compat-destination"
                 saved = self.ledger.save_context(profile, expected_revision=0)
                 args = dict(reviewer_id="local-evaluator", expected_revision=1, expected_sha256=saved["context_sha256"])
-                original = self.ledger.review_context(mission, **args, include_receipt=True, archive_receipt=True)
+                with patch("control_tower.handoffs._now", return_value="2026-11-26T00:00:00+00:00"):
+                    original = self.ledger.review_context(mission, **args, include_receipt=True, archive_receipt=True)
+                with patch("control_tower.handoffs._now", return_value="2026-11-26T00:00:01+00:00"):
+                    second = self.ledger.review_context(mission, **{**args, "reviewer_id": "second-evaluator"},
+                        include_receipt=True, archive_receipt=True)
+                self.assertNotEqual(original["reviewer_label"], second["reviewer_label"])
+                self.assertNotEqual(original["recorded_at"], second["recorded_at"])
+                self.assertNotEqual(original["receipt_sha256"], second["receipt_sha256"])
                 self.assertEqual(original["schema_version"], 1)
                 self.assertEqual(original["context_schema_version"], version)
                 self.assertEqual(original["control_state"], "legacy_uncontrolled" if version == 1 else "cancelled")
@@ -2221,7 +2228,7 @@ raise AssertionError("worker unexpectedly returned a receipt")
                 current = self.ledger.review_context(mission, **current_args, include_receipt=True, archive_receipt=True)
                 with self.assertRaisesRegex(ValueError, "exact current review binding"):
                     self.ledger.load_context_review_receipt(mission, **args)
-                records.append((mission, profile, original, current, current_args))
+                records.append((mission, profile, [original, second], current, current_args))
         backup_path = self.path.parent / "compatible-versions.sqlite3"
         _backup(self.ledger.db, backup_path)
         self.ledger.close()
@@ -2230,10 +2237,10 @@ raise AssertionError("worker unexpectedly returned a receipt")
         with HandoffLedger(backup_path, read_only=True) as backup:
             for inspected in (self.ledger, backup):
                 self.assertEqual(inspected.db.execute("PRAGMA user_version").fetchone()[0], 4)
-                self.assertEqual(inspected.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 6)
-                for mission, profile, original, current, args in records:
-                    row = inspected.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=1", (mission,)).fetchone()
-                    self.assertEqual(inspected._archived_context_review(row), original)
+                self.assertEqual(inspected.db.execute("SELECT count(*) FROM context_review_receipts").fetchone()[0], 9)
+                for mission, profile, originals, current, args in records:
+                    rows = inspected.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id=? AND revision=1 ORDER BY reviewer_id", (mission,)).fetchall()
+                    self.assertEqual([inspected._archived_context_review(row) for row in rows], originals)
                     self.assertEqual(inspected.load_context_review_receipt(mission, **args), current)
                     loaded = inspected.load_context(mission, expected_source_revision=REVISION, expected_memory_revision=2)
                     self.assertEqual(loaded["profile"], profile)
