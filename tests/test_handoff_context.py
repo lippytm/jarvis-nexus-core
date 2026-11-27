@@ -2180,6 +2180,57 @@ raise AssertionError("worker unexpectedly returned a receipt")
             self.assertEqual(backup.load_context_review_receipt("mission-one", **current_args), current)
             self.assertEqual(backup.load_context_review_receipt("mission-two", **other_args), other)
 
+    def test_backup_rejects_archived_memory_and_schema_regressions(self):
+        from scripts.jarvis_network import _backup
+        self.profile = self.destination_profile()
+        self.profile["control"]["state"] = "paused"
+        self.profile["execution"]["state"] = "outcome_unknown"
+        originals = []
+        for revision in (1, 2, 3):
+            self.profile["memory_revision"] = revision + 1
+            self.profile["execution"]["detail"] = "Synthetic checkpoint " + str(revision)
+            saved = self.ledger.save_context(self.profile, expected_revision=revision - 1)
+            args = dict(reviewer_id="local-evaluator", expected_revision=revision,
+                expected_sha256=saved["context_sha256"])
+            originals.append(self.ledger.review_context("mission-one", **args,
+                include_receipt=True, archive_receipt=True))
+        current_args = args
+        self.stage("mission-two", target="gemini")
+        neighbor = self.context("mission-two")
+        other_saved = self.ledger.save_context(neighbor, expected_revision=0)
+        other_args = {**args, "expected_revision": 1, "expected_sha256": other_saved["context_sha256"]}
+        other = self.ledger.review_context("mission-two", **other_args, include_receipt=True, archive_receipt=True)
+        for changes in ({"memory_revision": 1}, {"context_schema_version": 2, "destination_id": None}):
+            with self.subTest(changes=changes):
+                wrong = {**originals[1], **changes}
+                wrong["receipt_sha256"] = digest({k: v for k, v in wrong.items() if k != "receipt_sha256"})
+                self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='mission-one' AND revision=2",
+                    (json.dumps(wrong), wrong["receipt_sha256"]))
+                before = self.path.read_bytes()
+                out = self.path.parent / (next(iter(changes)) + "-regression.sqlite3")
+                with HandoffLedger(self.path, read_only=True) as reopened:
+                    row = reopened.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' AND revision=2").fetchone()
+                    self.assertEqual(reopened._archived_context_review(row), wrong)
+                    with self.assertRaisesRegex(ValueError, "archive history regresses"):
+                        _backup(reopened.db, out)
+                    self.assertFalse(out.exists())
+                    self.assertEqual(list(self.path.parent.glob(".jarvis-backup-*")), [])
+                    self.assertEqual(reopened.load_context_review_receipt("mission-one", **current_args), originals[-1])
+                    self.assertEqual(reopened.load_context_review_receipt("mission-two", **other_args), other)
+                    self.assertEqual(reopened.load_context("mission-one", expected_source_revision=REVISION,
+                        expected_memory_revision=4)["profile"], self.profile)
+                    self.assertEqual(reopened.load_context("mission-two", expected_source_revision=REVISION,
+                        expected_memory_revision=1)["profile"], neighbor)
+                self.assertEqual(self.path.read_bytes(), before)
+        self.ledger.db.execute("UPDATE context_review_receipts SET body=?,digest=? WHERE handoff_id='mission-one' AND revision=2",
+            (json.dumps(originals[1]), originals[1]["receipt_sha256"]))
+        valid = self.path.parent / "valid-monotonic-history.sqlite3"
+        _backup(self.ledger.db, valid)
+        with HandoffLedger(valid, read_only=True) as backup:
+            rows = backup.db.execute("SELECT * FROM context_review_receipts WHERE handoff_id='mission-one' ORDER BY revision").fetchall()
+            self.assertEqual([backup._archived_context_review(row) for row in rows], originals)
+            self.assertEqual(backup.load_context_review_receipt("mission-two", **other_args), other)
+
     def test_archive_terminal_history_retains_all_valid_context_versions_and_upgrades(self):
         from scripts.jarvis_network import _backup
         records = []

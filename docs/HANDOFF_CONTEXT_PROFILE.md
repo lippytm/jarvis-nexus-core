@@ -1093,7 +1093,12 @@ legitimate retained holds and old receipt/schema shapes remain valid. They do
 not authenticate history or reconstruct missing context. Checked backup additionally
 walks retained receipts in handoff/stored-revision order and rejects a terminal
 hold cleared between historical entries, even if the current context has that
-hold again. The existing 1,000-row cap remains; missing revisions are not
+hold again. Retained memory revisions and context schema versions must also be
+nondecreasing for one handoff, matching the existing context-edit rules. A
+rehashed downgrade followed by a later restoration refuses backup publication;
+equal versions and explicit forward upgrades remain valid. This validates only
+retained metadata and does not identify which contradictory record is correct.
+The existing 1,000-row cap remains; missing revisions are not
 reconstructed and selective current-receipt reads do not validate the whole archive
 sequence. During checked backup, receipts for the same handoff/stored revision
 must agree on context-bound metadata; only reviewer label, recorded timestamp

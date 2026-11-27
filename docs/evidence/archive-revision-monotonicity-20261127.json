@@ -1,0 +1,100 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bea98b6f550ef4f0179929944046dfb26c6b0f2d0b3b3ad45109182a94a41171",
+    "scripts/jarvis_network.py": "bf21cffe67fa044612d4d626750354837f5abb21621c93f3156721b19682d6f0",
+    "tests/test_handoff_context.py": "34477d2bb5c79051963546d49290826a0a729b7d04311a6db50eeaeb89a02d37"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "In existing ordered bounded archive backup pass, reject decreasing memory_revision or context_schema_version within one handoff. Keep equal versions and explicit forward upgrades valid; do not select, repair or migrate conflicting records.",
+  "checkpoint": {
+    "next": "Reconcile publication CI, then independent exact-source review of revision monotonicity and valid schema/multi-reviewer compatibility before owner release. Earlier review packets do not approve this newer implementation.",
+    "state": "archive_revision_monotonicity_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Rehashed memory rollback and schema3-to2 historical downgrade reject from a fresh read-only source before backup publication; no final/temporary backup left and source bytes unchanged.",
+      "Current private paused/outcome_unknown receipt/profile and independent Gemini receipt/profile remain readable. Restoring the original fixture permits backup and exact recovery of all three historical/current receipts.",
+      "Existing schema1/2/3 forward upgrades/equal versions/multiple historical reviewers and terminal-hold/same-revision conflict tests pass."
+    ],
+    "baseline": {
+      "log_sha256": "a9a03c990ffdd48113eb898715f2eca81baaf52a436e3d2fdbf92b14614fdb79",
+      "result": "Two individually valid rehashed historical regressions passed backup: two expected-ValueError failures."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "583d8015a200d74d753c37164a0ecadb232d0d0d556b7c1de50ef94d38dd08c7",
+      "passed": true,
+      "tests": 4
+    },
+    "full": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "record_sha256": "bebc779036bb1242cc04e95bb750ae172a00d36a2ddc04b6dec280d8a16a656e",
+      "skipped": 0,
+      "syntax_files": 74,
+      "tests": 634
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "b239f1f2a6d86dd37a14b40a45f728caf16620c9d312d9e98ebe727cff227545",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "4f3a05cb60d33a149fee70b67a5834c79b547d29",
+  "limitations": [
+    "Synthetic SQLite mutation only, not an owner incident, operational repair/migration or authenticated reviewer consensus. Consistent metadata tampering can evade checks.",
+    "Checks cover retained rows in checked backup; missing history is not reconstructed and selective current receipt reads do not audit the whole archive. The validator does not choose which contradictory row is correct.",
+    "Existing 1,000-row cap/API/schema/default/output shapes and strict v1 unchanged. No operational ledger altered.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; Studio/Newsletter untouched. No live worker/provider delivery, lease/failover/reconnect or measured reliability improvement."
+  ],
+  "memory_revision": 255,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "reproduced_invalid_backup_cases": 2,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-revision-monotonicity-20261127",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read current master255/receipt/shared requirement/Codex workflow, current branch/PR5/readiness/findings and context-edit rules. Prior CI complete; no active retry/dispatch to duplicate. Funding/comedy fixes retained.",
+  "problem": "Checked backup bounded each archived receipt against current schema/memory but accepted a historical downgrade followed by restoration. Context edits already forbid either regression.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "340f6cf6c53dd229f96b6fe81fc8b1a589ebb31a370de255b02d05b29f0a8179",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

@@ -286,10 +286,12 @@ def _backup(connection, path):
                         varying = {"reviewer_label", "recorded_at", "receipt_sha256"}
                         if any(previous[key] != value for key, value in receipt.items() if key not in varying):
                             raise ValueError("same-revision review archive mismatch")
-                    # Current bounds alone miss a hold cleared and later restored.
+                    # Current bounds alone miss regressions between retained revisions.
                     if previous and previous["handoff_id"] == receipt["handoff_id"] and (
                         previous["control_state"] == "cancelled" and receipt["control_state"] != "cancelled"
-                        or previous["execution_state"] == "outcome_unknown" and receipt["execution_state"] != "outcome_unknown"):
+                        or previous["execution_state"] == "outcome_unknown" and receipt["execution_state"] != "outcome_unknown"
+                        or previous["memory_revision"] > receipt["memory_revision"]
+                        or previous["context_schema_version"] > receipt["context_schema_version"]):
                         raise ValueError("context review archive history regresses")
                     previous = receipt
         checksum = hashlib.sha256()
