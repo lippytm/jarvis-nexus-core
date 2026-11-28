@@ -1,0 +1,151 @@
+{
+  "acceptance_observations": [
+    "API selects 17-entry ai-jarvis, independent one-entry project and empty known project; unknown/wrongly typed project rejects. Default aggregate identity/counts unchanged.",
+    "Receipt checksum binds selected project/counts and whole registry digest; changed neighboring mapping rejects old digest even when selecting ai-jarvis. No resource mappings are returned.",
+    "Subprocess stdout and private0600/no-overwrite file outputs agree; unknown project creates no output directory; absent ledger remains absent and registry/existing ledger bytes unchanged.",
+    "Acceptance remains proposed_unverified; sender authentication not established and dispatch false."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_optional_project_registry_summary",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional inspect_destination_registry project_id / inspect-registry --project. Selected known project emits explicit schema-version-2 metadata receipt; default aggregate remains version 1. Validate/pin entire private registry before selection; stored snapshots and strict packets unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory revision and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent project-summary review; authenticated registry audience/access acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_connection_observations.ConnectionObservationTests.test_registry_inspection_selects_project_with_explicit_version_two",
+        "tests.test_handoff_context_cli.ContextCLITests.test_registry_project_preflight_is_selective_without_ledger"
+      ],
+      "errors": 1,
+      "exit_code": 1,
+      "failures": 1,
+      "reason": "new API keyword/CLI flag absent at input revision",
+      "tests": 2
+    },
+    "diff_check": "passed",
+    "focused": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_connection_observations.ConnectionObservationTests.test_registry_inspection_selects_project_with_explicit_version_two",
+        "tests.test_handoff_context_cli.ContextCLITests.test_registry_project_preflight_is_selective_without_ledger",
+        "tests.test_connection_observations.ConnectionObservationTests.test_registry_inspection_retains_exact_identity_without_resource_mappings"
+      ],
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 3
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/registry-project-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/registry-project-full-20261107.json",
+        "passed": true,
+        "record_sha256": "6b9ec15f66412cad3d41045255b741bf8c91bf3d065ed0c7777e501fb72db407",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 577,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 577,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.registry-project.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/checkpoint-selection-20261106.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "8a507fb755d6213b558b55e0720fcbc4bbc5382d",
+  "limitations": [
+    "Counts describe supplied specifications, not authenticated connections, installed agents or actual delivery.",
+    "Project selection is a report scope only; no permission, authentication, registry acceptance/save, lease, worker or dispatch/retry is added.",
+    "Seven source project IDs remain separate from seventeen business areas. All 17 portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/registry-project-baseline-20261107.txt": {
+      "sha256": "f50bd9cda3a1bddfcf5f940d0923e244acc6be7a5e675c34249377f8b51fb56c",
+      "text": "EF\n======================================================================\nERROR: test_registry_inspection_selects_project_with_explicit_version_two (tests.test_connection_observations.ConnectionObservationTests.test_registry_inspection_selects_project_with_explicit_version_two)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_connection_observations.py\", line 96, in test_registry_inspection_selects_project_with_explicit_version_two\n    selected = inspect_destination_registry(registry, **args, project_id=project)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: inspect_destination_registry() got an unexpected keyword argument 'project_id'\n\n======================================================================\nFAIL: test_registry_project_preflight_is_selective_without_ledger (tests.test_handoff_context_cli.ContextCLITests.test_registry_project_preflight_is_selective_without_ledger)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 85, in test_registry_project_preflight_is_selective_without_ledger\n    self.assertEqual(selected.returncode, 0, selected.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,status,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --project ai-evolutionary-evolutions\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.069s\n\nFAILED (failures=1, errors=1)\n"
+    },
+    "reports/registry-project-focused-20261107.txt": {
+      "sha256": "7e391f0ac2d376f140616736bbfae92136ac21b21c4d7e921963ecada7872279",
+      "text": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.279s\n\nOK\n"
+    }
+  },
+  "memory_revision": 190,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_baseline_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured"
+  },
+  "mission_id": "registry-project-20261107",
+  "next_task": "Independent exact-revision selective registry-summary review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "07d88d101e220468f0fbaa637f54ae757dd75a5256c78150ccf682e68ec84554",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/connections.py": "049665df6d124c74ab3060f49f5dd76bc24973cb44484cb4762ce4cab7791b08",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "b05c092c2f5ff3280d7f84cd9c44a9ebb159e5a8d8d82be13e4b731b1f2f3aba",
+    "scripts/jarvis_network.py": "14d6de7d081b6f918ad621f1d990f80747ec3380196099c8d37b2247d6d5da15",
+    "tests/test_connection_observations.py": "ebba471961123d66ddd84a1c9f5ea89fed07bdde87cf12c3bf8a7065bfb96c80",
+    "tests/test_handoff_context_cli.py": "2e9acab7f81278b0a1853d86429d2507c3d9f68045a2a5639ea2b882aa268558"
+  },
+  "tracked_patch_sha256": "2cee25d5348695dd74e8578aec6701533338a5816f168f40d457b18a7338449e",
+  "visibility": "owner_private"
+}

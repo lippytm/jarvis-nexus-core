@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "kind": "jarvis.diary_entry",
+  "entry_id": "diary-20261022-jarvis-source",
+  "date": "2026-10-22",
+  "timezone": "America/Los_Angeles",
+  "initiative_id": "jarvis-tools",
+  "title": "From a portfolio idea to a tested Jarvis workbench",
+  "visibility": "public_candidate",
+  "summary": "A public engineering record of the Jarvis portfolio milestone, assembled from its recorded GitHub commit and workflow. This entry supplies a starting point for documentary, publishing and educational adaptations. It does not describe private personal activities or claim a production deployment.",
+  "observations": [
+    {
+      "observation_id": "portfolio-built",
+      "text": "The portfolio expansion added a local workbench with twelve authored initiatives, five-role mission planning and seven-channel editorial briefs.",
+      "evidence_state": "source_linked",
+      "source_ids": ["source-commit"]
+    },
+    {
+      "observation_id": "verification-recorded",
+      "text": "The GitHub workflow for commit e645c64975dc05f3b0a0f9e06d7cc903d70031b0 passed 163 Python tests and 68 web-helper tests. Those checks cover authored code and offline fixtures.",
+      "evidence_state": "source_linked",
+      "source_ids": ["source-ci"]
+    },
+    {
+      "observation_id": "next-cycle-planned",
+      "text": "A next development cycle should verify native browser behavior and complete one real reviewed AI-to-AI building task with an observable benefit.",
+      "evidence_state": "planned",
+      "source_ids": ["source-commit"]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "source-commit",
+      "title": "Jarvis portfolio milestone commit and retained source",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/commit/e645c64975dc05f3b0a0f9e06d7cc903d70031b0"
+    },
+    {
+      "source_id": "source-ci",
+      "title": "Successful workflow for the portfolio milestone",
+      "url": "https://github.com/lippytm/jarvis-nexus-core/actions/runs/39859645675"
+    }
+  ],
+  "next_action": "Choose one small useful task, document its source and acceptance check, and retain an honest record of the result.",
+  "media_notes": {
+    "audience": "Creators and learners exploring evidence-aware AI project development",
+    "visual_style": "Midnight blue, warm gold, clear typography, an abstract workshop and a recurring bookmark motif",
+    "audio_style": "A simple original instrumental pulse with room for clear narration; no imitation of a named artist",
+    "learning_goal": "Distinguish a tested software artifact, a planned connection and a fictional adaptation",
+    "call_to_action": "Read the source notes and choose one small task to document."
+  }
+}

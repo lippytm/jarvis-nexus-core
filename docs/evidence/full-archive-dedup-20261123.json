@@ -1,0 +1,101 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "tests/test_handoff_context.py": "20aa0cb340c92c6a65b0d64614204dd85ab38442b1ef72ed406fb55a350320d9"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Test-only full-archive lifecycle regression. Duplicate existing review tuples must return original receipts/timestamps at capacity; new reviewer tuples must refuse without replacing current bindings or changing either mission. Verify backup and read-only restart with unchanged held/private profiles and source bytes.",
+  "checkpoint": {
+    "next": "Independent review of the existing selected archive slice and separate new capacity regression before owner exact-revision release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "full_archive_dedup_regression_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Patch the existing archive cap to two for a synthetic full archive; recover two existing tuples while clock is different and compare original full receipts and SQL dump.",
+      "Two new reviewer-label attempts reject with archive-limit error, leave no transaction and retain complete SQL dump/current local review bindings for both missions.",
+      "Current receipt reads, backup reopen and original ledger read-only restart retain both receipts, version4/count2, both profiles and paused/outcome_unknown holds with no retry/dispatch authority.",
+      "Database bytes remain unchanged through read-only restart checks."
+    ],
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "9152bd257679336b40c628719f593ad31d6a57b4b0f6b839cb7ee8dbb189fcb2",
+      "passed": true,
+      "tests": 1
+    },
+    "full": {
+      "evidence": "reports/r59-full.json",
+      "passed": true,
+      "record_sha256": "a1fa0f9a2994301093db8610908f4cd4b743b96001689931f6d280960f401a89",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 629,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "f56c348c699ecb07afe998ad9b942a00f587d172e88191484be3d22a40f46ae8",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_checks_passed",
+  "input_revision": "57bbb5e81d398a90b1912c38e55399811b8464dd",
+  "limitations": [
+    "Uses a two-entry synthetic cap to exercise existing full-archive branch; not a 1,000-row load test, operational capacity incident or measured reliability result.",
+    "Production/API/schema/defaults/strict v1 unchanged; no operational owner ledger migrated or reviewer permission granted.",
+    "Local labels and unkeyed receipts remain unauthenticated; no independent evaluation, live provider delivery, shared authenticated memory installation, lease/failover/reconnect controller established.",
+    "Existing evaluator packet selects source682116c2/memory246; it is not independent approval of this later regression or branch head.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio and Newsletter untouched."
+  ],
+  "memory_revision": 247,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "expected_capacity_refusals": 2,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_check_failures": 0
+  },
+  "mission_id": "full-archive-dedup-20261123",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master247/current branch/PR5/readiness/shared requirements/findings and prior receipt. Current evaluator preparation complete without dispatch; no active work/retry to duplicate. Funding/comedy repairs retained.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "9f5dac08156e4b34bb6a03286cf4a6993980116e2b2d71f0a46a01e2c31b34c1",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "tests/test_handoff_context.py"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

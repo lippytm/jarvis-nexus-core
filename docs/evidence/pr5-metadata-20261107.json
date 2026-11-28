@@ -1,0 +1,96 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_current_review_entry",
+    "test",
+    "expected_head_draft_commit",
+    "update_existing_draft_pr_title_and_body"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release approval not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Prepare current exact-source review entry with broad final scope, actual input CI, pending independent/owner review and clear historical boundaries. Proposed PR body prepends entry and historical heading, preserving every original byte including bot summaries; base/state/draft/permissions are not changed. Production/test/schema files unchanged.",
+  "checkpoint": {
+    "return_binding": "exact source/memory and body hashes; final commit, CI and actual metadata write/readback in master Page",
+    "state": "reviewable_candidate_prepared",
+    "unfinished": "independent exact-revision findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "log": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.663s\n\nOK\n",
+      "tests": 9
+    },
+    "full_local_suite": "not repeated for documentation/metadata work",
+    "original_pr_body_preserved_verbatim": true,
+    "source_paths": {
+      "count": 9,
+      "source": "23401d706242d2f6f245ea65682b60a372a0b39b",
+      "verification": "git cat-file -e at exact source"
+    },
+    "syntax": {
+      "errors": 0,
+      "files": 74
+    }
+  },
+  "configuration_version": "codex.pr-metadata-reconciliation.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified_metadata_pending",
+  "input_ci": {
+    "all_jobs_steps_uploads": "success; actual job logs read again",
+    "compose": "initialization/no-overwrite/replacement passed",
+    "container": 238,
+    "pr": 42426471328,
+    "pr_merge_checkout": "eb69b55eb16b4785d29fb213aaa0d373962a6ad8",
+    "push": 42426466189,
+    "python": 595,
+    "syntax": 74,
+    "web": 181
+  },
+  "input_revision": "23401d706242d2f6f245ea65682b60a372a0b39b",
+  "limitations": [
+    "Review navigation and metadata are not independent review, security/accessibility approval, authenticated registry/delivery, accepted procedure or release authority. Historical bot content remains visible with explicit scope.",
+    "Branch update must use expected head. Metadata API has no atomic expected-body/head argument: fresh head and original title/body comparisons are required before writing; concurrent changes must cause stop/reconciliation. No atomic PR metadata guard is claimed.",
+    "All 17 portable targets/business areas retained, source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. Actual paused mission/Studio and Newsletter schedule untouched. No worker, lease, automatic retry/failover/reconnect controller, public access/permissions/credentials change, merge, production deployment, dispatch, publication, spending or physical operation."
+  ],
+  "memory_revision": 206,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "verification_failures": 0
+  },
+  "mission_id": "pr5-current-review-entry-20261107",
+  "original_pr_body_sha256": "934b504274516a3607aabc5bdd4653cb27f036a8184666b3e7374f3f84b69fb1",
+  "original_pr_title": "Draft: expand Jarvis anime RPG diary and research quests",
+  "platform": "codex",
+  "problem": "PR title/body describe older research questbook milestone, call 429435005ab18ec937317d478345f454d65f2975 current and quote 273 tests/57 syntax/179 web. Bot merge language binds still older named revisions. Current API input has 447 changed files and 220 commits.",
+  "project_id": "ai-jarvis",
+  "proposed_pr_body_sha256": "759e6996b30231faf6da125168fcd3c1eb92c9d3050b01ca07ba4a2e44c97677",
+  "proposed_pr_title": "Draft: Jarvis control tower, reviewed handoffs and portfolio tools",
+  "record_sha256": "17ef96a6f49c9e072c6e962e44c2e8db8d917280a3fb0f2b0032b0ed97addc1f",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md": "c497413023929679be6c4ecd49c717e0eb022e3b0032dd2beed5980ba197eee9"
+  },
+  "visibility": "owner_private"
+}

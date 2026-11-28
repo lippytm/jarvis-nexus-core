@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title description">
+<title id="title">Example return: artifact + actual checks + limits + checkpoint.</title><desc id="description">A conceptual return bundle contains the output artifact, observed checks, unresolved limits and a continuation checkpoint.</desc>
+<rect width="1080" height="1080" fill="#edf2f5"/><rect width="1080" height="164" fill="#10283f"/>
+<g font-family="DejaVu Sans" fill="#10283f">
+<text x="72" y="61" font-size="23" fill="#b5dbe3" letter-spacing="2">AI JARVIS • BOUNDED REVIEW</text>
+<text x="72" y="121" font-size="37" fill="white">3 — Example</text>
+<text x="72" y="242" font-size="50" font-weight="bold"><tspan x="72" dy="0">Example return: artifact + actual</tspan><tspan x="72" dy="64">checks + limits + checkpoint.</tspan></text>
+<text x="72" y="452" font-size="25">Conceptual example</text><rect x="72" y="484" width="936" height="218" rx="12" fill="white" stroke="#b7c8d4" stroke-width="2"/><text x="96" y="518" font-size="22">Artifact</text><path d="M96 539 h390" stroke="#9eb3c1" stroke-width="2"/><text x="564" y="518" font-size="22">Actual checks</text><path d="M564 539 h390" stroke="#9eb3c1" stroke-width="2"/><text x="96" y="586" font-size="22">Limits</text><path d="M96 607 h390" stroke="#9eb3c1" stroke-width="2"/><text x="564" y="586" font-size="22">Checkpoint</text><path d="M564 607 h390" stroke="#9eb3c1" stroke-width="2"/><text x="96" y="668" font-size="23">Review decision</text><rect x="330" y="635" width="650" height="48" rx="5" fill="none" stroke="#9eb3c1" stroke-width="2"/>
+<text x="72" y="771" font-size="27" font-weight="normal"><tspan x="72" dy="0">A conceptual return bundle contains the output artifact, observed</tspan><tspan x="72" dy="38">checks, unresolved limits and a continuation checkpoint.</tspan></text>
+<text x="72" y="970" font-size="25">REVIEW CANDIDATE • UNPUBLISHED</text>
+<text x="72" y="1020" font-size="22">Intergalactic Corporate Services LLC</text>
+<text x="940" y="1020" font-size="22">3 / 5</text>
+</g></svg>

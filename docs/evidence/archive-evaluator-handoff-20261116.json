@@ -1,0 +1,88 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "prepare_existing_review_entry",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "author_preparation_only_independent_and_owner_review_pending",
+  "asset_id": "codex",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Refresh existing review entry with exact 11-file manifest, six-test command, scoped review questions and requested return; previous entry retained verbatim.",
+  "checkpoint": {
+    "return_binding": "source/memory/file hashes; final publication commit/CI in master Page",
+    "state": "review_material_prepared_not_dispatched",
+    "unfinished": "actual independent evaluator findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "focused": {
+      "log": "......\n----------------------------------------------------------------------\nRan 6 tests in 2.503s\n\nOK\n",
+      "passed": true,
+      "tests": 6
+    },
+    "full_local_suite": "Not repeated for documentation-only work; final CI in master receipt.",
+    "receipt_bodies_rehashed": 3,
+    "source_manifest": {
+      "historical_body_retained_verbatim": true,
+      "memory_revision": 237,
+      "original_review_entry_sha256": "c69abcf8004b9eb52f093fa0352d089e2451350ad24942360faa7f822030bc8c",
+      "source_revision": "b83a6cc23b95b468a3c9a3b48946c6395518afd8",
+      "source_sha256": {
+        "control_tower/handoffs.py": "796aa86c09d798bfc828c60b3fc5de17f0f7ed2d4c5db6705cb3f3f947a0e4f5",
+        "control_tower/network_contract.py": "b0d85a821232988d9727e18b4a299c9f29c0918a49a0ece226159917f95de6e7",
+        "docs/CODEX_JARVIS_READINESS.md": "2d6d219bf0bffc32da69b2ac3666380f13c2740f6e90d9383283699057cb1757",
+        "docs/HANDOFF_CONTEXT_PROFILE.md": "632b86297fb5bf5e5ef218075af26281f1fed513d7d12aff0f11a0b0d9e3bd46",
+        "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "c8294c88acd56eb65f2aaa4a1c67d02e104d89fe3415edf5d973fda07c202c51",
+        "docs/evidence/archived-receipt-sync-recovery-20261116.json": "03bf353d1c340097ed74ba3b1751209b48b6c95b999cfd561a91d6640ad5e0d9",
+        "docs/evidence/local-review-archive-20261113.json": "5f1c6c2b411cafedb9bab63b08edbacae811a2ba68bfc38f14c860ec2f2eea38",
+        "docs/evidence/review-receipt-cli-recovery-20261113.json": "0a38b5d99ae63ac2ca83e0d6aac8f1a196f6b71fce33bb064a8ee3073885e22e",
+        "scripts/jarvis_network.py": "9d38762038a56a0e5d3e4128d0354972426137cbe855b03e988b28f0b96856e0",
+        "tests/test_handoff_context.py": "97eb6220433d3144ec1c9d38ff4e5371a9a313b020d549b1466918bf961d4322",
+        "tests/test_handoff_context_cli.py": "12476fc0f19777e7430eb949fd26d3b004b4abbd5722eb219a000b394f778ca2"
+      }
+    },
+    "syntax": {
+      "errors": 0,
+      "files": 74
+    }
+  },
+  "configuration_version": "codex.evaluator-handoff.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0
+  },
+  "execution_state": "preparation_checks_passed",
+  "input_revision": "b83a6cc23b95b468a3c9a3b48946c6395518afd8",
+  "limitations": [
+    "Prepared material and author checks are not independent approval, accepted procedure, authenticated identity or actual provider delivery.",
+    "No production/test/schema/default change or operational database migration.",
+    "All 17 portable targets/business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No worker/lease/failover/reconnect controller, merge/deploy/publication/messages/spending/credential/permission/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 237,
+  "metrics": {
+    "actual_evaluator_dispatches": 0,
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "prepared_handoffs": 1,
+    "revision_conflicts": 0
+  },
+  "mission_id": "archive-evaluator-handoff-20261116",
+  "observed_gap": "Existing review entry selects November 8 source and omits later archive migration and CLI recovery; independent review remains pending.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "64aba7283c48743421cae1294aa9f7f859a2506e6a75fdeb64e292746cbef37b",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/PR5_CURRENT_REVIEW_ENTRY_20261107.md": "c1eeb5e97161947e6d53167ddaea1d87529e753778448ea038312a8f44bd89d3"
+  },
+  "visibility": "owner_private"
+}

@@ -1,0 +1,153 @@
+{
+  "allowed_actions": [
+    "inspect",
+    "add_optional_task_identity_guard",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision and owner release review not performed",
+  "asset_id": "codex",
+  "baseline": {
+    "log": "EF\n======================================================================\nERROR: test_review_files_expected_identity_guards_task_and_preserves_reports (tests.test_handoff_context_cli.ContextCLITests.test_review_files_expected_identity_guards_task_and_preserves_reports)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 220, in test_review_files_expected_identity_guards_task_and_preserves_reports\n    self.assertEqual(_check_review_files(self.root, raw,\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: _check_review_files() got an unexpected keyword argument 'expected_identity'\n\n======================================================================\nFAIL: test_review_files_cli_expected_identity_refuses_wrong_or_partial_task (tests.test_handoff_context_cli.ContextCLITests.test_review_files_cli_expected_identity_refuses_wrong_or_partial_task)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 257, in test_review_files_cli_expected_identity_refuses_wrong_or_partial_task\n    self.assertEqual(matched.returncode, 0, matched.stderr)\nAssertionError: 2 != 0 : usage: jarvis_network.py [-h] [--root ROOT] [--database DATABASE]\n                         [--read-only]\n                         {init-ledger,catalog,factory,stage,review,export,import-return,save-context,load-context,set-context-control,capture-checkpoint,load-checkpoint,list-checkpoints,review-context,check-review-receipt,export-context,inspect-recovery,check-recovery,prepare-reconciliation,backup-ledger,check-backup-digest,status,check-review-files,queue-report,destination-status,inspect-registry,bind-observation,demo}\n                         ...\njarvis_network.py: error: unrecognized arguments: --project ai-jarvis --mission synthetic-review --asset codex --platform codex\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.142s\n\nFAILED (failures=1, errors=1)\n",
+    "result": "Expected unsupported expected_identity keyword and unknown CLI identity flags before implementation"
+  },
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add optional API expected_identity and CLI --project/--mission/--asset/--platform to existing checker. Require all four or none; mismatch/incomplete identity rejects before source opens. Successful matching guard and default None preserve existing v1 report content/bytes and all original file/source/memory guards. No packet/storage schema or authority change.",
+  "checkpoint": {
+    "return_binding": "input source/memory, intended identity and artifact/check hashes; final commit and CI in master Page",
+    "state": "optional_identity_guard_verified_locally",
+    "unfinished": "actual evaluator findings and authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "actual_prepared_handoff_intake": {
+      "file_digest": "54e449d7c313cc297140faf8e177806bfb4c16187a9eb368becc620d0b32d624",
+      "input_receipt_bytes_unchanged": true,
+      "matched_identity_exit": 0,
+      "matching_report_bytes_identical": true,
+      "memory_revision": 219,
+      "mismatch_error": {
+        "error": "review identity mismatch",
+        "external_actions": 0
+      },
+      "mismatched_mission_exit": 1,
+      "no_ledger_created": true,
+      "result": {
+        "asset_id": "codex",
+        "dispatch_authorized": false,
+        "external_actions": 0,
+        "files_checked": 13,
+        "independent_review": "not_established",
+        "kind": "jarvis.review_files_check",
+        "memory_revision": 219,
+        "mission_id": "focused-evaluator-handoff-20261108",
+        "platform": "codex",
+        "project_id": "ai-jarvis",
+        "receipt_file_sha256": "54e449d7c313cc297140faf8e177806bfb4c16187a9eb368becc620d0b32d624",
+        "release_authorized": false,
+        "repository_revision_verification": "not_performed",
+        "schema_version": 1,
+        "source_manifest_sha256": "59121affeeed010d9f818523f65789078643b501b460bd7f7b8c011421707f7e",
+        "source_revision": "4a2eeac0965091f80f4a05721d5063996216dd2f",
+        "verification": "selected_file_bytes_only",
+        "visibility": "owner_private"
+      },
+      "review_source": "4a2eeac0965091f80f4a05721d5063996216dd2f",
+      "source_files_checked": 13,
+      "unguarded_exit": 0
+    },
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.494s\n\nOK\n",
+      "skipped": 0,
+      "tests": 4
+    },
+    "full_local": {
+      "evidence": "reports/r40-full-20261108.json",
+      "passed": true,
+      "record_sha256": "68dc7b118123dca6e7f46810c0a84807c341b1f3fb91dae5c7ab41ae13080dc8",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 612,
+        "skipped": 0
+      }
+    },
+    "new_regressions": [
+      "all17 portable targets: guarded/default-None reports equal previous unguarded output",
+      "each identity-field mismatch and incomplete/invalid dictionary rejects before source os.open",
+      "substituted valid task receipt with its own correct file pin and identical selected bytes/revisions still rejects caller identity mismatch",
+      "actual CLI complete guard/private0600 success; wrong/partial identity refusal with no output/absent ledger; input/ledger/saved report unchanged"
+    ],
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.review-identity.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/review-files-checker-20261108.json",
+    "docs/evidence/evaluator-handoff-20261108.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "d7e0905a1f7f067d33ac735d940e9364b361aa7b",
+  "limitations": [
+    "Expected task labels and file pins are supplied metadata, not authenticated identity/provenance or ACL isolation. Matching output remains selected-file-bytes only; Git HEAD verification and independent review are not performed, release/dispatch remain false. Real handoff source files were materialized in a temporary workspace, checker runtime separate.",
+    "No evaluator was dispatched, no actual mission completion/recovery, operational connection, security certification or measured reliability improvement established. Existing I/O/concurrent filesystem limitations remain.",
+    "All 17 portable targets/business areas retained; seven source project keys separate. Trading Bots research/backtesting/paper only; RoboParty deferred. No new store, migration, worker, lease, automatic retry/failover/reconnect controller, permissions/credentials/public access change, actual paused mission/Studio or Newsletter schedule change, merge, deployment, messages, social posting or spending."
+  ],
+  "memory_revision": 223,
+  "metrics": {
+    "actual_evaluator_dispatches": 0,
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "expected_handoff_identity_refusals": 1,
+    "new_regressions": 2,
+    "portable_targets_checked": 17,
+    "provider_dispatches": 0,
+    "real_handoff_files_checked": 13,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "unexpected_verification_errors": 0
+  },
+  "mission_id": "review-intake-identity-guard-20261108",
+  "observed_gap": "Intake validated supplied receipt identity but had no optional guard for the caller's intended project/mission/asset/platform. Different valid tasks can select identical bytes and source/memory revisions. New opt-in capability, not a claim of prior authorization bypass.",
+  "patch_sha256": "221c185ff67fb2517eec59f8a2570553f3a5d88d1a1382052bccc37cc4d46ef4",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "b9ca04e71714f6ea085f575b4212be1530559ea5b109eefc513978cd9aff028d",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "e7e60c110a5f47fc09a0d74c71006c7c008d4dfb5fa26e2e82eb69451aa64704",
+    "scripts/jarvis_network.py": "6a05a57804ab09cbd9582b86272cbc32d959f541e636da126a820cec72fe442c",
+    "tests/test_handoff_context_cli.py": "f9daa815fa3edefa1a6cd63a1f12e361c7e3875915d3a702ea5ac4950f76ec93"
+  },
+  "verification_logs_sha256": {
+    "reports/r40-actual-intake-20261108.json": "54ed731bc5b397001e1373be45dba935fff7e3a6562715845f810e07e57e0a41",
+    "reports/r40-focused-20261108.txt": "a06ad0408e14b6d2d5efebf33dc8102a2cd3b5dcab11de25986c296996434a95",
+    "reports/r40-full-20261108.json": "75bd51e0c9aa8abfbca090279142389a006cb4ae2889ff200d321401db827af7",
+    "reports/r40-web-20261108.txt": "d06139204d40ef4c6498df1677e36c75f525075a6326935d3ce91e61b26cbb71"
+  },
+  "visibility": "owner_private"
+}

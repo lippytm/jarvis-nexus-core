@@ -1,0 +1,53 @@
+{
+  "account_access_verified": false,
+  "artifact_sha256": {
+    "docs/media/jarvis-linkedin-four-slots-20261029.md": "8105089dbf806244fde201200eb2c366ca80b0b5bbf0d22f87835b6f43d8b4a9",
+    "docs/media/jarvis-linkedin-slot1-slide1-20261029.svg": "fe471a25f1171eea79a2866cae34aa9e0b8096dde53f5feec3afa2ea83f535ce",
+    "docs/media/jarvis-linkedin-slot1-slide2-20261029.svg": "18020c2e2b6f6030852e70803fd248051fd67623fe381440a7457be10a1a9879",
+    "docs/media/jarvis-linkedin-slot1-slide3-20261029.svg": "bcc1e2863b1f648de47f82e99751e2327d8db54baf2365f2fc92e4bd5fa461e6",
+    "docs/media/jarvis-linkedin-slot1-slide4-20261029.svg": "55db92b657099ce607cef88ceab856248caf50b5604106f90ec91c0f3c3bb77e"
+  },
+  "channel": "linkedin",
+  "checks": {
+    "allowed_bold_line_width_px": 984,
+    "exact_source_text_retained": true,
+    "font": "DejaVu Sans; main text DejaVu Sans Bold",
+    "layout_revision": 2,
+    "max_bold_line_width_px": 982.94,
+    "preview_dimensions": [
+      1200,
+      1200
+    ],
+    "rasterization_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "renderer": "Inkscape 1.2.2 (b0a8486541, 2022-12-01)",
+    "svg_cards": 4,
+    "svg_external_resources": 0,
+    "svg_xml_valid": true,
+    "visual_review": "assistant_layout_inspection_not_independent_human_review"
+  },
+  "costs_measured": false,
+  "input_revision": "e42273039c8ec003c221d6f2f86ac5286c7732ac",
+  "mission_id": "jarvis-media-20261029",
+  "pdf_rendered": false,
+  "post_id": "jarvis-media-20261029.linkedin.1",
+  "preparing_target": "codex",
+  "preview_retention": "intermediate_not_committed_not_final_uploads",
+  "preview_sha256": {
+    "slide1": "ddba59a72fb41b7360e493ffa91321788cf32ea7f6e50e7a7b5e06e5d6d36ffe",
+    "slide2": "bb0ee7730945cfd1384009893e9e8dadc62988127476f50600f63e59eea81c39",
+    "slide3": "3efb821c3e33f2e17bd4d08fafb4c600cc17de60ceb1b756bb20f5ccf9bfe43e",
+    "slide4": "74f86640586e19b869b1ac9b56b0d4ce985141bfbb2c3d0b02cecbaa79fe310a"
+  },
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "record_sha256": "527c290cdea30a2dab9ca7de3acb15608909060b97ec678c2ec753627f90be4e",
+  "schema_version": 1,
+  "scope": "local_unpublished_media_preparation_checks",
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a"
+}

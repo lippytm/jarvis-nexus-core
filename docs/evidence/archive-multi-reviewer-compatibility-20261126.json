@@ -1,0 +1,91 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "tests/test_handoff_context.py": "972a2d3a1a1b2995f12f28dc9c993eea7f01621ce44f92ece97bde96619d5541"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Extend the existing compatibility regression with two legitimate historical reviewer labels, distinct fixed timestamps and checksums per context version, retaining all nine archive rows exactly across checked backup and read-only reopen.",
+  "checkpoint": {
+    "next": "Reconcile publication CI, then independent exact-source review including this added compatibility coverage; existing f010a77b/memory252 review selection remains historical and does not approve this test revision.",
+    "state": "multi_reviewer_compatibility_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Nine archived rows retained: two old-revision reviewers and one later current reviewer per schema1/2/3 mission. Original row contents including labels/timestamps/checksums match exactly in source and backup after read-only reopen.",
+      "Existing explicit schema upgrades and current review invalidation remain checked. Independent Codex/Gemini/evaluator fixture records and private profiles survive.",
+      "Public-candidate reads reject, cancellation/unknown-outcome holds retained, retry/dispatch remain unauthorized and source database bytes unchanged."
+    ],
+    "baseline": "Coverage extension only; no production defect or failed baseline claimed.",
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "06e0cf1c8b9833c2d6dca88409c07cf1521d0b2ff36eb29b6e84124d1b43b172",
+      "passed": true,
+      "tests": 3
+    },
+    "full": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "record_sha256": "3fe9970534ec58930787898aa18f9ab3367e5055957727f29319e71cafcbef83",
+      "skipped": 0,
+      "syntax_files": 74,
+      "tests": 633
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "07b84c3573d754aad9cb675e85a958cf72b3892a4c35c3eab136e49b5e0c6301",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "86afcebd3885db0acc2ed53a5dbe63cb6db000a6",
+  "limitations": [
+    "Synthetic local compatibility fixtures, not authenticated reviewers, independent consensus, installation, operational migration or live provider delivery. Fixed timestamps are test inputs, not attestations.",
+    "No production code/API/schema/default/cap, valid record migration path, operational ledger, or strict version1 packet changed. Test count remains633 because an existing regression is extended.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; Studio/Newsletter untouched. No hosted worker/lease/failover/reconnect or measured reliability improvement."
+  ],
+  "memory_revision": 254,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-multi-reviewer-compatibility-20261126",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read current master254/receipt/shared requirement/Codex workflow, current branch/PR5/readiness/findings; preceding CI reconciled, no active retry to duplicate. Funding/comedy repairs retained.",
+  "problem": "Valid context schema1/2/3 upgrade regression retained only one historical reviewer per version. Existing same-revision multi-reviewer backup fixture covers schema3 only.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "7baeb4e38c5c3adff36a883f5c83231f34b7e01705d1efb18d562f6865b8b4b2",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "tests/test_handoff_context.py"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

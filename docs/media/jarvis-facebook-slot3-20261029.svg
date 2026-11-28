@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title description">
+  <title id="title">Different evidence</title>
+  <desc id="description">Separate rows define saved as a retained artifact, tested as observed named checks, and running as an observed runtime. Account access has a separate verification requirement. Conceptual definitions, not a current service-status report.</desc>
+  <rect width="1200" height="1200" fill="#edf2f5"/>
+  <rect width="1200" height="240" fill="#10283f"/>
+  <g font-family="DejaVu Sans" fill="#ffffff">
+    <text x="72" y="76" font-size="25" letter-spacing="2">JARVIS • EVIDENCE LIMITS</text>
+    <text x="72" y="151" font-size="53" font-weight="bold">Different evidence</text>
+    <text x="72" y="206" font-size="29">Conceptual definitions • not live status</text>
+  </g>
+  <g fill="#ffffff" stroke="#becbd5" stroke-width="2">
+    <rect x="72" y="290" width="1056" height="170" rx="20"/>
+    <rect x="72" y="490" width="1056" height="170" rx="20"/>
+    <rect x="72" y="690" width="1056" height="170" rx="20"/>
+  </g>
+  <g fill="none" stroke="#215477" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M112 400 v-65 h38 l14 17 h48 v48 Z"/>
+    <rect x="123" y="526" width="76" height="98" rx="8"/>
+    <path d="M143 552 h36 M143 575 h36 M143 598 h22"/>
+    <circle cx="155" cy="763" r="31"/>
+    <path d="M177 785 l31 31"/>
+  </g>
+  <g font-family="DejaVu Sans" fill="#10283f">
+    <g font-size="44" font-weight="bold">
+      <text x="258" y="361">Saved:</text>
+      <text x="258" y="561">Tested:</text>
+      <text x="258" y="761">Running:</text>
+    </g>
+    <g font-size="35">
+      <text x="258" y="417">artifact retained</text>
+      <text x="258" y="617">named checks observed</text>
+      <text x="258" y="817">runtime observed.</text>
+    </g>
+  </g>
+  <rect x="72" y="922" width="1056" height="126" rx="18" fill="#10283f"/>
+  <text x="600" y="996" text-anchor="middle" font-family="DejaVu Sans" font-size="39" fill="#ffffff">Account access: verify separately.</text>
+  <text x="72" y="1120" font-family="DejaVu Sans" font-size="25" fill="#334c61">Review candidate • unpublished • owner approval pending</text>
+</svg>

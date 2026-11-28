@@ -1,0 +1,68 @@
+{
+  "asset_id": "codex",
+  "change": "Two predicates reject a future neighbor revision or a conflicting body/digest at the current revision, within the existing bounded neighbor loop.",
+  "checks": {
+    "after": "Same new method passes after repair; fresh read-only process-handle reopen, unchanged bytes, current paused/unknown hold, independent record, rollback and restored valid/duplicate behavior checked.",
+    "after_log_sha256": "945d3e1037586e322a4a7b06844468b4fd56a61c5ef4b3ab5686f300126ac141",
+    "baseline": "One new synthetic method, four failing subtest assertions: two selective reads, future-neighbor capture and rollback expectation. No provider/runtime outage simulated as actual.",
+    "baseline_log_sha256": "e5cf900a0618f08e4455e9aa6ad01402a188ec736f40f197008d80c9db057ef9",
+    "local_verifier": {
+      "record_sha256": "ac01621c9e5d0295f1eeeb7c64e5c7020c1827dce1d8b9e1d64b618af1033230",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 534,
+        "skipped": 0
+      }
+    },
+    "new_unit_methods": 1,
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "web_log_sha256": "556ca6d2ba76a6d3ffb5fad267e68293aabc211c1b04497901dfcbfb49eb2175",
+    "whitespace": "git diff --check passed"
+  },
+  "compatibility": "No extra query, schema/packet/receipt field or migration. Existing valid histories and duplicate capture remain readable.",
+  "configuration_version": "codex.checkpoint-integrity.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "c55f3a397a0bf693338d0ac7aa4f5a6ac8ab4762",
+  "limitations": [
+    "Synthetic damaged-ledger fixture; not authenticated delivery, automatic repair or failover",
+    "Controls do not detect adversarial rewriting of the whole database",
+    "Original paused mission and all real receipt artifacts untouched"
+  ],
+  "memory_source": "master Page sequence 148",
+  "mission_id": "checkpoint-neighbor-revision-20261105",
+  "next_task": "Exact-revision independent/owner review; do not repeat this completed revision-bound repair.",
+  "observed_problem": "Immediate neighbors of a selected retained checkpoint lacked the current-revision ceiling and exact-current-digest bound already enforced on the selected checkpoint.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Draft-only development repair in named repository/branch; no main, merge, dispatch or record repair",
+  "project_id": "ai-jarvis",
+  "record_sha256": "011246bbc1e37f2b91233f238c2e803c986c7a352c956b4b565c6270a7635139",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/handoffs.py": "4c22067a086c16e924fafb3dac03a1ab24e455cde33d9bae7639c18431d680c3",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "654a1238c61f19d96e8685f29b224c9f0f2f7f28236c9e1fb4f6808df87515b6",
+    "tests/test_handoff_context.py": "b8741910eb7d2016bec37e941d978c50a51481bf3f212689bab5b0f6e4f397bb"
+  },
+  "source_before_sha256": {
+    "control_tower/handoffs.py": "06270130b775c5db81e4770782e7ab581627b8a40fb567c4a1961af581233893",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "8aefb0905fd8bd80b4a62d77934cca8b372be23a28f2e08563e172e3c4807193",
+    "tests/test_handoff_context.py": "6ea4b2df15851ce4eeca4e05d79dbd411ad2230ce963ad1292f68fb1a3bd481e"
+  }
+}

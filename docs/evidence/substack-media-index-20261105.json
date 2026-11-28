@@ -1,0 +1,51 @@
+{
+  "asset_id": "codex",
+  "change": "Link the two actual review sections, distinguish optional unrendered slots 3\u20134 and retain review/account/evidence limits.",
+  "checks": {
+    "guide_and_campaign_unchanged": true,
+    "index_after_sha256": "3d798545a1ca7ec7fe47132fb99888ff90d310bda603fcbd9bc4951691c39a54",
+    "index_before_sha256": "0aef7dbc8dc49d331accef6a2d16da6a57cc1b9ede2a414d72c0ed025f42b15d",
+    "index_links_checked": [
+      "media/jarvis-substack-four-slots-20261029.md",
+      "media/jarvis-substack-four-slots-20261029.md#slot-1-artwork-candidate",
+      "media/jarvis-substack-four-slots-20261029.md#slot-2-artwork-candidate"
+    ],
+    "new_artwork_anchor_links": 2,
+    "new_unit_tests": 0,
+    "png_files_verified": 2,
+    "retained_source_export_sha256": {
+      "docs/media/exports/substack-20261029/slot-1.png": "7649b03f982cd330518b70f5fae8cdff5a591f38d6f469dc74ad8b4eea15fdd9",
+      "docs/media/exports/substack-20261029/slot-2.png": "8ba1c09173925beed3d508c977875ec0c7ca91f6ae5104f33f2a4dac00d53b73",
+      "docs/media/jarvis-substack-slot1-20261105.svg": "b530ed689c09621233e634853b0f753b19977cec98022dd9432b4162414e10bc",
+      "docs/media/jarvis-substack-slot2-20261105.svg": "9b7476404f8fbf8573f4a5efe6d7005fc3054ea626bbc69397421a3eea03e099"
+    },
+    "svg_files_verified": 2,
+    "syntax_files": 73,
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.doc-reconciliation.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "evidence_class": "actual local path/anchor, XML, PNG decode and byte-hash checks; no new artwork or runtime behavior change",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "3297f129042128767dbde5cc59bb9a7989867c9f",
+  "memory_source": "master Page sequence 145",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact artwork/Note/alt-text owner/destination/accessibility review; optional slots 3\u20134 unrendered; do not repeat this index reconciliation.",
+  "observed_gap": "Index still called all Substack artwork unfinished despite two retained SVG/PNG candidates.",
+  "owner_release_approval": "not_granted",
+  "prior_ci_limitation": "Push 42012981931 passed behavior checks but evidence upload failed with The server is busy; no rerun or recovery claimed.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "1755a2d9253905546fb645991c47ad4ae560eef0ff2df7014665d14e828fc1e6",
+  "registry_acceptance": "unchanged_pending",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "Substack candidate discovery in docs/DAILY_MEDIA_BRIEFS.md only; no source/artwork changes"
+}

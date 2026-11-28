@@ -1,0 +1,113 @@
+{
+  "artifact_sha256": {
+    "docs/DAILY_MEDIA_BRIEFS.md": "125373d7a70748973d9c5377139545325e349cc83f2483e9b3487767e93ea128",
+    "docs/media/exports/substack-20261029/slot-3.png": "48b9e3c0bbddde5b7bbea8df180acfc218b5bf8f7b2a8f91f4b77ceed9453add",
+    "docs/media/jarvis-substack-four-slots-20261029.md": "d6ac719df2dfd76dbecd0ad9a1c23abd12f026fdec357f041542c7535bdb4631",
+    "docs/media/jarvis-substack-slot3-20261105.svg": "b496f180a4a03fae335834dabc38af4618494f31637f3e76a3543361228dc313"
+  },
+  "asset_id": "codex",
+  "checks": {
+    "campaign_and_prior_artwork_unchanged": true,
+    "empty_field_pixel_checks": 4,
+    "link_validation": "Substack links/anchor passed; one initial overbroad validator matched unrelated YouTube slot 3 and was corrected; no source rollback or duplicate rendering.",
+    "new_unit_tests": 0,
+    "note_bodies_unchanged": 4,
+    "png_bytes": 111396,
+    "png_decode_opacity": "passed",
+    "png_dimensions": [
+      1400,
+      1000
+    ],
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "FOUR WORDS. FOUR OBSERVATIONS.",
+        "width": 838.296875
+      },
+      {
+        "text": "CONCEPTUAL EXAMPLE \u2022 UNPUBLISHED NOTE",
+        "width": 602.828125
+      },
+      {
+        "text": "Each status needs its own evidence. These fields are empty.",
+        "width": 754.15625
+      },
+      {
+        "text": "Evidence",
+        "width": 109.234375
+      },
+      {
+        "text": "Review pending",
+        "width": 287.53125
+      },
+      {
+        "text": "No outage, recovery, availability or delivery result is reported.",
+        "width": 747.4375
+      },
+      {
+        "text": "Destination: unassigned \u2022 No subscriber email authorized.",
+        "width": 702.90625
+      },
+      {
+        "text": "Saved",
+        "width": 110.109375
+      },
+      {
+        "text": "Checked",
+        "width": 151.96875
+      },
+      {
+        "text": "Available",
+        "width": 165.1875
+      },
+      {
+        "text": "Delivered",
+        "width": 173.15625
+      }
+    ],
+    "visual_inspection": "full PNG inspected; no clipping or overlap observed",
+    "whitespace": "git diff --check passed",
+    "xml_resources": "allowlisted tags; no links/scripts/images/events"
+  },
+  "configuration_version": "codex.media-artwork.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "unassigned",
+  "duplicate_candidates": 0,
+  "evidence_class": "actual local artifact/render checks; artwork is conceptual and reports no execution, outage, recovery, availability or delivery",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "97b3c6519c768b5731c7caf03a1e9e3ad9ec72ab",
+  "limitations": [
+    "Not an accepted upload or platform alt-text field",
+    "Owner/rights/destination/device/accessibility/platform review pending",
+    "Not a finished video or published post; no subscriber email or newsletter change"
+  ],
+  "memory_source": "master Page sequence 146",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact artwork/Note/alt owner review; optional slot 4 remains unrendered; do not regenerate slot 3.",
+  "owner_release_approval": "not_granted",
+  "platform_id": "substack",
+  "project_id": "ai-jarvis",
+  "record_sha256": "88839c9a33d3c1fd0b9b53ee01180a6bc9c23ce145e73435895ac6f7de811371",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "Original unpublished SVG/PNG for slot 3 with guide/index links; no Note or runtime code changes",
+  "source_assignment": "jarvis-media-20261029.substack.3"
+}

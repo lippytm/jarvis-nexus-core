@@ -1,0 +1,54 @@
+{
+  "account_access_verified": false,
+  "artifact_sha256": {
+    "docs/media/jarvis-linkedin-four-slots-20261029.md": "7e8200c87416aba865ae35ac3c5e4c1c968515cc9740658ac50fa1c5339098f8",
+    "docs/media/jarvis-linkedin-slot2-slide1-20261029.svg": "f8f37f1ba810f16e4a70d68966a9761dce818772ebca1d5ef966d56b84e4d755",
+    "docs/media/jarvis-linkedin-slot2-slide2-20261029.svg": "8a52b4b939895526832ada67dfa3be1b782d519ba7403e6b1657fd68db74aff5",
+    "docs/media/jarvis-linkedin-slot2-slide3-20261029.svg": "ec82a64cda90d58ae44caf9b81e6bf8d1de70bfebb5ef36de44fb52b7c7b65fa",
+    "docs/media/jarvis-linkedin-slot2-slide4-20261029.svg": "15e0ad70d915cc493c6051ce8fe25dc2bf1e58663c805ddef07bfc70a3ed125f"
+  },
+  "channel": "linkedin",
+  "checks": {
+    "allowed_main_right_px": 1104,
+    "exact_source_text_retained": true,
+    "font": "DejaVu Sans; main text DejaVu Sans Bold",
+    "layout_revision": 1,
+    "max_main_right_px": 1049.03,
+    "preview_dimensions": [
+      1200,
+      1200
+    ],
+    "rasterization_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "renderer": "Inkscape 1.2.2 (b0a8486541, 2022-12-01)",
+    "source_exercise_executed": false,
+    "svg_cards": 4,
+    "svg_external_resources": 0,
+    "svg_xml_valid": true,
+    "visual_review": "assistant_individual_layout_inspection_not_independent_human_review"
+  },
+  "costs_measured": false,
+  "input_revision": "ef50d26ceb9f7503aa93650db2389bfb5f5da8af",
+  "mission_id": "jarvis-media-20261029",
+  "pdf_rendered": false,
+  "post_id": "jarvis-media-20261029.linkedin.2",
+  "preparing_target": "codex",
+  "preview_retention": "intermediate_not_committed_not_final_uploads",
+  "preview_sha256": {
+    "slide1": "defa6d7aa76cef6f56a296397715fc835330e8840ad768538ac615d8a0b9fb94",
+    "slide2": "05beb13305c0d2005086b949a3485b4e198baeb3a960806fa96c09fa2814461d",
+    "slide3": "aa2c37640e9e4ca5d0be89ae71baa9ef90dfb5ddc13c14e199fae7b6780c95db",
+    "slide4": "d13340afa67a5e5d1c08eb3043b29ca707cd7e15a18ebfdae6ae5fb87e4eeba9"
+  },
+  "project_id": "ai-jarvis",
+  "publication_approval": "not_granted",
+  "publishing_actions": 0,
+  "record_sha256": "1c763e46a193afa218b7e6a75856916a47ff275b1c0fd2bb599d6283a7f27d4d",
+  "schema_version": 1,
+  "scope": "local_unpublished_media_preparation_checks",
+  "source_brief_sha256": "bb885b0e6f4a4c9967b422d1ab066d2beffa5eed0d6c83afc21b3d7b34732b4a"
+}

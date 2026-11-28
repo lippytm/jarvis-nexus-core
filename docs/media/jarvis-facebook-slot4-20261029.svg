@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title description">
+  <title id="title">One reviewable handoff</title>
+  <desc id="description">An example handoff checklist lists one task, starting version, changed artifact, actual checks and unfinished work. An unfilled owner-review box indicates that release approval has not been given. All boxes are empty neutral outlines.</desc>
+  <rect width="1200" height="1200" fill="#edf2f5"/>
+  <rect width="1200" height="240" fill="#10283f"/>
+  <g font-family="DejaVu Sans" fill="#ffffff">
+    <text x="72" y="76" font-size="25" letter-spacing="2">JARVIS • BOUNDED NEXT STEP</text>
+    <text x="72" y="151" font-size="49" font-weight="bold">One reviewable handoff</text>
+    <text x="72" y="206" font-size="29">A proposed checklist • no completed actions</text>
+  </g>
+  <g fill="#ffffff" stroke="#becbd5" stroke-width="2">
+    <rect x="72" y="290" width="1056" height="90" rx="16"/>
+    <rect x="72" y="400" width="1056" height="90" rx="16"/>
+    <rect x="72" y="510" width="1056" height="90" rx="16"/>
+    <rect x="72" y="620" width="1056" height="90" rx="16"/>
+    <rect x="72" y="730" width="1056" height="90" rx="16"/>
+    <rect x="72" y="842" width="1056" height="104" rx="16"/>
+  </g>
+  <g fill="none" stroke="#334c61" stroke-width="4">
+    <rect x="112" y="313" width="44" height="44"/>
+    <rect x="112" y="423" width="44" height="44"/>
+    <rect x="112" y="533" width="44" height="44"/>
+    <rect x="112" y="643" width="44" height="44"/>
+    <rect x="112" y="753" width="44" height="44"/>
+    <rect x="112" y="872" width="44" height="44"/>
+  </g>
+  <g font-family="DejaVu Sans" font-size="39" fill="#10283f">
+    <text x="200" y="349">One task</text>
+    <text x="200" y="459">Starting version</text>
+    <text x="200" y="569">Changed artifact</text>
+    <text x="200" y="679">Actual checks</text>
+    <text x="200" y="789">Unfinished work</text>
+    <text x="200" y="908" font-weight="bold">Owner review</text>
+  </g>
+  <rect x="72" y="980" width="1056" height="145" rx="18" fill="#10283f"/>
+  <g font-family="DejaVu Sans" font-size="35" fill="#ffffff" text-anchor="middle">
+    <text x="600" y="1039">Example review aid</text>
+    <text x="600" y="1092">— no release approval</text>
+  </g>
+  <text x="72" y="1170" font-family="DejaVu Sans" font-size="25" fill="#334c61">Review candidate • unpublished • owner approval pending</text>
+</svg>

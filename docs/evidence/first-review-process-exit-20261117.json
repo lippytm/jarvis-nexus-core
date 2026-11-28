@@ -1,0 +1,107 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "control_tower/handoffs.py": "796aa86c09d798bfc828c60b3fc5de17f0f7ed2d4c5db6705cb3f3f947a0e4f5",
+    "scripts/jarvis_network.py": "9d38762038a56a0e5d3e4128d0354972426137cbe855b03e988b28f0b96856e0",
+    "tests/test_handoff_context.py": "998cd7c39846895a06c1f00c36b652984e2709117ed253dce9b8be2bede5ccc1"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "One regression makes independent SQLite fixture copies. Child asserts no prior review and schema2, then os._exit(70) before commit or commits and os._exit(71) before receipt return. Parent reopens read-only; before branch retains proposed/no archive/schema2, after branch retains current local review/schema4/original receipt. Production source/schema/defaults unchanged.",
+  "checkpoint": {
+    "next": "Independent review of current first-review/archive/API/CLI source; owner exact-revision release gate before operational use. Authenticated registry/audience acceptance remains unfinished.",
+    "state": "first_review_process_exit_regression_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Both child processes exit without receipt/stdout/stderr or Python finally cleanup; exit codes distinguish commit boundary.",
+      "Both fixture copies retain exact paused/outcome_unknown profile and independent Gemini context; recovery reads leave database bytes unchanged.",
+      "Committed copy retains original local timestamp, one archived receipt, owner_private metadata without context reference text, and no retry/dispatch authority."
+    ],
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "7e027a8578c01bab40edc5fd0386e02d97f52b6b933d5982cdeb5824311f8951",
+      "passed": true,
+      "tests": 1
+    },
+    "full": {
+      "evidence": "reports/r51-full.json",
+      "passed": true,
+      "record_sha256": "7f8d0e574a953bd1ff5f0a687bf69ef665092608d58e9c6e7b4cdcd94ec42b1e",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 623,
+        "skipped": 0
+      }
+    },
+    "mutation_check": {
+      "expected_detected_failures": 1,
+      "log_sha256": "31480070f491478b4410cdbb896d70f0519a1751af2c2ad01529243ec9706639",
+      "passed": true,
+      "scope": "In-memory child script omits commit but retains post-commit exit71; new test detects missing migration. Production files untouched."
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "24249049696a3445e57600dfe90310034f52638780d7c3dc1bb734d6d6bb7cae",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "613d556e28111c6f13949ce38ce2a4d50905c5c0",
+  "limitations": [
+    "Synthetic SQLite fixtures and deliberate process exit, not power failure, OS crash, production database recovery, actual provider outage or authenticated independent evaluation.",
+    "No operational database migration or production/schema/default change; prior b83a6cc2 review entry remains scoped to its historical input.",
+    "No live dispatcher, installed shared store/ACL, lease/failover/reconnect controller or measured reliability improvement.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/credentials/permissions/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 238,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "focused_injected_process_exit_cases": 2,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_test_failures": 0
+  },
+  "mission_id": "first-review-process-exit-20261117",
+  "permitted_actions": [
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master receipt238/current branch/draft PR5/review findings. Prior evaluator entry explicitly identifies pre-existing review in old acknowledgement-loss fixture; no active engineering run or duplicate candidate.",
+  "problem": "First-ever archived review migration/receipt binding was not directly tested across abrupt process termination at the commit boundary.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "aa71d727844c181e70f87962b69d09fb4366f9107309f97663d3bfcc9bcff5db",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "tests/test_handoff_context.py"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

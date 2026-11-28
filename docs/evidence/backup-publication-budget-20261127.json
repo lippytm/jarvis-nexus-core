@@ -1,0 +1,100 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "590b9b94b94a9b8bfff4139578124e9981967fabcb8fe5a867cf85cf3a417e7c",
+    "scripts/jarvis_network.py": "5c3708effab5ba9d7a18549530b3ab5b88977955469c51c8f4e6af6ba7773953",
+    "tests/test_handoff_context_cli.py": "c94b2dfc1929dfc42fa87c02d94e09231778530cc08b787a8aeb0f47476e4d90"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Reuse the same cooperative deadline after validation, after each hash chunk read and immediately before no-clobber hard-link publication after file fsync/stat. Preserve post-publication error/unknown-outcome semantics.",
+  "checkpoint": {
+    "next": "Reconcile publication CI, then independent exact-source review of deadline checks, valid backup and post-publication unknown outcomes before owner release. Earlier review selections do not approve this implementation.",
+    "state": "cooperative_backup_publication_budget_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Two observed expiry phases refuse publication with no final or temporary output; source database bytes and logical rows unchanged.",
+      "Unmodified within-budget fixture backs up and reopens with exact rows, private paused/outcome_unknown profile and local review intact; external_actions0.",
+      "Existing file/directory fsync failure, publication race/winner preservation and backup-digest final-read budget tests pass."
+    ],
+    "baseline": {
+      "log_sha256": "d68712d177cd7a8c3cddd79117813363021a6bdc170919a98da1e1ba7d28e801",
+      "result": "Fake monotonic clock advanced to11 after real validation or real file fsync: both operations published at input, causing two expected-ValueError failures. No real11-second sleep or measured latency claimed."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "d735bef7e5fb2d1de683604e057398f197e3ea9a7ecd7fa133d5f404ac558dde",
+      "passed": true,
+      "tests": 4
+    },
+    "full": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "record_sha256": "ab0a793b2d255a272431b01585d4e7f22febe1677404a5e7b919da164e0a3604",
+      "skipped": 0,
+      "syntax_files": 74,
+      "tests": 635
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "c9fd11aebd543945b03e3195e3c1480b27898edd087275607d4f220786d34c28",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "7b91b664ad9b1875b478d3090e21b0542b981823",
+  "limitations": [
+    "Synthetic clock advancement only; not a real latency measurement, owner incident, authentication or independent evaluation.",
+    "Cooperative checks cannot interrupt blocking SQLite calls, validation, reads or fsync and do not guarantee completion in ten seconds. No new timeout rejection after hard-link publication; existing directory-sync failure can leave a reconcilable final file.",
+    "Slower otherwise-valid backups may now refuse publication after observed budget expiry. No retry, restore, worker restart or failover is authorized. Existing API/schema/default/output shapes and row caps unchanged; no operational ledger altered.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; Studio/Newsletter untouched. No live provider delivery or measured reliability improvement."
+  ],
+  "memory_revision": 256,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "reproduced_late_publication_cases": 2,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "backup-publication-budget-20261127",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master256/prior receipt/shared requirement/Codex workflow, branch/PR5/readiness/findings and backup/synchronization tests. Previous CI complete; no active work duplicated. Funding/comedy repairs retained.",
+  "problem": "Existing backup ten-second deadline is checked only by SQLite copy callback. Validation/hash/file synchronization can finish after that deadline and still publish.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "bbb3010781a8563db59a0a3abe4add4df9d696f1cb6450433425d417d9964c74",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context_cli.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

@@ -1,0 +1,1245 @@
+{
+  "approval_state": "independent_and_owner_exact_content_release_review_pending",
+  "artifact_sha256": {
+    "docs/media/exports/youtube-20261029/slot-2-silent-animatic.mp4": "458cf84bc9ae721d46a47eadc467c4d1ac6bdfc65c9fa23360e8fa1a01e59893",
+    "docs/media/jarvis-youtube-slot2-20261029.md": "e38923218ceb5bbc014b820ef6aa14d4e25262d36d14ac2460f4ef0edb9ce25c",
+    "docs/media/jarvis-youtube-slot2-animatic-20261112.svg": "8a4cd777d1036184a6ac6a1a4ad36320fe892a640c42d1b260390e1fcd78fb1a"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "provider_calls": 0,
+    "purchases": 0
+  },
+  "checkpoint": {
+    "next": "Exact preview/narration/SRT review before authorized recording, caption retiming and finished production; independent engineering review remains separately pending.",
+    "state": "silent_candidate_prepared"
+  },
+  "checks": {
+    "assistant_visual_inspection": {
+      "decoded_contact_sheet_cues": 13,
+      "full_size_source_cues": [
+        1,
+        7,
+        13
+      ],
+      "observed": "no clipping/overlap observed; not device/accessibility acceptance"
+    },
+    "cues": [
+      {
+        "caption": [
+          "Here is one small way",
+          "to inspect a Jarvis build."
+        ],
+        "cue": 1,
+        "end_seconds": 4.0,
+        "panel": 1,
+        "start_seconds": 0.0
+      },
+      {
+        "caption": [
+          "Start with a named task",
+          "and the exact source revision."
+        ],
+        "cue": 2,
+        "end_seconds": 8.0,
+        "panel": 1,
+        "start_seconds": 4.0
+      },
+      {
+        "caption": [
+          "Prepare one change. Run the checks,"
+        ],
+        "cue": 3,
+        "end_seconds": 12.0,
+        "panel": 2,
+        "start_seconds": 8.0
+      },
+      {
+        "caption": [
+          "and keep the actual result",
+          "with that revision."
+        ],
+        "cue": 4,
+        "end_seconds": 18.0,
+        "panel": 2,
+        "start_seconds": 12.0
+      },
+      {
+        "caption": [
+          "A test receipt tells you",
+          "what was checked and where."
+        ],
+        "cue": 5,
+        "end_seconds": 23.0,
+        "panel": 3,
+        "start_seconds": 18.0
+      },
+      {
+        "caption": [
+          "It does not establish that",
+          "a hosted service is running."
+        ],
+        "cue": 6,
+        "end_seconds": 28.0,
+        "panel": 3,
+        "start_seconds": 23.0
+      },
+      {
+        "caption": [
+          "Before any release,",
+          "review the exact content"
+        ],
+        "cue": 7,
+        "end_seconds": 33.0,
+        "panel": 4,
+        "start_seconds": 28.0
+      },
+      {
+        "caption": [
+          "and its remaining limits."
+        ],
+        "cue": 8,
+        "end_seconds": 38.0,
+        "panel": 4,
+        "start_seconds": 33.0
+      },
+      {
+        "caption": [
+          "For example, our development tools",
+          "can prepare"
+        ],
+        "cue": 9,
+        "end_seconds": 42.0,
+        "panel": 5,
+        "start_seconds": 38.0
+      },
+      {
+        "caption": [
+          "an unpublished media assignment",
+          "with its source brief attached."
+        ],
+        "cue": 10,
+        "end_seconds": 46.0,
+        "panel": 5,
+        "start_seconds": 42.0
+      },
+      {
+        "caption": [
+          "Writing that file does not publish a post",
+          "or render a video."
+        ],
+        "cue": 11,
+        "end_seconds": 50.0,
+        "panel": 5,
+        "start_seconds": 46.0
+      },
+      {
+        "caption": [
+          "Try this on your next project:",
+          "name one claim, find its evidence,"
+        ],
+        "cue": 12,
+        "end_seconds": 55.0,
+        "panel": 6,
+        "start_seconds": 50.0
+      },
+      {
+        "caption": [
+          "and record what remains unverified."
+        ],
+        "cue": 13,
+        "end_seconds": 60.0,
+        "panel": 6,
+        "start_seconds": 55.0
+      }
+    ],
+    "decoded_boundary_checks": [
+      {
+        "boundary": "decoded",
+        "cue": 1,
+        "mean_absolute_rgb_difference": 1.6912181712962961,
+        "next_best_error": 3.3601569733796297
+      },
+      {
+        "boundary": "decoded",
+        "cue": 2,
+        "mean_absolute_rgb_difference": 1.703315972222222,
+        "next_best_error": 3.361502459490741
+      },
+      {
+        "boundary": "decoded",
+        "cue": 3,
+        "mean_absolute_rgb_difference": 1.6940751591435184,
+        "next_best_error": 3.682119140625
+      },
+      {
+        "boundary": "decoded",
+        "cue": 4,
+        "mean_absolute_rgb_difference": 1.640753761574074,
+        "next_best_error": 3.6207740162037036
+      },
+      {
+        "boundary": "decoded",
+        "cue": 5,
+        "mean_absolute_rgb_difference": 1.683195529513889,
+        "next_best_error": 3.4671773726851853
+      },
+      {
+        "boundary": "decoded",
+        "cue": 6,
+        "mean_absolute_rgb_difference": 1.6614912471064816,
+        "next_best_error": 3.447350983796296
+      },
+      {
+        "boundary": "decoded",
+        "cue": 7,
+        "mean_absolute_rgb_difference": 1.7537297453703704,
+        "next_best_error": 3.4217411747685187
+      },
+      {
+        "boundary": "decoded",
+        "cue": 8,
+        "mean_absolute_rgb_difference": 1.6997424768518519,
+        "next_best_error": 3.3873003472222223
+      },
+      {
+        "boundary": "decoded",
+        "cue": 9,
+        "mean_absolute_rgb_difference": 1.7711754918981482,
+        "next_best_error": 3.608785807291666
+      },
+      {
+        "boundary": "decoded",
+        "cue": 10,
+        "mean_absolute_rgb_difference": 1.7619429976851853,
+        "next_best_error": 3.6235398582175926
+      },
+      {
+        "boundary": "decoded",
+        "cue": 11,
+        "mean_absolute_rgb_difference": 1.754775390625,
+        "next_best_error": 3.584405381944445
+      },
+      {
+        "boundary": "decoded",
+        "cue": 12,
+        "mean_absolute_rgb_difference": 1.7609291811342593,
+        "next_best_error": 4.089426359953704
+      },
+      {
+        "boundary": "decoded",
+        "cue": 13,
+        "mean_absolute_rgb_difference": 1.7125101273148147,
+        "next_best_error": 4.060865523726852
+      },
+      {
+        "boundary": "ends",
+        "cue": 1,
+        "mean_absolute_rgb_difference": 1.6897786458333333,
+        "next_best_error": 3.358583622685185
+      },
+      {
+        "boundary": "ends",
+        "cue": 2,
+        "mean_absolute_rgb_difference": 1.7027962239583332,
+        "next_best_error": 3.361773365162037
+      },
+      {
+        "boundary": "ends",
+        "cue": 3,
+        "mean_absolute_rgb_difference": 1.6234729456018517,
+        "next_best_error": 3.616784577546296
+      },
+      {
+        "boundary": "ends",
+        "cue": 4,
+        "mean_absolute_rgb_difference": 1.6406901041666666,
+        "next_best_error": 3.620710358796296
+      },
+      {
+        "boundary": "ends",
+        "cue": 5,
+        "mean_absolute_rgb_difference": 1.6436187065972223,
+        "next_best_error": 3.44173828125
+      },
+      {
+        "boundary": "ends",
+        "cue": 6,
+        "mean_absolute_rgb_difference": 1.6610583043981482,
+        "next_best_error": 3.4472283709490745
+      },
+      {
+        "boundary": "ends",
+        "cue": 7,
+        "mean_absolute_rgb_difference": 1.712816478587963,
+        "next_best_error": 3.3895337818287037
+      },
+      {
+        "boundary": "ends",
+        "cue": 8,
+        "mean_absolute_rgb_difference": 1.6995865885416663,
+        "next_best_error": 3.3871386718750003
+      },
+      {
+        "boundary": "ends",
+        "cue": 9,
+        "mean_absolute_rgb_difference": 1.7340397135416667,
+        "next_best_error": 3.575428240740741
+      },
+      {
+        "boundary": "ends",
+        "cue": 10,
+        "mean_absolute_rgb_difference": 1.7608912037037037,
+        "next_best_error": 3.6227564380787034
+      },
+      {
+        "boundary": "ends",
+        "cue": 11,
+        "mean_absolute_rgb_difference": 1.7539109519675924,
+        "next_best_error": 3.5840849247685185
+      },
+      {
+        "boundary": "ends",
+        "cue": 12,
+        "mean_absolute_rgb_difference": 1.7196885850694443,
+        "next_best_error": 4.0586545138888885
+      },
+      {
+        "boundary": "ends",
+        "cue": 13,
+        "mean_absolute_rgb_difference": 1.7122685185185187,
+        "next_best_error": 4.060620298032408
+      }
+    ],
+    "diff_check": "passed",
+    "exact_caption_cues_retained": 13,
+    "exact_panels_retained": 6,
+    "full_decode_exit_code": 0,
+    "initial_rejected_encode": {
+      "automatic_or_operational_retries": 0,
+      "correction": "Explicit fps=24 filter, final-still tpad and 1440-frame cap; final 26 cue-boundary checks and 60-second full decode pass",
+      "encoding_attempts": 2,
+      "failed_boundary": {
+        "boundary": "last frame before 4 seconds",
+        "cue": 1,
+        "expected_original_cue": 1,
+        "observed_closest_original_cue": 2
+      },
+      "failure": "58.958333 seconds / 1415 frames and early caption transition; encoder exit 0 did not establish timing success",
+      "sha256": "8501cc64f6d71b84937bade986e61e5e1bd4f81a484b4f0913a5b4c5b8fbfbf9",
+      "video": {
+        "format": {
+          "bit_rate": "58837",
+          "duration": "58.958333",
+          "filename": "docs/media/exports/youtube-20261029/slot-2-silent-animatic.mp4",
+          "format_long_name": "QuickTime / MOV",
+          "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+          "nb_programs": 0,
+          "nb_stream_groups": 0,
+          "nb_streams": 1,
+          "probe_score": 100,
+          "size": "433620",
+          "start_time": "0.000000",
+          "tags": {
+            "compatible_brands": "isomiso2avc1mp41",
+            "encoder": "Lavf61.7.103",
+            "major_brand": "isom",
+            "minor_version": "512",
+            "title": "Slot 2 silent timing animatic - unpublished review"
+          }
+        },
+        "streams": [
+          {
+            "avg_frame_rate": "24/1",
+            "bit_rate": "56407",
+            "bits_per_raw_sample": "8",
+            "chroma_location": "left",
+            "closed_captions": 0,
+            "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+            "codec_name": "h264",
+            "codec_tag": "0x31637661",
+            "codec_tag_string": "avc1",
+            "codec_type": "video",
+            "coded_height": 720,
+            "coded_width": 1280,
+            "display_aspect_ratio": "16:9",
+            "disposition": {
+              "attached_pic": 0,
+              "captions": 0,
+              "clean_effects": 0,
+              "comment": 0,
+              "default": 1,
+              "dependent": 0,
+              "descriptions": 0,
+              "dub": 0,
+              "forced": 0,
+              "hearing_impaired": 0,
+              "karaoke": 0,
+              "lyrics": 0,
+              "metadata": 0,
+              "multilayer": 0,
+              "non_diegetic": 0,
+              "original": 0,
+              "still_image": 0,
+              "timed_thumbnails": 0,
+              "visual_impaired": 0
+            },
+            "duration": "58.958333",
+            "duration_ts": 724480,
+            "extradata_size": 47,
+            "field_order": "progressive",
+            "film_grain": 0,
+            "has_b_frames": 2,
+            "height": 720,
+            "id": "0x1",
+            "index": 0,
+            "is_avc": "true",
+            "level": 31,
+            "nal_length_size": "4",
+            "nb_frames": "1415",
+            "pix_fmt": "yuv420p",
+            "profile": "High",
+            "r_frame_rate": "24/1",
+            "refs": 1,
+            "sample_aspect_ratio": "1:1",
+            "start_pts": 0,
+            "start_time": "0.000000",
+            "tags": {
+              "encoder": "Lavc61.19.101 libx264",
+              "handler_name": "VideoHandler",
+              "language": "und",
+              "vendor_id": "[0][0][0][0]"
+            },
+            "time_base": "1/12288",
+            "width": 1280
+          }
+        ]
+      }
+    },
+    "local_full_suite": "not rerun for media/docs-only change; runner checks linked separately in final Page receipt",
+    "narration_shot_plan_upload_copy_unchanged": true,
+    "new_unit_tests": 0,
+    "render": {
+      "encoder_exit_codes": [
+        0,
+        0
+      ],
+      "ffmpeg": "7.1.5-0+deb13u1",
+      "inkscape": "1.4 (e7c3feb100, 2024-10-09)",
+      "log_sha256": {
+        "render-01.log": "852ea32f3a17179656015baa6fe83571b07925001ef02f0ce5b849114008b439",
+        "render-02.log": "4fa930e1bf9577a500aed2d4a62b06c5e26e37889eb13bd00729d231d6292854",
+        "render-03.log": "988ea950735a75b500c7b4f618265cfc77292f2b217558a0f430e02dc30367e3",
+        "render-04.log": "531fe87b4c6f0a63dac48e801fbbd58a60738dd77549498780802906f6bf4fe8",
+        "render-05.log": "4aab1965f42a0badcc3c0f5057fed81a8325b5300090e36650635a962e135eac",
+        "render-06.log": "cede08c525c9c3be0efd6bc712301ed78f9984c3ae3a8f90d0bbd0fd34612ea8",
+        "render-07.log": "da9e89407bdeb01495ef39163e21608dbcc8acd5903e79a87db1958a01c2559c",
+        "render-08.log": "e563fb36f784f2f4a0d9226b1922556e1f8a9711a383460f5f27fc772827c537",
+        "render-09.log": "8f612de65e9748c080203af4f50571bd72c71808a60af065e02aeaad27bf4bc2",
+        "render-10.log": "3904fb89fecdb8e4fe2f8877f3d10883a767ecc331bb1e32ebfdc95f089dc16b",
+        "render-11.log": "c277e4972270edf3de9e9df6366d0368726f3423b16032fbbab80315cd8f059c",
+        "render-12.log": "24e3f082d7b2de2f253916811697b304bf182f3bd5cc79c830cc2fdea54cf525",
+        "render-13.log": "a0ecf2c2876f1f406481fcec769db00589069ef103abea5d88155e0d702340a1"
+      },
+      "renderer_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "renders": 13,
+      "warning_classes": [
+        "Failed to wrap PangoFT2FontMap",
+        "Failed to wrap GtkRecentManager"
+      ]
+    },
+    "syntax": {
+      "command": "AST parse git ls-files *.py",
+      "files": 74,
+      "passed": true
+    },
+    "text_bounds_checks": 88,
+    "text_measurements": [
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 1,
+        "left_px": 464.1796875,
+        "right_px": 815.8203125,
+        "text": "Here is one small way",
+        "width_px": 351.640625
+      },
+      {
+        "cue": 1,
+        "left_px": 448.015625,
+        "right_px": 831.984375,
+        "text": "to inspect a Jarvis build.",
+        "width_px": 383.96875
+      },
+      {
+        "cue": 1,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 1,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "00\u201304s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 2,
+        "left_px": 447.609375,
+        "right_px": 832.390625,
+        "text": "Start with a named task",
+        "width_px": 384.78125
+      },
+      {
+        "cue": 2,
+        "left_px": 398.4765625,
+        "right_px": 881.5234375,
+        "text": "and the exact source revision.",
+        "width_px": 483.046875
+      },
+      {
+        "cue": 2,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 2,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "04\u201308s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 3,
+        "left_px": 342.15625,
+        "right_px": 937.84375,
+        "text": "Prepare one change. Run the checks,",
+        "width_px": 595.6875
+      },
+      {
+        "cue": 3,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 3,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "08\u201312s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 4,
+        "left_px": 430.2265625,
+        "right_px": 849.7734375,
+        "text": "and keep the actual result",
+        "width_px": 419.546875
+      },
+      {
+        "cue": 4,
+        "left_px": 495.609375,
+        "right_px": 784.390625,
+        "text": "with that revision.",
+        "width_px": 288.78125
+      },
+      {
+        "cue": 4,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 4,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "12\u201318s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 5,
+        "left_px": 459.65625,
+        "right_px": 820.34375,
+        "text": "A test receipt tells you",
+        "width_px": 360.6875
+      },
+      {
+        "cue": 5,
+        "left_px": 398.5234375,
+        "right_px": 881.4765625,
+        "text": "what was checked and where.",
+        "width_px": 482.953125
+      },
+      {
+        "cue": 5,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 5,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "18\u201323s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 6,
+        "left_px": 440.0625,
+        "right_px": 839.9375,
+        "text": "It does not establish that",
+        "width_px": 399.875
+      },
+      {
+        "cue": 6,
+        "left_px": 418.390625,
+        "right_px": 861.609375,
+        "text": "a hosted service is running.",
+        "width_px": 443.21875
+      },
+      {
+        "cue": 6,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 6,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "23\u201328s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 7,
+        "left_px": 484.671875,
+        "right_px": 795.328125,
+        "text": "Before any release,",
+        "width_px": 310.65625
+      },
+      {
+        "cue": 7,
+        "left_px": 440.40625,
+        "right_px": 839.59375,
+        "text": "review the exact content",
+        "width_px": 399.1875
+      },
+      {
+        "cue": 7,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 7,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "28\u201333s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 8,
+        "left_px": 446.1796875,
+        "right_px": 833.8203125,
+        "text": "and its remaining limits.",
+        "width_px": 387.640625
+      },
+      {
+        "cue": 8,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 8,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "33\u201338s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 9,
+        "left_px": 350.015625,
+        "right_px": 929.984375,
+        "text": "For example, our development tools",
+        "width_px": 579.96875
+      },
+      {
+        "cue": 9,
+        "left_px": 543.9140625,
+        "right_px": 736.0859375,
+        "text": "can prepare",
+        "width_px": 192.171875
+      },
+      {
+        "cue": 9,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 9,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "38\u201342s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 10,
+        "left_px": 363.796875,
+        "right_px": 916.203125,
+        "text": "an unpublished media assignment",
+        "width_px": 552.40625
+      },
+      {
+        "cue": 10,
+        "left_px": 400.6875,
+        "right_px": 879.3125,
+        "text": "with its source brief attached.",
+        "width_px": 478.625
+      },
+      {
+        "cue": 10,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 10,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "42\u201346s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 11,
+        "left_px": 323.890625,
+        "right_px": 956.109375,
+        "text": "Writing that file does not publish a post",
+        "width_px": 632.21875
+      },
+      {
+        "cue": 11,
+        "left_px": 497.2734375,
+        "right_px": 782.7265625,
+        "text": "or render a video.",
+        "width_px": 285.453125
+      },
+      {
+        "cue": 11,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 11,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "46\u201350s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 12,
+        "left_px": 409.6328125,
+        "right_px": 870.3671875,
+        "text": "Try this on your next project:",
+        "width_px": 460.734375
+      },
+      {
+        "cue": 12,
+        "left_px": 364.203125,
+        "right_px": 915.796875,
+        "text": "name one claim, find its evidence,",
+        "width_px": 551.59375
+      },
+      {
+        "cue": 12,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 12,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "50\u201355s",
+        "width_px": 78.46875
+      },
+      {
+        "cue": 13,
+        "left_px": 64.0,
+        "right_px": 843.46875,
+        "text": "SILENT TIMING ANIMATIC \u00b7 UNPUBLISHED \u00b7 NO RECORDED VOICE",
+        "width_px": 779.46875
+      },
+      {
+        "cue": 13,
+        "left_px": 64.0,
+        "right_px": 991.65625,
+        "text": "Follow one Jarvis build from draft to evidence",
+        "width_px": 927.65625
+      },
+      {
+        "cue": 13,
+        "left_px": 64.0,
+        "right_px": 711.390625,
+        "text": "Illustrative labels \u00b7 review pending \u00b7 channel unassigned",
+        "width_px": 647.390625
+      },
+      {
+        "cue": 13,
+        "left_px": 348.9765625,
+        "right_px": 931.0234375,
+        "text": "and record what remains unverified.",
+        "width_px": 582.046875
+      },
+      {
+        "cue": 13,
+        "left_px": 64.0,
+        "right_px": 920.28125,
+        "text": "Intergalactic Corporate Services LLC \u00b7 proposed captions, not recorded timing",
+        "width_px": 856.28125
+      },
+      {
+        "cue": 13,
+        "left_px": 1137.53125,
+        "right_px": 1216.0,
+        "text": "55\u201360s",
+        "width_px": 78.46875
+      }
+    ],
+    "unchanged_input_sha256": {
+      "docs/media/jarvis-youtube-slot2-20261029.srt": "d546064fab2f55f555010e90e20177033015f5e566cece3a6a1db2b54968dacd",
+      "docs/media/jarvis-youtube-slot2-20261029.svg": "a700c7a7fee49c6160b76f06bed25c5a652ac3ee0d7dde0616e0ee4c4e225ac1",
+      "docs/media/jarvis-youtube-slot2-thumbnail-20261105.svg": "7aefbe98a144d7b7794f8e52556051b26c626e928b5e99f23b1fc80d77e8aa2d",
+      "examples/portfolio/jarvis-daily-media-20261029.json": "85198c4457dcffd5ff028d8009e5bc2562b974bd0295891f9bbf2b083214fccd",
+      "examples/portfolio/jarvis-daily-youtube-slot2.draft.json": "5d76c65a991c5f4538e6ef3e09c4cc206d5b1c9ccdb39aedc0b4d474df266e9c"
+    },
+    "video": {
+      "format": {
+        "bit_rate": "58007",
+        "duration": "60.000000",
+        "filename": "docs/media/exports/youtube-20261029/slot-2-silent-animatic.mp4",
+        "format_long_name": "QuickTime / MOV",
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "nb_programs": 0,
+        "nb_stream_groups": 0,
+        "nb_streams": 1,
+        "probe_score": 100,
+        "size": "435058",
+        "start_time": "0.000000",
+        "tags": {
+          "compatible_brands": "isomiso2avc1mp41",
+          "encoder": "Lavf61.7.103",
+          "major_brand": "isom",
+          "minor_version": "512",
+          "title": "Slot 2 silent timing animatic - unpublished review"
+        }
+      },
+      "streams": [
+        {
+          "avg_frame_rate": "24/1",
+          "bit_rate": "55579",
+          "bits_per_raw_sample": "8",
+          "chroma_location": "left",
+          "closed_captions": 0,
+          "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+          "codec_name": "h264",
+          "codec_tag": "0x31637661",
+          "codec_tag_string": "avc1",
+          "codec_type": "video",
+          "coded_height": 720,
+          "coded_width": 1280,
+          "display_aspect_ratio": "16:9",
+          "disposition": {
+            "attached_pic": 0,
+            "captions": 0,
+            "clean_effects": 0,
+            "comment": 0,
+            "default": 1,
+            "dependent": 0,
+            "descriptions": 0,
+            "dub": 0,
+            "forced": 0,
+            "hearing_impaired": 0,
+            "karaoke": 0,
+            "lyrics": 0,
+            "metadata": 0,
+            "multilayer": 0,
+            "non_diegetic": 0,
+            "original": 0,
+            "still_image": 0,
+            "timed_thumbnails": 0,
+            "visual_impaired": 0
+          },
+          "duration": "60.000000",
+          "duration_ts": 737280,
+          "extradata_size": 47,
+          "field_order": "progressive",
+          "film_grain": 0,
+          "has_b_frames": 2,
+          "height": 720,
+          "id": "0x1",
+          "index": 0,
+          "is_avc": "true",
+          "level": 31,
+          "nal_length_size": "4",
+          "nb_frames": "1440",
+          "pix_fmt": "yuv420p",
+          "profile": "High",
+          "r_frame_rate": "24/1",
+          "refs": 1,
+          "sample_aspect_ratio": "1:1",
+          "start_pts": 0,
+          "start_time": "0.000000",
+          "tags": {
+            "encoder": "Lavc61.19.101 libx264",
+            "handler_name": "VideoHandler",
+            "language": "und",
+            "vendor_id": "[0][0][0][0]"
+          },
+          "time_base": "1/12288",
+          "width": 1280
+        }
+      ]
+    },
+    "xml_internal_resources_passed": true
+  },
+  "configuration_version": "codex.media-animatic.v1",
+  "destination": "unassigned",
+  "evidence_class": "actual local SVG render/video encode/decode/checks; not finished narrated video, platform acceptance or publication",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_render_and_checks_completed",
+  "goal": "One silent variable-timing review animatic for existing YouTube slot 2.",
+  "input_revision": "b960647a6dab32ec8df88136471e054f5e33a609",
+  "limitations": [
+    "No recorded voice, finished video, accepted platform upload, delivery or public post.",
+    "Timing remains proposed until checked against authorized recording.",
+    "Rights/channel/destination/device/accessibility/platform acceptance pending.",
+    "No live-provider handoff/authentication, runtime/worker/lease/failover or new storage/strict packet schema.",
+    "All 17 portable targets/business areas retained; seven source PROJECTS remain distinct.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deployment/messages/publication/spending/credentials/permissions/public access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 230,
+  "memory_source": "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32",
+  "metrics": {
+    "completed_assets": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_candidates": 0,
+    "encoding_attempts": 2,
+    "initial_encodes_rejected_by_QA": 1,
+    "reliability_gain": "not claimed",
+    "revision_conflicts_observed": 0
+  },
+  "mission_id": "jarvis-media-20261029",
+  "permitted_actions": [
+    "prepare_draft",
+    "local_render",
+    "verify",
+    "authorized_development_branch_write"
+  ],
+  "platform": "youtube",
+  "prior_work": "Latest restored-content regression/CI complete. Slot 1 animatic already complete; distinct slot 2 had script/SRT/storyboard but no tracked animatic. No overlapping active work dispatched.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "e8875fd73e24874ddf7a41b251b85bb910c2a6d50bcebf3306962f96525735bb",
+  "record_type": "actual_work_receipt",
+  "render_recipe": "docs/media/jarvis-youtube-slot2-20261029.md#slot-2-silent-timing-animatic",
+  "return_binding": {
+    "artifacts": [
+      "docs/media/jarvis-youtube-slot2-20261029.md",
+      "docs/media/jarvis-youtube-slot2-animatic-20261112.svg",
+      "docs/media/exports/youtube-20261029/slot-2-silent-animatic.mp4"
+    ],
+    "development_commit_ci": "guarded master Page final cycle receipt",
+    "receipt": "docs/evidence/youtube-slot2-animatic-20261112.json"
+  },
+  "schema_version": 1,
+  "visibility": "private_work_receipt; media is an unpublished proposed public candidate"
+}

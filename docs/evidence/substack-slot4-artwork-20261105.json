@@ -1,0 +1,108 @@
+{
+  "artifact_sha256": {
+    "docs/DAILY_MEDIA_BRIEFS.md": "4cd8346137bdeec150570e70d759758cde0a34c4a39597a1da32312d73e259b4",
+    "docs/media/exports/substack-20261029/slot-4.png": "f97bacb2535ce3e9481431dae2741937c71a687ca327b6d6b12a99532aa0cf9b",
+    "docs/media/jarvis-substack-four-slots-20261029.md": "da1322ad1c8ef3d6440298d661911be746177319985dc20369527c213a787b38",
+    "docs/media/jarvis-substack-slot4-20261105.svg": "f4d6e1135e27376cc690a70134daf61eb4c4c0b9e3df0c4051c0217375a231b0"
+  },
+  "asset_id": "codex",
+  "checks": {
+    "campaign_and_prior_artwork_unchanged": true,
+    "empty_box_pixel_checks": 4,
+    "new_unit_tests": 0,
+    "note_bodies_unchanged": 4,
+    "png_bytes": 92578,
+    "png_decode_opacity": "passed",
+    "png_dimensions": [
+      1400,
+      1000
+    ],
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "ONE TASK. A REVIEWABLE RETURN.",
+        "width": 796.84375
+      },
+      {
+        "text": "CONCEPTUAL EXAMPLE \u2022 UNPUBLISHED NOTE",
+        "width": 602.828125
+      },
+      {
+        "text": "Draft only",
+        "width": 192.1875
+      },
+      {
+        "text": "Review pending",
+        "width": 287.53125
+      },
+      {
+        "text": "Blank boxes do not imply completion or approval.",
+        "width": 596.546875
+      },
+      {
+        "text": "Destination: unassigned \u2022 No subscriber email authorized.",
+        "width": 702.90625
+      },
+      {
+        "text": "Artifact",
+        "width": 136.59375
+      },
+      {
+        "text": "Actual checks",
+        "width": 248.265625
+      },
+      {
+        "text": "Unresolved limits",
+        "width": 315.453125
+      },
+      {
+        "text": "Next action",
+        "width": 207.15625
+      }
+    ],
+    "visual_inspection": "full PNG inspected; no clipping/overlap observed",
+    "whitespace": "git diff --check passed",
+    "xml_resources": "allowlisted tags; no links/scripts/images/events"
+  },
+  "configuration_version": "codex.media-artwork.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "destination": "unassigned",
+  "duplicate_candidates": 0,
+  "evidence_class": "actual local artifact/render checks; conceptual artwork implies no completion, mission dispatch or approval",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "304787c6832a62a5a508f522d06e686a1091b6ef",
+  "limitations": [
+    "Not an accepted upload or platform alt-text field",
+    "Owner/rights/destination/device/accessibility/platform review pending",
+    "Not a finished video or published post; no subscriber email or newsletter change"
+  ],
+  "memory_source": "master Page sequence 147",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact artwork/Note/alt owner review; all four Substack artwork candidates are retained; do not regenerate them.",
+  "owner_release_approval": "not_granted",
+  "platform_id": "substack",
+  "project_id": "ai-jarvis",
+  "record_sha256": "c0e612058f41fff4fc66ab6d3fcf9f27446a7e146316a1298bb0b355febe5c38",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "Original unpublished SVG/PNG for slot 4, guide/index links; no Note or runtime code changes",
+  "source_assignment": "jarvis-media-20261029.substack.4"
+}

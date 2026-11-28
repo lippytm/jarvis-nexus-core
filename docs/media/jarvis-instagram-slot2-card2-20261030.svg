@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title description">
+<title id="title">Version A: checkpoint note. Version B: edited checkpoint note.</title><desc id="description">Two synthetic versions differ only in their checkpoint note; no private record is displayed.</desc>
+<rect width="1080" height="1080" fill="#edf2f5"/><rect width="1080" height="164" fill="#10283f"/>
+<g font-family="DejaVu Sans" fill="#10283f">
+<text x="72" y="61" font-size="23" fill="#b5dbe3" letter-spacing="2">AI JARVIS • REVIEW EXERCISE</text>
+<text x="72" y="121" font-size="37" fill="white">2 — Explanation</text>
+<text x="72" y="207" font-size="25">Synthetic example</text>
+<text x="72" y="280" font-size="50" font-weight="bold"><tspan x="72" dy="0">Version A: checkpoint note.</tspan><tspan x="72" dy="62">Version B: edited checkpoint</tspan><tspan x="72" dy="62">note.</tspan></text>
+<rect x="72" y="525" width="444" height="120" rx="12" fill="#e4eef2"/><text x="96" y="572" font-size="27">Version A</text><path d="M96 606 h350" stroke="#7b98aa" stroke-width="3"/><rect x="564" y="525" width="444" height="120" rx="12" fill="#e4eef2"/><text x="588" y="572" font-size="27">Version B</text><path d="M588 606 h350" stroke="#7b98aa" stroke-width="3"/>
+<path d="M72 720 H1008" stroke="#b7c8d4" stroke-width="2"/>
+<text x="72" y="771" font-size="27" font-weight="normal"><tspan x="72" dy="0">Two synthetic versions differ only in their checkpoint note; no</tspan><tspan x="72" dy="38">private record is displayed.</tspan></text>
+<text x="72" y="970" font-size="25">REVIEW CANDIDATE • UNPUBLISHED</text>
+<text x="72" y="1020" font-size="22">Intergalactic Corporate Services LLC</text>
+<text x="940" y="1020" font-size="22">2 / 5</text>
+</g></svg>

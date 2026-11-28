@@ -1,0 +1,146 @@
+{
+  "actual_cli_synthetic_report": {
+    "context_recovery": {
+      "context_revision": 2,
+      "context_sha256": "c1fe9890c602af0fad861a0654243943dc252e82cb536c86ab72d56ab4d64107",
+      "control_state": "paused",
+      "destination_id": "synthetic-local-codex",
+      "dispatch_authorized": false,
+      "duplicate_checkpoint": true,
+      "execution_state": "execution_blocked",
+      "external_actions": 0,
+      "historical_profile_retained": true,
+      "holds": [
+        "paused",
+        "context_review_required"
+      ],
+      "memory_revision": 2,
+      "mode": "local_synthetic_context_recovery",
+      "platform": "codex",
+      "prior_local_review_retained": true,
+      "profile_retained_after_reopen": true,
+      "retry_authorized": false,
+      "review_authority": "local_record_only_not_identity_authentication",
+      "review_state_after_edit": "proposed",
+      "sender_authentication": "not_established",
+      "visibility": "owner_private"
+    },
+    "export_prepared": true,
+    "external_actions": 0,
+    "external_agents_started": 0,
+    "inactive_assistant_specifications": 35,
+    "ledger": {
+      "external_actions": 0,
+      "handoffs": [
+        {
+          "duplicate": false,
+          "external_actions": 0,
+          "handoff_id": "demo-handoff",
+          "handoff_sha256": "8dfbe0d880f803591e3ba8f8932ace2499be488820f15ee9f0f706f0ff9b9f48",
+          "sender_authentication": "not_established",
+          "state": "returned_unverified"
+        },
+        {
+          "duplicate": false,
+          "external_actions": 0,
+          "handoff_id": "demo-codex-context",
+          "handoff_sha256": "19f93e729b6438c55e6299ba74a14433753fe1cede826e57d5ddd11b74da4fd5",
+          "sender_authentication": "not_established",
+          "state": "reviewed"
+        }
+      ],
+      "mode": "local_ledger",
+      "model_calls": 0,
+      "return_count": 1,
+      "swarm_count": 1
+    },
+    "mode": "local_synthetic_fixture",
+    "model_calls": 0,
+    "project_count": 7,
+    "reopen_retry_is_duplicate": true,
+    "return_state": "returned_unverified",
+    "swarm_manifest_sha256": {
+      "ai-evolutionary-evolutions": "a2c803cb0075efa34a43b078a03ea556b14a9dbf3c32aa9fead69bb76867f03c",
+      "ai-jarvis": "d928dcd79474892186a8fd11e5b1feea38489c5a0bd9bf32669dad16111c27c2",
+      "business-operations": "f70092236bb6959d32d6a63a00bd22b5a6a82bdea8ae4e3a513b4e48edd8826c",
+      "funding-affiliates": "a31809ef048772a996eb170eab0b778bf5e1386ecb05e224864e93ac6a74bfeb",
+      "linux-education": "bde8e1c58d3ac203047137c463ccdfb5cee381151bff1294fc8ac077845de1c9",
+      "publishing-studio": "a4411e42de17b6fbc82033134d907e6d28265e1c91e190fec747a321d2b49c2a",
+      "robotics-research": "586c5929659c60b9bd6805cc52a8d54b1ffe08588ea59031803e2bc51b15f619"
+    },
+    "target_provider_count": 17
+  },
+  "asset_id": "codex",
+  "change": "Extend the same temporary ledger with a second inactive codex handoff, private paused/blocked version-3 profile and checkpoint; reopen, detect duplicate capture, edit memory and demonstrate invalidated context review plus retained history/holds. Existing Gemini fixture remains independent.",
+  "checks": {
+    "actual_cli": {
+      "bytes": 2215,
+      "command": "python scripts/jarvis_network.py --root reports demo --out codex-recovery-demo-output-20261105.json",
+      "exit_code": 0,
+      "file_mode": "0o600",
+      "output_sha256": "179347f6049165b294c43344c318f017db49815774ea7679fe13fc2fe728e57c"
+    },
+    "focused": "2 network demo tests passed in 0.144s; one new method",
+    "full": {
+      "record_sha256": "84b20764767ff1eb0dc51a1e630a1a71552cb4f4e70e07441a4af8e44dc738cb",
+      "syntax_files": 73,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 542,
+        "skipped": 0
+      }
+    },
+    "new_methods": 1,
+    "web": {
+      "failed": 0,
+      "passed": 181,
+      "tests": 181
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.synthetic-recovery-demo.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed",
+  "input_revision": "d1b895ea355aa623aaca000f3572427f11160e26",
+  "limitations": [
+    "Synthetic local demo only; no authenticated provider delivery, running agent, real outage/recovery or measured reliability improvement",
+    "The temporary ledger is deleted after completion; retained JSON is an observation, not an installed durable shared store",
+    "Fixture BASE_REVISION is historical synthetic input, distinct from this engineering input revision",
+    "Reviewer labels are unauthenticated; original paused mission/actual receipts untouched; historical local timeout remains separate"
+  ],
+  "logs_sha256": {
+    "codex-recovery-demo-focused-20261105.txt": "1212c1ed567e63a8c65223f58ec501c55711b35202a27f4e61f21e1ccb4c2470",
+    "codex-recovery-demo-full-20261105.txt": "0310e66b0ecbf4a77e8699a17fc79abc8e690fb2d806190dd1c0dd9ba2945c04",
+    "codex-recovery-demo-web-20261105.txt": "c1b532de47470f665f1864ec1c5ca5f168aca2713d2a741451bc2f87975c470b"
+  },
+  "memory_source": "master Page sequence 158",
+  "mission_id": "codex-recovery-demo-20261105",
+  "next_task": "Exact-revision independent review; authenticated registry acceptance and audience/access policy remain pending. Do not repeat this demo extension.",
+  "observed_gap": "Existing network demo demonstrated only a v1 packet/return, omitting the implemented versioned durable context and review-invalidation workflow.",
+  "owner_release_approval": "not_granted",
+  "permitted_scope": "Existing synthetic network demo, regression, profile documentation and evidence on named development branch",
+  "project_id": "ai-jarvis",
+  "record_sha256": "798240bf6c941cb9808c5e27b2c3629a4228e2069d7a857822744cfbd7783df2",
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "source_after_sha256": {
+    "control_tower/network_demo.py": "0a39f9a4320a562c5176c28a4897caa66ab43c975b5befe4f422b08f41da1dba",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "37e0b618d4991621450aac6d4d7a9fa56924d0d5e2cc0f394f6e78e2bf03afbb",
+    "tests/test_network.py": "22120af2b6125fdf72eb502f4d7dcc27f0550f7fe0998c83e3733c50006f4302"
+  },
+  "source_before_sha256": {
+    "control_tower/network_demo.py": "39333d859cd5740b3e00e16dd02feba529021346169f36a5983f6e2c41787908",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bc4e39b068e384c6f62e434a7c12d6aab274ca7ac8086f87345cf6b00022305e",
+    "tests/test_network.py": "149c0bac47719e626beb3b1583af542712ed93d9665f8f19ac5142354255c659"
+  }
+}

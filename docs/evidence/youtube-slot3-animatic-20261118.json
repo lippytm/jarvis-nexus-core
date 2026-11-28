@@ -1,0 +1,474 @@
+{
+  "approval_state": "independent_and_owner_exact_content_review_pending",
+  "artifact_sha256": {
+    "docs/media/exports/youtube-20261029/slot-3-silent-animatic.mp4": "a8827c81e3a0221eff47ca431b18205b604740ff89f347142aec315a0e57f881",
+    "docs/media/jarvis-youtube-slot3-20261029.md": "46d7847b802ee51ba39d0a1f60a08c519454993a94c30608d4a541b2c4222fac",
+    "docs/media/jarvis-youtube-slot3-animatic-20261118.svg": "acf03ebda7e9e426d2961b60178d3bc3cef5de08177644d08d9a6288ef13444f"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_retries": 0,
+    "items": 1,
+    "paid_provider_calls": 0,
+    "purchases": 0
+  },
+  "checkpoint": {
+    "next": "Exact preview/narration review then authorized recording/retiming; slot4 timing preview unfinished. Engineering review remains separately pending.",
+    "state": "silent_preview_prepared"
+  },
+  "checks": {
+    "assistant_visual_inspection": {
+      "decoded_contact_sheet_cues": 12,
+      "full_size_cards": [
+        1,
+        6,
+        12
+      ],
+      "observed": "No clipping/overlap observed; target-device/accessibility acceptance not established."
+    },
+    "audio_streams": 0,
+    "boundary_checks": [
+      {
+        "caption_mae": 1.2250379150702426,
+        "cue": 1,
+        "frame": 0,
+        "nearest_other_mae": 12.681519396551723
+      },
+      {
+        "caption_mae": 1.2087064974457216,
+        "cue": 1,
+        "frame": 119,
+        "nearest_other_mae": 12.671362148786718
+      },
+      {
+        "caption_mae": 1.0879928959131544,
+        "cue": 2,
+        "frame": 120,
+        "nearest_other_mae": 10.236190932311622
+      },
+      {
+        "caption_mae": 1.0696160600255427,
+        "cue": 2,
+        "frame": 239,
+        "nearest_other_mae": 10.218724058109835
+      },
+      {
+        "caption_mae": 1.156309865900383,
+        "cue": 3,
+        "frame": 240,
+        "nearest_other_mae": 11.443352889527459
+      },
+      {
+        "caption_mae": 1.0368514527458492,
+        "cue": 3,
+        "frame": 359,
+        "nearest_other_mae": 11.394632024265645
+      },
+      {
+        "caption_mae": 1.035466554916986,
+        "cue": 4,
+        "frame": 360,
+        "nearest_other_mae": 10.20536398467433
+      },
+      {
+        "caption_mae": 1.0359833971902936,
+        "cue": 4,
+        "frame": 479,
+        "nearest_other_mae": 10.204954901021711
+      },
+      {
+        "caption_mae": 1.1563956736909322,
+        "cue": 5,
+        "frame": 480,
+        "nearest_other_mae": 11.739814814814816
+      },
+      {
+        "caption_mae": 1.0379350255427842,
+        "cue": 5,
+        "frame": 599,
+        "nearest_other_mae": 11.703334530651341
+      },
+      {
+        "caption_mae": 1.0856102330779054,
+        "cue": 6,
+        "frame": 600,
+        "nearest_other_mae": 10.842698355683268
+      },
+      {
+        "caption_mae": 1.0847701149425288,
+        "cue": 6,
+        "frame": 719,
+        "nearest_other_mae": 10.841874201787995
+      },
+      {
+        "caption_mae": 1.164419699872286,
+        "cue": 7,
+        "frame": 720,
+        "nearest_other_mae": 11.850213521711368
+      },
+      {
+        "caption_mae": 1.0441231641123883,
+        "cue": 7,
+        "frame": 839,
+        "nearest_other_mae": 11.822421775223498
+      },
+      {
+        "caption_mae": 1.2799828384418903,
+        "cue": 8,
+        "frame": 840,
+        "nearest_other_mae": 14.137434147509579
+      },
+      {
+        "caption_mae": 1.274397349936143,
+        "cue": 8,
+        "frame": 959,
+        "nearest_other_mae": 14.134865900383142
+      },
+      {
+        "caption_mae": 1.281669061302682,
+        "cue": 9,
+        "frame": 960,
+        "nearest_other_mae": 13.379667544699872
+      },
+      {
+        "caption_mae": 1.1261893358876118,
+        "cue": 9,
+        "frame": 1079,
+        "nearest_other_mae": 13.312418183269477
+      },
+      {
+        "caption_mae": 1.2081577266922094,
+        "cue": 10,
+        "frame": 1080,
+        "nearest_other_mae": 11.954487946998723
+      },
+      {
+        "caption_mae": 1.206511414431673,
+        "cue": 10,
+        "frame": 1199,
+        "nearest_other_mae": 11.952334770114943
+      },
+      {
+        "caption_mae": 1.2471284323116218,
+        "cue": 11,
+        "frame": 1200,
+        "nearest_other_mae": 13.29279214559387
+      },
+      {
+        "caption_mae": 1.1037156768837804,
+        "cue": 11,
+        "frame": 1319,
+        "nearest_other_mae": 13.238619492337165
+      },
+      {
+        "caption_mae": 0.9228747605363985,
+        "cue": 12,
+        "frame": 1320,
+        "nearest_other_mae": 11.4075470945083
+      },
+      {
+        "caption_mae": 0.923122206257982,
+        "cue": 12,
+        "frame": 1439,
+        "nearest_other_mae": 11.406808748403577
+      }
+    ],
+    "diff_check": "passed",
+    "duration": 60,
+    "ffprobe": {
+      "format": {
+        "bit_rate": "57421",
+        "duration": "60.000000",
+        "filename": "docs/media/exports/youtube-20261029/slot-3-silent-animatic.mp4",
+        "format_long_name": "QuickTime / MOV",
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "nb_programs": 0,
+        "nb_stream_groups": 0,
+        "nb_streams": 1,
+        "probe_score": 100,
+        "size": "430659",
+        "start_time": "0.000000",
+        "tags": {
+          "compatible_brands": "isomiso2avc1mp41",
+          "encoder": "Lavf61.7.103",
+          "major_brand": "isom",
+          "minor_version": "512",
+          "title": "Slot 3 silent timing preview - unpublished review"
+        }
+      },
+      "streams": [
+        {
+          "avg_frame_rate": "24/1",
+          "bit_rate": "54993",
+          "bits_per_raw_sample": "8",
+          "chroma_location": "left",
+          "closed_captions": 0,
+          "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+          "codec_name": "h264",
+          "codec_tag": "0x31637661",
+          "codec_tag_string": "avc1",
+          "codec_type": "video",
+          "coded_height": 720,
+          "coded_width": 1280,
+          "display_aspect_ratio": "16:9",
+          "disposition": {
+            "attached_pic": 0,
+            "captions": 0,
+            "clean_effects": 0,
+            "comment": 0,
+            "default": 1,
+            "dependent": 0,
+            "descriptions": 0,
+            "dub": 0,
+            "forced": 0,
+            "hearing_impaired": 0,
+            "karaoke": 0,
+            "lyrics": 0,
+            "metadata": 0,
+            "multilayer": 0,
+            "non_diegetic": 0,
+            "original": 0,
+            "still_image": 0,
+            "timed_thumbnails": 0,
+            "visual_impaired": 0
+          },
+          "duration": "60.000000",
+          "duration_ts": 737280,
+          "extradata_size": 47,
+          "field_order": "progressive",
+          "film_grain": 0,
+          "has_b_frames": 2,
+          "height": 720,
+          "id": "0x1",
+          "index": 0,
+          "is_avc": "true",
+          "level": 31,
+          "nal_length_size": "4",
+          "nb_frames": "1440",
+          "nb_read_frames": "1440",
+          "pix_fmt": "yuv420p",
+          "profile": "High",
+          "r_frame_rate": "24/1",
+          "refs": 4,
+          "sample_aspect_ratio": "1:1",
+          "start_pts": 0,
+          "start_time": "0.000000",
+          "tags": {
+            "encoder": "Lavc61.19.101 libx264",
+            "handler_name": "VideoHandler",
+            "language": "und",
+            "vendor_id": "[0][0][0][0]"
+          },
+          "time_base": "1/12288",
+          "width": 1280
+        }
+      ]
+    },
+    "frames": 1440,
+    "full_local_unit_suite": "Not repeated for media-only work; final GitHub CI in master receipt.",
+    "narration_and_upload_copy_retained": true,
+    "panels_retained": 6,
+    "proposed_cues": [
+      {
+        "caption": [
+          "A passing test answers a specific",
+          "question. Before calling an AI workflow"
+        ],
+        "cue": 1,
+        "end_seconds": 5.0,
+        "panel": 1,
+        "start_seconds": 0.0
+      },
+      {
+        "caption": [
+          "ready, ask which environment",
+          "produced that result."
+        ],
+        "cue": 2,
+        "end_seconds": 10.0,
+        "panel": 1,
+        "start_seconds": 5.0
+      },
+      {
+        "caption": [
+          "Consider a hypothetical build:",
+          "checks pass on a GitHub runner,"
+        ],
+        "cue": 3,
+        "end_seconds": 15.0,
+        "panel": 2,
+        "start_seconds": 10.0
+      },
+      {
+        "caption": [
+          "while the intended local command",
+          "cannot start."
+        ],
+        "cue": 4,
+        "end_seconds": 20.0,
+        "panel": 2,
+        "start_seconds": 15.0
+      },
+      {
+        "caption": [
+          "Keep both observations.",
+          "The runner result describes its checks;"
+        ],
+        "cue": 5,
+        "end_seconds": 25.0,
+        "panel": 3,
+        "start_seconds": 20.0
+      },
+      {
+        "caption": [
+          "it does not show that",
+          "the local environment recovered."
+        ],
+        "cue": 6,
+        "end_seconds": 30.0,
+        "panel": 3,
+        "start_seconds": 25.0
+      },
+      {
+        "caption": [
+          "Retain the blocked task",
+          "and its checkpoint. Avoid overlapping"
+        ],
+        "cue": 7,
+        "end_seconds": 35.0,
+        "panel": 4,
+        "start_seconds": 30.0
+      },
+      {
+        "caption": [
+          "retries, and wait for an actual successful",
+          "local command before reporting recovery."
+        ],
+        "cue": 8,
+        "end_seconds": 40.0,
+        "panel": 4,
+        "start_seconds": 35.0
+      },
+      {
+        "caption": [
+          "Even then, one successful command is one",
+          "observation. Continuous availability,"
+        ],
+        "cue": 9,
+        "end_seconds": 45.0,
+        "panel": 5,
+        "start_seconds": 40.0
+      },
+      {
+        "caption": [
+          "authenticated access and delivered results",
+          "need their own evidence."
+        ],
+        "cue": 10,
+        "end_seconds": 50.0,
+        "panel": 5,
+        "start_seconds": 45.0
+      },
+      {
+        "caption": [
+          "For your next update, name the claim,",
+          "its source revision and execution context."
+        ],
+        "cue": 11,
+        "end_seconds": 55.0,
+        "panel": 6,
+        "start_seconds": 50.0
+      },
+      {
+        "caption": [
+          "Then state the remaining gap."
+        ],
+        "cue": 12,
+        "end_seconds": 60.0,
+        "panel": 6,
+        "start_seconds": 55.0
+      }
+    ],
+    "renderer_logs_sha256": {
+      "render-01.log": "670e71ce12f0f464bbd2768991aacb09d651f89ed121dbf82dd79c42f1a590cb",
+      "render-02.log": "6fd93274f9ff32148b429a54290b8e4b1728092e93270a6f34f0b605a3e2e60f",
+      "render-03.log": "40b626e72c7964bcda45c17c45593eec53fdb4aa5bb528aa4c489309ef9d2305",
+      "render-04.log": "8fdd367e87f63bb5b2d0f82bb7f85c0a3357d011703eda79297d87a9ac1b3a16",
+      "render-05.log": "8cc1aace01fd2ea2efdbe187b9bedff883734c64a67bb12fff47407069fbaaaf",
+      "render-06.log": "a1cd2ce29c08ef867f63775d89d87f8d3fb1797458f3106918214bdb72177e90",
+      "render-07.log": "ef3cb11a262f43ca3d0834b9ef213888bbd730547aa6ab68ac9df3c51a717bfb",
+      "render-08.log": "4c3748d663d03ed96c89336fa664f9a625b9aee2a6babeb4da523fd0fe443f4e",
+      "render-09.log": "aac77d4ca4c54b40a823e530ac7d8da93b033f1123aeb78a9aa20a497c49e48d",
+      "render-10.log": "ca163ec11e6f8428026f120a810daac10a50d0ffd92e92eb36fdefd95357dfbc",
+      "render-11.log": "f40f892011cae16bad52ef59cfae81dad194d51b0e50bfb3fedf95fd86f87523",
+      "render-12.log": "f321a6b9d4c6033849624841441e6c567aa2c235a6b552ffa2f68c3e06404050"
+    },
+    "renderer_versions": {
+      "ffmpeg": "7.1.5-0+deb13u1",
+      "inkscape": "1.4 (e7c3feb100, 2024-10-09)"
+    },
+    "source_srt_campaign_unchanged": true,
+    "syntax_files": 74,
+    "text_bounds": 115,
+    "text_bounds_log_sha256": "502a65f28fe28986b40d83ece81d395254aaff563d5ef9c9761ae7445bfeccd2",
+    "xml_internal_resources": "passed"
+  },
+  "configuration_version": "codex.media-animatic.v1",
+  "destination": "unassigned",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_render_and_checks_completed",
+  "goal": "One silent review timing preview for existing YouTube slot3; not voice, finished video, accepted upload or published post.",
+  "input_revision": "a30a1f456069543863d827d38f69866d83fd3229",
+  "limitations": [
+    "No recorded voice, finished video, platform upload/delivery or published post. Proposed timing requires actual recording and retiming.",
+    "Hypothetical comparison is not actual outage/recovery evidence; local render probe is separate.",
+    "Rights/channel/destination/device/accessibility/platform acceptance remain pending.",
+    "No provider authentication, live worker/lease/failover or strict schema change. All17 targets/master business areas retained; seven PROJECTS separate.",
+    "Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/credentials/permissions/public-access or paused Studio/Newsletter schedule changes."
+  ],
+  "memory_revision": 240,
+  "metrics": {
+    "completed_assets": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "encoding_attempts": 1,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0
+  },
+  "mission_id": "jarvis-media-20261029",
+  "permitted_actions": [
+    "prepare_draft",
+    "local_render",
+    "verify",
+    "authorized_development_branch_write"
+  ],
+  "platform": "youtube",
+  "prior_work": "Latest archive CLI and CI complete, no active retry. Slots1/2 silent previews complete; slot3 script/SRT/storyboard/thumbnail exists but no prior slot3 timing preview. Engineering review remains pending, not replaced by this media step.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "0136e76fee81d30f98127950e04a2008bdeca3b067ff0b95b2e1c25793f7c563",
+  "record_type": "actual_work_receipt",
+  "render_recipe": "docs/media/jarvis-youtube-slot3-20261029.md#slot-3-silent-timing-preview--november-18-2026",
+  "return_binding": {
+    "artifacts": [
+      "docs/media/jarvis-youtube-slot3-20261029.md",
+      "docs/media/jarvis-youtube-slot3-animatic-20261118.svg",
+      "docs/media/exports/youtube-20261029/slot-3-silent-animatic.mp4"
+    ],
+    "development_commit_ci": "master Page final cycle receipt",
+    "receipt": "docs/evidence/youtube-slot3-animatic-20261118.json"
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/media/jarvis-youtube-slot3-20261029.srt": "3ef0687404d8fcd8f0137e4e237f395384a0e8064d0886771850183a02aaa69d",
+    "docs/media/jarvis-youtube-slot3-storyboard-20261104.svg": "d799134403210e7233412f6ab78f9a96d9322963ee01a1bf3bd470bb5626775d",
+    "examples/portfolio/jarvis-daily-media-20261029.json": "85198c4457dcffd5ff028d8009e5bc2562b974bd0295891f9bbf2b083214fccd"
+  },
+  "visibility": "private_work_receipt; media is an unpublished proposed public candidate"
+}

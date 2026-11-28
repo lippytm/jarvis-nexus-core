@@ -1,0 +1,104 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "tests/test_handoff_context.py": "e697c5083fb9e154afc31e4b6230312d45467ba8d2ac94384ec72a6f434a924a"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Test-only compatibility regression for context schemas1/2/3 with irreversible outcome_unknown holds; schema1 upgrades to2, schema2 upgrades to3 and schema3 retains its destination. Explicit current reviews, six archived receipts, old receipt metadata and independent Codex/Gemini records survive backup/read-only restart.",
+  "checkpoint": {
+    "next": "Independent exact-source terminal-history and compatibility review before owner release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "archive_version_compatibility_regression_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Version1 old receipt retains legacy_uncontrolled/null destination; version2 retains cancelled/null destination; version3 retains cancelled/bound destination. All retain version1 receipt shape and outcome_unknown.",
+      "Explicit upgrades and later memory/configuration/detail edits invalidate old current-review selections while preserving historical receipts.",
+      "Original and backup read-only reopen validate all six archive rows, exact original historical receipts/current receipts/profiles and local review state. Six attempted private-to-public loads refuse, false dispatch/retry flags remain, and original database bytes are unchanged."
+    ],
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "d6383b13a4eb2ffd96733ab1bd87818f09f147421aa768b45d08401be5180335",
+      "passed": true,
+      "tests": 2
+    },
+    "full": {
+      "evidence": "reports/r61-full.json",
+      "passed": true,
+      "record_sha256": "bc4493ed272e6388860d71d28aea4d25826cbd801cc3e462c89a6d6f6eb359a4",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 631,
+        "skipped": 0
+      }
+    },
+    "initial_fixture_correction": {
+      "description": "First fixture attempted three new handoffs against the existing per-role two-handoff budget; two stage errors and an incomplete-row-count assertion followed. Reused the existing first handoff and existing evaluator fixture role for the third record, without raising budgets or changing production. Final checks pass.",
+      "log_sha256": "268c247f9ea0a660a41143cd955d351da13cfe4ffce71b5db282de8a70c1735c"
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "be28a408dac95849d462396a6b578fc99b23d2c57926c4a97fb75fe64ec61caa",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_checks_passed",
+  "input_revision": "b0dcca5e37e5fba3c42b0a2c80f056a3deffddbe",
+  "limitations": [
+    "Three synthetic schema fixtures and existing explicit upgrade paths, not exhaustive compatibility for every record/value, operational migration or actual provider return.",
+    "Production/API/schema/defaults/strict v1 unchanged. Existing local roles/specifications in fixtures do not create authenticated connections or running agents.",
+    "Local labels and hashes remain unauthenticated; no independent evaluation or owner release. Existing older evaluator packet does not approve the newer implementation/test head.",
+    "No authenticated shared memory installation, lease/failover/reconnect controller or measured reliability improvement.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio and Newsletter untouched."
+  ],
+  "memory_revision": 249,
+  "metrics": {
+    "completed_items": 1,
+    "corrected_fixture_attempts": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-version-compat-20261124",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master249/current branch/PR5/readiness/shared requirement/findings and prior receipt. Terminal-history repair complete, independent review pending, no active retry/dispatch to duplicate. Funding/comedy repairs retained.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "807a5ee797ddcc8b147a2f0222a94ca437bba789fe1abda97e5f3f58bc0d139b",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "tests/test_handoff_context.py"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

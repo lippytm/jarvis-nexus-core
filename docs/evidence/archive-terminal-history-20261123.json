@@ -1,0 +1,114 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "control_tower/handoffs.py": "b69ef67202a32f93550e80d1a7374b8f9a43219aafe1a4bdff1bd2c7ef9c3942",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "70ce92ddf23282af3dbf2724914a426f4a57cad093bbc3bc2151d78f058be7e1",
+    "tests/test_handoff_context.py": "3c14eed139d965df7d321ea5e6cd19ace7aa7818115314b81ef71f3519cc006b"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "Apply existing irreversible cancellation/unknown-outcome bounds to historical receipt validation. Reject impossible cleared-hold history before backup publication; legitimate retained holds and old receipt/schema shapes remain valid. No new fields/schema/default change.",
+  "checkpoint": {
+    "next": "Independent exact-source review of new terminal-history rejection and valid-history compatibility before owner release; retain prior evaluator packet as historical scoped material. Authenticated registry/audience/provider delivery unfinished.",
+    "state": "archive_terminal_history_candidate_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Two consistent rehashed historical hold mutations reject during fresh read-only validation and checked backup; failed output absent and original database bytes preserved.",
+      "Current reviewed receipt, independent Gemini receipt and both private profiles remain readable despite corrupt historical neighbor.",
+      "After restoring valid fixture history, checked backup succeeds. Real cancelled/unknown hold history remains valid across later context edit and backup read-only reopen."
+    ],
+    "baseline_backup": {
+      "log_sha256": "3c030e558f9dfc6c48da72576e09d12c5ebb0693520eb188f2b48f7fb2e9b9f6",
+      "result": "With backup assertion first, both impossible histories published through checked backup: two expected-ValueError failures."
+    },
+    "baseline_history": {
+      "log_sha256": "0892e064680cd3ff6acad7ec74615039b2a39110cdf4e6734f9831e972bcfe01",
+      "result": "Both rehashed impossible states accepted by historical validator: two expected-ValueError failures."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "a74157e4f452f46b4be5e1ff4b5147b2e8372a03265c2e08dda0b642a4b06763",
+      "passed": true,
+      "tests": 1
+    },
+    "full": {
+      "evidence": "reports/r60-full.json",
+      "passed": true,
+      "record_sha256": "fcc7a5b47218ad6fe9f7d100873471aa6637d071c8f59fea19af522c7f6c54a9",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 630,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "acdaee8c16cb9ca2d00df7220679f7efb7e0266cff5a9a7f0307766ae08de811",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "ab5a2f0a5282617075d7198a9b23cbd094c5f857",
+  "limitations": [
+    "Synthetic SQLite fixture corruption only; no actual owner incident, operational ledger repair/migration or authenticated review claimed.",
+    "Guards detect these impossible terminal-state transitions, not all rehashed metadata tampering or cryptographic provenance. Stored hashes/labels remain unauthenticated.",
+    "Current valid records, schema v4/strict packet v1 and API signatures unchanged. Old impossible/corrupt history now refuses checked backup rather than being repaired or deleted.",
+    "Existing evaluator packet selects source682116c2/memory246; it does not independently approve this newer implementation. New source-bound review required.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio and Newsletter untouched. No live provider delivery, lease/failover/reconnect controller or measured reliability gain."
+  ],
+  "memory_revision": 248,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "reproduced_history_acceptance_cases": 2,
+    "reproduced_invalid_backup_cases": 2,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-terminal-history-20261123",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master248/current branch/PR5/readiness/shared requirements/findings/prior receipt. Capacity regression and evaluator preparation complete; no active retry or dispatched review to duplicate. Funding/comedy repairs retained.",
+  "problem": "Historical archived receipt validation accepts rehashed metadata claiming cancelled or outcome_unknown history even when current context has cleared that hold. Both histories are impossible through normal save_context; checked backup could publish them.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "ac8c530a08397bf02a2057bc2af625d9ac4b04d5654c8eb7f242b13dbabc9977",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "control_tower/handoffs.py",
+      "tests/test_handoff_context.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

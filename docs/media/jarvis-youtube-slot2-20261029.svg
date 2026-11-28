@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1540" viewBox="0 0 1200 1540" role="img" aria-labelledby="title desc">
+  <title id="title">Follow one Jarvis build from draft to evidence: six-panel storyboard</title>
+  <desc id="desc">An unpublished production reference. Panels show a named task and source revision, one change and checks, a receipt beside unverified service status, exact-content review, a local assignment with source brief, and a claim-evidence-gap worksheet. No video or service availability is represented as complete.</desc>
+  <rect width="1200" height="1540" fill="#101d2c"/>
+  <g font-family="sans-serif" fill="#f5f8fc">
+    <text x="48" y="64" font-size="30" font-weight="bold">FOLLOW ONE JARVIS BUILD</text>
+    <text x="48" y="104" font-size="22" fill="#b8d9e8">Six-panel storyboard • proposed 60 seconds • unpublished draft</text>
+    <g transform="translate(48 140)">
+      <rect width="1104" height="200" rx="16" fill="#20354c"/>
+      <text x="24" y="40" font-size="22" fill="#a9e0df">01 · 00:00–00:08</text>
+      <text x="24" y="80" font-size="29" font-weight="bold">Name the task. Pin the source.</text>
+      <rect x="24" y="108" width="440" height="62" rx="8" fill="#344e69"/>
+      <text x="44" y="148" font-size="24">TASK: one bounded change</text>
+      <rect x="488" y="108" width="592" height="62" rx="8" fill="#344e69"/>
+      <text x="508" y="148" font-size="24">SOURCE: exact revision recorded</text>
+    </g>
+    <g transform="translate(48 360)">
+      <rect width="1104" height="200" rx="16" fill="#20354c"/>
+      <text x="24" y="40" font-size="22" fill="#a9e0df">02 · 00:08–00:18</text>
+      <text x="24" y="80" font-size="29" font-weight="bold">One change. Actual checks.</text>
+      <rect x="24" y="108" width="440" height="62" rx="8" fill="#344e69"/>
+      <text x="44" y="148" font-size="24">DRAFT: keep the patch small</text>
+      <rect x="488" y="108" width="592" height="62" rx="8" fill="#344e69"/>
+      <text x="508" y="148" font-size="24">CHECKS: retain the observed result</text>
+    </g>
+    <g transform="translate(48 580)">
+      <rect width="1104" height="200" rx="16" fill="#20354c"/>
+      <text x="24" y="40" font-size="22" fill="#a9e0df">03 · 00:18–00:28</text>
+      <text x="24" y="80" font-size="29" font-weight="bold">Keep each evidence claim precise.</text>
+      <rect x="24" y="108" width="440" height="62" rx="8" fill="#344e69"/>
+      <text x="44" y="148" font-size="24">RECEIPT: what, where, revision</text>
+      <rect x="488" y="108" width="592" height="62" rx="8" fill="#344e69"/>
+      <text x="508" y="148" font-size="24">SERVICE STATUS: unverified</text>
+    </g>
+    <g transform="translate(48 800)">
+      <rect width="1104" height="200" rx="16" fill="#20354c"/>
+      <text x="24" y="40" font-size="22" fill="#a9e0df">04 · 00:28–00:38</text>
+      <text x="24" y="80" font-size="29" font-weight="bold">Review the exact content and limits.</text>
+      <text x="24" y="132" font-size="25">REVIEW REQUIRED</text>
+      <text x="24" y="171" font-size="23" fill="#b8d9e8">Release stays behind the owner's decision.</text>
+    </g>
+    <g transform="translate(48 1020)">
+      <rect width="1104" height="200" rx="16" fill="#20354c"/>
+      <text x="24" y="40" font-size="22" fill="#a9e0df">05 · 00:38–00:50</text>
+      <text x="24" y="80" font-size="29" font-weight="bold">Prepared draft. Publication pending.</text>
+      <text x="24" y="132" font-size="25">LOCAL FILE = assignment + source brief</text>
+      <text x="24" y="171" font-size="23" fill="#b8d9e8">Copy, narration, video and release need separate work.</text>
+    </g>
+    <g transform="translate(48 1240)">
+      <rect width="1104" height="200" rx="16" fill="#20354c"/>
+      <text x="24" y="40" font-size="22" fill="#a9e0df">06 · 00:50–01:00</text>
+      <text x="24" y="80" font-size="29" font-weight="bold">What can you verify?</text>
+      <text x="24" y="132" font-size="25">CLAIM → EVIDENCE → REMAINING GAP</text>
+      <text x="24" y="171" font-size="23" fill="#b8d9e8">Use one claim from your next project.</text>
+    </g>
+    <text x="48" y="1495" font-size="20" fill="#b8d9e8">Original vector production reference. Illustrative labels; no simulated terminal results.</text>
+  </g>
+</svg>

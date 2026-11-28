@@ -1,0 +1,126 @@
+{
+  "artifact_sha256": {
+    "docs/media/exports/threads-20261029/slot-4.png": "6b733803625b03e96b2e426ef3c2d9d07617be009e4232a05d4d461e2bf2fe79",
+    "docs/media/jarvis-threads-four-slots-20261029.md": "452c49ec5a3f65465895dd89ba16c4be243188ebc3b681879f0fae55f84a6adb",
+    "docs/media/jarvis-threads-slot4-20261104.svg": "e8550fed0c9b6a42cc0d5cfec3efa67447376abf5dbf341fc3d63f5eaed5bf9c"
+  },
+  "checks": {
+    "campaign_and_other_slots_unchanged": true,
+    "discussion_units_unchanged": 12,
+    "empty_region_sha256": {
+      "artifact": "e6f5f13cf5d726e7a46fba388fe80bb59f3d2e6563650b7bb9bf9c05fbb87e1c",
+      "checkpoint": "e6f5f13cf5d726e7a46fba388fe80bb59f3d2e6563650b7bb9bf9c05fbb87e1c",
+      "checks": "e6f5f13cf5d726e7a46fba388fe80bb59f3d2e6563650b7bb9bf9c05fbb87e1c",
+      "limits": "e6f5f13cf5d726e7a46fba388fe80bb59f3d2e6563650b7bb9bf9c05fbb87e1c",
+      "owner-review": "18ca1e6c3393f4e24e683c6352912604c8df219a40c1c8fae881ba8c0e1d76ce"
+    },
+    "new_unit_tests": 0,
+    "no_checkbox_ticks_or_completion_indicators": true,
+    "png_bytes": 109205,
+    "png_metadata": {
+      "Software": "www.inkscape.org",
+      "dpi": [
+        95.9866,
+        95.9866
+      ]
+    },
+    "proposed_alt_text_unchanged": true,
+    "renderer": "Inkscape 1.2.2",
+    "renderer_exit_code": 0,
+    "renderer_warning": "GtkRecentManager object wrapping warning",
+    "syntax_files": 73,
+    "text_widths": [
+      {
+        "text": "ONE RETURN. FOUR REFERENCES.",
+        "width": 649.078125
+      },
+      {
+        "text": "CONCEPTUAL EXAMPLE \u2022 UNPUBLISHED DRAFT",
+        "width": 521.125
+      },
+      {
+        "text": "A draft return keeps evidence and limits together.",
+        "width": 548.90625
+      },
+      {
+        "text": "Artifact",
+        "width": 128.0625
+      },
+      {
+        "text": "Actual checks",
+        "width": 232.75
+      },
+      {
+        "text": "Unresolved limits",
+        "width": 295.734375
+      },
+      {
+        "text": "Continuation checkpoint",
+        "width": 413.890625
+      },
+      {
+        "text": "Empty boxes do not imply completion or approval.",
+        "width": 556.390625
+      },
+      {
+        "text": "Owner review:",
+        "width": 186.5
+      },
+      {
+        "text": "Destination: unassigned \u2022 No completed return depicted.",
+        "width": 631.09375
+      },
+      {
+        "text": "A prepared return does not authorize dispatch, purchases or publication.",
+        "width": 764.90625
+      }
+    ],
+    "visual_inspection": "Full PNG inspected; no observed clipping/overlap; four unchecked boxes and blank owner review, conceptual/unpublished labels and no completion/authority claims visible.",
+    "whitespace": "git diff --check passed",
+    "xml_resource_checks": true
+  },
+  "configuration_version": "codex.media-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "depicted_completed_return_or_approval": "none_conceptual_only",
+  "destination": "threads/account unassigned",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "finished_video_or_publication": false,
+  "independent_review": "not_performed",
+  "input_revision": "7017eabb3dc0df6a2f939a9e8c7af6e155121290",
+  "memory_source": "master Page sequence 139",
+  "mission_id": "jarvis-media-20261029",
+  "next_task": "Exact SVG/PNG/discussion/alt-text owner, destination and accessibility review; all four Threads artwork candidates retained, do not regenerate.",
+  "operational_ledger_changed": false,
+  "owner_release_approval": "not_granted",
+  "png": {
+    "alpha": [
+      255,
+      255
+    ],
+    "dimensions": [
+      1080,
+      1080
+    ],
+    "metadata_keys": [
+      "Software",
+      "dpi"
+    ],
+    "mode": "RGBA"
+  },
+  "post_id": "jarvis-media-20261029.threads.4",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "4be0021f3be90b40fa15e678dbb619fd7b985ab84605461e68b9fc00cd779368",
+  "registry_accepted": false,
+  "revision_conflicts": 0,
+  "rights_device_accessibility_platform_acceptance": "not_verified",
+  "schema_version": 1,
+  "scope": "unpublished original conceptual return checklist artwork; no runtime changes"
+}

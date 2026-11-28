@@ -1,0 +1,165 @@
+{
+  "acceptance_observations": [
+    "Six synthetic registry entries across two populated projects and Codex/Gemini have deliberately asymmetric intersection counts; a third known project yields an empty summary.",
+    "Five selections produce five distinct version-3 owner-private receipt digests, exact requested identities/counts and dispatch false. Ten actual CLI subprocesses reproduce the API results and byte-identical fresh-process outputs with no absent-ledger creation or source/ledger byte changes. Aggregate remains six entries and three per platform.",
+    "In-memory function variants using union, project-only or platform-only selection each produce assertion failures; these are deliberate test-strength experiments, not production defects or failed final verification."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_bounded_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add one mixed-registry intersection regression after the completed optional platform selector. No production, schema, packet or documentation change. Existing one-project fixtures could not distinguish intersected scopes from union or ignored-selector implementations.",
+  "checkpoint": {
+    "return_binding": "source/memory/log hashes; final commit and actual CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision selective registry findings; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/registry-intersection-full-20261107.json",
+        "passed": true,
+        "record_sha256": "cc05a65bbb89b0623e302dd4a8e81489f0a0471fb80d320ad4c2945d05f906b8",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 595,
+          "skipped": 0
+        }
+      }
+    },
+    "isolated_mutation_check": {
+      "exit_code": 0,
+      "mutants_rejected": 3,
+      "production_files_modified": false
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.registry-intersection.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/registry-platform-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "bd63d43e8369b1d98f319b5e3f9a4a19064569ef",
+  "limitations": [
+    "Synthetic configuration fixtures; counts and hashes do not establish accepted facts, authentication, running agents, live connections, ACL isolation or delivery. Full-registry digest remains common to scoped receipts.",
+    "No new store, migration, worker, lease, automatic retry/failover/reconnect controller, actual paused mission/Studio or Newsletter schedule change, credentials/permissions change, merge, deployment, dispatch, publication or spending.",
+    "All 17 portable targets/business areas retained; source project IDs remain a separate inventory. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/registry-intersection-focused-20261107.txt": {
+      "bytes": 100,
+      "sha256": "136faa96056bd5f8cb08a9c53f5c30dd0259d2f0a9bba6da922527cebce96555",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.747s\n\nOK\n"
+    },
+    "reports/registry-intersection-full-20261107.txt": {
+      "bytes": 98659,
+      "sha256": "b4e5dbc72b5e3d6681de8d6d36d251fd102f74aca7c768eb5862645dc5208609"
+    },
+    "reports/registry-intersection-mutations-20261107.json": {
+      "bytes": 12257,
+      "sha256": "f485ce844ee62163b0351c139645ddbdc1c84e39b07994e56e06dfb9ff51c060"
+    },
+    "reports/registry-intersection-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/registry-intersection-summary-20261107.json": {
+      "bytes": 267,
+      "sha256": "b45b467dea3deb3372f726ea689fb7bcad2b3e6ec79069d4f1fb6180dee0d721",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 595, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/registry-intersection-full-20261107.json\", \"record_sha256\": \"cc05a65bbb89b0623e302dd4a8e81489f0a0471fb80d320ad4c2945d05f906b8\"}\n"
+    },
+    "reports/registry-intersection-web-20261107.txt": {
+      "bytes": 39583,
+      "sha256": "6cb4146b9366ba8fecea641987d55af8320a3cafe84b3b14c7ad7bd65d80b60e"
+    }
+  },
+  "memory_revision": 205,
+  "metrics": {
+    "bounded_local_items_completed": 1,
+    "costs": "not measured",
+    "deliberate_in_memory_mutants_rejected": 3,
+    "duplicate_development_attempts": 0,
+    "final_verification_failures": 0,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "review_effort": "not measured",
+    "revision_conflicts": 0
+  },
+  "mission_id": "mixed-registry-intersection-20261107",
+  "mutation_results": {
+    "isolated_in_memory_mutations": [
+      {
+        "assertion_failures": 6,
+        "errors": 0,
+        "log": "FFFFFF\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-jarvis', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 4 != 2\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-jarvis', platform='gemini')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 5 != 1\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-evolutionary-evolutions', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 5 != 1\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-evolutionary-evolutions', platform='gemini')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 4 != 2\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='business-operations', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 0\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 205, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(len(receipts), 5)\nAssertionError: 0 != 5\n\n----------------------------------------------------------------------\nRan 1 test in 0.008s\n\nFAILED (failures=6)\n",
+        "mutant": "union",
+        "rejected": true,
+        "tests": 1
+      },
+      {
+        "assertion_failures": 5,
+        "errors": 0,
+        "log": "FFFFF\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-jarvis', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 2\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-jarvis', platform='gemini')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 1\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-evolutionary-evolutions', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 1\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-evolutionary-evolutions', platform='gemini')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 2\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 205, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(len(receipts), 5)\nAssertionError: 1 != 5\n\n----------------------------------------------------------------------\nRan 1 test in 0.106s\n\nFAILED (failures=5)\n",
+        "mutant": "project_only",
+        "rejected": true,
+        "tests": 1
+      },
+      {
+        "assertion_failures": 6,
+        "errors": 0,
+        "log": "FFFFFF\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-jarvis', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 2\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-jarvis', platform='gemini')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 1\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-evolutionary-evolutions', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 1\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='ai-evolutionary-evolutions', platform='gemini')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 2\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms) (project='business-operations', platform='codex')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 186, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(expected[\"entry_count\"], count)\nAssertionError: 3 != 0\n\n======================================================================\nFAIL: test_registry_combined_scope_intersects_mixed_projects_and_platforms (tests.test_handoff_context_cli.ContextCLITests.test_registry_combined_scope_intersects_mixed_projects_and_platforms)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 205, in test_registry_combined_scope_intersects_mixed_projects_and_platforms\n    self.assertEqual(len(receipts), 5)\nAssertionError: 0 != 5\n\n----------------------------------------------------------------------\nRan 1 test in 0.005s\n\nFAILED (failures=6)\n",
+        "mutant": "platform_only",
+        "rejected": true,
+        "tests": 1
+      }
+    ],
+    "production_files_changed": false
+  },
+  "patch_sha256": "5a1a572f0882b03a3ed9b67e757f29c7388ab4d4f418166ef12838e372dde624",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "42bf4032139aeb3983ded9b8b15306b9dc211ee06a4669d83e0e2c6798811409",
+  "record_type": "actual_work_receipt",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context_cli.py": "1d8e8f84423d2718c91f136dc225bbdb2bd57224b01ed687dd8b3558d0b255ea"
+  },
+  "visibility": "owner_private"
+}

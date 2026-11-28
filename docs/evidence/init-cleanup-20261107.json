@@ -1,0 +1,144 @@
+{
+  "acceptance_observations": [
+    "Nine synthetic initialization failures: KeyboardInterrupt, SystemExit and sqlite3.OperationalError after foreign-key setup, schema-version read and context-table DDL. Baseline leaked seven connections.",
+    "After repair, each original exception propagates unchanged, no ledger object returns, exactly one explicit close occurs and SQL on the captured connection fails as closed.",
+    "Raw inspection finds version 0/no partial tables after rejection; a later explicit normal constructor creates a clean version-2 ledger. Independent seed logical records remain unchanged. Test inspection handles are explicitly closed."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "repair_constructor_connection_cleanup",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Put row-factory/foreign-key setup inside the existing cleanup try and catch BaseException only to close then re-raise. No API, schema, packet or normal-success change.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision constructor/transaction cleanup review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "baseline": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema",
+      "errors": 0,
+      "exit_status": "unittest failure recorded in log; enclosing shell returned 0 after tail, individual status not separately captured",
+      "failures": 7,
+      "tests": 1
+    },
+    "diff_check": "passed",
+    "earlier_full": "588 tests passed before final test inspection-handle cleanup; final full run supersedes it",
+    "focused": {
+      "command": "python -m unittest tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema tests.test_handoff_context.ContextTests.test_interrupted_review_rolls_back_without_receipt_or_pending_writes",
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/init-cleanup-final-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/init-cleanup-final-full-20261107.json",
+        "passed": true,
+        "record_sha256": "882a59ff6f729954ad7dfe96bd46da917408b6cf6ce4dbdfbcb4942b4a7eb85e",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 588,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 588,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.init-cleanup.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/observation-snapshot-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "cbe38dc75b55eacf8ffa6c039e3ad5d000621c70",
+  "limitations": [
+    "Injected failures on real temporary SQLite connections, not actual owner incidents, process/power loss or measured runtime recovery. Cleanup requires a usable connection; close itself may fail.",
+    "No owner mission access, worker, automatic retry/failover/reconnect controller, permissions change, merge, deployment, dispatch, publication or spending. Paused mission/schedules untouched.",
+    "Local review/receipt labels are not authentication. All 17 portable targets/business areas retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/init-cleanup-baseline-20261107.txt": {
+      "sha256": "fd512a96f302b530e45cb5586b287d567dafa801a41943051c79a5a1da2b4268",
+      "text": "FFFFFFF\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=0, error='KeyboardInterrupt')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=0, error='SystemExit')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=0, error='OperationalError')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=1, error='KeyboardInterrupt')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=1, error='SystemExit')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=2, error='KeyboardInterrupt')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_failed_initialization_closes_connection_and_rolls_back_schema (tests.test_handoff_context.ContextTests.test_failed_initialization_closes_connection_and_rolls_back_schema) (phase=2, error='SystemExit')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context.py\", line 530, in test_failed_initialization_closes_connection_and_rolls_back_schema\n    self.assertEqual(connections[0].close_calls, 1)\nAssertionError: 0 != 1\n\n----------------------------------------------------------------------\nRan 1 test in 0.013s\n\nFAILED (failures=7)\n"
+    },
+    "reports/init-cleanup-final-full-20261107.json": {
+      "sha256": "16ce38878ce93b896b804afec5a515ae4aa8ba3a784baa6ae2956e08447dc70e"
+    },
+    "reports/init-cleanup-focused-final-20261107.txt": {
+      "sha256": "620d24d66057e458ce1594cdef9cd666253ce1c9ee632cfa6d81f272cdab56b5",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.031s\n\nOK\n"
+    },
+    "reports/init-cleanup-web-20261107.txt": {
+      "sha256": "17437b578a0a8d3c0626c1a5032fb271a81190eacc531b519e44eddfc429a5af"
+    }
+  },
+  "memory_revision": 198,
+  "metrics": {
+    "baseline_unclosed_connections": 7,
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 1,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_initialization_failures": 9
+  },
+  "mission_id": "init-cleanup-20261107",
+  "next_task": "Independent exact-revision constructor/transaction cleanup review; authenticated registry/audience acceptance remains unfinished.",
+  "platform": "codex",
+  "problem": "Connection setup was outside the constructor cleanup try; its handler caught Exception but not KeyboardInterrupt/SystemExit. Interrupted construction could leak the allocated connection despite transaction rollback.",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "16d0d26b0b3269d08d48b3fe661afd8437bb5265a5e20fdd31c46ff977211ef1",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/handoffs.py": "764002d10fc8bfdac0a99999ac830c825e6d1e015b2bc26d22ef78e5de51bf59",
+    "tests/test_handoff_context.py": "6513c99d88321eb7ce3e1de39a62e64d8d0cbca916e3d199edc030d2a1ee22c0"
+  },
+  "tracked_patch_sha256": "e762eea3db38c0d35227d308bc6140d4236ce983f12a7e87fa4b4d0c708c9d85",
+  "visibility": "owner_private"
+}

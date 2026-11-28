@@ -1,0 +1,110 @@
+{
+  "approval_state": "independent_and_owner_exact_revision_review_pending",
+  "artifact_sha256": {
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "bc40d0cd32b0b971c83f14abb973b664289206d90faecd3240be24ffd307b379",
+    "scripts/jarvis_network.py": "0bcda5e97647a8980a05697c83fab27fbbad3f33caa362b97f82903921a70598",
+    "tests/test_handoff_context.py": "76752fcd1a032e736d72e5328aa238906c7c7ff773573c884ce205fe20b775cb"
+  },
+  "asset_id": "codex",
+  "budget": {
+    "additional_agents": 0,
+    "automatic_dispatch_retries": 0,
+    "items": 1,
+    "purchases": 0
+  },
+  "change": "In the existing ordered bounded backup pass, compare adjacent receipts for the same handoff/revision. All metadata must agree except reviewer_label, recorded_at and receipt_sha256. Refuse contradictions before publication; do not choose or repair a record.",
+  "checkpoint": {
+    "next": "Independent exact-source review of same-revision backup consistency and legitimate multi-reviewer compatibility before owner release; authenticated registry/audience/provider delivery remains unfinished.",
+    "state": "archive_same_revision_consistency_candidate_checked"
+  },
+  "checks": {
+    "assertions": [
+      "Two legitimate historical reviewer labels with distinct recorded timestamps back up successfully before mutation and after original fixture restoration.",
+      "Four rehashed same-revision context metadata contradictions reject checked backup from fresh read-only source; final output absent, temporary files cleaned and original database bytes unchanged.",
+      "Current receipt/private profile and independent Gemini receipt/profile remain readable. Restored valid backup retains both original historical reviewer receipts exactly.",
+      "Existing ordered terminal-sequence and valid v1/v2/v3 archive upgrade regressions also pass."
+    ],
+    "baseline": {
+      "log_sha256": "0128b05a9d949b1c99d438068bf17a21eca071f89ace1d16d18ea7470aa36d5c",
+      "result": "All four individually valid rehashed contradictions passed checked backup: four expected-ValueError failures."
+    },
+    "diff_check": "passed",
+    "focused": {
+      "log_sha256": "6b87d6ba6d6f23162f4195ad2ca3cd4e0f87d367fee367f1e7fa8e61b9d7ed18",
+      "passed": true,
+      "tests": 3
+    },
+    "full": {
+      "evidence": "reports/r63-full.json",
+      "passed": true,
+      "record_sha256": "e66ea490331ae7ea7072e696cb1e575e9c76fa7eb9419e58df09bb9a77694bc7",
+      "syntax_files": 74,
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 633,
+        "skipped": 0
+      }
+    },
+    "syntax": {
+      "files": 74,
+      "passed": true
+    },
+    "web": {
+      "failures": 0,
+      "log_sha256": "542f393f154d53fc68dead122df5b74bc7e917047e64ba8dc18811b84fa9428e",
+      "skipped": 0,
+      "tests": 181
+    }
+  },
+  "configuration_version": "codex.engineering.v1",
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "execution_state": "local_build_and_checks_passed",
+  "input_revision": "b5cbb79e2fa0c7384c7d04068687bc3fb1528bd1",
+  "limitations": [
+    "Synthetic SQLite mutation only; no owner incident, operational repair/migration or authenticated reviewer consensus claimed.",
+    "Same-revision consistency is not cryptographic provenance, an independent review or proof either reviewer is genuine; consistent multi-record tampering may remain undetected.",
+    "Checks cover retained archive rows during backup. Missing revisions are not reconstructed and selective current-receipt reads do not validate the entire archive.",
+    "Existing 1,000-row cap/API/schema/default/output shapes/strict v1 unchanged; no operational record deleted or rewritten. Older evaluator packets do not approve this newer implementation.",
+    "All17 portable targets/master business areas retained; seven source PROJECTS separate. Trading Bots research/backtesting/paper only; RoboParty deferred.",
+    "No merge/deploy/publication/messages/spending/public-access/credential/permission/schedule changes; paused Studio/Newsletter untouched. No live provider delivery, lease/failover/reconnect controller or measured reliability gain."
+  ],
+  "memory_revision": 251,
+  "metrics": {
+    "completed_items": 1,
+    "costs_recovery_time_review_effort_reliability_gain": "unmeasured",
+    "duplicate_candidates": 0,
+    "operational_dispatches": 0,
+    "reproduced_invalid_backup_cases": 4,
+    "revision_conflicts": 0,
+    "unexpected_final_failures": 0
+  },
+  "mission_id": "archive-review-consistency-20261125",
+  "permitted_actions": [
+    "local_development",
+    "local_tests",
+    "authorized_development_branch_write"
+  ],
+  "platform": "codex",
+  "prior_work": "Read master251/current branch/PR5/readiness/shared requirement/findings/prior receipt. Ordered terminal-history backup repair complete; no active retry/dispatch to duplicate. Funding/comedy repairs retained.",
+  "problem": "Different reviewer receipts at one historical handoff revision can each validate yet disagree on context metadata. Checked backup accepted four rehashed contradictions: content digest, configuration version, memory revision and control state.",
+  "project_id": "ai-jarvis",
+  "record_sha256": "718b13e135c9b00d70f58470ab260c742754508d1f5afa00386a312f5b4591b8",
+  "record_type": "actual_work_receipt",
+  "return_binding": {
+    "artifact_paths": [
+      "scripts/jarvis_network.py",
+      "tests/test_handoff_context.py",
+      "docs/HANDOFF_CONTEXT_PROFILE.md"
+    ],
+    "commit_ci": "master Page final cycle receipt"
+  },
+  "schema_version": 1,
+  "visibility": "owner_private"
+}

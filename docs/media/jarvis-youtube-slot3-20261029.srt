@@ -1,0 +1,58 @@
+1
+00:00:00,000 --> 00:00:05,000
+A passing test answers a specific
+question. Before calling an AI workflow
+
+2
+00:00:05,000 --> 00:00:10,000
+ready, ask which environment
+produced that result.
+
+3
+00:00:10,000 --> 00:00:15,000
+Consider a hypothetical build:
+checks pass on a GitHub runner,
+
+4
+00:00:15,000 --> 00:00:20,000
+while the intended local command
+cannot start.
+
+5
+00:00:20,000 --> 00:00:25,000
+Keep both observations.
+The runner result describes its checks;
+
+6
+00:00:25,000 --> 00:00:30,000
+it does not show that
+the local environment recovered.
+
+7
+00:00:30,000 --> 00:00:35,000
+Retain the blocked task
+and its checkpoint. Avoid overlapping
+
+8
+00:00:35,000 --> 00:00:40,000
+retries, and wait for an actual successful
+local command before reporting recovery.
+
+9
+00:00:40,000 --> 00:00:45,000
+Even then, one successful command is one
+observation. Continuous availability,
+
+10
+00:00:45,000 --> 00:00:50,000
+authenticated access and delivered results
+need their own evidence.
+
+11
+00:00:50,000 --> 00:00:55,000
+For your next update, name the claim,
+its source revision and execution context.
+
+12
+00:00:55,000 --> 00:01:00,000
+Then state the remaining gap.

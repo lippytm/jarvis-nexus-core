@@ -1,0 +1,105 @@
+{
+  "account_access_verified": false,
+  "canvas": [
+    1080,
+    1080
+  ],
+  "canvas_status": "creative_choice_not_verified_platform_requirement",
+  "cards": [
+    {
+      "bytes": 105093,
+      "card": 1,
+      "matches_original_preview": true,
+      "png": "docs/media/exports/instagram-20261029/slot-2/card-1.png",
+      "png_git_blob": "8e05c4e23a04957f0137f6b57705a880e6a9e74f",
+      "png_sha256": "387c4e3aab3271aecc7888d72b904f158d89d38b24b3834e42fa6e6a460d69fa",
+      "source": "docs/media/jarvis-instagram-slot2-card1-20261030.svg",
+      "source_sha256": "67def3ba33633de39e1e644d02ed05b9087677acb6ab72b959b27a8546f40403"
+    },
+    {
+      "bytes": 107309,
+      "card": 2,
+      "matches_original_preview": true,
+      "png": "docs/media/exports/instagram-20261029/slot-2/card-2.png",
+      "png_git_blob": "c8257d53c5dc98db58c06805a6f268696f7f9c7a",
+      "png_sha256": "b6312b2d6c08405c8622f9b865782a1a3d61f801ef8369b1bc2528872031bb0a",
+      "source": "docs/media/jarvis-instagram-slot2-card2-20261030.svg",
+      "source_sha256": "64c60ac8b65754ffaf95682a22349fd337f5a5fa8f71ef92b4a87ca5212bc2a4"
+    },
+    {
+      "bytes": 106939,
+      "card": 3,
+      "matches_original_preview": true,
+      "png": "docs/media/exports/instagram-20261029/slot-2/card-3.png",
+      "png_git_blob": "cbfed3bcaf49d38cd41f6324a9771d2ddab2f8a1",
+      "png_sha256": "2b6a4eb59e7afb2b823f36ea24762e0695fa76672a204339ca31aa632452788a",
+      "source": "docs/media/jarvis-instagram-slot2-card3-20261030.svg",
+      "source_sha256": "8dc96ecd3a4e01bfec36d962ada7bcf971a6b5adc2617ec668b3d3da6146835c"
+    },
+    {
+      "bytes": 142342,
+      "card": 4,
+      "matches_original_preview": true,
+      "png": "docs/media/exports/instagram-20261029/slot-2/card-4.png",
+      "png_git_blob": "892f8bfc345d133fa99b4d4ee3546e34687fde6d",
+      "png_sha256": "8643d8daf22d6482d581eb8e67e0555e4efd889ba3a897ec00b39f84a587715a",
+      "source": "docs/media/jarvis-instagram-slot2-card4-20261030.svg",
+      "source_sha256": "a3545afa2c905852631be4034e20ae4dfe2601f5e0ed22a64db2800187bb2f8d"
+    },
+    {
+      "bytes": 101955,
+      "card": 5,
+      "matches_original_preview": true,
+      "png": "docs/media/exports/instagram-20261029/slot-2/card-5.png",
+      "png_git_blob": "84e981660990fbd6b38b8e515a8247ba245f2a2d",
+      "png_sha256": "15345210c40498821b091d2d367e23dd1896e6b619e5d13f4a29e0366ccdc34d",
+      "source": "docs/media/jarvis-instagram-slot2-card5-20261030.svg",
+      "source_sha256": "f787501659ad7a9082bd256281801b467761f9975cab047102dde8d259ba75bd"
+    }
+  ],
+  "channel": "instagram",
+  "checks": [
+    "Five PNGs/source SVGs match original preparation hashes.",
+    "Five PNGs fully decoded, 1080x1080 RGBA, alpha 255 throughout.",
+    "Only IHDR/pHYs/tEXt/IDAT/IEND chunks; metadata only Inkscape Software/DPI. No animation/EXIF/iTXt/zTXt.",
+    "All five individually visually inspected; synthetic/example/proposed/unrun labels and empty receipt field retained, no clipping/overlap observed.",
+    "All twenty SVGs, existing slot-1 PNGs and four caption/script/alt/visual-direction sets unchanged.",
+    "Relative guide links and whitespace checks passed.",
+    "Synthetic-example label pixel region (72,185)-(325,213) identical on all five PNGs: 1845 non-background pixels each; SHA-256 02dbbd99463fe71908c96dd0a74e7bd948e80e3bbc0a23e6ae341a25301f0e7a."
+  ],
+  "costs_measured": false,
+  "demonstration_executed_for_post": false,
+  "duplicate_final_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "export_method": "Retain exact existing Inkscape 1.2.2 preview bytes; no rerender, recompression or source edit. Original renderer receipts/warnings remain in instagram-slot2-artwork-20261030.json.",
+  "guide_sha256": "1d8f1c5ac9da62d411652bbbe36dcf5a15bb8a6b3e8601729c4bc11c9f832ea0",
+  "independent_review": "not_performed",
+  "input_revision": "306a9660ad283b5d47ac140cb5833f1104ecccf4",
+  "memory_source": "master Page sequence 114",
+  "mission_id": "jarvis-media-20261029",
+  "mobile_screen_reader_alt_field_checks": "not_performed",
+  "next_task": "Exact PNG/caption/alt-text owner review and destination/mobile/accessibility/format confirmation; Instagram slots 3\u20134 PNG export sets unfinished. Registry proposal acceptance/access-policy review stays separate.",
+  "original_artwork_receipt_sha256": "d733ab7beb803ccfedb8014a9807268c72a381bfd199a316943e2625b7d18aff",
+  "owner_approval": "not_granted",
+  "platform_acceptance": "not_verified",
+  "post_id": "jarvis-media-20261029.instagram.2",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "publishing_actions": 0,
+  "python_syntax_files": 73,
+  "record_sha256": "27c54b6380b2beb3f2fa014a3521a2b96bddf2ecef8dff2db3ae08f6cfcbbdf0",
+  "recovery_time_measured": false,
+  "reliability_improvement_measured": false,
+  "review_effort_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "retained_unpublished_png_review_export_candidates",
+  "source_art_and_copy_unchanged": true,
+  "source_brief_sha256": "10750233ecfa3f212fd1acf25fdabc2b4220a075caf5b45492440cbde7cd58bc",
+  "total_bytes": 563638
+}

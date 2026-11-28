@@ -1,0 +1,39 @@
+{
+  "fixed_findings": [
+    "Build companion internally from the selected episode instead of accepting unrelated prebuilt HTML.",
+    "Enforce exact receipt semantics and timeline scene/source/audio/caption consistency.",
+    "Reject contradictory duplicate metadata keys and nonfinite values.",
+    "Keep the original guide eyes visible with split header plates.",
+    "Describe supplied artwork generically; keep original generated provenance specific to this pilot."
+  ],
+  "limits": [
+    "No independent human security or accessibility review.",
+    "No native browser/device playback or clipboard exercise.",
+    "No complete narration listening quality assessment.",
+    "No authenticated external provider, Hostinger, social or revenue action."
+  ],
+  "observed_at": "2026-10-22T22:35:00.184564+00:00",
+  "remaining_concrete_blockers": [],
+  "retained_checks": [
+    "Explicit owner/private CLI compile retains labels and writes a private-mode output.",
+    "Output overwrite and workspace symlink escape reject before rendering.",
+    "Source classifications survive copied/exported notes; all real project quests remain planned.",
+    "Actual rendered files validate; semantic receipt mutations and rehashed invalid timelines reject.",
+    "FFprobe/WAV/timeline durations agree; final opening frame labels and captions remain readable."
+  ],
+  "review_kind": "independent_ai_read_only_review",
+  "reviewed": [
+    "control_tower/episode.py",
+    "control_tower/episode_render.py",
+    "scripts/jarvis_episode.py",
+    "web/jarvis-rpg.html",
+    "docs/ANIME_RPG_RUNBOOK.md"
+  ],
+  "schema_version": 1,
+  "source_sha256": {
+    "control_tower/episode.py": "682d5c067f3758638992c38a6e726e5e273839d838eed16e553c63e5cee21bf3",
+    "control_tower/episode_render.py": "b5611f5f5d09cccb061442c595b8acd9a167466cacd6b5b8cc441f2f407ece09",
+    "scripts/jarvis_episode.py": "cba2868b293f5d0efc3924cee47f2771033dec75addf09d93a7550e81f98a512",
+    "web/jarvis-rpg.html": "f0b1bb7fef3bfd58245d8d39db46b9599ce81a1ef40358dfa48b93f44b80146a"
+  }
+}

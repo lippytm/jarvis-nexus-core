@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title description">
+  <title id="title">Illustrative inputs — not a new test receipt</title>
+  <desc id="description">Illustrative consent-check inputs: true is expected to be accepted and false is expected to be refused. The diagram asks for the code version and actual result, and says it is not a new test receipt.</desc>
+  <rect width="1200" height="1200" fill="#edf2f5"/>
+  <rect width="1200" height="260" fill="#10283f"/>
+  <g font-family="DejaVu Sans" fill="#ffffff">
+    <text x="72" y="70" font-size="25" letter-spacing="2">JARVIS • SYNTHETIC EXAMPLE</text>
+    <text x="72" y="144" font-size="53" font-weight="bold">Illustrative inputs</text>
+    <text x="72" y="208" font-size="40">— not a new test receipt</text>
+  </g>
+  <g fill="#ffffff" stroke="#becbd5" stroke-width="2">
+    <rect x="72" y="316" width="504" height="516" rx="20"/>
+    <rect x="624" y="316" width="504" height="516" rx="20"/>
+  </g>
+  <g font-family="DejaVu Sans" fill="#10283f" text-anchor="middle">
+    <text x="324" y="401" font-size="41" font-weight="bold">Example A:</text>
+    <text x="876" y="401" font-size="41" font-weight="bold">Example B:</text>
+    <text x="324" y="500" font-size="43">consent true</text>
+    <text x="876" y="500" font-size="43">consent false</text>
+    <text x="324" y="733" font-size="39" font-weight="bold">expected accept</text>
+    <text x="876" y="733" font-size="39" font-weight="bold">expected refuse.</text>
+  </g>
+  <g fill="none" stroke="#215477" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M324 556 v80 m-20 -20 20 20 20 -20"/>
+    <path d="M876 556 v80 m-20 -20 20 20 20 -20"/>
+  </g>
+  <rect x="72" y="900" width="1056" height="150" rx="18" fill="#10283f"/>
+  <g font-family="DejaVu Sans" fill="#ffffff" text-anchor="middle" font-size="39">
+    <text x="600" y="963">Record code version</text>
+    <text x="600" y="1018">+ actual result.</text>
+  </g>
+  <text x="72" y="1120" font-family="DejaVu Sans" font-size="25" fill="#334c61">Review candidate • unpublished • owner approval pending</text>
+</svg>

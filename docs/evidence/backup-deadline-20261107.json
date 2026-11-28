@@ -1,0 +1,140 @@
+{
+  "acceptance_observations": [
+    "Late EOF now rejects with time-budget error; allocated file handle closes; source ledger and input bytes unchanged; SQLite connection forbidden by fixture.",
+    "Existing mismatch/regular-file/size/time budget and private CLI success/no-overwrite checks pass."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "repair_bounded_byte_checker",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Check monotonic deadline immediately after every backup digest read, including EOF, before accepting bytes or a matching hash. Existing packet schemas/API unchanged; proposed runbook clarifies post-read rejection.",
+  "checkpoint": {
+    "return_binding": "source/memory/source and log hashes; final commit/CI in master Page",
+    "state": "locally_verified",
+    "unfinished": "independent exact-revision bounded-reader review; authenticated registry/audience acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 3
+    },
+    "full": {
+      "exit_code": 0,
+      "summary": {
+        "evidence": "reports/backup-deadline-full-20261107.json",
+        "passed": true,
+        "record_sha256": "f9c23bbc361cc0827e51d199de3bef6303c5efb3d55d4d19a73e974183632f65",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 593,
+          "skipped": 0
+        }
+      }
+    },
+    "web": {
+      "exit_code": 0,
+      "failures": 0,
+      "passed": 181
+    }
+  },
+  "configuration_version": "codex.backup-read-deadline.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/PR5_REVIEW_SNAPSHOT_20261105.md",
+    "docs/evidence/read-only-open-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "35d6ed2b9ac29230cfbdbfe4c6f82ea718d000d9",
+  "limitations": [
+    "Deterministic temporary-file fixture, not actual owner incident or elapsed-time performance measurement. Post-read rejection cannot interrupt blocking OS I/O or isolate concurrent writers/path races. Byte match does not validate SQLite, provenance, authentication or authorize restore.",
+    "Proposed runbook remains unaccepted. No worker, lease, retry/failover/reconnect controller, actual mission mutation, credentials/permissions changes, merge, deployment, dispatch, publication or spending. Paused mission/Studio and Newsletter schedule untouched.",
+    "All 17 portable targets/business areas retained. Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/backup-deadline-baseline-20261107.txt": {
+      "bytes": 450,
+      "sha256": "98e4e712a547798b43e145016da1086d461777e1023af9dc0589931040f40e27",
+      "text": "E\n======================================================================\nERROR: ContextCliTests (unittest.loader._FailedTest.ContextCliTests)\n----------------------------------------------------------------------\nAttributeError: module 'tests.test_handoff_context_cli' has no attribute 'ContextCliTests'. Did you mean: 'ContextCLITests'?\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n"
+    },
+    "reports/backup-deadline-baseline-corrected-20261107.txt": {
+      "bytes": 791,
+      "sha256": "794e7210aaea8f0679200d93e7e81878ed0613481c62cebd6b57528424ddd12a",
+      "text": "F\n======================================================================\nFAIL: test_backup_digest_rejects_final_read_finishing_after_budget (tests.test_handoff_context_cli.ContextCLITests.test_backup_digest_rejects_final_read_finishing_after_budget)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/3e7507676923/jarvis-cycle/tests/test_handoff_context_cli.py\", line 2511, in test_backup_digest_rejects_final_read_finishing_after_budget\n    with self.assertRaisesRegex(ValueError, \"time budget\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.018s\n\nFAILED (failures=1)\n"
+    },
+    "reports/backup-deadline-focused-20261107.txt": {
+      "bytes": 101,
+      "sha256": "3dd289aa2e064cd1579059d32423b0f918861ce63c285f2c985e0de3783ad6b8",
+      "text": "...\n----------------------------------------------------------------------\nRan 3 tests in 1.071s\n\nOK\n"
+    },
+    "reports/backup-deadline-full-20261107.txt": {
+      "bytes": 98289,
+      "sha256": "f621f584806311c35f56c5a6778395be15c121348fd11b3b72e3f38405d29a42"
+    },
+    "reports/backup-deadline-stderr-20261107.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/backup-deadline-summary-20261107.json": {
+      "bytes": 261,
+      "sha256": "3e3bb661809a5d6904a8160842bd90370452fe13a767df1084bac3eda398f4de",
+      "text": "{\"passed\": true, \"tests\": {\"run\": 593, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"passed\": true}, \"syntax_files\": 74, \"evidence\": \"reports/backup-deadline-full-20261107.json\", \"record_sha256\": \"f9c23bbc361cc0827e51d199de3bef6303c5efb3d55d4d19a73e974183632f65\"}\n"
+    },
+    "reports/backup-deadline-web-20261107.txt": {
+      "bytes": 39588,
+      "sha256": "849a35e548830c58ecc3880deba5424df8b635449837774b2f87094d5da31803"
+    }
+  },
+  "memory_revision": 203,
+  "metrics": {
+    "bounded_items_completed_locally": 1,
+    "costs": "not measured",
+    "duplicate_development_attempts": 0,
+    "final_verification_failures": 0,
+    "provider_dispatches": 0,
+    "recovery_time": "not measured",
+    "reliability_gain": "not measured",
+    "reproduced_behavior_failures": 1,
+    "review_effort": "not measured",
+    "revision_conflicts": 0,
+    "test_invocation_errors": 1
+  },
+  "mission_id": "backup-final-read-deadline-20261107",
+  "patch_sha256": "d8d0357eb4e0f89ca3b3b804ab3653f8a05c55b9bbc7901dc8bfcbd27c476747",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "5b939945ead2b490b4f956170d6df860fc71ad7ef0acbc214ce5689a4a917111",
+  "record_type": "actual_work_receipt",
+  "reproduction": "A real temporary file read with deterministic clock advanced to 11 seconds after EOF previously returned success despite ten-second budget. Corrected baseline: one test, one assertion failure, exit 1. Initial wrong unittest class name: one loader error, exit 1; retained separately.",
+  "schema_version": 1,
+  "source_sha256": {
+    "docs/LOCAL_REVIEW_RECOVERY_RUNBOOK.md": "02960cbd667e5a75d341dbbdff1a605d34ac7169ddb3c3fd4c9fb23ba75e43b6",
+    "scripts/jarvis_network.py": "7273f9fe063fbc20da342b0f16c41dade893876587c539b1d871b620180e65ae",
+    "tests/test_handoff_context_cli.py": "f2ca579dad774634f31385fed9afe6d2b402770de692d4ff11ac0402d65124c4"
+  },
+  "visibility": "owner_private"
+}

@@ -1,0 +1,131 @@
+{
+  "acceptance_observations": [
+    "Exactly one COMMIT was denied. No checkpoint receipt returned and no pending transaction remained.",
+    "All logical records, storage version 2 and absence of the checkpoint table were restored; a later bare commit did not publish rejected work.",
+    "Read-only restart retained paused unknown outcome, independent Gemini context and the exact local review receipt binding.",
+    "Subsequent authorized fixture capture succeeded, duplicate capture stayed duplicate, and review/contexts remained intact."
+  ],
+  "allowed_actions": [
+    "inspect",
+    "add_checkpoint_commit_failure_regression",
+    "test",
+    "expected_head_draft_commit"
+  ],
+  "approval_state": "authorized draft engineering; applicable write checks pending; independent exact-revision/owner review not performed",
+  "asset_id": "codex",
+  "branch": "feature/control-tower-foundation-20261021",
+  "budget": {
+    "automatic_retries": 0,
+    "bounded_items": 1,
+    "new_agents": 0,
+    "purchases": 0
+  },
+  "change": "Add one regression injecting a real SQLite authorizer COMMIT denial on first checkpoint capture, after table creation/version-3 upgrade work. Production code and schemas unchanged.",
+  "checkpoint": {
+    "return_binding": "source/memory and source/log hashes; final commit/CI in master Page receipt",
+    "state": "locally_verified",
+    "unfinished": "independent checkpoint transaction review; authenticated registry acceptance"
+  },
+  "checks": {
+    "diff_check": "passed",
+    "focused": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_handoff_context.ContextTests.test_failed_checkpoint_commit_rolls_back_table_upgrade_and_keeps_review",
+        "tests.test_handoff_context.ContextTests.test_checkpoint_rejections_do_not_upgrade_or_change_existing_records"
+      ],
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "tests": 2
+    },
+    "full": {
+      "command": "python scripts/verify_control_tower.py --out reports/checkpoint-commit-full-20261107.json",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "summary": {
+        "evidence": "reports/checkpoint-commit-full-20261107.json",
+        "passed": true,
+        "record_sha256": "6a7e7f54120632fb192587bfd98710bcb5adcb05f1ee5a2b7efecbd35a24ddfc",
+        "syntax_files": 74,
+        "tests": {
+          "errors": 0,
+          "failures": 0,
+          "passed": true,
+          "run": 580,
+          "skipped": 0
+        }
+      },
+      "syntax": {
+        "errors": [],
+        "files_checked": 74
+      },
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "run": 580,
+        "skipped": 0
+      }
+    },
+    "web": {
+      "command": "node --test --test-reporter=tap tests/*.mjs",
+      "exit_code": 0,
+      "fail": 0,
+      "pass": 181
+    }
+  },
+  "configuration_version": "codex.checkpoint-commit.v1",
+  "context_references": [
+    "docs/CODEX_JARVIS_READINESS.md",
+    "docs/HANDOFF_CONTEXT_PROFILE.md",
+    "docs/evidence/checkpoint-selection-20261106.json",
+    "docs/evidence/registry-neighbor-20261107.json",
+    "https://chatgpt.com/space/page_aec0378e1040819188fb93a41b80bc32"
+  ],
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "stdout": "/workspace/scratch/3e7507676923/jarvis-cycle\n"
+  },
+  "execution_state": "locally_verified",
+  "input_revision": "6b4ee79c9d2d0fe106a00f42ce75d3ca75333c8e",
+  "limitations": [
+    "Deliberate failure injection in a temporary ledger, not a real owner incident, process/power-loss simulation or measured runtime recovery.",
+    "Coverage of existing transaction behavior; no baseline production defect asserted or repaired.",
+    "Local review receipt binding is not authenticated owner approval. No worker, lease, automatic retry/failover/reconnect controller or permissions change.",
+    "All 17 business areas/portable targets retained; Trading Bots research/backtesting/paper only; RoboParty deferred."
+  ],
+  "logs": {
+    "reports/checkpoint-commit-focused-20261107.txt": {
+      "sha256": "2a2793fb04276c20e96d7f3b2971054069ed869f9c8f355b79bd9dec2333b27e",
+      "text": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.059s\n\nOK\n"
+    }
+  },
+  "memory_revision": 192,
+  "metrics": {
+    "bounded_items_completed": 1,
+    "costs_recovery_time_review_effort": "unmeasured",
+    "duplicate_provider_dispatches": 0,
+    "failed_verification_attempts": 0,
+    "observed_repository_revision_conflicts": 0,
+    "reliability_improvement": "not measured",
+    "synthetic_sqlite_commit_denials": 1
+  },
+  "mission_id": "checkpoint-commit-20261107",
+  "next_task": "Independent exact-revision checkpoint transaction/recovery review; retain authenticated registry and audience/access acceptance as unfinished.",
+  "platform": "codex",
+  "project_id": "ai-jarvis",
+  "record_class": "actual_work_receipt",
+  "record_sha256": "0f026d7865338513b380f87e4a72bbeed07f9c35aba1ca26a1d7c4571a164b3d",
+  "repository": "lippytm/jarvis-nexus-core",
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/test_handoff_context.py": "6daca232bd0f173f2446a5e099f5988a4d0552a4e939103b745ff255f744ac86"
+  },
+  "tracked_patch_sha256": "47ab480d609fa442c6abbc7e31d1abd455ceccb34af27bd956f9650d0253a14e",
+  "visibility": "owner_private"
+}

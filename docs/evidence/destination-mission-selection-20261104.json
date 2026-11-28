@@ -1,0 +1,63 @@
+{
+  "authentication_live_dispatch": "not_established",
+  "change": "Optional mission_id and CLI --mission select explicit report v3 with mission selector and digest; legacy unfiltered reports v1/v2 remain unchanged.",
+  "checks": {
+    "all_portable_targets": 17,
+    "fixture_resolution": "Existing per-assistant budget correctly rejected excessive synthetic staging. Use independently scoped synthetic manifests; no budget increase or production change.",
+    "focused_errors": 0,
+    "focused_failures": 0,
+    "focused_methods": 3,
+    "initial_fixture_errors": 2,
+    "python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "run": 523,
+      "skipped": 0
+    },
+    "syntax_files": 73,
+    "verifier_record_sha256": "7a00c722eeb90e498e4db16f18d7635b7acc69b4e608e1fe3c2db051ccf3a6bc",
+    "web_failures": 0,
+    "web_tests": 181,
+    "whitespace": "git diff --check passed"
+  },
+  "configuration_version": "codex.engineering-draft.v1",
+  "costs_recovery_time_review_effort": "unmeasured",
+  "duplicate_candidates": 0,
+  "execution_probe": {
+    "command": "pwd",
+    "cwd": "/workspace/scratch/3e7507676923/jarvis-cycle",
+    "exit_code": 0,
+    "target": "codex"
+  },
+  "external_actions": 0,
+  "independent_review": "not_performed_for_this_payload",
+  "input_revision": "049a2f6edf06a4e4a8380af6deb92c901c90245e",
+  "memory_source": "master Page sequence 129",
+  "mission_id": "destination-mission-selection-20261104",
+  "next_task": "Exact-revision independent review; operational registry adapter still requires intended audience/access policy verification and owner acceptance of the one saved proposal.",
+  "observed_gap": "Destination status required returning all matching missions at one destination; no mission selector existed. Feature addition, not a reproduced production failure.",
+  "original_paused_checkpoint_changed": false,
+  "owner_release_approval": "not_granted",
+  "preparing_target": "codex",
+  "project_id": "ai-jarvis",
+  "record_sha256": "5452a498a308668b0994d7059e90e6ebf9ca736bd547747d98bf3573fd899301",
+  "registry_accepted": false,
+  "regressions": [
+    "All 17 target selections retain paused/unknown holds after read-only restart without database writes.",
+    "Scope/membership snapshots, unrelated mission isolation, empty/invalid selections, defensive responses and unfiltered version compatibility.",
+    "Fresh-process CLI exact snapshot retention to mode-0600 output; stale report/scope and invalid ID reject before output directories."
+  ],
+  "reliability_improvement_measured": false,
+  "revision_conflicts": 0,
+  "schema_version": 1,
+  "scope": "offline_selective_destination_metadata",
+  "source_sha256": {
+    "control_tower/handoffs.py": "85fc314456e189114673bdfc0477a2e755f55aa01c84b3e0fecac7ce9bf58ca7",
+    "docs/HANDOFF_CONTEXT_PROFILE.md": "9ff7d70192e46c05cb4c72a2943dcfc9123524df13fec7b489400332acc99125",
+    "scripts/jarvis_network.py": "c8e1f733b9a2c4678a7ea62e83b5595efef31e1d9299ddc799624939e5b823b4",
+    "tests/test_handoff_context.py": "d5f32d21aadba5ed933cb614d774d09e322c5d0ddb8346bbd1784371fbb0c81c",
+    "tests/test_handoff_context_cli.py": "f4c39ecd8ca3a48d6668b4489a528c9ac8a0adc66705feb8019d45d951018467"
+  },
+  "strict_packet_or_storage_schema_change": false
+}
