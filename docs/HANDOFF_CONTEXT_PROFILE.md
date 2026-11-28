@@ -910,6 +910,15 @@ and sets SQLite `user_version=2`. Existing swarms, handoffs, reviews and returns
 are not rewritten; legacy APIs remain usable. Unrelated databases and unknown
 versions are rejected. Version-1 application code will reject a version-2 file.
 
+Checked backup uses cooperative checks against one ten-second deadline during
+SQLite copy, after ledger validation, during chunk hashing and immediately before
+no-clobber publication, including completed file synchronization. An observed
+expired budget refuses publication and removes the temporary copy. These checks
+do not interrupt a blocking SQLite call, read, validation pass or fsync and do not
+guarantee completion in ten seconds. After the hard link publishes the file,
+directory synchronization errors retain the existing unknown-outcome semantics;
+inspect the output before any retry. No automatic replay or restore is authorized.
+
 Before first migration, stop the single worker and retain a SQLite online backup
 using `Connection.backup` (or a closed-file copy). Keep the backup private. Roll
 back code **and** restore that version-1 backup together; preserve the current

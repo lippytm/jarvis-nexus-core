@@ -3312,6 +3312,51 @@ class ContextCLITests(unittest.TestCase):
         self.assertEqual(self.cli(*args).returncode, 1)
         self.assertEqual((self.root / "bound-read.json").read_bytes(), content)
 
+    def test_backup_budget_expiry_after_validation_or_file_sync_refuses_publication(self):
+        from scripts.jarvis_network import _check_backup_scopes
+        self.controlled(execution="outcome_unknown")
+        self.profile["control"]["state"] = "paused"
+        self.write(self.profile)
+        saved = self.save(1)
+        self.assertEqual(saved.returncode, 0, saved.stderr)
+        checksum = json.loads(saved.stdout)["context_sha256"]
+        self.assertEqual(self.review_context(checksum).returncode, 0)
+        before = self.db.read_bytes()
+        real_fsync = os.fsync
+        with HandoffLedger(self.db, read_only=True) as source:
+            rows = tuple(source.db.iterdump())
+            for phase in ("validation", "file_sync"):
+                with self.subTest(phase=phase):
+                    clock = [0]
+                    target = self.root / (phase + "-expired.sqlite3")
+                    def scopes(ledger):
+                        _check_backup_scopes(ledger)
+                        if phase == "validation":
+                            clock[0] = 11
+                    def sync(fd):
+                        real_fsync(fd)
+                        if phase == "file_sync":
+                            clock[0] = 11
+                    with patch("scripts.jarvis_network.time.monotonic", side_effect=lambda: clock[0]), \
+                         patch("scripts.jarvis_network._check_backup_scopes", side_effect=scopes), \
+                         patch("scripts.jarvis_network.os.fsync", side_effect=sync):
+                        with self.assertRaisesRegex(ValueError, "backup time budget exceeded"):
+                            _backup(source.db, target)
+                    self.assertFalse(target.exists())
+                    self.assertFalse(list(self.root.glob(".jarvis-backup-*")))
+                    self.assertEqual(self.db.read_bytes(), before)
+                    self.assertEqual(tuple(source.db.iterdump()), rows)
+            valid = self.root / "within-budget.sqlite3"
+            receipt = _backup(source.db, valid)
+            self.assertEqual(receipt["external_actions"], 0)
+            with HandoffLedger(valid, read_only=True) as restored:
+                self.assertEqual(tuple(restored.db.iterdump()), rows)
+                current = restored.load_context("cli-task", expected_source_revision=REVISION,
+                    expected_memory_revision=1, expected_revision=2)
+                self.assertEqual(current["profile"], self.profile)
+                self.assertEqual(current["review_state"], "locally_reviewed")
+            self.assertEqual(self.db.read_bytes(), before)
+
     @unittest.skipUnless(os.name == "posix", "directory fsync is POSIX-specific")
     def test_backup_fsync_failures_preserve_source_and_reconcilable_output(self):
         self.controlled(execution="outcome_unknown")

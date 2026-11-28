@@ -294,12 +294,15 @@ def _backup(connection, path):
                         or previous["context_schema_version"] > receipt["context_schema_version"]):
                         raise ValueError("context review archive history regresses")
                     previous = receipt
+        progress()  # Validation shares the copy deadline; refuse before publication.
         checksum = hashlib.sha256()
         with temporary.open("rb") as handle:
             for block in iter(lambda: handle.read(65536), b""):
+                progress()
                 checksum.update(block)
             os.fsync(handle.fileno())
         size = temporary.stat().st_size
+        progress()  # Includes final read/file sync; no deadline failure after linking.
         os.link(temporary, path)  # Atomic no-clobber publication on the same filesystem.
         directory = os.open(path.parent, os.O_RDONLY)
         try:
